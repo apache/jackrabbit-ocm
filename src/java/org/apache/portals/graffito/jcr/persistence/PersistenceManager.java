@@ -24,6 +24,7 @@ import org.apache.portals.graffito.jcr.exception.CannotUnlockException;
 import org.apache.portals.graffito.jcr.exception.LockedException;
 import org.apache.portals.graffito.jcr.exception.PersistenceException;
 import org.apache.portals.graffito.jcr.query.Query;
+import org.apache.portals.graffito.jcr.query.QueryManager;
 import org.apache.portals.graffito.jcr.version.Version;
 import org.apache.portals.graffito.jcr.version.VersionIterator;
 
@@ -287,5 +288,11 @@ public interface PersistenceManager
      * @return <code>true</code> if path locked
      */
     boolean isLocked(String absPath);
+    
+    /**
+     * 
+     * @return The query manager reference
+     */
+    QueryManager getQueryManager();
         
 }

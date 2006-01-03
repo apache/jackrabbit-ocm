@@ -797,6 +797,16 @@ public class PersistenceManagerImpl implements PersistenceManager
 	
 
 	/**
+	 * 
+	 * @see org.apache.portals.graffito.jcr.persistence.PersistenceManager#getQueryManager()
+	 */
+	public QueryManager getQueryManager()
+	{
+		
+		return this.queryManager;
+	}
+
+	/**
 	 * Throws {@link LockedException} id node is locked so alter nopde cannot be done
 	 * 
 	 * @param absPath
