@@ -11,13 +11,11 @@
   </classpathentry>
   <classpathentry kind="var" path="MAVEN_REPO/graffito/jars/graffito-commons-1.0-a1-dev.jar">
   </classpathentry>
-  <classpathentry kind="var" path="MAVEN_REPO/jackrabbit/jars/jackrabbit-1.0-20051109-SNAPSHOT.jar">
+  <classpathentry kind="var" path="MAVEN_REPO/org.apache.jackrabbit/jars/jackrabbit-1.0-SNAPSHOT.jar">
   </classpathentry>
   <classpathentry kind="var" path="MAVEN_REPO/concurrent/jars/concurrent-1.3.4.jar">
   </classpathentry>
   <classpathentry kind="var" path="MAVEN_REPO/commons-collections/jars/commons-collections-3.1.jar">
-  </classpathentry>
-  <classpathentry kind="var" path="MAVEN_REPO/commons-lang/jars/commons-lang-2.1.jar">
   </classpathentry>
   <classpathentry kind="var" path="MAVEN_REPO/geronimo-spec/jars/geronimo-spec-jta-1.0-M1.jar">
   </classpathentry>
@@ -29,19 +27,17 @@
   </classpathentry>
   <classpathentry kind="var" path="MAVEN_REPO/xerces/jars/xercesImpl-2.6.2.jar">
   </classpathentry>
-  <classpathentry kind="var" path="MAVEN_REPO/cqfs/jars/cqfs-jackrabbit-3.5.6.jar">
+  <classpathentry kind="var" path="MAVEN_REPO/xerces/jars/xmlParserAPIs-2.0.2.jar">
   </classpathentry>
-  <classpathentry kind="var" path="MAVEN_REPO/cqfs/jars/cqfs-3.5.6.jar">
-  </classpathentry>
-  <classpathentry kind="var" path="MAVEN_REPO/commons-logging/jars/commons-logging-1.0.2.jar">
+  <classpathentry kind="var" path="MAVEN_REPO/org.apache.derby/jars/derby-10.1.1.0.jar">
   </classpathentry>
   <classpathentry kind="var" path="MAVEN_REPO/commons-beanutils/jars/commons-beanutils-1.7.0.jar">
   </classpathentry>
   <classpathentry kind="var" path="MAVEN_REPO/commons-digester/jars/commons-digester-1.7.jar">
   </classpathentry>
-  <classpathentry kind="var" path="MAVEN_REPO/xerces/jars/xerces-2.4.0.jar">
+  <classpathentry kind="var" path="MAVEN_REPO/commons-logging/jars/commons-logging-1.0.2.jar">
   </classpathentry>
-  <classpathentry kind="var" path="MAVEN_REPO/xml-apis/jars/xml-apis-1.0.b2.jar">
+  <classpathentry kind="var" path="MAVEN_REPO/commons-lang/jars/commons-lang-2.1.jar">
   </classpathentry>
   <classpathentry kind="output" path="target/classes">
   </classpathentry>
