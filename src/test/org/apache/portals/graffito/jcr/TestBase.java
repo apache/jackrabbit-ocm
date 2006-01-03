@@ -89,7 +89,7 @@ public abstract class TestBase extends TestCase
 		{
 			if (!isInit)
 			{
-				RepositoryUtil.registerRepository("repositoryTest", "./src/test-config/repository.xml", "./target/repository");
+				RepositoryUtil.registerRepository("repositoryTest", "./src/test-config/repository-derby.xml", "./target/repository");
 				isInit = true;
 			}
 

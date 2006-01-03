@@ -56,7 +56,7 @@ public class RepositoryUtilTest extends TestCase
         super.setUp();
         if (! isInit)
         {
-            RepositoryUtil.registerRepository("repositoryTest", "src/test-config/repository.xml", "target/repository");
+            RepositoryUtil.registerRepository("repositoryTest", "src/test-config/repository-xml.xml", "target/repository");
             isInit = true;
         }
     }
