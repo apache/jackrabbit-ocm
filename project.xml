@@ -23,12 +23,18 @@
 	<name>Graffito JCR Mapping</name>
 	<currentVersion>1.0-a1-dev</currentVersion>
 	<package>org.apache.portals.graffito</package>
-	<description>This subproject contains the JCR Mapping tools</description>
+	<description>
+		This subproject contains the JCR Mapping tools
+	</description>
 	<shortDescription>Graffito JCR Mapping Tools</shortDescription>
 
 	<repository>
-		<connection>scm:subversion:https://svn.apache.org/repos/asf/incubator/graffito/trunk/jcr/jcr-mapping</connection>
-		<developerConnection>scm:subversion:https://svn.apache.org/repos/asf/incubator/graffito/trunk/jcr/jcr-mapping</developerConnection>
+		<connection>
+			scm:subversion:https://svn.apache.org/repos/asf/incubator/graffito/trunk/jcr/jcr-mapping
+		</connection>
+		<developerConnection>
+			scm:subversion:https://svn.apache.org/repos/asf/incubator/graffito/trunk/jcr/jcr-mapping
+		</developerConnection>
 		<url>http://svn.apache.org/viewcvs</url>
 	</repository>
 
@@ -40,31 +46,27 @@
 			<version>1.0-a1-dev</version>
 		</dependency>
 		<dependency>
-			<groupId>jackrabbit</groupId>
+			<groupId>org.apache.jackrabbit</groupId>
 			<artifactId>jackrabbit</artifactId>
-			<version>1.0-20051125-SNAPSHOT</version>
+			<version>1.0-SNAPSHOT</version>
 		</dependency>
 		<dependency>
-			<id>concurrent</id>
+			<groupId>concurrent</groupId>
+			<artifactId>concurrent</artifactId>
 			<version>1.3.4</version>
 		</dependency>
 		<dependency>
-			<id>junit</id>
+			<groupId>junit</groupId>
+			<artifactId>junit</artifactId>
 			<version>3.8.1</version>
-		</dependency>
-		<dependency>
-			<id>commons-collections</id>
-			<version>3.1</version>
-		</dependency>
-
-		<dependency>
-			<groupId>commons-lang</groupId>
-			<artifactId>commons-lang</artifactId>
-			<version>2.1</version>
-			<type>jar</type>
 			<properties>
-				<war.bundle>true</war.bundle>
+				<scope>test</scope>
 			</properties>
+		</dependency>
+		<dependency>
+			<groupId>commons-collections</groupId>
+			<artifactId>commons-collections</artifactId>
+			<version>3.1</version>
 		</dependency>
 		<dependency>
 			<groupId>geronimo-spec</groupId>
@@ -75,10 +77,11 @@
 			<groupId>jsr170</groupId>
 			<artifactId>jcr</artifactId>
 			<version>1.0</version>
-			<url>http://www.day.com/maven/jsr170/jars/jcr-1.0.jar</url>
+			<url>http://jcp.org/en/jsr/detail?id=170</url>
 		</dependency>
 		<dependency>
-			<id>log4j</id>
+			<groupId>log4j</groupId>
+			<artifactId>log4j</artifactId>
 			<version>1.2.8</version>
 		</dependency>
 		<dependency>
@@ -91,35 +94,17 @@
 			<artifactId>xercesImpl</artifactId>
 			<version>2.6.2</version>
 		</dependency>
-		<!--
-			cqfs-jackrabbit and cqfs are optional runtime dependencies 
-			(an alternative FileSystem implementation); 
-			commons-logging is a dependency of cqfs
-		-->
 		<dependency>
-			<groupId>cqfs</groupId>
-			<artifactId>cqfs-jackrabbit</artifactId>
-			<version>3.5.6</version>
-			<url>http://www.day.com/maven/cqfs/jars/cqfs-jackrabbit-3.5.6.jar</url>
+			<groupId>xerces</groupId>
+			<artifactId>xmlParserAPIs</artifactId>
+			<version>2.0.2</version>
 		</dependency>
-		<dependency>
-			<groupId>cqfs</groupId>
-			<artifactId>cqfs</artifactId>
-			<version>3.5.6</version>
-			<url>http://www.day.com/maven/cqfs/jars/cqfs-3.5.6.jar</url>
-		</dependency>
-        
 		<dependency>
 			<groupId>org.apache.derby</groupId>
 			<artifactId>derby</artifactId>
 			<version>10.1.1.0</version>
-		</dependency>        
-
-		<dependency>
-			<id>commons-logging</id>
-			<version>1.0.2</version>
-			<url>http://jakarta.apache.org/commons/logging.html</url>
 		</dependency>
+
 
 		<dependency>
 			<groupId>commons-beanutils</groupId>
@@ -136,28 +121,35 @@
 			<version>1.7</version>
 
 		</dependency>
-
-		<!-- runtime dependencies only required for testing and sample programs -->
 		<dependency>
-			<id>xerces</id>
-			<version>2.4.0</version>
-			<url>http://xml.apache.org/xerces2-j/index.html</url>
+			<id>commons-logging</id>
+			<version>1.0.2</version>
+			<url>http://jakarta.apache.org/commons/logging.html</url>
 		</dependency>
-
 		<dependency>
-			<id>xml-apis</id>
-			<version>1.0.b2</version>
-			<url>http://xml.apache.org/commons/</url>
+			<groupId>commons-lang</groupId>
+			<artifactId>commons-lang</artifactId>
+			<version>2.1</version>
+			<type>jar</type>
+			<properties>
+				<war.bundle>true</war.bundle>
+			</properties>
 		</dependency>
+		
+
 	</dependencies>
 
 	<build>
 		<sourceDirectory>src/java</sourceDirectory>
 
-		<unitTestSourceDirectory>${basedir}/src/test</unitTestSourceDirectory>
+		<unitTestSourceDirectory>
+			${basedir}/src/test
+		</unitTestSourceDirectory>
 		<unitTest>
 			<excludes>
-				<exclude>org/apache/portals/graffito/jcr/testmodel/**/*.java</exclude>
+				<exclude>
+					org/apache/portals/graffito/jcr/testmodel/**/*.java
+				</exclude>
 				<exclude>**/*TestBase.java</exclude>
 			</excludes>
 			<resources>
@@ -180,19 +172,19 @@
 		</resources>
 
 
-  </build>
-  <reports>
-       <report>maven-javadoc-plugin</report>
-       <report>maven-changelog-plugin</report>    
-       <report>maven-file-activity-plugin</report>
-       <report>maven-jcoverage-plugin</report>
-       <report>maven-changelog-plugin</report>
-       <report>maven-changes-plugin</report>
-       <!-- <report>maven-checkstyle-plugin</report> -->
-       <report>maven-junit-report-plugin</report>
-       <report>maven-jxr-plugin</report>
-       <report>maven-pmd-plugin</report>
-       
-       
-  </reports>
+	</build>
+	<reports>
+		<report>maven-javadoc-plugin</report>
+		<report>maven-changelog-plugin</report>
+		<report>maven-file-activity-plugin</report>
+		<report>maven-jcoverage-plugin</report>
+		<report>maven-changelog-plugin</report>
+		<report>maven-changes-plugin</report>
+		<!-- <report>maven-checkstyle-plugin</report> -->
+		<report>maven-junit-report-plugin</report>
+		<report>maven-jxr-plugin</report>
+		<report>maven-pmd-plugin</report>
+
+
+	</reports>
 </project>
