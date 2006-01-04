@@ -267,8 +267,12 @@ public class ObjectConverterImpl implements ObjectConverter
 			} 
 			else 
 			{
+                Class fieldTypeClass = fieldDescriptor.getFieldTypeClass() != null
+                    ? fieldDescriptor.getFieldTypeClass() 
+                    : PropertyUtils.getPropertyType(object, fieldName);
+                    
 				AtomicTypeConverter converter = (AtomicTypeConverter) atomicTypeConverters
-						.get(PropertyUtils.getPropertyType(object, fieldName));
+						.get(fieldTypeClass);
 				if (node.hasProperty(propertyName)) 
 				{
 					Object fieldValue = converter.getObject(node.getProperty(propertyName).getValue());
@@ -437,7 +441,7 @@ public class ObjectConverterImpl implements ObjectConverter
 				String fieldName = fieldDescriptor.getFieldName();
 				String jcrName = fieldDescriptor.getJcrName();
 
-				// Check if the node property is "autocreated"
+				// Check the node properties
 				boolean autoCreated = false;
 
 				if (objectNode.hasProperty(jcrName))
@@ -448,9 +452,12 @@ public class ObjectConverterImpl implements ObjectConverter
 				// All auto created JCR properties are ignored
 				if (!autoCreated)
 				{
+					
 					Object fieldValue = PropertyUtils.getNestedProperty(object, fieldName);
-
-					AtomicTypeConverter converter = (AtomicTypeConverter) atomicTypeConverters.get(PropertyUtils.getPropertyType(object, fieldName));
+					Class fieldTypeClass = fieldDescriptor.getFieldTypeClass() != null
+                        ? fieldDescriptor.getFieldTypeClass()
+                        : PropertyUtils.getPropertyType(object, fieldName);
+					AtomicTypeConverter converter = (AtomicTypeConverter) atomicTypeConverters.get(fieldTypeClass);
 					Value value = converter.getValue(fieldValue);
 					// Check if mandatory property are not null
 					this.checkMandatoryProperty(objectNode, fieldDescriptor, value);
