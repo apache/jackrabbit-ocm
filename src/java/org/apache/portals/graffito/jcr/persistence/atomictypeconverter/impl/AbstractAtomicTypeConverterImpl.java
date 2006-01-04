@@ -32,6 +32,16 @@ public abstract class AbstractAtomicTypeConverterImpl implements AtomicTypeConve
 
 	private ValueFactory valueFactory;
 
+	 /**
+	  * No-arg constructor.
+	  * When using it you should provide later the <code>javax.jcr.ValueFactory</code>.
+	  * 
+	  * @see #setValueFactory(ValueFactory)
+	  */
+	  public AbstractAtomicTypeConverterImpl()
+	 {
+	 }	
+	  
 	/**
 	 * Constructor
 	 * @param factory The JCR Value factory to used
@@ -60,7 +70,7 @@ public abstract class AbstractAtomicTypeConverterImpl implements AtomicTypeConve
 	 * 
 	 * @param valueFactory The value factory to set
 	 */
-	void setValueFactory(ValueFactory valueFactory)
+	public void setValueFactory(ValueFactory valueFactory)
 	{
 		this.valueFactory = valueFactory;
 	}

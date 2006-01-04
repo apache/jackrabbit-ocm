@@ -34,6 +34,17 @@ import org.apache.portals.graffito.jcr.exception.IncorrectAtomicTypeException;
  */
 public class TimestampTypeConverterImpl extends AbstractAtomicTypeConverterImpl
 {
+    /**
+     * No-arg constructor.
+     * When using it you should provide later the <code>javax.jcr.ValueFactory</code>.
+     * 
+     * @see #setValueFactory(ValueFactory)
+     */
+    public TimestampTypeConverterImpl()
+    {
+        super();
+    }
+    
 	/**
 	 * Constructor
 	 * @param factory The JCR Value factory to used
