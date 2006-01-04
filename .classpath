@@ -9,7 +9,7 @@
   </classpathentry>
   <classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER">
   </classpathentry>
-  <classpathentry kind="var" path="MAVEN_REPO/graffito/jars/graffito-commons-1.0-a1-dev.jar">
+  <classpathentry kind="var" path="MAVEN_REPO/org.apache.portals.graffito/jars/graffito-commons-1.0-a1-dev.jar">
   </classpathentry>
   <classpathentry kind="var" path="MAVEN_REPO/org.apache.jackrabbit/jars/jackrabbit-1.0-SNAPSHOT.jar">
   </classpathentry>
