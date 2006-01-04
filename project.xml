@@ -19,7 +19,7 @@
 	<extend>${basedir}/../../project.xml</extend>
 	<pomVersion>3</pomVersion>
 	<id>graffito-jcr-mapping</id>
-	<groupId>graffito</groupId>
+	<groupId>org.apache.portals.graffito</groupId>
 	<name>Graffito JCR Mapping</name>
 	<currentVersion>1.0-a1-dev</currentVersion>
 	<package>org.apache.portals.graffito</package>
@@ -42,7 +42,7 @@
 
 		<dependency>
 			<id>graffito-commons</id>
-			<groupId>graffito</groupId>
+			<groupId>org.apache.portals.graffito</groupId>
 			<version>1.0-a1-dev</version>
 		</dependency>
 		<dependency>
