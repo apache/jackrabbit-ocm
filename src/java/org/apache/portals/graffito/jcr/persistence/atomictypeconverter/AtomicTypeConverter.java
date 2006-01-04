@@ -18,6 +18,7 @@
 package org.apache.portals.graffito.jcr.persistence.atomictypeconverter;
 
 import javax.jcr.Value;
+import javax.jcr.ValueFactory;
 
 /**
  * 
@@ -57,4 +58,11 @@ public interface AtomicTypeConverter
 	 */
 	public String getStringValue(Object object);
 
+    /**
+     * Set the underlying <code>ValueFactory</code> to be used
+     * when creating the <code>Value</code>.
+     * 
+     * @param valueFactory <code>javax.jcr.ValueFactory</code>
+     */
+    public void setValueFactory(ValueFactory valueFactory);
 }
