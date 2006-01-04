@@ -34,6 +34,7 @@
 <!--
     Field descriptor - A field descriptor maps one atomic object attribute (primitive types, String, Long, ...)  into a JCR property
     * fieldName : the field/attribute name
+    * fieldType: the primitive type or fully qualified class name of the field (optional)
     * jcrName : the jcr property name (optional). If it is not defined, fieldname is used to specify the jcr property name
     * id : specifies if the field is an id. Id is optional. If the class contains an id field, some process can run faster
     * path : specified if the fiels is the object path
@@ -48,6 +49,7 @@
 <!ELEMENT field-descriptor EMPTY>
 <!ATTLIST field-descriptor
 	fieldName CDATA #REQUIRED
+	fieldType CDATA #IMPLIED
 	jcrName CDATA #IMPLIED 
 	id (true | false) "false"
 	path (true | false) "false"

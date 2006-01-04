@@ -68,6 +68,7 @@ public class DigesterDescriptorReader
 
 			digester.addObjectCreate("graffito-jcr/class-descriptor/field-descriptor", FieldDescriptor.class);
 			digester.addSetProperties("graffito-jcr/class-descriptor/field-descriptor", "fieldName", "fieldName");
+            digester.addSetProperties("graffito-jcr/class-descriptor/field-descriptor", "fieldType", "fieldType");
 			digester.addSetProperties("graffito-jcr/class-descriptor/field-descriptor", "jcrName", "jcrName");
 			digester.addSetProperties("graffito-jcr/class-descriptor/field-descriptor", "id", "id");
 			digester.addSetProperties("graffito-jcr/class-descriptor/field-descriptor", "path", "path");
