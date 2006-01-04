@@ -26,6 +26,8 @@ package org.apache.portals.graffito.jcr.mapper.model;
 public class FieldDescriptor
 {
      private String fieldName;
+     private String fieldType;
+     private Class fieldTypeClass;
      private String jcrName;
      private String jcrType;
      private boolean jcrAutoCreated;
@@ -53,6 +55,43 @@ public class FieldDescriptor
         this.fieldName = fieldName;
     }
 
+    /**
+     * @return the primitive or fully qualified class of the field
+     * or <tt>null</tt> if not specified in the mapping
+     */
+    public String getFieldType()
+    {
+        return this.fieldType;
+    }
+    
+    /**
+     * Sets the type of the field. It supports primitive types, specified as
+     * int, long, etc or fully qualified class names.
+     * 
+     * @param fieldType the type of the field
+     */
+    public void setFieldType(String fieldType)
+    {
+        this.fieldType = fieldType;
+    }
+    
+    /**
+     * @return the field class of the field
+     * or <tt>null</tt> if not specified in the mapping
+     * or if the class was not found
+     */
+    public Class getFieldTypeClass() 
+    {
+        if (this.fieldType == null) {
+            return null;
+        }
+        if (this.fieldTypeClass == null) {
+            this.fieldTypeClass = loadFieldTypeClass();
+        }
+        
+        return this.fieldTypeClass;
+    }
+    
     /**
      * @return Returns the jcrName.
      */
@@ -226,5 +265,61 @@ public class FieldDescriptor
     public void setJcrMultiple(boolean value)
     {
         this.jcrMultiple = value;
+    }
+    
+    /**
+     * Initialize the fieldTypeClass.
+     * 
+     * @return the primitive class or the class accordign to fieldType
+     */
+    private Class loadFieldTypeClass() {
+        if (this.fieldType == null) 
+        {
+            return null;
+        }
+        if ("byte".equals(this.fieldType)) 
+        {
+            return byte.class;
+        }
+        else if ("short".equals(this.fieldType)) 
+        {
+            return short.class;
+        }
+        else if ("int".equals(this.fieldType)) 
+        {
+            return int.class;
+        }
+        else if ("long".equals(this.fieldType)) 
+        {
+            return long.class;
+        }
+        else if ("float".equals(this.fieldType)) 
+        {
+            return float.class;
+        }
+        else if ("double".equals(this.fieldType)) 
+        {
+            return double.class;
+        }
+        else if ("char".equals(this.fieldType)) 
+        {
+            return char.class;
+        }
+        else if ("boolean".equals(this.fieldType))
+        {
+            return boolean.class;
+        }
+        else 
+        {
+            try {
+                return Class.forName(this.fieldType);
+            }
+            catch (ClassNotFoundException cnfe) 
+            {
+                ; // nothing to do; it will be dynamically determined
+            }
+        }
+        
+        return null;
     }
 }
