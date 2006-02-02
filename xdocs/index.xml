@@ -22,11 +22,27 @@ limitations under the License.
 	</properties>
 	<body>
 		<section name="Overview">
-			<subsection name="General Overview">
-				<p></p>
+			<subsection name="Object/Content Mapping framework (ocm)">
+				<p>This Graffito subproject is an object/JCR persistence and query service. This tools lets you to persist java objects into a JCR compliant repository - including association, inheritance, polymorphism, composition, and the Java collections framework. Furthermore, this jcr-mapping allows you to express queries in Java-based Criteria, as well as in JCR query language.</p> 
+				
+				<p>In order to easily support the JCR specification, any content application managing an high level object model can use this framework. For example, a classic Forum application contains objets like "Forum", "Topic" and "Post". Now these data objects (pojo) can be managed by our JCR mapping tools in order to persist them into a JCR compliant repository.</p> 
+				
+				
+			</subsection>
+			<subsection name ="Why an ocm ?">
+				<p>
+					Sometimes it is very convenient to be able to just access the JCR nodes and properties directly from your presentation-layer for very simple things (mostly generic display). When a lot of "business logic" are involved, the JCR API can be too low level and real business objects (pojo) are more appreciate in a such case.				
+				</p>
+				
+			</subsection>
+			<subsection name ="Preriquise">
+				<p>
+					Before using this JCR framework, you should review the JCR specication and implementation like <a   href="http://incubator.apache.org/jackrabbit/">JackRabbit</a>. 
+				</p>
+				
 			</subsection>
 			<subsection name="Download">
-			<p>There are no releases yet</p>	
+				<p>There are no releases yet. See the menu 'Build a new application" for instructions on how to download and build the Graffito JCR mapping sources.</p>	
 			</subsection>
 		</section>
 	</body>
