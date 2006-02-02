@@ -1,0 +1,47 @@
+<?xml version="1.0"?>
+<!-- 
+Copyright 2004 The Apache Software Foundation
+Licensed  under the  Apache License,  Version 2.0  (the "License");
+you may not use  this file  except in  compliance with the License.
+You may obtain a copy of the License at 
+
+http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing, software
+distributed  under the  License is distributed on an "AS IS" BASIS,
+WITHOUT  WARRANTIES OR CONDITIONS  OF ANY KIND, either  express  or
+implied.
+
+See the License for the specific language governing permissions and
+limitations under the License.
+-->
+<document>
+	<properties>
+		<author email="christophe.lombart@gmail.com">Christophe Lombart</author>
+		<title>Simple Object Mapping Strategies</title>
+	</properties>
+	<body>
+				
+		<section name="Mapping Atomic Fields">
+			<subsection name="Introduction">
+				<p>The field-descriptor maps a bean attribute into one JCR property. it can map any kind of atomic types (java primitive data types and their wrapper classes)</p> 
+				<p>Based on our model defined <a href="introduction-strategies.html">here</a>, the following field-descriptor is used to map the bean field "title" into the JCR property "graffito:title".</p>
+				<source><![CDATA[ 				
+<field-descriptor fieldName="title" jcrName="graffito:title" />	
+				]]></source>
+				
+			</subsection>
+			<subsection name ="Supported Types">
+				<p>
+				[TO DO]				
+				</p>
+			</subsection>
+			<subsection name ="Build you own Atomic Type Converter">
+				<p>
+				[TO DO]	
+				</p>
+			</subsection>
+			
+		</section>
+	</body>
+</document>
