@@ -20,7 +20,5 @@ package org.apache.portals.graffito.jcr.exception;
  * 
  * @author markoc
  */
-public class LockingException extends PersistenceException 
-{
-
+abstract public class LockingException extends PersistenceException {
 }

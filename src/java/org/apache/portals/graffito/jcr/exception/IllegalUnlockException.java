@@ -1,6 +1,5 @@
 /*
- * Copyright 2004-2005 The Apache Software Foundation or its licensors,
- *                     as applicable.
+ * Copyright 2000-2005 The Apache Software Foundation.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,31 +13,44 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.apache.portals.graffito.jcr.exception;
 
 
 /**
- * Occurs when the jcr mapping converters try to assign or read an incorrect atomic field type.
+ * If user cannot unlock path, for example if he/she have not correct lockTokens
  *
- * @author <a href="mailto:christophe.lombart@sword-technologies.com">Christophe Lombart</a>
+ * @author Martin Koci
  * @author <a href='mailto:the_mindstorm[at]evolva[dot]ro'>Alexandru Popescu</a>
  */
-public class IncorrectAtomicTypeException extends JcrMappingException {
+public class IllegalUnlockException extends LockingException {
 
     /** Use serialVersionUID for interoperability. */
-    private final static long serialVersionUID = 8819724602193665601L;
+    private final static long serialVersionUID = 5078216219061716697L;
 
-    public IncorrectAtomicTypeException(String message, Throwable nested) {
-        super(message, nested);
+    private final String lockOwner;
+
+    private final String path;
+
+    /**
+     *
+     * @return The JCR Lock Owner
+     */
+    public String getLockOwner() {
+        return lockOwner;
     }
 
-    public IncorrectAtomicTypeException(String message) {
-        super(message);
+    /**
+     *
+     * @return the JCR path
+     */
+    public String getPath() {
+        return path;
     }
 
-    public IncorrectAtomicTypeException(Throwable nested) {
-        super(nested);
+    public IllegalUnlockException(String lockOwner, String path) {
+        super();
+        this.lockOwner = lockOwner;
+        this.path = path;
     }
 
 }

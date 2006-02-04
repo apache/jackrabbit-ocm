@@ -20,7 +20,7 @@ import java.util.Iterator;
 
 import javax.jcr.version.VersionException;
 
-import org.apache.portals.graffito.jcr.exception.CannotUnlockException;
+import org.apache.portals.graffito.jcr.exception.IllegalUnlockException;
 import org.apache.portals.graffito.jcr.exception.LockedException;
 import org.apache.portals.graffito.jcr.exception.PersistenceException;
 import org.apache.portals.graffito.jcr.query.Query;
@@ -276,10 +276,10 @@ public interface PersistenceManager
      * @param lockToken
      *            see JCR spec: 8.4.6 Lock Token; can be <code>null</code>
      * 
-     * @throws CannotUnlockException
-     *             if you have not lock token to unlock
+     * @throws IllegalUnlockException
+     *             throws if the current operation does not own the current lock
      */
-    void unlock(String path, String lockToken) throws CannotUnlockException;
+    void unlock(String path, String lockToken) throws IllegalUnlockException;
     
     /**
      * Is that path locked?

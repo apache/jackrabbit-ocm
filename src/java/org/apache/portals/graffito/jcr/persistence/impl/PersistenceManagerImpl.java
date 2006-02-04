@@ -34,7 +34,7 @@ import javax.jcr.version.VersionHistory;
 import org.apache.commons.lang.ArrayUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.apache.portals.graffito.jcr.exception.CannotUnlockException;
+import org.apache.portals.graffito.jcr.exception.IllegalUnlockException;
 import org.apache.portals.graffito.jcr.exception.JcrMappingException;
 import org.apache.portals.graffito.jcr.exception.LockedException;
 import org.apache.portals.graffito.jcr.exception.PersistenceException;
@@ -733,7 +733,7 @@ public class PersistenceManagerImpl implements PersistenceManager
 	 * 
 	 * @see org.apache.portals.graffito.jcr.persistence.PersistenceManager#unlock(java.lang.String, java.lang.Object, java.lang.String)
 	 */
-	public void unlock(final String absPath, final String lockToken) throws JcrMappingException, CannotUnlockException
+	public void unlock(final String absPath, final String lockToken) throws JcrMappingException, IllegalUnlockException
 	{
 		Node node;
 		Lock lock;
@@ -759,14 +759,13 @@ public class PersistenceManagerImpl implements PersistenceManager
 		{
 			// LockException if this node does not currently hold a lock (see upper code)
 			// or holds a lock for which this Session does not have the correct lock token
-			log
-					.error("Cannot unlock path: "
+			log.error("Cannot unlock path: "
 							+ absPath
 							+ " Jcr user: "
 							+ session.getUserID()
 							+ " has no lock token to do this. Lock was placed with user: "
 							+ lockOwner);
-			throw new CannotUnlockException(lockOwner, absPath);
+			throw new IllegalUnlockException(lockOwner, absPath);
 		}
 		catch (RepositoryException e)
 		{
