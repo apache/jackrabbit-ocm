@@ -79,7 +79,7 @@ public class RepositoryUtilTest extends TestCase
      * Test for getRepository() and login
      *
      */
-    public void testgetRegistryAndLogin()
+    public void testRegistryAndLogin()
     {
         try
         {
@@ -102,7 +102,7 @@ public class RepositoryUtilTest extends TestCase
      * Simple unit test to check if custome node types are well defined
      *
      */
-    public void testgetCustomNodeType()
+    public void testCustomNodeType()
     {
         try
         {
@@ -128,7 +128,7 @@ public class RepositoryUtilTest extends TestCase
      * Test for getParentPath() 
      *
      */
-    public void testgetParentPath()
+    public void testGetParentPath()
     {
         try
         {
@@ -152,7 +152,7 @@ public class RepositoryUtilTest extends TestCase
      * Test for getNodeName() 
      *
      */
-    public void testgetNodeName()
+    public void testGetNodeName()
     {
         try
         {
@@ -225,7 +225,8 @@ public class RepositoryUtilTest extends TestCase
 		}
 		catch (Exception e)
 		{
-
+            e.printStackTrace();
+            fail("Unable to run user transaction : " + e);
 		}
     }
     
