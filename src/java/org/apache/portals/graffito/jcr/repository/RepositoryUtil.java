@@ -28,11 +28,13 @@ import org.apache.commons.logging.LogFactory;
 import org.apache.jackrabbit.core.jndi.RegistryHelper;
 import org.apache.jackrabbit.util.ISO9075;
 import org.apache.jackrabbit.util.Text;
+import org.apache.portals.graffito.jcr.exception.JcrMappingException;
 import org.apache.portals.graffito.jcr.exception.PersistenceException;
 import org.apache.portals.graffito.jcr.exception.RepositoryException;
 
 /**
 * Utility class for managing JCR repositories.
+* <b>Note</b>: most of the utility methods in this class can be used only with Jackrabbit.
 *
 * @author <a href="mailto:christophe.lombart@sword-technologies.com">Lombart Christophe </a>
 * @version $Id: Exp $
@@ -69,8 +71,7 @@ public class RepositoryUtil
             env.put(Context.PROVIDER_URL, "localhost");
             InitialContext ctx = new InitialContext(env);
 
-            RegistryHelper.registerRepository(ctx, repositoryName, configFile, homeDir, true);            
-
+            RegistryHelper.registerRepository(ctx, repositoryName, configFile, homeDir, true);
         }
         catch (Exception e)
         {        
@@ -92,15 +93,12 @@ public class RepositoryUtil
     {
         try
         {
-            
-        	
         	Hashtable env = new Hashtable();
             env.put(Context.INITIAL_CONTEXT_FACTORY, "org.apache.jackrabbit.core.jndi.provider.DummyInitialContextFactory");
             env.put(Context.PROVIDER_URL, "localhost");
             InitialContext ctx = new InitialContext(env);
 
-            RegistryHelper.unregisterRepository(ctx, repositoryName);            
-
+            RegistryHelper.unregisterRepository(ctx, repositoryName);
         }
         catch (Exception e)
         {
@@ -155,7 +153,6 @@ public class RepositoryUtil
             setupSession(session);
            
             return session; 
-            
         }
         catch (Exception e)
         {
@@ -195,7 +192,7 @@ public class RepositoryUtil
         
         if (!isValidPath(path))
         {
-            throw new PersistenceException("Invalid path : " + path);
+            throw new JcrMappingException("Invalid path : " + path);
         }
         
         String[] pathElements = path.split(PATH_SEPARATOR);         
@@ -232,7 +229,7 @@ public class RepositoryUtil
         
         if (! isValidPath(path))
         {
-            throw new PersistenceException("Invalid path : " + path);
+            throw new JcrMappingException("Invalid path : " + path);
         }        
         return pathElements[pathElements.length-1];
     }
@@ -293,8 +290,5 @@ public class RepositoryUtil
     		pathElements[i] = ISO9075.encode(pathElements[i]);
     	}
     	return "/" + Text.implode(pathElements, "/");
-    	
     }
-    
-      
 }
