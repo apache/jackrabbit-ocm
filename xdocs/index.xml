@@ -25,7 +25,7 @@ limitations under the License.
 			<subsection name="Object/Content Mapping framework (ocm)">
 				<p>This Graffito subproject is an object/JCR persistence and query service. This tools lets you to persist java objects into a JCR compliant repository - including association, inheritance, polymorphism, composition, and the Java collections framework. Furthermore, this jcr-mapping allows you to express queries in Java-based Criteria, as well as in JCR query language.</p> 
 				
-				<p>In order to easily support the JCR specification, any content application managing an high level object model can use this framework. For example, a classic Forum application contains objets like "Forum", "Topic" and "Post". Now these data objects (pojo) can be managed by our JCR mapping tools in order to persist them into a JCR compliant repository.</p> 
+				<p>In order to easily support the JCR specification, any content application managing an high level object model can use this framework. For example, a classic Forum application contains objets like "Forum", "Topic" and "Post". Now, the data objects (pojo) can be managed by our JCR mapping tools in order to persist them into a JCR compliant repository.</p> 
 				
 				
 			</subsection>
@@ -37,12 +37,12 @@ limitations under the License.
 			</subsection>
 			<subsection name ="Preriquise">
 				<p>
-					Before using this JCR framework, you should review the JCR specication and implementation like <a   href="http://incubator.apache.org/jackrabbit/">JackRabbit</a>. 
+					Before using this JCR framework, you should review the JCR specication and implementations like <a   href="http://incubator.apache.org/jackrabbit/">JackRabbit</a>. 
 				</p>
 				
 			</subsection>
 			<subsection name="Download">
-				<p>There are no releases yet. See the menu 'Build a new application" for instructions on how to download and build the Graffito JCR mapping sources.</p>	
+				<p>There are no releases yet. See the menu "Getting Started" for instructions on how to download and build the Graffito JCR mapping sources.</p>	
 			</subsection>
 		</section>
 	</body>

@@ -22,10 +22,7 @@ limitations under the License.
 	</properties>
 	<body>
 		<section name="The Persistence Manager">
-			<p>The main component in our framework is the Persistence manager. It converts an object graph into JCR nodes and properties and vice versa.</p>
-			<subsection name="The API Overview">
-			 	<p>ADD API overview here</p>
-			</subsection>	
+			<p>The main component in our framework is the Persistence manager. It converts an object graph into JCR nodes and properties and vice versa.</p>	
 			
 			<subsection name="How the Persistence Manager is working ?">
 				
@@ -49,6 +46,10 @@ limitations under the License.
 					Of course, all those "mapping types" imply different mapping algorithms.See the "Mapping Strategies" section to get more information on the descriptor file.
 				</p>				
 			</subsection>
+			
+			<subsection name="The API Overview">
+				<p>[TO DO]</p>
+			</subsection>			
 						
 		</section>
 	</body>

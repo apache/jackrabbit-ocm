@@ -50,7 +50,7 @@ limitations under the License.
 			<item name="Introduction" href="introduction-advanced-strategies.html"/>
 			<item name="Inheritance" href="inheritance-strategy.html"/>
 			<item name="Reviewing the bean-descriptor" href="component-strategy.html"/>						
-			<item name="Reviewing the collection-descriptor" href="collection-strategy.html"/>
+			
 			<item name="Adding Extra JCR Nodes" href="extra-nodes-strategy.html"/>
 			
 			
