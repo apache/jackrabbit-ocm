@@ -24,21 +24,72 @@ limitations under the License.
 				
 		<section name="Mapping Atomic Fields">
 			<subsection name="Introduction">
-				<p>The field-descriptor maps a bean attribute into one JCR property. it can map any kind of atomic types (java primitive data types and their wrapper classes)</p> 
-				<p>Based on our model defined <a href="introduction-strategies.html">here</a>, the following field-descriptor is used to map the bean field "title" into the JCR property "graffito:title".</p>
-				<source><![CDATA[ 				
-<field-descriptor fieldName="title" jcrName="graffito:title" />	
+				<p>The field-descriptor maps a bean attribute into one JCR property. it can map any kind of atomic types (java primitive data types and their wrapper classes).</p> 
+				<p>Based on our model defined <a href="introduction-strategies.html">here</a>, the following field-descriptor can be used in the class 'PageInfo' to map the bean field "title" (String type) into the JCR property "graffito:title".</p>
+				<source><![CDATA[ 
+<class-descriptor className="org.apache.portals.graffito.jcr.testmodel.PageInfo" jcrNodeType="graffito:PageInfo">
+	<field-descriptor fieldName="title" jcrName="graffito:title" />	
+	.... other descriptors ....
+</class-descriptor>	
 				]]></source>
+				<p>It is not necessary to specify the type in the field-descriptor. The Persistence Manager uses the java introspection to get information on the each atomic field.</p>
 				
 			</subsection>
 			<subsection name ="Supported Types">
+				
+				<table>
+					<tr>
+						<th>Java Type</th>
+						<th>Jcr Type</th>
+					</tr>
+					<tr>
+						<td>String</td>
+						<td>STRING</td>
+					</tr>
+					<tr>
+						<td>Boolean, boolean</td>
+						<td>BOOLEAN</td>
+					</tr>
+					<tr>
+						<td>Double, double</td>
+						<td>DOUBLE</td>
+					</tr>
+					<tr>
+						<td>Integer, int</td>
+						<td>DOUBLE</td>
+					</tr>
+					<tr>
+						<td>Long, long</td>
+						<td>LONG</td>
+					</tr>
+					<tr>
+						<td>byte[]</td>
+						<td>BINARY</td>
+					</tr>
+					
+					<tr>
+						<td>java.io.InputStream</td>
+						<td>BINALRY</td>
+					</tr>
+					
+					<tr>
+						<td>java.util.Calendar</td>
+						<td>LONG (corresponding to Calendar.getTimeInMillis()</td>
+					</tr>
+
+					<tr>
+						<td>java.sql.Timestamp</td>
+						<td>LONG (corresponding to Timestamp.getTime()</td>
+					</tr>					
+					<tr>
+						<td>java.util.Date</td>
+						<td>LONG (corresponding to java.util.Date.getTime()</td>
+					</tr>										
+					
+				</table>	
 				<p>
-				[TO DO]				
-				</p>
-			</subsection>
-			<subsection name ="Build you own Atomic Type Converter">
-				<p>
-				[TO DO]	
+					Due to some issues with Jackrabbit,  Calendar, Timestamp and date are converted into JCR LONG.
+					We plan to add other converters for those types in the next release. We plan also to support other java types (char, ...) 
 				</p>
 			</subsection>
 			
