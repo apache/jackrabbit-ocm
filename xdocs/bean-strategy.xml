@@ -60,7 +60,7 @@ limitations under the License.
   ... other subnodes for page1 ... 
 							  ]]></source>		  
 				</p>						
-				<p>Creating a subnode like this example (mysite/page1/pageInfo) is the default behaviour. See the section <a href="component-strategy.html">Reviewing the bean-descriptor</a> to get other bean-field mapping strategies.</p>
+				<p>Creating a subnode like this example (mysite/page1/pageInfo) is the default behaviour. See the section <a href="advance-beans-strategy.html">Reviewing the bean-descriptor</a> to get other bean-field mapping strategies.</p>
 				
 			
 			</subsection>
