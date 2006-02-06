@@ -8,6 +8,7 @@ import junit.framework.TestSuite;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.apache.portals.graffito.jcr.RepositoryLifecycleTestSetup;
 import org.apache.portals.graffito.jcr.TestBase;
 import org.apache.portals.graffito.jcr.persistence.PersistenceManager;
 import org.apache.portals.graffito.jcr.testmodel.Page;
@@ -38,7 +39,8 @@ public class PersistenceManagerBasicVersionningTest extends TestBase
 	public static Test suite()
 	{
 		// All methods starting with "test" will be executed in the test suite.
-		return new TestSuite(PersistenceManagerBasicVersionningTest.class);
+		return new RepositoryLifecycleTestSetup(
+                new TestSuite(PersistenceManagerBasicVersionningTest.class));
 	}
 
     public void tearDown() throws Exception
