@@ -24,47 +24,27 @@ import javax.jcr.Value;
 import javax.jcr.ValueFactory;
 
 import org.apache.portals.graffito.jcr.exception.IncorrectAtomicTypeException;
+import org.apache.portals.graffito.jcr.persistence.atomictypeconverter.AtomicTypeConverter;
 
 /**
  * Util Date Converter
  * 
  * @author <a href="mailto:christophe.lombart@gmail.com">Christophe Lombart</a>
- * 
+ * @author <a href='mailto:the_mindstorm[at]evolva[dot]ro'>Alexandru Popescu</a>
  */
-public class UtilDateTypeConverterImpl extends AbstractAtomicTypeConverterImpl
+public class UtilDateTypeConverterImpl implements AtomicTypeConverter
 {
-    /**
-     * No-arg constructor.
-     * When using it you should provide later the <code>javax.jcr.ValueFactory</code>.
-     * 
-     * @see #setValueFactory(ValueFactory)
-     */
-    public UtilDateTypeConverterImpl()
-    {
-        super();
-    }
-    
-	/**
-	 * Constructor
-	 * @param factory The JCR Value factory to used
-	 */
-	public UtilDateTypeConverterImpl(ValueFactory factory)
-	{
-		super(factory);
-
-	}
-
 	/**
 	 * 
 	 * @see org.apache.portals.graffito.jcr.persistence.atomictypeconverter.AtomicTypeConverter#getValue(java.lang.Object)
 	 */
-	public Value getValue(Object propValue)
+	public Value getValue(ValueFactory valueFactory, Object propValue)
 	{
 		if (propValue == null)
 		{
 			return null;
 		}
-		return this.getValueFactory().createValue(((java.util.Date) propValue).getTime());		
+		return valueFactory.createValue(((java.util.Date) propValue).getTime());		
 	}
 
 
@@ -78,7 +58,6 @@ public class UtilDateTypeConverterImpl extends AbstractAtomicTypeConverterImpl
 		{
 			long time = value.getLong();
 			return new Date(time);
-
 		}
 		catch (RepositoryException e)
 		{
@@ -93,8 +72,6 @@ public class UtilDateTypeConverterImpl extends AbstractAtomicTypeConverterImpl
 	 */
 	public String getStringValue(Object object)
 	{
-		
 		return new Long(((java.util.Date) object).getTime()).toString();
-	}	
-
+	}
 }

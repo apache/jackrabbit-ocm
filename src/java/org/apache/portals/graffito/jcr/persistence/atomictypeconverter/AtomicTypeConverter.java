@@ -29,11 +29,10 @@ import javax.jcr.ValueFactory;
  * 
  * 
  * @author <a href="mailto:christophe.lombart@sword-technologies.com">Christophe Lombart</a>
- *
+ * @author <a href='mailto:the_mindstorm[at]evolva[dot]ro'>Alexandru Popescu</a>
  */
 public interface AtomicTypeConverter
 {
-
 	/**
 	 * Convert an object into a JCR value.
 	 * 
@@ -41,7 +40,7 @@ public interface AtomicTypeConverter
 	 * @return the corresponding JCR value
 	 *  
 	 */
-	public Value getValue(Object object);
+	public Value getValue(ValueFactory valueFactory, Object object);
 
 	/**
 	 * Convert a jcr property value into an object
@@ -57,12 +56,4 @@ public interface AtomicTypeConverter
 	 * @return The string converted value	 
 	 */
 	public String getStringValue(Object object);
-
-    /**
-     * Set the underlying <code>ValueFactory</code> to be used
-     * when creating the <code>Value</code>.
-     * 
-     * @param valueFactory <code>javax.jcr.ValueFactory</code>
-     */
-    public void setValueFactory(ValueFactory valueFactory);
 }

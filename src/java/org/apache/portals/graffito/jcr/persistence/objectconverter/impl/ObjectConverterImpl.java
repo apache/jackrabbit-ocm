@@ -24,6 +24,7 @@ import javax.jcr.PathNotFoundException;
 import javax.jcr.RepositoryException;
 import javax.jcr.Session;
 import javax.jcr.Value;
+import javax.jcr.ValueFactory;
 import javax.jcr.ValueFormatException;
 import javax.jcr.lock.LockException;
 import javax.jcr.nodetype.ConstraintViolationException;
@@ -116,7 +117,7 @@ public class ObjectConverterImpl implements ObjectConverter
 			Node objectNode = null;
 			objectNode = parentNode.addNode(nodeName, jcrNodeType);
 
-			storeSimpleFields(object, classDescriptor, objectNode);
+			storeSimpleFields(session, object, classDescriptor, objectNode);
 			insertBeanFields(session, object, classDescriptor, objectNode);
 			insertCollectionFields(session, object, classDescriptor, objectNode);
 
@@ -171,7 +172,7 @@ public class ObjectConverterImpl implements ObjectConverter
 			Node objectNode = null;
 			objectNode = parentNode.getNode(nodeName);
 
-			storeSimpleFields(object, classDescriptor, objectNode);
+			storeSimpleFields(session, object, classDescriptor, objectNode);
 			updateBeanFields(session, object, classDescriptor, objectNode);
 			updateCollectionFields(session, object, classDescriptor, objectNode);
 
@@ -420,53 +421,54 @@ public class ObjectConverterImpl implements ObjectConverter
 
 	}
 
-	private void storeSimpleFields(Object object, ClassDescriptor classDescriptor, Node objectNode) 
-	               throws PathNotFoundException, ValueFormatException, VersionException, LockException, ConstraintViolationException, 
-	                      RepositoryException, IllegalAccessException, InvocationTargetException, NoSuchMethodException
+	private void storeSimpleFields(Session session, 
+                                   Object object, 
+                                   ClassDescriptor classDescriptor, 
+                                   Node objectNode) 
+	throws PathNotFoundException, ValueFormatException, VersionException, LockException, ConstraintViolationException, 
+	RepositoryException, IllegalAccessException, InvocationTargetException, NoSuchMethodException
 	{
+        ValueFactory valueFactory = session.getValueFactory();
+        
+		Iterator fieldDescriptorIterator = classDescriptor.getFieldDescriptors().iterator();
+		while (fieldDescriptorIterator.hasNext())
+		{				 
+			FieldDescriptor fieldDescriptor = (FieldDescriptor) fieldDescriptorIterator.next();
+			
+			//Of course, Path field is not updated as property				
+			if (fieldDescriptor.isPath())
+			{
+			   continue;	
+			}
+			
+			String fieldName = fieldDescriptor.getFieldName();
+			String jcrName = fieldDescriptor.getJcrName();
 
+			// Check the node properties
+			boolean autoCreated = false;
 
-			Iterator fieldDescriptorIterator = classDescriptor.getFieldDescriptors().iterator();
-			while (fieldDescriptorIterator.hasNext())
-			{				 
-				
-				FieldDescriptor fieldDescriptor = (FieldDescriptor) fieldDescriptorIterator.next();
-				
-				//Of course, Path field is not updated as property				
-				if (fieldDescriptor.isPath())
-				{
-				   continue;	
-				}
-				
-				String fieldName = fieldDescriptor.getFieldName();
-				String jcrName = fieldDescriptor.getJcrName();
-
-				// Check the node properties
-				boolean autoCreated = false;
-
-				if (objectNode.hasProperty(jcrName))
-				{
-					autoCreated = objectNode.getProperty(jcrName).getDefinition().isAutoCreated();
-				}
-
-				// All auto created JCR properties are ignored
-				if (!autoCreated)
-				{
-					
-					Object fieldValue = PropertyUtils.getNestedProperty(object, fieldName);
-					Class fieldTypeClass = fieldDescriptor.getFieldTypeClass() != null
-                        ? fieldDescriptor.getFieldTypeClass()
-                        : PropertyUtils.getPropertyType(object, fieldName);
-					AtomicTypeConverter converter = (AtomicTypeConverter) atomicTypeConverters.get(fieldTypeClass);
-					Value value = converter.getValue(fieldValue);
-					// Check if mandatory property are not null
-					this.checkMandatoryProperty(objectNode, fieldDescriptor, value);
-
-					objectNode.setProperty(jcrName, value);
-				}
-
+			if (objectNode.hasProperty(jcrName))
+			{
+				autoCreated = objectNode.getProperty(jcrName).getDefinition().isAutoCreated();
 			}
 
+			// All auto created JCR properties are ignored
+			if (!autoCreated)
+			{
+				
+				Object fieldValue = PropertyUtils.getNestedProperty(object, fieldName);
+				Class fieldTypeClass = fieldDescriptor.getFieldTypeClass() != null
+                    ? fieldDescriptor.getFieldTypeClass()
+                    : PropertyUtils.getPropertyType(object, fieldName);
+				AtomicTypeConverter converter = (AtomicTypeConverter) atomicTypeConverters.get(fieldTypeClass);
+				Value value = converter.getValue(valueFactory, fieldValue);
+				// Check if mandatory property are not null
+				this.checkMandatoryProperty(objectNode, fieldDescriptor, value);
+
+				objectNode.setProperty(jcrName, value);
+			}
+
+		}
 	}
 
 	private CollectionConverter getCollectionConverter(CollectionDescriptor collectionDescriptor) 

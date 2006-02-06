@@ -24,47 +24,27 @@ import javax.jcr.Value;
 import javax.jcr.ValueFactory;
 
 import org.apache.portals.graffito.jcr.exception.IncorrectAtomicTypeException;
+import org.apache.portals.graffito.jcr.persistence.atomictypeconverter.AtomicTypeConverter;
 
 /**
  * 
  * Timestamp Type Converter
  * 
  * @author <a href="mailto:christophe.lombart@gmail.com">Christophe Lombart</a>
- *
+ * @author <a href='mailto:the_mindstorm[at]evolva[dot]ro'>Alexandru Popescu</a>
  */
-public class TimestampTypeConverterImpl extends AbstractAtomicTypeConverterImpl
+public class TimestampTypeConverterImpl implements AtomicTypeConverter
 {
-    /**
-     * No-arg constructor.
-     * When using it you should provide later the <code>javax.jcr.ValueFactory</code>.
-     * 
-     * @see #setValueFactory(ValueFactory)
-     */
-    public TimestampTypeConverterImpl()
-    {
-        super();
-    }
-    
-	/**
-	 * Constructor
-	 * @param factory The JCR Value factory to used
-	 */
-	public TimestampTypeConverterImpl(ValueFactory factory)
-	{
-		super(factory);
-
-	}
-
 	/**
 	 * 
 	 * @see org.apache.portals.graffito.jcr.persistence.atomictypeconverter.AtomicTypeConverter#getValue(java.lang.Object)
 	 */
-	public Value getValue(Object propValue)
+	public Value getValue(ValueFactory valueFactory, Object propValue)
 	{
 		if (propValue == null)
 			return null;
 		long value = ((Timestamp) propValue).getTime();
-		return this.getValueFactory().createValue(value);
+		return valueFactory.createValue(value);
 	}
 
     /**
@@ -90,8 +70,6 @@ public class TimestampTypeConverterImpl extends AbstractAtomicTypeConverterImpl
 	 */
 	public String getStringValue(Object object)
 	{
-		
 		return new Long(((Timestamp) object).getTime()).toString();
 	}	
-
 }

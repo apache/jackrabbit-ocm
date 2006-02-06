@@ -21,48 +21,28 @@ import javax.jcr.Value;
 import javax.jcr.ValueFactory;
 
 import org.apache.portals.graffito.jcr.exception.IncorrectAtomicTypeException;
+import org.apache.portals.graffito.jcr.persistence.atomictypeconverter.AtomicTypeConverter;
 
 /**
  * Boolean Type Converter
  * 
  * @author <a href="mailto:christophe.lombart@gmail.com">Christophe Lombart</a>
- *
+ * @author <a href='mailto:the_mindstorm[at]evolva[dot]ro'>Alexandru Popescu</a>
  */
-public class BooleanTypeConverterImpl extends AbstractAtomicTypeConverterImpl
+public class BooleanTypeConverterImpl implements AtomicTypeConverter
 {
-    /**
-     * No-arg constructor.
-     * When using it you should provide later the <code>javax.jcr.ValueFactory</code>.
-     * 
-     * @see #setValueFactory(ValueFactory)
-     */
-    public BooleanTypeConverterImpl()
-    {
-        super();
-    }
-    
-	/**
-	 * Constructor
-	 * @param factory The JCR Value factory to used
-	 */
-	public BooleanTypeConverterImpl(ValueFactory factory)
-	{
-		super(factory);
-
-	}
-
 	/**
 	 * 
 	 * @see org.apache.portals.graffito.jcr.persistence.atomictypeconverter.AtomicTypeConverter#getValue(java.lang.Object)
 	 */
-	public Value getValue(Object propValue)
+	public Value getValue(ValueFactory valueFactory, Object propValue)
 	{
 		if (propValue == null)
 		{
 			return null;
 		}
 		boolean value = ((Boolean) propValue).booleanValue();
-		return this.getValueFactory().createValue(value);
+		return valueFactory.createValue(value);
 	}
 	
 
@@ -88,7 +68,6 @@ public class BooleanTypeConverterImpl extends AbstractAtomicTypeConverterImpl
 	 */
 	public String getStringValue(Object object)
 	{
-		
 		return ((Boolean) object).booleanValue() ? "true()" : "false()"; 
 	}
 
