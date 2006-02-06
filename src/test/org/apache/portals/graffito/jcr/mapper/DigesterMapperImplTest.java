@@ -26,6 +26,7 @@ import org.apache.portals.graffito.jcr.mapper.model.BeanDescriptor;
 import org.apache.portals.graffito.jcr.mapper.model.ClassDescriptor;
 import org.apache.portals.graffito.jcr.mapper.model.CollectionDescriptor;
 import org.apache.portals.graffito.jcr.mapper.model.FieldDescriptor;
+import org.apache.portals.graffito.jcr.persistence.objectconverter.impl.ObjectConverterImpl;
 import org.apache.portals.graffito.jcr.testmodel.A;
 import org.apache.portals.graffito.jcr.testmodel.B;
 
@@ -36,8 +37,6 @@ import org.apache.portals.graffito.jcr.testmodel.B;
  */
 public class DigesterMapperImplTest extends TestCase
 {
-
-    
     /**
      * <p>Defines the test case name for junit.</p>
      * @param testName The test case name.
@@ -77,13 +76,14 @@ public class DigesterMapperImplTest extends TestCase
     {
         try
         {
-            DigesterMapperImpl mapper = new DigesterMapperImpl("./src/test-config/jcrmapping.xml");
+            DigesterMapperImpl mapper = new DigesterMapperImpl("./src/test-config/jcrmapping-testmappings.xml");
             assertNotNull("Mapper is null", mapper);
             
             ClassDescriptor classDescriptor = mapper.getClassDescriptor(A.class);
             assertNotNull("ClassDescriptor is null", classDescriptor);
             assertTrue("Invalid classname", classDescriptor.getClassName().equals(A.class.getName()));
             assertTrue("Invalid path field", classDescriptor.getPathFieldDescriptor().getFieldName().equals("path"));
+            assertEquals("Invalid mixins", "mixin:a", classDescriptor.getJcrMixinTypes()[0] );
             
             FieldDescriptor fieldDescriptor = classDescriptor.getFieldDescriptor("a1");
             assertNotNull("FieldDescriptor is null", fieldDescriptor);
@@ -92,6 +92,10 @@ public class DigesterMapperImplTest extends TestCase
             BeanDescriptor beanDescriptor = classDescriptor.getBeanDescriptor("b");
             assertNotNull("BeanDescriptor is null", beanDescriptor);
             assertTrue("Invalid jcrName for field b", beanDescriptor.getJcrName().equals("b"));
+            assertEquals("Invalid bean-descriptor inline", true, beanDescriptor.isInline());
+            assertEquals("Invalid bean default descriptor", 
+                         ObjectConverterImpl.class.getName(),
+                         beanDescriptor.getConverter());
             
             CollectionDescriptor collectionDescriptor = classDescriptor.getCollectionDescriptor("collection");
             assertNotNull("CollectionDescriptor is null", collectionDescriptor);
