@@ -23,6 +23,7 @@ import javax.jcr.Session;
 import javax.jcr.nodetype.NodeTypeManager;
 import javax.transaction.UserTransaction;
 
+import junit.extensions.TestSetup;
 import junit.framework.Test;
 import junit.framework.TestCase;
 import junit.framework.TestSuite;
@@ -34,6 +35,7 @@ import org.apache.portals.graffito.jcr.transaction.jackrabbit.UserTransactionImp
 /** Testcase for RepositoryUtil.
  * 
  * @author <a href="mailto:christophe.lombart@sword-technologies.com">Christophe Lombart</a>
+ * @author <a href='mailto:the_mindstorm[at]evolva[dot]ro'>Alexandru Popescu</a>
  */
 public class RepositoryUtilTest extends TestCase
 {
@@ -54,11 +56,6 @@ public class RepositoryUtilTest extends TestCase
     protected void setUp() throws Exception
     {
         super.setUp();
-        if (! isInit)
-        {
-            RepositoryUtil.registerRepository("repositoryTest", "src/test-config/repository-xml.xml", "target/repository");
-            isInit = true;
-        }
     }
 
     /**
@@ -71,8 +68,20 @@ public class RepositoryUtilTest extends TestCase
 
     public static Test suite()
     {
+        TestSuite suite = new TestSuite(RepositoryUtilTest.class); 
         // All methods starting with "test" will be executed in the test suite.
-        return new TestSuite(RepositoryUtilTest.class);
+        return new TestSetup(suite) {
+            protected void setUp() throws Exception {
+                super.setUp();
+                RepositoryUtil.registerRepository("repositoryTest", "src/test-config/repository-xml.xml", "target/repository");
+            }
+
+            protected void tearDown() throws Exception {
+                RepositoryUtil.unRegisterRepository("repositoryTest");
+                super.tearDown();
+            }
+            
+        };
     }
 
     /**

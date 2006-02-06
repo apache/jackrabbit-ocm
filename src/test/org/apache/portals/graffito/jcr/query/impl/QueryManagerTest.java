@@ -21,6 +21,7 @@ import junit.framework.TestSuite;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.apache.portals.graffito.jcr.RepositoryLifecycleTestSetup;
 import org.apache.portals.graffito.jcr.TestBase;
 import org.apache.portals.graffito.jcr.query.Filter;
 import org.apache.portals.graffito.jcr.query.Query;
@@ -44,18 +45,17 @@ public class QueryManagerTest extends TestBase
     public QueryManagerTest(String testName)  throws Exception
     {
         super(testName);
-        initPersistenceManager();
     }
 
     public static Test suite()
     {
         // All methods starting with "test" will be executed in the test suite.
-        return new TestSuite(QueryManagerTest.class);
+        return new RepositoryLifecycleTestSetup(
+                new TestSuite(QueryManagerTest.class));
     }
 
     public void testBuildExpression1()
     {
-
     	try
     	{
     	      QueryManager queryManager = this.getQueryManager();
@@ -68,9 +68,6 @@ public class QueryManagerTest extends TestBase
     	      String jcrExpression = queryManager.buildJCRExpression(query);
     	      assertNotNull("jcrExpression is null", jcrExpression);
     	      assertTrue("Invalid JcrExpression", jcrExpression.equals("/jcr:root/test//element(*, graffito:C) [@graffito:name = 'a test value' and @graffito:id = 1]"));
-    	      
-    	      
-            
         }
         catch (Exception e)
         {
@@ -94,9 +91,6 @@ public class QueryManagerTest extends TestBase
     	      String jcrExpression = queryManager.buildJCRExpression(query);
     	      assertNotNull("jcrExpression is null", jcrExpression);
     	      assertTrue("Invalid JcrExpression", jcrExpression.equals("//element(*, graffito:C) [@graffito:name = 'a test value' and @graffito:id = 1]"));
-    	      
-    	      
-            
         }
         catch (Exception e)
         {

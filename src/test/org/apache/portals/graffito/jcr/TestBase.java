@@ -20,6 +20,7 @@ import java.io.BufferedInputStream;
 import java.io.BufferedOutputStream;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
+import java.io.IOException;
 import java.io.InputStream;
 import java.sql.Timestamp;
 import java.util.Calendar;
@@ -31,10 +32,17 @@ import javax.jcr.ImportUUIDBehavior;
 import javax.jcr.Repository;
 import javax.jcr.Session;
 import javax.jcr.UnsupportedRepositoryOperationException;
+import javax.jcr.Workspace;
+import javax.jcr.nodetype.NoSuchNodeTypeException;
+import javax.jcr.nodetype.NodeTypeManager;
 
 import junit.framework.TestCase;
 
-import org.apache.portals.graffito.jcr.exception.RepositoryException;
+import org.apache.jackrabbit.core.nodetype.InvalidNodeTypeDefException;
+import org.apache.jackrabbit.core.nodetype.NodeTypeDef;
+import org.apache.jackrabbit.core.nodetype.NodeTypeManagerImpl;
+import org.apache.jackrabbit.core.nodetype.NodeTypeRegistry;
+import org.apache.jackrabbit.core.nodetype.xml.NodeTypeReader;
 import org.apache.portals.graffito.jcr.mapper.impl.DigesterMapperImpl;
 import org.apache.portals.graffito.jcr.persistence.PersistenceManager;
 import org.apache.portals.graffito.jcr.persistence.atomictypeconverter.impl.BinaryTypeConverterImpl;
@@ -58,6 +66,7 @@ import org.xml.sax.ContentHandler;
  * repository.
  * 
  * @author <a href="mailto:okiessler@apache.org">Oliver Kiessler</a>
+ * @author <a href='mailto:the_mindstorm[at]evolva[dot]ro'>Alexandru Popescu</a>
  * @version $Id: Exp $
  */
 public abstract class TestBase extends TestCase
@@ -71,7 +80,7 @@ public abstract class TestBase extends TestCase
 
 	DigesterMapperImpl mapper;
 
-	private static boolean isInit = false;
+	private boolean isInit = false;
 
 	/**
 	 * <p>
@@ -84,21 +93,6 @@ public abstract class TestBase extends TestCase
 	public TestBase(String testName)
 	{
 		super(testName);
-
-		try
-		{
-			if (!isInit)
-			{
-				RepositoryUtil.registerRepository("repositoryTest", "./src/test-config/repository-derby.xml", "./target/repository");
-				isInit = true;
-			}
-
-		}
-		catch (Exception e)
-		{
-			e.printStackTrace();
-			fail("Impossible to init the repository");
-		}
 	}
 
 	/**
@@ -109,6 +103,12 @@ public abstract class TestBase extends TestCase
 	protected void setUp() throws Exception
 	{
 		super.setUp();
+        
+        if (!isInit) {
+            initPersistenceManager();
+            registerNodeTypes(getSession());
+            isInit = true;
+        }
 	}
 
 	/**
@@ -131,6 +131,7 @@ public abstract class TestBase extends TestCase
 			if (persistenceManager == null)
 			{
 				initPersistenceManager();
+                registerNodeTypes(getSession());
 			}
 			return persistenceManager;
 		}
@@ -141,27 +142,53 @@ public abstract class TestBase extends TestCase
 		}
 	}
 
+    protected void registerNodeTypes(Session session) 
+    throws InvalidNodeTypeDefException, javax.jcr.RepositoryException, IOException {
+        InputStream xml = new FileInputStream(
+                "./src/test-config/repository/repository/nodetypes/custom_nodetypes.xml");
+
+        // HINT: throws InvalidNodeTypeDefException, IOException
+        NodeTypeDef[] types = NodeTypeReader.read(xml);
+
+        Workspace workspace = session.getWorkspace();
+        NodeTypeManager ntMgr = workspace.getNodeTypeManager();
+        NodeTypeRegistry ntReg = ((NodeTypeManagerImpl) ntMgr).getNodeTypeRegistry();
+
+        for (int j = 0; j < types.length; j++) {
+            NodeTypeDef def = types[j];
+
+            try {
+                ntReg.getNodeTypeDef(def.getName());
+            }
+            catch (NoSuchNodeTypeException nsne) {
+                // HINT: if not already registered than register custom node type
+                ntReg.registerNodeType(def);
+            }
+
+        }
+    }
+    
 	protected void initPersistenceManager() throws UnsupportedRepositoryOperationException, javax.jcr.RepositoryException
 	{
 		Repository repository = RepositoryUtil.getRepository("repositoryTest");
 		String[] files = { "./src/test-config/jcrmapping.xml", "./src/test-config/jcrmapping-atomic.xml" };
-		session = RepositoryUtil.login(repository, "superuser", "superuser");		
+		session = RepositoryUtil.login(repository, "superuser", "superuser");
 		HashMap atomicTypeConverters = new HashMap();
-		atomicTypeConverters.put(String.class, new StringTypeConverterImpl(session.getValueFactory()));
-		atomicTypeConverters.put(InputStream.class, new BinaryTypeConverterImpl(session.getValueFactory()));
-		atomicTypeConverters.put(long.class, new LongTypeConverterImpl(session.getValueFactory()));
-		atomicTypeConverters.put(Long.class, new LongTypeConverterImpl(session.getValueFactory()));
-		atomicTypeConverters.put(int.class, new IntTypeConverterImpl(session.getValueFactory()));
-		atomicTypeConverters.put(Integer.class, new IntTypeConverterImpl(session.getValueFactory()));
-		atomicTypeConverters.put(double.class, new DoubleTypeConverterImpl(session.getValueFactory()));
-		atomicTypeConverters.put(Double.class, new DoubleTypeConverterImpl(session.getValueFactory()));
-		atomicTypeConverters.put(boolean.class, new BooleanTypeConverterImpl(session.getValueFactory()));
-		atomicTypeConverters.put(Boolean.class, new BooleanTypeConverterImpl(session.getValueFactory()));
-		atomicTypeConverters.put(Calendar.class, new CalendarTypeConverterImpl(session.getValueFactory()));
-		atomicTypeConverters.put(GregorianCalendar.class, new CalendarTypeConverterImpl(session.getValueFactory()));
-		atomicTypeConverters.put(Date.class, new UtilDateTypeConverterImpl(session.getValueFactory()));
-		atomicTypeConverters.put(byte[].class, new ByteArrayTypeConverterImpl(session.getValueFactory()));
-		atomicTypeConverters.put(Timestamp.class, new TimestampTypeConverterImpl(session.getValueFactory()));
+		atomicTypeConverters.put(String.class, new StringTypeConverterImpl());
+		atomicTypeConverters.put(InputStream.class, new BinaryTypeConverterImpl());
+		atomicTypeConverters.put(long.class, new LongTypeConverterImpl());
+		atomicTypeConverters.put(Long.class, new LongTypeConverterImpl());
+		atomicTypeConverters.put(int.class, new IntTypeConverterImpl());
+		atomicTypeConverters.put(Integer.class, new IntTypeConverterImpl());
+		atomicTypeConverters.put(double.class, new DoubleTypeConverterImpl());
+		atomicTypeConverters.put(Double.class, new DoubleTypeConverterImpl());
+		atomicTypeConverters.put(boolean.class, new BooleanTypeConverterImpl());
+		atomicTypeConverters.put(Boolean.class, new BooleanTypeConverterImpl());
+		atomicTypeConverters.put(Calendar.class, new CalendarTypeConverterImpl());
+		atomicTypeConverters.put(GregorianCalendar.class, new CalendarTypeConverterImpl());
+		atomicTypeConverters.put(Date.class, new UtilDateTypeConverterImpl());
+		atomicTypeConverters.put(byte[].class, new ByteArrayTypeConverterImpl());
+		atomicTypeConverters.put(Timestamp.class, new TimestampTypeConverterImpl());
 		
 		mapper = new DigesterMapperImpl(files);						
 		queryManager = new QueryManagerImpl(mapper, atomicTypeConverters);
