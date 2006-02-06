@@ -23,13 +23,15 @@
     * className : the className
     * jcrNodeType : the primary jcr node type, it can be nt:unstructured
     * jcrSuperTypes : the jcr super types, optional
+    * jcrMixinTypes: the jcr mixin types (comma separated list) (optional)
 -->
 <!ELEMENT class-descriptor (field-descriptor*, bean-descriptor*, collection-descriptor*)>
 
 <!ATTLIST class-descriptor
 	className CDATA #REQUIRED
 	jcrNodeType CDATA #IMPLIED
-        jcrSuperTypes CDATA #IMPLIED>
+    jcrSuperTypes CDATA #IMPLIED
+    jcrMixinTypes CDATA #IMPLIED>
 
 <!--
     Field descriptor - A field descriptor maps one atomic object attribute (primitive types, String, Long, ...)  into a JCR property
@@ -53,12 +55,12 @@
 	jcrName CDATA #IMPLIED 
 	id (true | false) "false"
 	path (true | false) "false"
-        jcrType (String | Date | Long | Double | Boolean | Binary) #IMPLIED
-        jcrAutoCreated (true | false) "false"
-        jcrMandatory (true | false) "false"
-        jcrOnParentVersion (COPY | VERSION | INITIALIZE | COMPUTE | IGNORE | ABORT) "COPY"
-        jcrProtected (true | false) "false"
-        jcrMultiple (true | false) "false"
+    jcrType (String | Date | Long | Double | Boolean | Binary) #IMPLIED
+    jcrAutoCreated (true | false) "false"
+    jcrMandatory (true | false) "false"
+    jcrOnParentVersion (COPY | VERSION | INITIALIZE | COMPUTE | IGNORE | ABORT) "COPY"
+    jcrProtected (true | false) "false"
+    jcrMultiple (true | false) "false"
 >
 
 <!--
@@ -66,6 +68,8 @@
     * fieldName : the field/attribute name
     * jcrName : the jcr node name (optional). If it is not defined, fieldname is used to specify the jcr node name
     * proxy : Use lazy loading or not. if true, this attributes is not loaded when the main object is retrieved. it will be loaded when the get method is called.
+    * inline: persist/retrieve bean properties from the current node (if true).
+    * converter: fully qualified name of the converter class to be used (default is ObjectConverterImpl)
     * jcrNodeType: defines the child node type, optional
     * jcrAutoCreated (boolean) default is "false"
     * jcrMandatory (boolean) default is "false"
@@ -78,12 +82,14 @@
 	fieldName CDATA #REQUIRED
 	jcrName CDATA #IMPLIED 
 	proxy (true | false) "false" 
+	inline (true | false) "false"
+	converter CDATA #IMPLIED
 	jcrNodeType CDATA #IMPLIED
-        jcrAutoCreated (true | false) "false"   
-        jcrMandatory (true | false) "false"
-        jcrOnParentVersion (COPY | VERSION | INITIALIZE | COMPUTE | IGNORE | ABORT) "COPY"
-        jcrProtected (true | false) "false"
-        jcrSameNameSiblings (true | false) "false"         
+    jcrAutoCreated (true | false) "false"   
+    jcrMandatory (true | false) "false"
+    jcrOnParentVersion (COPY | VERSION | INITIALIZE | COMPUTE | IGNORE | ABORT) "COPY"
+    jcrProtected (true | false) "false"
+    jcrSameNameSiblings (true | false) "false"         
 >
 
 <!--

@@ -59,6 +59,7 @@ public class DigesterDescriptorReader
 			digester.addSetProperties("graffito-jcr/class-descriptor", "className", "className");
 			digester.addSetProperties("graffito-jcr/class-descriptor", "jcrNodeType", "jcrNodeType");
             digester.addSetProperties("graffito-jcr/class-descriptor", "jcrSuperTypes", "jcrSuperTypes");
+            digester.addSetProperties("graffito-jcr/class-descriptor", "jcrMixinTypes", "jcrMixinTypesList");
 
 			digester.addSetNext("graffito-jcr/class-descriptor", "addClassDescriptor");
 
@@ -88,6 +89,8 @@ public class DigesterDescriptorReader
 			digester.addSetProperties("graffito-jcr/class-descriptor/bean-descriptor", "fieldName", "fieldName");
 			digester.addSetProperties("graffito-jcr/class-descriptor/bean-descriptor", "jcrName", "jcrName");
 			digester.addSetProperties("graffito-jcr/class-descriptor/bean-descriptor", "proxy", "proxy");
+            digester.addSetProperties("graffito-jcr/class-descriptor/bean-descriptor", "inline", "inline");
+            digester.addSetProperties("graffito-jcr/class-descriptor/bean-descriptor", "converter", "converter");
             digester.addSetProperties("graffito-jcr/class-descriptor/bean-descriptor", "jcrNodeType", "jcrNodeType");
             digester.addSetProperties("graffito-jcr/class-descriptor/bean-descriptor", "jcrAutoCreated", "jcrAutoCreated");
             digester.addSetProperties("graffito-jcr/class-descriptor/bean-descriptor", "jcrMandatory", "jcrMandatory");
