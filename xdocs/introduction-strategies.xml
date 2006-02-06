@@ -90,9 +90,7 @@ public class Paragraph
 <class-descriptor className="org.apache.portals.graffito.jcr.testmodel.Page" jcrNodeType="graffito:page">
 	<field-descriptor fieldName="path" path="true" />
 	<bean-descriptor fieldName="pageInfo" jcrName="pageInfo" />
-	<collection-descriptor fieldName="paragraphs" proxy="false" 
-	   elementClassName="org.apache.portals.graffito.jcr.testmodel.Paragraph" 
-	   collectionConverter="org.apache.portals.graffito.jcr.persistence.collectionconverter.impl.NTCollectionConverterImpl" />
+	<collection-descriptor fieldName="paragraphs" jcrName="paragraphs" elementClassName="org.apache.portals.graffito.jcr.testmodel.Paragraph" />
 </class-descriptor>
 									
 <class-descriptor className="org.apache.portals.graffito.jcr.testmodel.PageInfo" jcrNodeType="graffito:PageInfo">
@@ -116,10 +114,11 @@ public class Paragraph
 	/mysite/page1/pageInfo
 		graffito:title = "This is my page title"
 		graffito:description = "This is my page description"
-	/mysite/page1/paragraph1
-		graffito:text = "This is the content of para1"
-	/mysite/page1/paragraph2
-		graffito:text = ""This is the content of para2"
+	/mysite/page1/paragraphs
+		/mysite/page1/paragraphs/paragraph1
+			graffito:text = "This is the content of para1"
+		/mysite/page1/paragraphs/paragraph2
+			graffito:text = ""This is the content of para2"
 			]]></source>		  
 			</p>	
 			<p>It is possible to have another kind of jcr structure by using other mapping strategies. You can see the section "Advance Mapping strategies" to get more information on that.</p>

@@ -33,9 +33,16 @@ limitations under the License.
 		</menu>	
 		<menu name="The Persistence Manager">			
 			<item name="Introduction" href="engine-introduction.html"/>
+			<item name="Persistence Manager API" href = "" collapse="true" >
+				<item name="Basic operations" href=""/>
+				<item name="Search" href=""/>
+				<item name="Managing Version" href=""/>
+				
+			</item>
+				
 			<item name="Configuration" href="engine-configuration.html"/>
 			<item name="Spring Integration" href="engine-spring.html"/>
-			<item name="DTD" href="graffito-jcr-mapping.dtd.txt"/>
+			
 		</menu>	
 		
 		<menu name="Mapping Stategies">			
@@ -43,13 +50,14 @@ limitations under the License.
 			<item name="Mapping Atomic Fields" href="atomic-strategy.html"/>			
 			<item name="Mapping Bean Fields" href="bean-strategy.html"/>			
 			<item name="Mapping Collection Fields" href="collection-strategy.html"/>			
-			
+			<item name="DTD" href="graffito-jcr-mapping.dtd.txt"/>
 		</menu>			
 		
 		<menu name="Advance Mapping Stategies">			
 			<item name="Introduction" href="introduction-advanced-strategies.html"/>
 			<item name="Inheritance" href="inheritance-strategy.html"/>
-			<item name="Reviewing the bean-descriptor" href="component-strategy.html"/>						
+			<item name="Reviewing the bean-descriptor" href="advanced-beans-strategy.html"/>						
+			<item name="Reviewing the collection-descriptor" href="advanced-collections-strategy.html"/>						
 			
 			<item name="Adding Extra JCR Nodes" href="extra-nodes-strategy.html"/>
 			
