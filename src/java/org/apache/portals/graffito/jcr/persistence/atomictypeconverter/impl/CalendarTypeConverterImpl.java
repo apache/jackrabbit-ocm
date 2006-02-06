@@ -24,48 +24,28 @@ import javax.jcr.Value;
 import javax.jcr.ValueFactory;
 
 import org.apache.portals.graffito.jcr.exception.IncorrectAtomicTypeException;
+import org.apache.portals.graffito.jcr.persistence.atomictypeconverter.AtomicTypeConverter;
 
 /**
  * Calendar Type Converter
  * 
  * @author <a href="mailto:christophe.lombart@gmail.com">Christophe Lombart</a>
- *
+ * @author <a href='mailto:the_mindstorm[at]evolva[dot]ro'>Alexandru Popescu</a>
  */
-public class CalendarTypeConverterImpl extends AbstractAtomicTypeConverterImpl
+public class CalendarTypeConverterImpl implements AtomicTypeConverter
 {
-    /**
-     * No-arg constructor.
-     * When using it you should provide later the <code>javax.jcr.ValueFactory</code>.
-     * 
-     * @see #setValueFactory(ValueFactory)
-     */
-    public CalendarTypeConverterImpl()
-    {
-        super();
-    }
-    
-	/**
-	 * Constructor
-	 * @param factory The JCR Value factory to used
-	 */
-	public CalendarTypeConverterImpl(ValueFactory factory)
-	{
-		super(factory);
-
-	}
-
 	/**
 	 * 
 	 * @see org.apache.portals.graffito.jcr.persistence.atomictypeconverter.AtomicTypeConverter#getValue(java.lang.Object)
 	 */
-	public Value getValue(Object propValue)
+	public Value getValue(ValueFactory valueFactory, Object propValue)
 	{
 		if (propValue == null)
 		{
 			return null;
 		}
-		return this.getValueFactory().createValue(((Calendar) propValue).getTimeInMillis());
-
+        
+		return valueFactory.createValue(((Calendar) propValue).getTimeInMillis());
 	}
 
     /**
@@ -76,7 +56,6 @@ public class CalendarTypeConverterImpl extends AbstractAtomicTypeConverterImpl
 	{
 		try
 		{
-			
 			Calendar calendar = Calendar.getInstance();
 			calendar.setTimeInMillis(value.getLong());
 			return calendar;
@@ -93,7 +72,6 @@ public class CalendarTypeConverterImpl extends AbstractAtomicTypeConverterImpl
 	 */
 	public String getStringValue(Object object)
 	{
-		
 		Calendar calendar = (Calendar) object;
     	return new Long(calendar.getTimeInMillis()).toString();		
 	}

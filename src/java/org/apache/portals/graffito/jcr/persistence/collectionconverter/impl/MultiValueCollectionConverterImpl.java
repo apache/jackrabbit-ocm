@@ -60,10 +60,8 @@ public class MultiValueCollectionConverterImpl extends AbstractCollectionConvert
      */
     public void insertCollection(Session session, Node parentNode, CollectionDescriptor collectionDescriptor, ManageableCollection collection) 
     {
-
         try
         {
-
             if (collection == null)
             {
                 return;
@@ -83,7 +81,7 @@ public class MultiValueCollectionConverterImpl extends AbstractCollectionConvert
             {
                 Object fieldValue  = collectionIterator.next();
                 AtomicTypeConverter atomicTypeConverter = (AtomicTypeConverter) atomicTypeConverters.get(fieldValue.getClass());
-                values[i] = atomicTypeConverter.getValue(fieldValue);     
+                values[i] = atomicTypeConverter.getValue(session.getValueFactory(), fieldValue);     
             }
             
             parentNode.setProperty(jcrName, values);
@@ -131,7 +129,7 @@ public class MultiValueCollectionConverterImpl extends AbstractCollectionConvert
             {
                 Object fieldValue  = collectionIterator.next();
                 AtomicTypeConverter atomicTypeConverter = (AtomicTypeConverter) atomicTypeConverters.get(fieldValue.getClass());
-                values[i] = atomicTypeConverter.getValue(fieldValue);     
+                values[i] = atomicTypeConverter.getValue(session.getValueFactory(), fieldValue);     
             }
             
             parentNode.setProperty(jcrName, values);
