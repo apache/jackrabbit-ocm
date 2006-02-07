@@ -31,10 +31,20 @@ import org.apache.portals.graffito.jcr.mapper.model.MappingDescriptor;
  * Helper class that reads the xml mapping file and load all class descriptors into memory (object graph)
  * 
  * @author <a href="mailto:christophe.lombart@sword-technologies.com">Lombart Christophe </a>
- * 
+ * @author <a href='mailto:the_mindstorm[at]evolva[dot]ro'>Alexandru Popescu</a>
  */
 public class DigesterDescriptorReader
 {
+    private boolean validating = true;
+    
+    /**
+     * Set if the mapping should be validated.
+     * @param flag <tt>true</tt> if the mapping should be validated
+     */
+    public void setValidating(boolean flag) {
+        this.validating= flag;
+    }
+
 	/**
 	 * Load all class descriptors found in the xml mapping file.
 	 * 
@@ -42,12 +52,12 @@ public class DigesterDescriptorReader
 	 * @return a {@link MappingDescriptor}
 	 * 
 	 */
-	public static MappingDescriptor loadClassDescriptors(InputStream stream)
+	public MappingDescriptor loadClassDescriptors(InputStream stream)
 	{
 		try
 		{
 			Digester digester = new Digester();
-			digester.setValidating(true);
+			digester.setValidating(this.validating);
 
 			digester.addObjectCreate("graffito-jcr", MappingDescriptor.class);
 
@@ -79,7 +89,8 @@ public class DigesterDescriptorReader
             digester.addSetProperties("graffito-jcr/class-descriptor/field-descriptor", "jcrOnParentVersion", "jcrOnParentVersion");
             digester.addSetProperties("graffito-jcr/class-descriptor/field-descriptor", "jcrProtected", "jcrProtected");
             digester.addSetProperties("graffito-jcr/class-descriptor/field-descriptor", "jcrMultiple", "jcrMultiple");
-			digester.addSetNext("graffito-jcr/class-descriptor/field-descriptor", "addFieldDescriptor");
+
+            digester.addSetNext("graffito-jcr/class-descriptor/field-descriptor", "addFieldDescriptor");
 
 			// --------------------------------------------------------------------------------
 			// Rules used for the bean-descriptor element
@@ -97,7 +108,8 @@ public class DigesterDescriptorReader
             digester.addSetProperties("graffito-jcr/class-descriptor/bean-descriptor", "jcrOnParentVersion", "jcrOnParentVersion");
             digester.addSetProperties("graffito-jcr/class-descriptor/bean-descriptor", "jcrProtected", "jcrProtected");
             digester.addSetProperties("graffito-jcr/class-descriptor/bean-descriptor", "jcrSameNameSiblings", "jcrSameNameSiblings");
-			digester.addSetNext("graffito-jcr/class-descriptor/bean-descriptor", "addBeanDescriptor");
+			
+            digester.addSetNext("graffito-jcr/class-descriptor/bean-descriptor", "addBeanDescriptor");
 
 			// --------------------------------------------------------------------------------
 			// Rules used for the collection-descriptor element
@@ -118,8 +130,7 @@ public class DigesterDescriptorReader
             digester.addSetProperties("graffito-jcr/class-descriptor/collection-descriptor", "jcrSameNameSiblings", "jcrSameNameSiblings");            
 			digester.addSetNext("graffito-jcr/class-descriptor/collection-descriptor", "addCollectionDescriptor");
 
-			MappingDescriptor mappingDescriptor = (MappingDescriptor) digester.parse(stream);
-			return mappingDescriptor;
+			return (MappingDescriptor) digester.parse(stream);
 		}
 		catch (Exception e)
 		{
@@ -134,7 +145,7 @@ public class DigesterDescriptorReader
 	 * @return a {@link MappingDescriptor}
 	 * 
 	 */	
-	public static MappingDescriptor loadClassDescriptors(String xmlFile)
+	public MappingDescriptor loadClassDescriptors(String xmlFile)
 	{
 		try
 		{
