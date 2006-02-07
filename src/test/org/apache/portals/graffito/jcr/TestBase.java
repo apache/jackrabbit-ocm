@@ -27,6 +27,7 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.HashMap;
+import java.util.Map;
 
 import javax.jcr.ImportUUIDBehavior;
 import javax.jcr.Repository;
@@ -45,10 +46,12 @@ import org.apache.jackrabbit.core.nodetype.NodeTypeRegistry;
 import org.apache.jackrabbit.core.nodetype.xml.NodeTypeReader;
 import org.apache.portals.graffito.jcr.mapper.impl.DigesterMapperImpl;
 import org.apache.portals.graffito.jcr.persistence.PersistenceManager;
+import org.apache.portals.graffito.jcr.persistence.atomictypeconverter.AtomicTypeConverterProvider;
 import org.apache.portals.graffito.jcr.persistence.atomictypeconverter.impl.BinaryTypeConverterImpl;
 import org.apache.portals.graffito.jcr.persistence.atomictypeconverter.impl.BooleanTypeConverterImpl;
 import org.apache.portals.graffito.jcr.persistence.atomictypeconverter.impl.ByteArrayTypeConverterImpl;
 import org.apache.portals.graffito.jcr.persistence.atomictypeconverter.impl.CalendarTypeConverterImpl;
+import org.apache.portals.graffito.jcr.persistence.atomictypeconverter.impl.DefaultAtomicTypeConverterProvider;
 import org.apache.portals.graffito.jcr.persistence.atomictypeconverter.impl.DoubleTypeConverterImpl;
 import org.apache.portals.graffito.jcr.persistence.atomictypeconverter.impl.IntTypeConverterImpl;
 import org.apache.portals.graffito.jcr.persistence.atomictypeconverter.impl.LongTypeConverterImpl;
@@ -56,6 +59,8 @@ import org.apache.portals.graffito.jcr.persistence.atomictypeconverter.impl.Stri
 import org.apache.portals.graffito.jcr.persistence.atomictypeconverter.impl.TimestampTypeConverterImpl;
 import org.apache.portals.graffito.jcr.persistence.atomictypeconverter.impl.UtilDateTypeConverterImpl;
 import org.apache.portals.graffito.jcr.persistence.impl.PersistenceManagerImpl;
+import org.apache.portals.graffito.jcr.persistence.objectconverter.ObjectConverter;
+import org.apache.portals.graffito.jcr.persistence.objectconverter.impl.ObjectConverterImpl;
 import org.apache.portals.graffito.jcr.query.QueryManager;
 import org.apache.portals.graffito.jcr.query.impl.QueryManagerImpl;
 import org.apache.portals.graffito.jcr.repository.RepositoryUtil;
@@ -173,27 +178,13 @@ public abstract class TestBase extends TestCase
 		Repository repository = RepositoryUtil.getRepository("repositoryTest");
 		String[] files = { "./src/test-config/jcrmapping.xml", "./src/test-config/jcrmapping-atomic.xml" };
 		session = RepositoryUtil.login(repository, "superuser", "superuser");
-		HashMap atomicTypeConverters = new HashMap();
-		atomicTypeConverters.put(String.class, new StringTypeConverterImpl());
-		atomicTypeConverters.put(InputStream.class, new BinaryTypeConverterImpl());
-		atomicTypeConverters.put(long.class, new LongTypeConverterImpl());
-		atomicTypeConverters.put(Long.class, new LongTypeConverterImpl());
-		atomicTypeConverters.put(int.class, new IntTypeConverterImpl());
-		atomicTypeConverters.put(Integer.class, new IntTypeConverterImpl());
-		atomicTypeConverters.put(double.class, new DoubleTypeConverterImpl());
-		atomicTypeConverters.put(Double.class, new DoubleTypeConverterImpl());
-		atomicTypeConverters.put(boolean.class, new BooleanTypeConverterImpl());
-		atomicTypeConverters.put(Boolean.class, new BooleanTypeConverterImpl());
-		atomicTypeConverters.put(Calendar.class, new CalendarTypeConverterImpl());
-		atomicTypeConverters.put(GregorianCalendar.class, new CalendarTypeConverterImpl());
-		atomicTypeConverters.put(Date.class, new UtilDateTypeConverterImpl());
-		atomicTypeConverters.put(byte[].class, new ByteArrayTypeConverterImpl());
-		atomicTypeConverters.put(Timestamp.class, new TimestampTypeConverterImpl());
 		
-		mapper = new DigesterMapperImpl(files);						
+		mapper = new DigesterMapperImpl(files);
+        AtomicTypeConverterProvider converterProvider = new DefaultAtomicTypeConverterProvider();
+        Map atomicTypeConverters = converterProvider.getAtomicTypeConverters();
 		queryManager = new QueryManagerImpl(mapper, atomicTypeConverters);
-		persistenceManager = new PersistenceManagerImpl(mapper, atomicTypeConverters, queryManager, session);
-		
+        ObjectConverter objectConverter = new ObjectConverterImpl(mapper, converterProvider);
+		persistenceManager = new PersistenceManagerImpl(mapper, objectConverter, queryManager, session);		
 	}
 
 	/**
