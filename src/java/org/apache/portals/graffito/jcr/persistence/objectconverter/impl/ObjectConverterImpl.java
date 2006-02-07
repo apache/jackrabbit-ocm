@@ -1,12 +1,12 @@
 /*
  * Copyright 2000-2005 The Apache Software Foundation.
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *      http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -14,6 +14,7 @@
  * limitations under the License.
  */
 package org.apache.portals.graffito.jcr.persistence.objectconverter.impl;
+
 
 import java.lang.reflect.InvocationTargetException;
 import java.util.Iterator;
@@ -28,6 +29,7 @@ import javax.jcr.ValueFactory;
 import javax.jcr.ValueFormatException;
 import javax.jcr.lock.LockException;
 import javax.jcr.nodetype.ConstraintViolationException;
+import javax.jcr.nodetype.NoSuchNodeTypeException;
 import javax.jcr.nodetype.PropertyDefinition;
 import javax.jcr.version.VersionException;
 
@@ -41,466 +43,533 @@ import org.apache.portals.graffito.jcr.mapper.model.ClassDescriptor;
 import org.apache.portals.graffito.jcr.mapper.model.CollectionDescriptor;
 import org.apache.portals.graffito.jcr.mapper.model.FieldDescriptor;
 import org.apache.portals.graffito.jcr.persistence.atomictypeconverter.AtomicTypeConverter;
+import org.apache.portals.graffito.jcr.persistence.atomictypeconverter.AtomicTypeConverterProvider;
 import org.apache.portals.graffito.jcr.persistence.collectionconverter.CollectionConverter;
 import org.apache.portals.graffito.jcr.persistence.collectionconverter.ManageableCollection;
 import org.apache.portals.graffito.jcr.persistence.collectionconverter.ManageableCollectionUtil;
 import org.apache.portals.graffito.jcr.persistence.collectionconverter.impl.DefaultCollectionConverterImpl;
 import org.apache.portals.graffito.jcr.persistence.objectconverter.ObjectConverter;
+import org.apache.portals.graffito.jcr.reflection.ReflectionUtils;
 import org.apache.portals.graffito.jcr.repository.RepositoryUtil;
 
 /**
  * Default implementation for {@link ObjectConverterImpl}
- * 
+ *
  * @author <a href="mailto:christophe.lombart@sword-technologies.com">Lombart Christophe </a>
- * 
+ * @author <a href='mailto:the_mindstorm[at]evolva[dot]ro'>Alexandru Popescu</a>
  */
-public class ObjectConverterImpl implements ObjectConverter
-{
-	private Mapper mapper;
+public class ObjectConverterImpl implements ObjectConverter {
+    private Mapper mapper;
 
-	private Map atomicTypeConverters;
+    private AtomicTypeConverterProvider atomicTypeConverterProvider;
 
-	/**
-	 * Constructor
-	 * 
-	 * @param mapper The mapper to used
-	 * @param atomicTypeConverters The atomic type converters to used
-	 * 
-	 */
-	public ObjectConverterImpl(Mapper mapper, Map atomicTypeConverters)
-	{
-		this.mapper = mapper;
-		this.atomicTypeConverters = atomicTypeConverters;
-	}
+    /**
+     * No-arg constructor.
+     */
+    public ObjectConverterImpl() {
+    }
 
-	/**
-	 * @see org.apache.portals.graffito.jcr.persistence.objectconverter.ObjectConverter#insert(javax.jcr.Session, java.lang.Object)
-	 */
-	public void insert(Session session, Object object)
-	{
-		String path = this.getPath(session, object);
-		try
-		{
-			String parentPath = RepositoryUtil.getParentPath(path);
-			String nodeName = RepositoryUtil.getNodeName(path);
-			Node parentNode = (Node) session.getItem(parentPath);
-			this.insert(session, parentNode, nodeName, object);
+    /**
+     * Constructor
+     *
+     * @param mapper The mapper to used
+     * @param converterProvider The atomic type converter provider
+     *
+     */
+    public ObjectConverterImpl(Mapper mapper, AtomicTypeConverterProvider converterProvider) {
+        this.mapper = mapper;
+        this.atomicTypeConverterProvider = converterProvider;
+    }
 
-		}
-		catch (Exception e)
-		{
-			throw new PersistenceException("Impossible to insert the object at " + path, e);
-		}
+    /**
+     * Set the <code>Mapper</code> used to solve mappings.
+     * @param mapper a <code>Mapper</code>
+     */
+    public void setMapper(Mapper mapper) {
+        this.mapper = mapper;
+    }
 
-	}
+    /**
+     * Sets the converter provider.
+     *
+     * @param converterProvider an <code>AtomicTypeConverterProvider</code>
+     */
+    public void setAtomicTypeConverterProvider(AtomicTypeConverterProvider converterProvider) {
+        this.atomicTypeConverterProvider = converterProvider;
+    }
 
-	/**
-	 * 
-	 * @see org.apache.portals.graffito.jcr.persistence.objectconverter.ObjectConverter#insert(javax.jcr.Session, javax.jcr.Node, java.lang.String, java.lang.Object)
-	 */
-	public void insert(Session session, Node parentNode, String nodeName, Object object)
-	{
-		try
-		{
-			ClassDescriptor classDescriptor = mapper.getClassDescriptor(object.getClass());
-			if (classDescriptor == null)
-			{
-				throw new PersistenceException("Class of type: " + object.getClass().getName() + " is not JCR persistable. Maybe element 'class-descriptor' for this type in mapping file is missing");
-			}
+    /**
+     * @see org.apache.portals.graffito.jcr.persistence.objectconverter.ObjectConverter#insert(javax.jcr.Session, java.lang.Object)
+     */
+    public void insert(Session session, Object object) {
+        String path = this.getPath(session, object);
+        try {
+            String parentPath = RepositoryUtil.getParentPath(path);
+            String nodeName = RepositoryUtil.getNodeName(path);
+            Node parentNode = (Node) session.getItem(parentPath);
+            this.insert(session, parentNode, nodeName, object);
 
-			String jcrNodeType = classDescriptor.getJcrNodeType();
-			if (jcrNodeType == null || jcrNodeType.equals(""))
-			{
-				throw new PersistenceException("Undefined node type for  " + parentNode);
-			}
+        } catch (PathNotFoundException pnfe) {
+            throw new PersistenceException("Impossible to insert the object at '" + path + "'",
+                                           pnfe);
+        } catch (RepositoryException re) {
+            throw new org.apache.portals.graffito.jcr.exception.RepositoryException(
+                    "Impossible to insert the object at '" + path + "'",
+                    re);
+        }
+    }
 
-			Node objectNode = null;
-			objectNode = parentNode.addNode(nodeName, jcrNodeType);
+    /**
+     *
+     * @see org.apache.portals.graffito.jcr.persistence.objectconverter.ObjectConverter#insert(javax.jcr.Session, javax.jcr.Node, java.lang.String, java.lang.Object)
+     */
+    public void insert(Session session, Node parentNode, String nodeName, Object object) {
+        ClassDescriptor classDescriptor = mapper.getClassDescriptor(object.getClass());
+        if (classDescriptor == null) {
+            throw new JcrMappingException("Class of type: " + object.getClass().getName()
+                    + " is not JCR persistable. Maybe element 'class-descriptor' for this type in mapping file is missing");
+        }
 
-			storeSimpleFields(session, object, classDescriptor, objectNode);
-			insertBeanFields(session, object, classDescriptor, objectNode);
-			insertCollectionFields(session, object, classDescriptor, objectNode);
+        String jcrNodeType = classDescriptor.getJcrNodeType();
+        if ((jcrNodeType == null) || jcrNodeType.equals("")) {
+            throw new JcrMappingException("Undefined node type for  " + parentNode);
+        }
 
-		}
-		catch (Exception e)
-		{
-			throw new PersistenceException("Impossible to insert the object at " + parentNode, e);
-		}
+        Node objectNode = null;
+        try {
+            objectNode = parentNode.addNode(nodeName, jcrNodeType);
+        } 
+        catch (NoSuchNodeTypeException nsnte) {
+            throw new JcrMappingException("Unknown node type " + jcrNodeType
+                                          + " for mapped class " + object.getClass());
+        } 
+        catch (RepositoryException re) {
+            throw new PersistenceException("Cannot create new node of type " + jcrNodeType
+                                           + " from mapped class " + object.getClass());
+        }
 
-	}
-
-	/**
-	 * @see org.apache.portals.graffito.jcr.persistence.objectconverter.ObjectConverter#update(javax.jcr.Session, java.lang.Object)
-	 */
-	public void update(Session session, Object object) 
-	{
-		String path = this.getPath(session, object);
-		try
-		{
-			String parentPath = RepositoryUtil.getParentPath(path);
-			String nodeName = RepositoryUtil.getNodeName(path);
-			Node parentNode = (Node) session.getItem(parentPath);
-			this.update(session, parentNode, nodeName, object);
-
-		}
-		catch (Exception e)
-		{
-			throw new PersistenceException("Impossible to update the object at " + path, e);
-		}
-	}
-
-	/**
-	 * 
-	 * @see org.apache.portals.graffito.jcr.persistence.objectconverter.ObjectConverter#update(javax.jcr.Session, javax.jcr.Node, java.lang.String, java.lang.Object)
-	 */
-	public void update(Session session, Node parentNode, String nodeName, Object object) 
-	{
-		try
-		{
-			ClassDescriptor classDescriptor = mapper.getClassDescriptor(object.getClass());
-			if (classDescriptor == null)
-			{
-				throw new PersistenceException("Class of type: " + object.getClass().getName() + " is not JCR persistable. Maybe element 'class-descriptor' for this type in mapping file is missing");
-			}
-
-			String jcrNodeType = classDescriptor.getJcrNodeType();
-			if (jcrNodeType == null || jcrNodeType.equals(""))
-			{
-				throw new PersistenceException("Undefined node type for  " + parentNode);
-			}
-
-			Node objectNode = null;
-			objectNode = parentNode.getNode(nodeName);
-
-			storeSimpleFields(session, object, classDescriptor, objectNode);
-			updateBeanFields(session, object, classDescriptor, objectNode);
-			updateCollectionFields(session, object, classDescriptor, objectNode);
-
-		}
-		catch (Exception e)
-		{
-			throw new PersistenceException("Impossible to update the node : " + parentNode, e);
-		}
-
-	}
-
-	/**
-	 * @see org.apache.portals.graffito.jcr.persistence.objectconverter.ObjectConverter#getObject(javax.jcr.Session, java.lang.Class, java.lang.String)
-	 */
-	public Object getObject(Session session, Class clazz, String path)
-	{
-		try
-    	{
-
-			if (!session.itemExists(path))
-			{
-				return null;
-			}
-
-			ClassDescriptor classDescriptor = mapper.getClassDescriptor(clazz);
-			if (classDescriptor == null)
-			{
-				throw new PersistenceException("Class of type: " + clazz.getName() + " is not JCR persistable. Maybe element 'class-descriptor' for this type in mapping file is missing");
-			}
-
-			Node node = (Node) session.getItem(path);
-			Object object = clazz.newInstance();
-
-			retrieveSimpleFields(classDescriptor, node, object);
-			retrieveBeanFields(session, path, classDescriptor, object);
-			retrieveCollectionFields(session, classDescriptor, node, object);
-
-			return object;
-
-		}
-		catch (Exception e)
-		{
-			throw new PersistenceException("Impossible to get the object at " + path, e);
-		}
-	}
-
-
-	public String getPath(Session session, Object object)
-	{
-		try
-		{
-			ClassDescriptor classDescriptor = mapper.getClassDescriptor(object.getClass());
-			if (classDescriptor == null)
-			{
-				throw new PersistenceException("Class of type: " + object.getClass().getName() + " is not JCR persistable. Maybe element 'class-descriptor' for this type in mapping file is missing");
-			}
-			
-			final FieldDescriptor pathFieldDescriptor = classDescriptor.getPathFieldDescriptor();
-            if (pathFieldDescriptor == null)
-            {
-                throw new PersistenceException("Class of type: " + object.getClass().getName() + " has no path mapping. Maybe attribute path=\"true\" for a field element of this class in jcrmapping.xml is missing?");
+        if (null != classDescriptor.getJcrMixinTypes()) {
+            String[] mixinTypes = classDescriptor.getJcrMixinTypes();
+            for (int i = 0; i < mixinTypes.length; i++) {
+                try {
+                    objectNode.addMixin(mixinTypes[i].trim());
+                } catch (NoSuchNodeTypeException nsnte) {
+                    throw new JcrMappingException("Unknown mixin type " + mixinTypes[i].trim()
+                                                  + " for mapped class " + object.getClass());
+                } catch (RepositoryException re) {
+                    throw new PersistenceException("Cannot create new node of type " + jcrNodeType
+                                                   + " from mapped class " + object.getClass());
+                }
             }
-            String pathField = pathFieldDescriptor.getFieldName();
-			return (String) PropertyUtils.getNestedProperty(object, pathField);
+        }
 
+        storeSimpleFields(session, object, classDescriptor, objectNode);
+        insertBeanFields(session, object, classDescriptor, objectNode);
+        insertCollectionFields(session, object, classDescriptor, objectNode);
+    }
 
-		}
-		catch (Exception e)
-		{
-			throw new PersistenceException("Impossible to get the path", e);
-		}
+    /**
+     * @see org.apache.portals.graffito.jcr.persistence.objectconverter.ObjectConverter#update(javax.jcr.Session, java.lang.Object)
+     */
+    public void update(Session session, Object object) {
+        String path = this.getPath(session, object);
+        try {
+            String parentPath = RepositoryUtil.getParentPath(path);
+            String nodeName = RepositoryUtil.getNodeName(path);
+            Node parentNode = (Node) session.getItem(parentPath);
+            this.update(session, parentNode, nodeName, object);
+        }
+        catch(PathNotFoundException pnfe) {
+            throw new PersistenceException("Impossible to update the object at '"
+                    + path + "'",
+                    pnfe);
+        }
+        catch(RepositoryException re) {
+            throw new org.apache.portals.graffito.jcr.exception.RepositoryException(
+                    "Impossible to update the object at '" + path + "'",
+                    re);
+        }
+    }
 
-	}	
-	
-	/**
-	 * Retrieve simple fields (atomic fields)
-	 */
-	private void retrieveSimpleFields(ClassDescriptor classDescriptor, Node node, Object object) throws PathNotFoundException, RepositoryException, ValueFormatException, IllegalAccessException,
-			InvocationTargetException, NoSuchMethodException
-	{
-		Iterator fieldDescriptorIterator = classDescriptor.getFieldDescriptors().iterator();
+    /**
+     *
+     * @see org.apache.portals.graffito.jcr.persistence.objectconverter.ObjectConverter#update(javax.jcr.Session, javax.jcr.Node, java.lang.String, java.lang.Object)
+     */
+    public void update(Session session, Node parentNode, String nodeName, Object object) {
+        try {
+            ClassDescriptor classDescriptor = mapper.getClassDescriptor(object.getClass());
+            if (classDescriptor == null) {
+                throw new JcrMappingException("Class of type: " 
+                        + object.getClass().getName()
+                        + " is not JCR persistable. Maybe element 'class-descriptor' for this type in mapping file is missing");
+            }
 
-		while (fieldDescriptorIterator.hasNext())
-		{
-			FieldDescriptor fieldDescriptor = (FieldDescriptor) fieldDescriptorIterator.next();
-			
-			String fieldName = fieldDescriptor.getFieldName();
-			String propertyName = fieldDescriptor.getJcrName();
-			
-			if (fieldDescriptor.isPath())
-			{
-				PropertyUtils.setNestedProperty(object, fieldName, node.getPath());
-			} 
-			else 
-			{
-                Class fieldTypeClass = fieldDescriptor.getFieldTypeClass() != null
-                    ? fieldDescriptor.getFieldTypeClass() 
-                    : PropertyUtils.getPropertyType(object, fieldName);
+            Node objectNode = parentNode.getNode(nodeName);
+            
+            storeSimpleFields(session, object, classDescriptor, objectNode);
+            updateBeanFields(session, object, classDescriptor, objectNode);
+            updateCollectionFields(session, object, classDescriptor, objectNode);
+        }
+        catch(PathNotFoundException pnfe) {
+            throw new PersistenceException("Impossible to update the object: "
+                    + nodeName
+                    + " at node : " + parentNode, pnfe);
+        }
+        catch(RepositoryException re) {
+            throw new org.apache.portals.graffito.jcr.exception.RepositoryException(
+                    "Impossible to update the object: " + nodeName
+                    + " at node : " + parentNode, re);
+        }
+    }
+
+    /**
+     * @see org.apache.portals.graffito.jcr.persistence.objectconverter.ObjectConverter#getObject(javax.jcr.Session, java.lang.Class, java.lang.String)
+     */
+    public Object getObject(Session session, Class clazz, String path) {
+        try {
+            if (!session.itemExists(path)) {
+                return null;
+            }
+
+            ClassDescriptor classDescriptor = mapper.getClassDescriptor(clazz);
+            if (classDescriptor == null) {
+                throw new JcrMappingException("Class of type: " + clazz.getName()
+                        + " is not JCR persistable. Maybe element 'class-descriptor' for this type in mapping file is missing");
+            }
+
+            Node node = (Node) session.getItem(path);
+            Object object = ReflectionUtils.newInstance(clazz);
+
+            retrieveSimpleFields(session, classDescriptor, node, object);
+            retrieveBeanFields(session, path, classDescriptor, object);
+            retrieveCollectionFields(session, classDescriptor, node, object);
+
+            return object;
+
+        }         
+        catch(PathNotFoundException pnfe) {
+            // HINT should never get here
+            throw new PersistenceException("Impossible to get the object at " + path, pnfe);
+        }
+        catch(RepositoryException re) {
+            throw new org.apache.portals.graffito.jcr.exception.RepositoryException(
+                    "Impossible to get the object at " + path, re);
+        }
+    }
+
+    /**
+     * @see org.apache.portals.graffito.jcr.persistence.objectconverter.ObjectConverter#getPath(javax.jcr.Session, java.lang.Object)
+     * @throws JcrMappingException
+     */
+    public String getPath(Session session, Object object) {
+        ClassDescriptor classDescriptor = mapper.getClassDescriptor(object.getClass());
+        if (classDescriptor == null) {
+            throw new JcrMappingException("Class of type: " 
+                    + object.getClass().getName()
+                    + " is not JCR persistable. Maybe element 'class-descriptor' for this type in mapping file is missing"
+            );            }
+
+        final FieldDescriptor pathFieldDescriptor = classDescriptor.getPathFieldDescriptor();
+        if (pathFieldDescriptor == null) {
+            throw new JcrMappingException("Class of type: " 
+                    + object.getClass().getName()
+                    + " has no path mapping. Maybe attribute path=\"true\" for a field element of this class in jcrmapping.xml is missing?"
+            );
+        }
+        String pathField = pathFieldDescriptor.getFieldName();
+
+        return (String) ReflectionUtils.getNestedProperty(object, pathField);
+    }
+
+    /**
+     * Retrieve simple fields (atomic fields)
+     * 
+     * @throws JcrMappingException
+     * @throws org.apache.portals.graffito.jcr.exception.RepositoryException
+     */
+    private void retrieveSimpleFields(Session session, 
+                                      ClassDescriptor classDescriptor, 
+                                      Node node, 
+                                      Object object) {
+        try {
+            Iterator fieldDescriptorIterator = classDescriptor.getFieldDescriptors().iterator();
+    
+            while (fieldDescriptorIterator.hasNext()) {
+                FieldDescriptor fieldDescriptor = (FieldDescriptor) fieldDescriptorIterator.next();
+    
+                String fieldName = fieldDescriptor.getFieldName();
+                String propertyName = fieldDescriptor.getJcrName();
+    
+                if (fieldDescriptor.isPath()) {
+                    ReflectionUtils.setNestedProperty(object, fieldName, node.getPath());
+                } else {
+                    AtomicTypeConverter converter= getAtomicTypeConverter(fieldDescriptor, 
+                                                                          object, 
+                                                                          fieldName);
+                    if (node.hasProperty(propertyName)) {
+                        Object fieldValue = converter.getObject(
+                                node.getProperty(propertyName).getValue());
+                        ReflectionUtils.setNestedProperty(object, fieldName, fieldValue);
+                    }
+                }
+            }
+        }
+        catch(RepositoryException re) {
+            throw new org.apache.portals.graffito.jcr.exception.RepositoryException(
+                    "Cannot retrieve properties of object"
+                    + object
+                    + " from node "
+                    + node,
+                    re);
+        }
+    }
+
+    /**
+     * Retrieve bean fields
+     */
+    private void retrieveBeanFields(Session session,
+                                    String path,
+                                    ClassDescriptor classDescriptor,
+                                    Object object) {
+        Iterator beanDescriptorIterator = classDescriptor.getBeanDescriptors().iterator();
+        while (beanDescriptorIterator.hasNext()) {
+            BeanDescriptor beanDescriptor = (BeanDescriptor) beanDescriptorIterator.next();
+            String beanName = beanDescriptor.getFieldName();
+            Class beanClass = ReflectionUtils.getPropertyType(object, beanName);
+            Object bean = this.getObject(session,
+                                         beanClass,
+                                         path + "/" + beanDescriptor.getJcrName());
+            ReflectionUtils.setNestedProperty(object, beanName, bean);
+        }
+    }
+
+    /**
+     * Retrieve Collection fields
+     */
+    private void retrieveCollectionFields(Session session,
+                                          ClassDescriptor classDescriptor,
+                                          Node node,
+                                          Object object)  {
+        Iterator collectionDescriptorIterator = classDescriptor.getCollectionDescriptors()
+                                                               .iterator();
+        while (collectionDescriptorIterator.hasNext()) {
+            CollectionDescriptor collectionDescriptor = (CollectionDescriptor)
+                collectionDescriptorIterator.next();
+            CollectionConverter collectionConverter = this.getCollectionConverter(session, collectionDescriptor);
+            Class collectionFieldClass = ReflectionUtils.getPropertyType(object,
+                    collectionDescriptor.getFieldName());
+            ManageableCollection collection = collectionConverter.getCollection(session,
+                                                                                node,
+                                                                                collectionDescriptor,
+                                                                                collectionFieldClass);
+            ReflectionUtils.setNestedProperty(object,
+                                              collectionDescriptor.getFieldName(),
+                                              collection);
+        }
+    }
+
+    /**
+     * Insert Bean fields
+     */
+    private void insertBeanFields(Session session,
+                                  Object object,
+                                  ClassDescriptor classDescriptor,
+                                  Node objectNode) {
+        Iterator beanDescriptorIterator = classDescriptor.getBeanDescriptors().iterator();
+        while (beanDescriptorIterator.hasNext()) {
+            BeanDescriptor beanDescriptor = (BeanDescriptor) beanDescriptorIterator.next();
+            String jcrName = beanDescriptor.getJcrName();
+            Object bean = ReflectionUtils.getNestedProperty(object,
+                                                            beanDescriptor.getFieldName());
+            if (bean != null) {
+                this.insert(session, objectNode, jcrName, bean);
+            }
+        }
+    }
+
+    /**
+     * Update Bean fields
+     */
+    private void updateBeanFields(Session session,
+                                  Object object,
+                                  ClassDescriptor classDescriptor,
+                                  Node objectNode) {
+        String jcrName = null;
+        try {
+            Iterator beanDescriptorIterator = classDescriptor.getBeanDescriptors().iterator();
+            while (beanDescriptorIterator.hasNext()) {
+                BeanDescriptor beanDescriptor = (BeanDescriptor) beanDescriptorIterator.next();
+                jcrName = beanDescriptor.getJcrName();
+                Object bean = ReflectionUtils.getNestedProperty(object,
+                                                                beanDescriptor.getFieldName());
+
+                // if the bean is null, remove existing node
+                if ((bean == null)) {
+                    if (objectNode.hasNode(jcrName)) {
+                        objectNode.getNode(jcrName).remove();
+                    }
+                } else {
+                    this.update(session, objectNode, jcrName, bean);
+                }
+
+            }
+        } 
+        catch(VersionException ve) {
+            throw new PersistenceException("Cannot remove bean at path " + jcrName,
+                    ve);
+        }
+        catch(LockException le) {
+            throw new PersistenceException("Cannot remove bean at path " + jcrName + ". Item is locked.",
+                    le);
+        }
+        catch(ConstraintViolationException cve) {
+            throw new PersistenceException("Cannot remove bean at path " + jcrName + ". Contraint violation.",
+                    cve);
+        }
+        catch(RepositoryException re) {
+            throw new org.apache.portals.graffito.jcr.exception.RepositoryException(
+                    "Cannot remove bean at path " + jcrName,
+                    re);
+        }
+    }
+
+    private void insertCollectionFields(Session session,
+                                        Object object,
+                                        ClassDescriptor classDescriptor,
+                                        Node objectNode) {
+        Iterator collectionDescriptorIterator = classDescriptor.getCollectionDescriptors()
+                                                               .iterator();
+        while (collectionDescriptorIterator.hasNext()) {
+            CollectionDescriptor collectionDescriptor = (CollectionDescriptor)
+                collectionDescriptorIterator.next();
+            CollectionConverter collectionConverter = this.getCollectionConverter(session, collectionDescriptor);
+            Object collection = ReflectionUtils.getNestedProperty(object, collectionDescriptor.getFieldName());
+            ManageableCollection manageableCollection = ManageableCollectionUtil
+                .getManageableCollection(collection);
+            collectionConverter.insertCollection(session,
+                                                 objectNode,
+                                                 collectionDescriptor,
+                                                 manageableCollection);
+        }
+    }
+
+    private void updateCollectionFields(Session session,
+                                        Object object,
+                                        ClassDescriptor classDescriptor,
+                                        Node objectNode) {
+        Iterator collectionDescriptorIterator = classDescriptor.getCollectionDescriptors()
+                                                               .iterator();
+        while (collectionDescriptorIterator.hasNext()) {
+            CollectionDescriptor collectionDescriptor = (CollectionDescriptor)
+                collectionDescriptorIterator.next();
+            CollectionConverter collectionConverter = this.getCollectionConverter(session, collectionDescriptor);
+            Object collection = ReflectionUtils.getNestedProperty(object,
+                    collectionDescriptor.getFieldName());
+            ManageableCollection manageableCollection = ManageableCollectionUtil
+                .getManageableCollection(collection);
+            collectionConverter.updateCollection(session,
+                                                 objectNode,
+                                                 collectionDescriptor,
+                                                 manageableCollection);
+        }
+    }
+
+    private void storeSimpleFields(Session session,
+                                   Object object,
+                                   ClassDescriptor classDescriptor,
+                                   Node objectNode) {
+        try {
+            ValueFactory valueFactory = session.getValueFactory();
+    
+            Iterator fieldDescriptorIterator = classDescriptor.getFieldDescriptors().iterator();
+            while (fieldDescriptorIterator.hasNext()) {
+                FieldDescriptor fieldDescriptor = (FieldDescriptor) fieldDescriptorIterator.next();
+    
+                //Of course, Path field is not updated as property
+                if (fieldDescriptor.isPath()) {
+                    continue;
+                }
+    
+                String fieldName = fieldDescriptor.getFieldName();
+                String jcrName = fieldDescriptor.getJcrName();
+    
+                boolean protectedProperty= fieldDescriptor.isJcrProtected();
+                
+                if(objectNode.hasProperty(jcrName)) {
+                    protectedProperty= objectNode.getProperty(jcrName).getDefinition().isProtected();
+                }
+    
+                if(!protectedProperty) { // DO NOT TRY TO WRITE PROTECTED PROPERTIES
+                    Object fieldValue = ReflectionUtils.getNestedProperty(object, fieldName);
+                    AtomicTypeConverter converter= getAtomicTypeConverter(fieldDescriptor, 
+                                                                          object, 
+                                                                          fieldName); 
+                    Value value = converter.getValue(valueFactory, fieldValue);
+    
+                    // Check if the node property is "autocreated"
+                    boolean autoCreated= fieldDescriptor.isJcrAutoCreated();
+    
+                    if(objectNode.hasProperty(jcrName)) {
+                        autoCreated= objectNode.getProperty(jcrName).getDefinition().isAutoCreated();
+                    }
                     
-				AtomicTypeConverter converter = (AtomicTypeConverter) atomicTypeConverters
-						.get(fieldTypeClass);
-				if (node.hasProperty(propertyName)) 
-				{
-					Object fieldValue = converter.getObject(node.getProperty(propertyName).getValue());
-					PropertyUtils.setNestedProperty(object, fieldName, fieldValue);
-				}
-			}
-		}
-	}
+                    if(!autoCreated) {
+                        // Check if mandatory property are not null
+                        checkMandatoryProperty(objectNode, fieldDescriptor, value);
+                    }
+    
+                    objectNode.setProperty(jcrName, value);
+                }
+            }
+        }
+        catch(RepositoryException re) {
+            throw new org.apache.portals.graffito.jcr.exception.RepositoryException(
+                    "Cannot persist properties of object" + object,
+                    re);
+        }
+    }
 
-	/**
-	 * Retrieve bean fields
-	 */
-	private void retrieveBeanFields(Session session, String path, ClassDescriptor classDescriptor, Object object) throws IllegalAccessException, InvocationTargetException, NoSuchMethodException
-	{
-		Iterator beanDescriptorIterator = classDescriptor.getBeanDescriptors().iterator();
-		while (beanDescriptorIterator.hasNext())
-		{
-			BeanDescriptor beanDescriptor = (BeanDescriptor) beanDescriptorIterator.next();
-			String beanName = beanDescriptor.getFieldName();
-			Class beanClass = PropertyUtils.getPropertyDescriptor(object, beanName).getPropertyType();
-			Object bean = this.getObject(session, beanClass, path + "/" + beanDescriptor.getJcrName());
-			PropertyUtils.setNestedProperty(object, beanName, bean);
-		}
-	}
+    private CollectionConverter getCollectionConverter(Session session, CollectionDescriptor collectionDescriptor) {
+        String className = collectionDescriptor.getCollectionConverterClassName();
+        Map atomicTypeConverters= this.atomicTypeConverterProvider.getAtomicTypeConverters();
+        if (className == null) {
+            return new DefaultCollectionConverterImpl(atomicTypeConverters, this, this.mapper);
+        } else {
+            return (CollectionConverter) ReflectionUtils.invokeConstructor(className,
+                    new Object[] {atomicTypeConverters, this, this.mapper});
+        }
 
-	/**
-	 * Retrieve Collection fields
-	 */
-	private void retrieveCollectionFields(Session session, ClassDescriptor classDescriptor, Node node, Object object) throws PathNotFoundException, RepositoryException, JcrMappingException,
-			ClassNotFoundException, IllegalAccessException, InvocationTargetException, NoSuchMethodException, InstantiationException
-	{
-		Iterator collectionDescriptorIterator = classDescriptor.getCollectionDescriptors().iterator();
-		while (collectionDescriptorIterator.hasNext())
-		{
-			CollectionDescriptor collectionDescriptor = (CollectionDescriptor) collectionDescriptorIterator.next();
-			CollectionConverter collectionConverter = this.getCollectionConverter(collectionDescriptor);
-			Class collectionFieldClass = PropertyUtils.getPropertyDescriptor(object, collectionDescriptor.getFieldName()).getPropertyType();
-			ManageableCollection collection = collectionConverter.getCollection(session, node, collectionDescriptor, collectionFieldClass);
-			PropertyUtils.setNestedProperty(object, collectionDescriptor.getFieldName(), collection);
-		}
-	}
+    }
 
-	/**
-	 * Insert Bean fields
-	 */
-	private void insertBeanFields(Session session, Object object, ClassDescriptor classDescriptor, Node objectNode) 
-	{
-		try
-		{
-			Iterator beanDescriptorIterator = classDescriptor.getBeanDescriptors().iterator();
-			while (beanDescriptorIterator.hasNext())
-			{
-				BeanDescriptor beanDescriptor = (BeanDescriptor) beanDescriptorIterator.next();
-				String jcrName = beanDescriptor.getJcrName();
-				Object bean = PropertyUtils.getNestedProperty(object, beanDescriptor.getFieldName());
-				if (bean != null)
-				{
-					this.insert(session, objectNode, jcrName, bean);
-				}
-
-			}
-		}
-		catch (Exception e)
-		{
-			throw new PersistenceException("Impossible to insert the bean fields", e);
-		}
-
-	}
-
-	/**
-	 * Update Bean fields
-	 */
-	private void updateBeanFields(Session session, Object object, ClassDescriptor classDescriptor, Node objectNode) 
-	{
-		try
-		{
-			Iterator beanDescriptorIterator = classDescriptor.getBeanDescriptors().iterator();
-			while (beanDescriptorIterator.hasNext())
-			{
-				BeanDescriptor beanDescriptor = (BeanDescriptor) beanDescriptorIterator.next();
-				String jcrName = beanDescriptor.getJcrName();
-				Object bean = PropertyUtils.getNestedProperty(object, beanDescriptor.getFieldName());
-
-				// if the bean is null, remove existing node
-				if ((bean == null))
-				{
-					if (objectNode.hasNode(jcrName))
-					{
-						objectNode.getNode(jcrName).remove();
-					}
-				}
-				else
-				{
-					this.update(session, objectNode, jcrName, bean);
-				}
-
-			}
-		}
-		catch (Exception e)
-		{
-			throw new PersistenceException("Impossible to update the bean fields", e);
-		}
-
-	}
-
-	private void insertCollectionFields(Session session, Object object, ClassDescriptor classDescriptor, Node objectNode)
-	{
-		try
-		{
-			Iterator collectionDescriptorIterator = classDescriptor.getCollectionDescriptors().iterator();
-			while (collectionDescriptorIterator.hasNext())
-			{
-				CollectionDescriptor collectionDescriptor = (CollectionDescriptor) collectionDescriptorIterator.next();
-				CollectionConverter collectionConverter = this.getCollectionConverter(collectionDescriptor);
-				Object collection = PropertyUtils.getNestedProperty(object, collectionDescriptor.getFieldName());
-				ManageableCollection manageableCollection = ManageableCollectionUtil.getManageableCollection(collection);
-				collectionConverter.insertCollection(session, objectNode, collectionDescriptor, manageableCollection);
-			}
-		}
-		catch (Exception e)
-		{
-			throw new PersistenceException("Impossible to insert the collection fields", e);
-		}
-
-	}
-
-	private void updateCollectionFields(Session session, Object object, ClassDescriptor classDescriptor, Node objectNode)
-	{
-		try
-		{
-			Iterator collectionDescriptorIterator = classDescriptor.getCollectionDescriptors().iterator();
-			while (collectionDescriptorIterator.hasNext())
-			{
-				CollectionDescriptor collectionDescriptor = (CollectionDescriptor) collectionDescriptorIterator.next();
-				CollectionConverter collectionConverter = this.getCollectionConverter(collectionDescriptor);
-				Object collection = PropertyUtils.getNestedProperty(object, collectionDescriptor.getFieldName());
-				ManageableCollection manageableCollection = ManageableCollectionUtil.getManageableCollection(collection);
-				collectionConverter.updateCollection(session, objectNode, collectionDescriptor, manageableCollection);
-			}
-		}
-		catch (Exception e)
-		{
-			throw new PersistenceException("Impossible to store the bean fields", e);
-		}
-
-	}
-
-	private void storeSimpleFields(Session session, 
-                                   Object object, 
-                                   ClassDescriptor classDescriptor, 
-                                   Node objectNode) 
-	throws PathNotFoundException, ValueFormatException, VersionException, LockException, ConstraintViolationException, 
-	RepositoryException, IllegalAccessException, InvocationTargetException, NoSuchMethodException
-	{
-        ValueFactory valueFactory = session.getValueFactory();
-        
-		Iterator fieldDescriptorIterator = classDescriptor.getFieldDescriptors().iterator();
-		while (fieldDescriptorIterator.hasNext())
-		{				 
-			FieldDescriptor fieldDescriptor = (FieldDescriptor) fieldDescriptorIterator.next();
-			
-			//Of course, Path field is not updated as property				
-			if (fieldDescriptor.isPath())
-			{
-			   continue;	
-			}
-			
-			String fieldName = fieldDescriptor.getFieldName();
-			String jcrName = fieldDescriptor.getJcrName();
-
-			// Check the node properties
-			boolean autoCreated = false;
-
-			if (objectNode.hasProperty(jcrName))
-			{
-				autoCreated = objectNode.getProperty(jcrName).getDefinition().isAutoCreated();
-			}
-
-			// All auto created JCR properties are ignored
-			if (!autoCreated)
-			{
-				
-				Object fieldValue = PropertyUtils.getNestedProperty(object, fieldName);
-				Class fieldTypeClass = fieldDescriptor.getFieldTypeClass() != null
-                    ? fieldDescriptor.getFieldTypeClass()
-                    : PropertyUtils.getPropertyType(object, fieldName);
-				AtomicTypeConverter converter = (AtomicTypeConverter) atomicTypeConverters.get(fieldTypeClass);
-				Value value = converter.getValue(valueFactory, fieldValue);
-				// Check if mandatory property are not null
-				this.checkMandatoryProperty(objectNode, fieldDescriptor, value);
-
-				objectNode.setProperty(jcrName, value);
-			}
-
-		}
-	}
-
-	private CollectionConverter getCollectionConverter(CollectionDescriptor collectionDescriptor) 
-	                            throws ClassNotFoundException, NoSuchMethodException, InstantiationException, InvocationTargetException, IllegalAccessException
-	{
-
-		String className = collectionDescriptor.getCollectionConverterClassName();
-		if (className == null)
-		{
-			return new DefaultCollectionConverterImpl(this.atomicTypeConverters, this, this.mapper);
-		}
-		else
-		{
-			Class converterClass = Class.forName(className);
-			Object[] param =
-			{ this.atomicTypeConverters, this, this.mapper };
-			return (CollectionConverter) ConstructorUtils.invokeConstructor(converterClass, param);
-		}
-
-	}
-
-	private void checkMandatoryProperty(Node objectNode, FieldDescriptor fieldDescriptor, Value value) throws RepositoryException
-	{
-		PropertyDefinition[] propertyDefinitions = objectNode.getPrimaryNodeType().getDeclaredPropertyDefinitions();
-		for (int i = 0; i < propertyDefinitions.length; i++)
-		{
-			PropertyDefinition definition = propertyDefinitions[i];
-			if (definition.getName().equals(fieldDescriptor.getJcrName()) && definition.isMandatory() && definition.isAutoCreated() == false && value == null)
-			{
-				throw new PersistenceException("Class of type:" + fieldDescriptor.getClassDescriptor().getClassName() + " has property: " + fieldDescriptor.getFieldName()
-						+ " declared as JCR property: " + fieldDescriptor.getJcrName() + " This property is mandatory but property in bean has value null");
-			}
-		}
-	}
+    private void checkMandatoryProperty(Node objectNode,
+                                        FieldDescriptor fieldDescriptor,
+                                        Value value) throws RepositoryException {
+        PropertyDefinition[] propertyDefinitions = objectNode.getPrimaryNodeType()
+                                                             .getDeclaredPropertyDefinitions();
+        for (int i = 0; i < propertyDefinitions.length; i++) {
+            PropertyDefinition definition = propertyDefinitions[i];
+            if (definition.getName().equals(fieldDescriptor.getJcrName())
+                && definition.isMandatory() 
+                && (definition.isAutoCreated() == false)
+                && (value == null)) 
+            {
+                throw new PersistenceException("Class of type:"
+                        + fieldDescriptor.getClassDescriptor().getClassName() 
+                        + " has property: "
+                        + fieldDescriptor.getFieldName()
+                        + " declared as JCR property: "
+                        + fieldDescriptor.getJcrName()
+                        + " This property is mandatory but property in bean has value null");
+            }
+        }
+    }
+    
+    private AtomicTypeConverter getAtomicTypeConverter(FieldDescriptor fd, 
+                                                       Object object, 
+                                                       String fieldName) {
+        Class fieldTypeClass= fd.getFieldTypeClass() != null 
+            ? fd.getFieldTypeClass() : ReflectionUtils.getPropertyType(object, fieldName);
+            
+        return this.atomicTypeConverterProvider.getAtomicTypeConverter(fieldTypeClass);
+    }
 }
