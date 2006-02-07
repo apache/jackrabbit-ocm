@@ -46,22 +46,6 @@ public class DigesterMapperImplTest extends TestCase
         super(testName);
     }
 
-    /**
-     * @see junit.framework.TestCase#setUp()
-     */
-    protected void setUp() throws Exception
-    {
-        super.setUp();
-    }
-
-    /**
-     * @see junit.framework.TestCase#tearDown()
-     */
-    public void tearDown() throws Exception
-    {
-        super.tearDown();
-    }
-
     public static Test suite()
     {
         // All methods starting with "test" will be executed in the test suite.
@@ -76,7 +60,8 @@ public class DigesterMapperImplTest extends TestCase
     {
         try
         {
-            DigesterMapperImpl mapper = new DigesterMapperImpl("./src/test-config/jcrmapping-testmappings.xml");
+            Mapper mapper = new DigesterMapperImpl("./src/test-config/jcrmapping-testmappings.xml")
+                .buildMapper();
             assertNotNull("Mapper is null", mapper);
             
             ClassDescriptor classDescriptor = mapper.getClassDescriptor(A.class);
@@ -116,7 +101,8 @@ public class DigesterMapperImplTest extends TestCase
     {
         try
         {
-            DigesterMapperImpl mapper = new DigesterMapperImpl("./src/test-config/jcrmapping.xml");
+            Mapper mapper = new DigesterMapperImpl("./src/test-config/jcrmapping.xml")
+                    .buildMapper();
             assertNotNull("Mapper is null", mapper);
             
             ClassDescriptor classDescriptor = mapper.getClassDescriptor(B.class);

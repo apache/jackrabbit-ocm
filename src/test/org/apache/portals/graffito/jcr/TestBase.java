@@ -44,6 +44,7 @@ import org.apache.jackrabbit.core.nodetype.NodeTypeDef;
 import org.apache.jackrabbit.core.nodetype.NodeTypeManagerImpl;
 import org.apache.jackrabbit.core.nodetype.NodeTypeRegistry;
 import org.apache.jackrabbit.core.nodetype.xml.NodeTypeReader;
+import org.apache.portals.graffito.jcr.mapper.Mapper;
 import org.apache.portals.graffito.jcr.mapper.impl.DigesterMapperImpl;
 import org.apache.portals.graffito.jcr.persistence.PersistenceManager;
 import org.apache.portals.graffito.jcr.persistence.atomictypeconverter.AtomicTypeConverterProvider;
@@ -83,7 +84,7 @@ public abstract class TestBase extends TestCase
 
 	private QueryManager queryManager;
 
-	DigesterMapperImpl mapper;
+	Mapper mapper;
 
 	private boolean isInit = false;
 
@@ -179,7 +180,7 @@ public abstract class TestBase extends TestCase
 		String[] files = { "./src/test-config/jcrmapping.xml", "./src/test-config/jcrmapping-atomic.xml" };
 		session = RepositoryUtil.login(repository, "superuser", "superuser");
 		
-		mapper = new DigesterMapperImpl(files);
+		mapper = new DigesterMapperImpl(files).buildMapper();
         AtomicTypeConverterProvider converterProvider = new DefaultAtomicTypeConverterProvider();
         Map atomicTypeConverters = converterProvider.getAtomicTypeConverters();
 		queryManager = new QueryManagerImpl(mapper, atomicTypeConverters);
