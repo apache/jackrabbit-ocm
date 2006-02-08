@@ -334,8 +334,7 @@ public class ObjectConverterImpl implements ObjectConverter {
             else if (null != beanDescriptor.getBeanConverter()) {
                 bean = beanDescriptor.getBeanConverter().getObject(session,
                         node,
-                        this.mapper,
-                        beanName,
+                        beanDescriptor,
                         beanClass);
             }
             else {
@@ -392,8 +391,7 @@ public class ObjectConverterImpl implements ObjectConverter {
                 else if (null != beanDescriptor.getBeanConverter()) {
                     beanDescriptor.getBeanConverter().insert(session,
                             objectNode,
-                            this.mapper,
-                            jcrName,
+                            beanDescriptor,
                             object);
                 }
                 else {
@@ -426,7 +424,7 @@ public class ObjectConverterImpl implements ObjectConverter {
                         this.storeSimpleFields(session, bean, getClassDescriptor(beanClass), objectNode);
                     }
                     else if (null != beanDescriptor.getBeanConverter()) {
-                        beanDescriptor.getBeanConverter().remove(session, objectNode, this.mapper, jcrName);
+                        beanDescriptor.getBeanConverter().remove(session, objectNode, beanDescriptor);
                     }
                     else {
                         if (objectNode.hasNode(jcrName)) {
@@ -441,8 +439,7 @@ public class ObjectConverterImpl implements ObjectConverter {
                     else if (null != beanDescriptor.getBeanConverter()) {
                         beanDescriptor.getBeanConverter().update(session,
                                 objectNode,
-                                this.mapper, 
-                                jcrName,
+                                beanDescriptor,
                                 bean);
                     }
                     else {

@@ -219,7 +219,7 @@ public class BeanDescriptorTest extends TestBase {
         /**
          * @see org.apache.portals.graffito.jcr.persistence.objectconverter.BeanConverter#insert(javax.jcr.Session, javax.jcr.Node, org.apache.portals.graffito.jcr.mapper.Mapper, java.lang.String, java.lang.Object)
          */
-        public void insert(Session session, Node parentNode, Mapper mapper, String beanName, Object object) throws PersistenceException {
+        public void insert(Session session, Node parentNode, BeanDescriptor descriptor, Object object) throws PersistenceException {
             try {
                 log.add("insert at path " + parentNode.getPath());
             }
@@ -231,7 +231,7 @@ public class BeanDescriptorTest extends TestBase {
         /**
          * @see org.apache.portals.graffito.jcr.persistence.objectconverter.BeanConverter#update(javax.jcr.Session, javax.jcr.Node, org.apache.portals.graffito.jcr.mapper.Mapper, java.lang.String, java.lang.Object)
          */
-        public void update(Session session, Node parentNode, Mapper mapper, String beanName, Object object) throws PersistenceException {
+        public void update(Session session, Node parentNode, BeanDescriptor descriptor, Object object) throws PersistenceException {
             try {
                 log.add("update at path " + parentNode.getPath());
             }
@@ -243,7 +243,7 @@ public class BeanDescriptorTest extends TestBase {
         /**
          * @see org.apache.portals.graffito.jcr.persistence.objectconverter.BeanConverter#getObject(javax.jcr.Session, javax.jcr.Node, org.apache.portals.graffito.jcr.mapper.Mapper, java.lang.String, java.lang.Class)
          */
-        public Object getObject(Session session, Node parentNode, Mapper mapper, String beanName, Class beanClass) throws PersistenceException {
+        public Object getObject(Session session, Node parentNode, BeanDescriptor descriptor, Class beanClass) throws PersistenceException {
             try {
                 log.add("get from path " + parentNode.getPath());
             }
@@ -256,7 +256,7 @@ public class BeanDescriptorTest extends TestBase {
         /**
          * @see org.apache.portals.graffito.jcr.persistence.objectconverter.BeanConverter#remove(javax.jcr.Session, javax.jcr.Node, org.apache.portals.graffito.jcr.mapper.Mapper, java.lang.String)
          */
-        public void remove(Session session, Node parentNode, Mapper mapper, String beanName) throws PersistenceException {
+        public void remove(Session session, Node parentNode, BeanDescriptor descriptor) throws PersistenceException {
             try {
                 log.add("remove from path " + parentNode.getPath());
             }
