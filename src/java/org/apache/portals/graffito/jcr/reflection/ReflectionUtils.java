@@ -6,6 +6,7 @@ import org.apache.commons.beanutils.ConstructorUtils;
 import org.apache.commons.beanutils.PropertyUtils;
 import org.apache.portals.graffito.jcr.exception.JcrMappingException;
 import org.apache.portals.graffito.jcr.persistence.collectionconverter.CollectionConverter;
+import org.apache.portals.graffito.jcr.persistence.objectconverter.BeanConverter;
 
 
 /**
@@ -13,6 +14,10 @@ import org.apache.portals.graffito.jcr.persistence.collectionconverter.Collectio
  */
 abstract public class ReflectionUtils {
     public static Object getNestedProperty(Object object, String fieldName) {
+        if (null == object) {
+            return null;
+        }
+        
         try {
             return PropertyUtils.getNestedProperty(object, fieldName);
         }
@@ -85,6 +90,21 @@ abstract public class ReflectionUtils {
         }
         catch(Exception ex) {
             throw new JcrMappingException("Cannot set the field " + fieldName,
+                    ex);
+        }
+    }
+
+    /**
+     * @param string
+     * @return
+     */
+    public static Object newInstance(String clazz) {
+        try {
+            return Class.forName(clazz).newInstance();
+        }
+        catch(Exception ex) {
+            throw new JcrMappingException("Cannot create instance for class "
+                    + clazz,
                     ex);
         }
     }

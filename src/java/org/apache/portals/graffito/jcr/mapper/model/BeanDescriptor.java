@@ -16,7 +16,9 @@
 package org.apache.portals.graffito.jcr.mapper.model;
 
 
+import org.apache.portals.graffito.jcr.persistence.objectconverter.BeanConverter;
 import org.apache.portals.graffito.jcr.persistence.objectconverter.impl.ObjectConverterImpl;
+import org.apache.portals.graffito.jcr.reflection.ReflectionUtils;
 
 /**
  * BeanDescriptor is used by the mapper to read general information on a bean field
@@ -25,13 +27,12 @@ import org.apache.portals.graffito.jcr.persistence.objectconverter.impl.ObjectCo
  * @author <a href='mailto:the_mindstorm[at]evolva[dot]ro'>Alexandru Popescu</a>
  */
 public class BeanDescriptor {
-    private static final String DEFAULT_CONVERTER = ObjectConverterImpl.class.getName();
-
     private String fieldName;
     private String jcrName;
     private boolean proxy;
     private boolean inline;
-    private String converter = DEFAULT_CONVERTER;
+    private String converter;
+    private BeanConverter beanConverter;
     private String jcrNodeType;
     private boolean jcrAutoCreated;
     private boolean jcrMandatory;
@@ -81,22 +82,52 @@ public class BeanDescriptor {
         this.proxy = proxy;
     }
 
+    /**
+     * Are the current bean properties inlined in the parent
+     * 
+     * @return <tt>true</tt> if bean's properties are inlined in the parent node
+     */
     public boolean isInline() {
         return this.inline;
     }
 
+    /**
+     * Sets if the bean's properties should be inlined in the parent
+     * instead of being persisted on a subnode
+     * 
+     * @param flag <tt>true</tt> if the bean properties should be inlined
+     */
     public void setInline(boolean flag) {
         this.inline = flag;
     }
 
+    /**
+     * Get the <code>BeanConverter</code> fully qualified name or <tt>null</tt>
+     * if none specified by the bean descriptor.
+     * 
+     * @return fully qualified class name or <tt>null</tt>
+     */
     public String getConverter() {
         return this.converter;
     }
 
+    /**
+     * Sets the fully qualified name of a <code>BeanConverter</code> to be used.
+     * 
+     * @param converterClass a fully qualified class name
+     */
     public void setConverter(String converterClass) {
         this.converter = converterClass;
     }
 
+    public BeanConverter getBeanConverter() {
+        if(null == this.beanConverter && null != this.converter) {
+            this.beanConverter = (BeanConverter) ReflectionUtils.newInstance(this.converter);
+        }
+        
+        return this.beanConverter;
+    }
+    
     /** Getter for property jcrNodeType.
      *
      * @return jcrNodeType

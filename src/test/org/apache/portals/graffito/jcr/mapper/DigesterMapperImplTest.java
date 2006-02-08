@@ -78,9 +78,9 @@ public class DigesterMapperImplTest extends TestCase
             assertNotNull("BeanDescriptor is null", beanDescriptor);
             assertTrue("Invalid jcrName for field b", beanDescriptor.getJcrName().equals("b"));
             assertEquals("Invalid bean-descriptor inline", true, beanDescriptor.isInline());
-            assertEquals("Invalid bean default descriptor", 
-                         ObjectConverterImpl.class.getName(),
-                         beanDescriptor.getConverter());
+            assertNull("Invalid bean default converter", beanDescriptor.getConverter());
+            assertNull("Invalid bean converter", beanDescriptor.getBeanConverter());
+            
             
             CollectionDescriptor collectionDescriptor = classDescriptor.getCollectionDescriptor("collection");
             assertNotNull("CollectionDescriptor is null", collectionDescriptor);
