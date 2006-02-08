@@ -80,7 +80,7 @@ public class PersistenceManagerSameNameSiblingTest extends TestBase
 			filter.setScope("/");
 			Query query = queryManager.createQuery(filter);
 			Collection result = persistenceManager.getObjects(query);
-            assertTrue("Incorrect number of objects found", result.size() == 10);
+            assertEquals("Incorrect number of objects found", 10, result.size());
                          
             // Get objects
             Atomic atomic = (Atomic) persistenceManager.getObject(Atomic.class, "/test[2]");

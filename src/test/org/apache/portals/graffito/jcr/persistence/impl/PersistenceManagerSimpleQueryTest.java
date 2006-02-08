@@ -132,7 +132,7 @@ public class PersistenceManagerSimpleQueryTest extends TestBase
     	      
     	      PersistenceManager persistenceManager = this.getPersistenceManager();
     	      Collection result = persistenceManager.getObjects(query);
-    	      assertTrue("Invalid number of objects - should be = 1", result.size() == 1);
+    	      assertEquals("Invalid number of objects - should be = 1", 1, result.size());
     	      Paragraph paragraph = (Paragraph) result.iterator().next();
     	      assertTrue("Invalid paragraph found" , paragraph.getText().equals("Para 1"));
             
@@ -164,7 +164,7 @@ public class PersistenceManagerSimpleQueryTest extends TestBase
     	      
     	      PersistenceManager persistenceManager = this.getPersistenceManager();
     	      Collection result = persistenceManager.getObjects(query);
-    	      assertTrue("Invalid number of objects - should be = 3", result.size() == 3);
+    	      assertEquals("Invalid number of objects - should be = 3", 3, result.size());
 
     	      Paragraph[] paragraphs = (Paragraph[]) result.toArray(new Paragraph[result.size()]);
     	      assertTrue("Invalid paragraph found", paragraphs[0].getText().equals("Para 1"));
@@ -207,7 +207,7 @@ public class PersistenceManagerSimpleQueryTest extends TestBase
     	      
     	      PersistenceManager persistenceManager = this.getPersistenceManager();
     	      Collection result = persistenceManager.getObjects(query);
-    	      assertTrue("Invalid number of objects - should be = 2", result.size() == 2);
+    	      assertEquals("Invalid number of objects - should be = 2", 2, result.size());
     	      
     	      Paragraph[] paragraphs = (Paragraph[]) result.toArray(new Paragraph[result.size()]);
     	      assertTrue("Invalid paragraph found", paragraphs[0].getText().equals("Para 1"));
@@ -239,7 +239,7 @@ public class PersistenceManagerSimpleQueryTest extends TestBase
     	      
     	      PersistenceManager persistenceManager = this.getPersistenceManager();
     	      Collection result = persistenceManager.getObjects(query);
-    	      assertTrue("Invalid number of objects - should be = 3", result.size() == 3);
+    	      assertEquals("Invalid number of objects - should be = 3", 3, result.size());
 
     	      Paragraph[] paragraphs = (Paragraph[]) result.toArray(new Paragraph[result.size()]);
     	      assertTrue("Invalid paragraph found", paragraphs[0].getText().equals("Para 3"));

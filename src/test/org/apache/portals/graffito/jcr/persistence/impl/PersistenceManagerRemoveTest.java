@@ -111,7 +111,7 @@ public class PersistenceManagerRemoveTest extends TestBase
 			filter.setScope("//");
 			query = queryManager.createQuery(filter);			
 			Collection result = persistenceManager.getObjects(query);
-			assertTrue("Invalid number of objects", result.size() == 5);
+			assertEquals("Invalid number of objects", 5, result.size());
 
 		}
 		catch (Exception e)
