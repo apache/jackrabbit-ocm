@@ -16,7 +16,6 @@
 package org.apache.portals.graffito.jcr.persistence.objectconverter.impl;
 
 
-import java.lang.reflect.InvocationTargetException;
 import java.util.Iterator;
 import java.util.Map;
 
@@ -26,15 +25,12 @@ import javax.jcr.RepositoryException;
 import javax.jcr.Session;
 import javax.jcr.Value;
 import javax.jcr.ValueFactory;
-import javax.jcr.ValueFormatException;
 import javax.jcr.lock.LockException;
 import javax.jcr.nodetype.ConstraintViolationException;
 import javax.jcr.nodetype.NoSuchNodeTypeException;
 import javax.jcr.nodetype.PropertyDefinition;
 import javax.jcr.version.VersionException;
 
-import org.apache.commons.beanutils.ConstructorUtils;
-import org.apache.commons.beanutils.PropertyUtils;
 import org.apache.portals.graffito.jcr.exception.JcrMappingException;
 import org.apache.portals.graffito.jcr.exception.PersistenceException;
 import org.apache.portals.graffito.jcr.mapper.Mapper;
@@ -44,6 +40,7 @@ import org.apache.portals.graffito.jcr.mapper.model.CollectionDescriptor;
 import org.apache.portals.graffito.jcr.mapper.model.FieldDescriptor;
 import org.apache.portals.graffito.jcr.persistence.atomictypeconverter.AtomicTypeConverter;
 import org.apache.portals.graffito.jcr.persistence.atomictypeconverter.AtomicTypeConverterProvider;
+import org.apache.portals.graffito.jcr.persistence.atomictypeconverter.impl.NullTypeConverterImpl;
 import org.apache.portals.graffito.jcr.persistence.collectionconverter.CollectionConverter;
 import org.apache.portals.graffito.jcr.persistence.collectionconverter.ManageableCollection;
 import org.apache.portals.graffito.jcr.persistence.collectionconverter.ManageableCollectionUtil;
@@ -59,6 +56,8 @@ import org.apache.portals.graffito.jcr.repository.RepositoryUtil;
  * @author <a href='mailto:the_mindstorm[at]evolva[dot]ro'>Alexandru Popescu</a>
  */
 public class ObjectConverterImpl implements ObjectConverter {
+    private static final AtomicTypeConverter NULL_CONVERTER = new NullTypeConverterImpl();
+
     private Mapper mapper;
 
     private AtomicTypeConverterProvider atomicTypeConverterProvider;
@@ -124,12 +123,8 @@ public class ObjectConverterImpl implements ObjectConverter {
      * @see org.apache.portals.graffito.jcr.persistence.objectconverter.ObjectConverter#insert(javax.jcr.Session, javax.jcr.Node, java.lang.String, java.lang.Object)
      */
     public void insert(Session session, Node parentNode, String nodeName, Object object) {
-        ClassDescriptor classDescriptor = mapper.getClassDescriptor(object.getClass());
-        if (classDescriptor == null) {
-            throw new JcrMappingException("Class of type: " + object.getClass().getName()
-                    + " is not JCR persistable. Maybe element 'class-descriptor' for this type in mapping file is missing");
-        }
-
+        ClassDescriptor classDescriptor = getClassDescriptor(object.getClass());
+        
         String jcrNodeType = classDescriptor.getJcrNodeType();
         if ((jcrNodeType == null) || jcrNodeType.equals("")) {
             throw new JcrMappingException("Undefined node type for  " + parentNode);
@@ -197,13 +192,7 @@ public class ObjectConverterImpl implements ObjectConverter {
      */
     public void update(Session session, Node parentNode, String nodeName, Object object) {
         try {
-            ClassDescriptor classDescriptor = mapper.getClassDescriptor(object.getClass());
-            if (classDescriptor == null) {
-                throw new JcrMappingException("Class of type: " 
-                        + object.getClass().getName()
-                        + " is not JCR persistable. Maybe element 'class-descriptor' for this type in mapping file is missing");
-            }
-
+            ClassDescriptor classDescriptor = getClassDescriptor(object.getClass());
             Node objectNode = parentNode.getNode(nodeName);
             
             storeSimpleFields(session, object, classDescriptor, objectNode);
@@ -231,21 +220,15 @@ public class ObjectConverterImpl implements ObjectConverter {
                 return null;
             }
 
-            ClassDescriptor classDescriptor = mapper.getClassDescriptor(clazz);
-            if (classDescriptor == null) {
-                throw new JcrMappingException("Class of type: " + clazz.getName()
-                        + " is not JCR persistable. Maybe element 'class-descriptor' for this type in mapping file is missing");
-            }
-
+            ClassDescriptor classDescriptor = getClassDescriptor(clazz);
             Node node = (Node) session.getItem(path);
             Object object = ReflectionUtils.newInstance(clazz);
 
             retrieveSimpleFields(session, classDescriptor, node, object);
-            retrieveBeanFields(session, path, classDescriptor, object);
+            retrieveBeanFields(session, classDescriptor, node, path, object);
             retrieveCollectionFields(session, classDescriptor, node, object);
 
             return object;
-
         }         
         catch(PathNotFoundException pnfe) {
             // HINT should never get here
@@ -262,12 +245,7 @@ public class ObjectConverterImpl implements ObjectConverter {
      * @throws JcrMappingException
      */
     public String getPath(Session session, Object object) {
-        ClassDescriptor classDescriptor = mapper.getClassDescriptor(object.getClass());
-        if (classDescriptor == null) {
-            throw new JcrMappingException("Class of type: " 
-                    + object.getClass().getName()
-                    + " is not JCR persistable. Maybe element 'class-descriptor' for this type in mapping file is missing"
-            );            }
+        ClassDescriptor classDescriptor = getClassDescriptor(object.getClass());
 
         final FieldDescriptor pathFieldDescriptor = classDescriptor.getPathFieldDescriptor();
         if (pathFieldDescriptor == null) {
@@ -287,10 +265,11 @@ public class ObjectConverterImpl implements ObjectConverter {
      * @throws JcrMappingException
      * @throws org.apache.portals.graffito.jcr.exception.RepositoryException
      */
-    private void retrieveSimpleFields(Session session, 
-                                      ClassDescriptor classDescriptor, 
-                                      Node node, 
-                                      Object object) {
+    private Object retrieveSimpleFields(Session session, 
+                                        ClassDescriptor classDescriptor, 
+                                        Node node, 
+                                        Object object) {
+        Object initializedBean = object;
         try {
             Iterator fieldDescriptorIterator = classDescriptor.getFieldDescriptors().iterator();
     
@@ -301,15 +280,24 @@ public class ObjectConverterImpl implements ObjectConverter {
                 String propertyName = fieldDescriptor.getJcrName();
     
                 if (fieldDescriptor.isPath()) {
-                    ReflectionUtils.setNestedProperty(object, fieldName, node.getPath());
+                    if (null == initializedBean) { // HINT: lazy initialize target bean
+                        initializedBean = ReflectionUtils.newInstance(classDescriptor.getClassName());
+                    }
+                    
+                    ReflectionUtils.setNestedProperty(initializedBean, fieldName, node.getPath());
                 } else {
-                    AtomicTypeConverter converter= getAtomicTypeConverter(fieldDescriptor, 
-                                                                          object, 
-                                                                          fieldName);
                     if (node.hasProperty(propertyName)) {
-                        Object fieldValue = converter.getObject(
-                                node.getProperty(propertyName).getValue());
-                        ReflectionUtils.setNestedProperty(object, fieldName, fieldValue);
+                        Value propValue = node.getProperty(propertyName).getValue();
+                        if (null != propValue && null == initializedBean) { // HINT: lazy initialize target bean
+                            initializedBean = ReflectionUtils.newInstance(classDescriptor.getClassName());
+                        }
+
+                        AtomicTypeConverter converter= getAtomicTypeConverter(fieldDescriptor, 
+                                                                              initializedBean, 
+                                                                              fieldName);
+                        
+                        Object fieldValue = converter.getObject(propValue);
+                        ReflectionUtils.setNestedProperty(initializedBean, fieldName, fieldValue);
                     }
                 }
             }
@@ -322,23 +310,39 @@ public class ObjectConverterImpl implements ObjectConverter {
                     + node,
                     re);
         }
+        
+        return initializedBean;
     }
-
+    
     /**
      * Retrieve bean fields
      */
     private void retrieveBeanFields(Session session,
-                                    String path,
                                     ClassDescriptor classDescriptor,
+                                    Node node,
+                                    String path,
                                     Object object) {
         Iterator beanDescriptorIterator = classDescriptor.getBeanDescriptors().iterator();
         while (beanDescriptorIterator.hasNext()) {
             BeanDescriptor beanDescriptor = (BeanDescriptor) beanDescriptorIterator.next();
             String beanName = beanDescriptor.getFieldName();
             Class beanClass = ReflectionUtils.getPropertyType(object, beanName);
-            Object bean = this.getObject(session,
-                                         beanClass,
-                                         path + "/" + beanDescriptor.getJcrName());
+            Object bean = null;
+            if (beanDescriptor.isInline()) {
+                bean = this.retrieveSimpleFields(session, getClassDescriptor(beanClass), node, null);
+            }
+            else if (null != beanDescriptor.getBeanConverter()) {
+                bean = beanDescriptor.getBeanConverter().getObject(session,
+                        node,
+                        this.mapper,
+                        beanName,
+                        beanClass);
+            }
+            else {
+                bean = this.getObject(session,
+                                      beanClass,
+                                      path + "/" + beanDescriptor.getJcrName());
+            }
             ReflectionUtils.setNestedProperty(object, beanName, bean);
         }
     }
@@ -382,7 +386,19 @@ public class ObjectConverterImpl implements ObjectConverter {
             Object bean = ReflectionUtils.getNestedProperty(object,
                                                             beanDescriptor.getFieldName());
             if (bean != null) {
-                this.insert(session, objectNode, jcrName, bean);
+                if (beanDescriptor.isInline()) {
+                    this.storeSimpleFields(session, bean, getClassDescriptor(bean.getClass()), objectNode);
+                }
+                else if (null != beanDescriptor.getBeanConverter()) {
+                    beanDescriptor.getBeanConverter().insert(session,
+                            objectNode,
+                            this.mapper,
+                            jcrName,
+                            object);
+                }
+                else {
+                    this.insert(session, objectNode, jcrName, bean);
+                }
             }
         }
     }
@@ -405,13 +421,34 @@ public class ObjectConverterImpl implements ObjectConverter {
 
                 // if the bean is null, remove existing node
                 if ((bean == null)) {
-                    if (objectNode.hasNode(jcrName)) {
-                        objectNode.getNode(jcrName).remove();
+                    if (beanDescriptor.isInline()) {
+                        Class beanClass = ReflectionUtils.getPropertyType(object, beanDescriptor.getFieldName());
+                        this.storeSimpleFields(session, bean, getClassDescriptor(beanClass), objectNode);
                     }
-                } else {
-                    this.update(session, objectNode, jcrName, bean);
+                    else if (null != beanDescriptor.getBeanConverter()) {
+                        beanDescriptor.getBeanConverter().remove(session, objectNode, this.mapper, jcrName);
+                    }
+                    else {
+                        if (objectNode.hasNode(jcrName)) {
+                            objectNode.getNode(jcrName).remove();
+                        }
+                    }
+                } 
+                else {
+                    if (beanDescriptor.isInline()) {
+                        this.storeSimpleFields(session, bean, getClassDescriptor(bean.getClass()), objectNode);
+                    }
+                    else if (null != beanDescriptor.getBeanConverter()) {
+                        beanDescriptor.getBeanConverter().update(session,
+                                objectNode,
+                                this.mapper, 
+                                jcrName,
+                                bean);
+                    }
+                    else {
+                        this.update(session, objectNode, jcrName, bean);
+                    }
                 }
-
             }
         } 
         catch(VersionException ve) {
@@ -567,9 +604,29 @@ public class ObjectConverterImpl implements ObjectConverter {
     private AtomicTypeConverter getAtomicTypeConverter(FieldDescriptor fd, 
                                                        Object object, 
                                                        String fieldName) {
-        Class fieldTypeClass= fd.getFieldTypeClass() != null 
-            ? fd.getFieldTypeClass() : ReflectionUtils.getPropertyType(object, fieldName);
-            
-        return this.atomicTypeConverterProvider.getAtomicTypeConverter(fieldTypeClass);
+        Class fieldTypeClass = null;
+        if (null != fd.getFieldTypeClass()) {
+            fieldTypeClass = fd.getFieldTypeClass();
+        }
+        else if (null != object) {
+            fieldTypeClass = ReflectionUtils.getPropertyType(object, fieldName);
+        }
+
+        if (null != fieldTypeClass) {
+            return this.atomicTypeConverterProvider.getAtomicTypeConverter(fieldTypeClass);
+        }
+        else {
+            return NULL_CONVERTER;
+        }
+    }
+    
+    protected ClassDescriptor getClassDescriptor(Class beanClass) {
+        ClassDescriptor classDescriptor = mapper.getClassDescriptor(beanClass);
+        if(null == classDescriptor) {
+            throw new JcrMappingException("Class of type: " + beanClass.getName()
+                    + " is not JCR persistable. Maybe element 'class-descriptor' for this type in mapping file is missing");
+        }
+  
+        return classDescriptor;
     }
 }
