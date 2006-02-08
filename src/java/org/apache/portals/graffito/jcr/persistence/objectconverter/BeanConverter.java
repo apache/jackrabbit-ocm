@@ -23,6 +23,7 @@ import org.apache.portals.graffito.jcr.exception.JcrMappingException;
 import org.apache.portals.graffito.jcr.exception.PersistenceException;
 import org.apache.portals.graffito.jcr.exception.RepositoryException;
 import org.apache.portals.graffito.jcr.mapper.Mapper;
+import org.apache.portals.graffito.jcr.mapper.model.BeanDescriptor;
 
 /**
  * Interface describing a custom bean converter. 
@@ -46,7 +47,7 @@ public interface BeanConverter {
      *  wrapped in PersistenceException; marks a repository failure
      * @throws JcrMappingException throws in case the mapping of the bean is not correct
      */
-    void insert(Session session, Node parentNode, Mapper mapper, String beanName, Object object)
+    void insert(Session session, Node parentNode, BeanDescriptor descriptor, Object object)
     throws PersistenceException, RepositoryException, JcrMappingException;
 
     /**
@@ -65,7 +66,7 @@ public interface BeanConverter {
      *  wrapped in PersistenceException; marks a repository failure
      * @throws JcrMappingException throws in case the mapping of the bean is not correct
      */
-    void update(Session session, Node parentNode, Mapper mapper, String beanName, Object object)
+    void update(Session session, Node parentNode, BeanDescriptor descriptor, Object object)
     throws PersistenceException, RepositoryException, JcrMappingException;
     
     /**
@@ -84,7 +85,7 @@ public interface BeanConverter {
      *  wrapped in PersistenceException; marks a repository failure
      * @throws JcrMappingException throws in case the mapping of the bean is not correct
      */
-    Object getObject(Session session, Node parentNode, Mapper mapper, String beanName, Class beanClass) 
+    Object getObject(Session session, Node parentNode, BeanDescriptor descriptor, Class beanClass) 
     throws PersistenceException, RepositoryException, JcrMappingException;
 
 
@@ -103,6 +104,6 @@ public interface BeanConverter {
      *  wrapped in PersistenceException; marks a repository failure
      * @throws JcrMappingException throws in case the mapping of the bean is not correct
      */
-    void remove(Session session, Node parentNode, Mapper mapper, String beanName)
+    void remove(Session session, Node parentNode, BeanDescriptor descriptor)
     throws PersistenceException, RepositoryException, JcrMappingException;
 }
