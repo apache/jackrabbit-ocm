@@ -27,6 +27,8 @@ import org.apache.portals.graffito.jcr.reflection.ReflectionUtils;
  * @author <a href='mailto:the_mindstorm[at]evolva[dot]ro'>Alexandru Popescu</a>
  */
 public class BeanDescriptor {
+    private ClassDescriptor classDescriptor;
+    
     private String fieldName;
     private String jcrName;
     private boolean proxy;
@@ -222,5 +224,19 @@ public class BeanDescriptor {
      */
     public void setJcrSameNameSiblings(boolean value) {
         this.jcrSameNameSiblings = value;
+    }
+
+    /**
+     * @param descriptor
+     */
+    public void setClassDescriptor(ClassDescriptor descriptor) {
+        this.classDescriptor = descriptor;
+    }
+
+    /**
+     * @return Returns the classDescriptor.
+     */
+    public ClassDescriptor getClassDescriptor() {
+        return classDescriptor;
     }
 }
