@@ -20,6 +20,7 @@ import junit.framework.Test;
 import junit.framework.TestSuite;
 
 import org.apache.portals.graffito.jcr.mapper.DigesterMapperImplTest;
+import org.apache.portals.graffito.jcr.persistence.objectconverter.impl.BeanDescriptorTest;
 import org.apache.portals.graffito.jcr.query.impl.QueryManagerTest;
 import org.apache.portals.graffito.jcr.repository.RepositoryUtilTest;
 
@@ -41,6 +42,7 @@ public class AllTests {
         suite.addTestSuite(DigesterMapperImplTest.class);
         suite.addTestSuite(RepositoryUtilTest.class);
         suite.addTestSuite(QueryManagerTest.class);
+        suite.addTestSuite(BeanDescriptorTest.class);
         
         // package level tests
         suite.addTest(org.apache.portals.graffito.jcr.persistence.atomicconverter.AllTests.buildSuite());
