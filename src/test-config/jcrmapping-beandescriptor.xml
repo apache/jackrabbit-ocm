@@ -11,6 +11,23 @@
 
 	</class-descriptor>
 	
+	<class-descriptor className="org.apache.portals.graffito.jcr.testmodel.E"  jcrNodeType="nt:unstructured" jcrSuperTypes="nt:base">
+		<field-descriptor fieldName="path" path="true" />
+		<field-descriptor fieldName="d1" 
+						  jcrName="d1" 
+						  jcrType="String" 
+						  jcrAutoCreated="false" 
+						  jcrMandatory="false"
+        				  jcrOnParentVersion="IGNORE" 
+        				  jcrProtected="false" 
+        				  jcrMultiple="false" />
+		
+		<bean-descriptor  fieldName="b1" 
+						  jcrName="b1"
+						  converter="org.apache.portals.graffito.jcr.persistence.objectconverter.impl.BeanDescriptorTest$FakeBeanConverter" />
+
+	</class-descriptor>
+	
 	<class-descriptor className="org.apache.portals.graffito.jcr.testmodel.DFull"  jcrNodeType="nt:unstructured" jcrSuperTypes="nt:base">
 		<field-descriptor fieldName="path" path="true" />
 		<field-descriptor fieldName="d1" jcrName="d1" jcrType="String" jcrAutoCreated="false" jcrMandatory="false"
