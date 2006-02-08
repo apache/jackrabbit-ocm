@@ -18,6 +18,7 @@ package org.apache.portals.graffito.jcr.mapper.model;
 
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.Map;
 
 /**
  *
@@ -27,6 +28,8 @@ import java.util.HashMap;
  * @author <a href='mailto:the_mindstorm[at]evolva[dot]ro'>Alexandru Popescu</a>
  */
 public class ClassDescriptor {
+    private MappingDescriptor mappingDescriptor;
+    
     private String className;
     private String jcrNodeType;
     private String jcrSuperTypes;
@@ -34,10 +37,10 @@ public class ClassDescriptor {
     private FieldDescriptor idFieldDescriptor;
     private FieldDescriptor pathFieldDescriptor;
 
-    private HashMap fieldDescriptors = new HashMap();
-    private HashMap beanDescriptors = new HashMap();
-    private HashMap collectionDescriptors = new HashMap();
-    private HashMap fieldNames = new HashMap();
+    private Map fieldDescriptors = new HashMap();
+    private Map beanDescriptors = new HashMap();
+    private Map collectionDescriptors = new HashMap();
+    private Map fieldNames = new HashMap();
 
     /**
      * @return Returns the className.
@@ -109,6 +112,7 @@ public class ClassDescriptor {
      */
 
     public void addBeanDescriptor(BeanDescriptor beanDescriptor) {
+        beanDescriptor.setClassDescriptor(this);
         beanDescriptors.put(beanDescriptor.getFieldName(), beanDescriptor);
         fieldNames.put(beanDescriptor.getFieldName(), beanDescriptor.getJcrName());
     }
@@ -227,5 +231,19 @@ public class ClassDescriptor {
 
     public void setJcrMixinTypes(String[] mixinTypes) {
         jcrMixinTypes = mixinTypes;
+    }
+
+    /**
+     * @return Returns the mappingDescriptor.
+     */
+    public MappingDescriptor getMappingDescriptor() {
+        return mappingDescriptor;
+    }
+
+    /**
+     * @param mappingDescriptor The mappingDescriptor to set.
+     */
+    public void setMappingDescriptor(MappingDescriptor mappingDescriptor) {
+        this.mappingDescriptor = mappingDescriptor;
     }
 }

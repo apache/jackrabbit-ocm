@@ -123,6 +123,7 @@ public class DigesterMapperImpl implements Mapper {
         if (this.mappingFiles != null && this.mappingFiles.length > 0) {
             log.info("Read the xml mapping file : " +  this.mappingFiles[0]);
             this.mappingDescriptor = this.descriptorReader.loadClassDescriptors(this.mappingFiles[0]);
+            this.mappingDescriptor.setMapper(this);
 
             for (int i = 1; i < this.mappingFiles.length; i++) {
                 log.info("Read the xml mapping file : " +  this.mappingFiles[i]);
@@ -133,6 +134,7 @@ public class DigesterMapperImpl implements Mapper {
         else if (this.mappingStreams != null && this.mappingStreams.length > 0) {
             log.info("Read the stream mapping file : " +  this.mappingStreams[0].toString());
             this.mappingDescriptor = this.descriptorReader.loadClassDescriptors(this.mappingStreams[0]);
+            this.mappingDescriptor.setMapper(this);
 
             for (int i = 1; i < this.mappingStreams.length; i++) {
                 log.info("Read the stream mapping file : " +  this.mappingStreams[i].toString());
