@@ -107,7 +107,7 @@ public class DefaultCollectionConverterImplTest extends TestBase
             // --------------------------------------------------------------------------------           
             a = (A) persistenceManager.getObject(A.class, "/test");
             assertNotNull("a.collection is null", a.getCollection());
-            assertTrue("Incorrect a.collection size", a.getCollection().size() == 3);
+            assertEquals("Incorrect a.collection size", 3, a.getCollection().size());
             assertTrue("Incorrect a.collection", ((C) a.getCollection().iterator().next()).getId().equals("first"));
             
             // --------------------------------------------------------------------------------
@@ -191,23 +191,12 @@ public class DefaultCollectionConverterImplTest extends TestBase
             // --------------------------------------------------------------------------------           
             a = (A) persistenceManager.getObject(A.class, "/test");
             assertNotNull("a.collection is null", a.getCollection());
-            assertTrue("Incorrect a.collection size", a.getCollection().size() == 3);
-            assertTrue("Incorrect a.collection", ((C) a.getCollection().iterator().next()).getId().equals("first"));
+            assertEquals("Incorrect a.collection size", 3, a.getCollection().size());
+            assertEquals("Incorrect a.collection", "first", ((C) a.getCollection().iterator().next()).getId());
             
             // --------------------------------------------------------------------------------
             // Update the object
             // --------------------------------------------------------------------------------
-            c1 = new C();
-            c1.setId("first");
-            c1.setName("First Element");
-            c2 = new C();
-            c2.setId("second");
-            c2.setName("Second Element");
-            
-            c3 = new C();
-            c3.setId("third");
-            c3.setName("Third Element");
-            
             C c4 = new C();
             c4.setId("Fourth");
             c4.setName("Fourth Element");
@@ -228,8 +217,8 @@ public class DefaultCollectionConverterImplTest extends TestBase
             a = (A) persistenceManager.getObject(A.class, "/test");
             assertNotNull("a is null", a);
             assertNotNull("a.collection is null", a.getCollection());
-            assertTrue("Incorrect collection size", a.getCollection().size() == 4);
-            assertTrue("Incorrect a.collection", ((C) a.getCollection().iterator().next()).getId().equals("first"));
+            assertEquals("Incorrect collection size", 4, a.getCollection().size());
+            assertEquals("Incorrect a.collection", "first", ((C) a.getCollection().iterator().next()).getId());
             
         }
         catch (Exception e)
