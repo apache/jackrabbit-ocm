@@ -120,9 +120,9 @@
 	collectionClassName CDATA #IMPLIED
 	collectionConverter CDATA #IMPLIED
 	jcrNodeType CDATA #IMPLIED
-        jcrAutoCreated (true | false) "false"   
-        jcrMandatory (true | false) "false"
-        jcrOnParentVersion (COPY | VERSION | INITIALIZE | COMPUTE | IGNORE | ABORT) "COPY"
-        jcrProtected (true | false) "false"
-        jcrSameNameSiblings (true | false) "false"	
+    jcrAutoCreated (true | false) "false"   
+    jcrMandatory (true | false) "false"
+    jcrOnParentVersion (COPY | VERSION | INITIALIZE | COMPUTE | IGNORE | ABORT) "COPY"
+    jcrProtected (true | false) "false"
+    jcrSameNameSiblings (true | false) "false"	
 >
