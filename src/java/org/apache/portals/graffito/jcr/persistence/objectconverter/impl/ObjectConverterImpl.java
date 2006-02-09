@@ -25,6 +25,7 @@ import javax.jcr.RepositoryException;
 import javax.jcr.Session;
 import javax.jcr.Value;
 import javax.jcr.ValueFactory;
+import javax.jcr.ValueFormatException;
 import javax.jcr.lock.LockException;
 import javax.jcr.nodetype.ConstraintViolationException;
 import javax.jcr.nodetype.NoSuchNodeTypeException;
@@ -302,9 +303,16 @@ public class ObjectConverterImpl implements ObjectConverter {
                 }
             }
         }
+        catch(ValueFormatException vfe) {
+            throw new PersistenceException( "Cannot retrieve properties of object "
+                    + object
+                    + " from node "
+                    + node,
+                    vfe);
+        }
         catch(RepositoryException re) {
             throw new org.apache.portals.graffito.jcr.exception.RepositoryException(
-                    "Cannot retrieve properties of object"
+                    "Cannot retrieve properties of object "
                     + object
                     + " from node "
                     + node,
@@ -556,9 +564,29 @@ public class ObjectConverterImpl implements ObjectConverter {
                 }
             }
         }
+        catch(ValueFormatException vfe) {
+            throw new PersistenceException("Cannot persist properties of object " + object
+                    + ". Value format exception.",
+                    vfe);
+        }
+        catch(VersionException ve) {
+            throw new PersistenceException("Cannot persist properties of object " + object
+                    + ". Versioning exception.",
+                    ve);
+        }
+        catch(LockException le) {
+            throw new PersistenceException("Cannot persist properties of object " + object
+                    + " on locked node.",
+                    le);
+        }
+        catch(ConstraintViolationException cve) {
+            throw new PersistenceException("Cannot persist properties of object " + object
+                    + ". Constraint violation.",
+                    cve);
+        }
         catch(RepositoryException re) {
             throw new org.apache.portals.graffito.jcr.exception.RepositoryException(
-                    "Cannot persist properties of object" + object,
+                    "Cannot persist properties of object " + object,
                     re);
         }
     }
