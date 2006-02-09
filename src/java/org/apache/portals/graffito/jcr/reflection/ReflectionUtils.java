@@ -124,4 +124,17 @@ abstract public class ReflectionUtils {
                     ex);
         }
     }
+
+    /**
+     * @param elementClassName
+     * @return
+     */
+    public static Class forName(String clazz) {
+        try {
+            return Class.forName(clazz);
+        }
+        catch(Exception ex) {
+            throw new JcrMappingException("Cannot load class " + clazz, ex);
+        }
+    }
 }
