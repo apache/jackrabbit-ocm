@@ -22,76 +22,68 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Vector;
 
-import org.apache.portals.graffito.jcr.exception.PersistenceException;
+import org.apache.portals.graffito.jcr.exception.JcrMappingException;
 import org.apache.portals.graffito.jcr.persistence.collectionconverter.impl.ManageableArrayList;
 import org.apache.portals.graffito.jcr.persistence.collectionconverter.impl.ManageableVector;
 
 /**
- * Utility class used to instantiate {@link ManageableCollection} 
+ * Utility class used to instantiate {@link ManageableCollection}
  *
  * @author <a href="mailto:christophe.lombart@gmail.com">Christophe Lombart</a>
  *
  */
-public class ManageableCollectionUtil
-{
-	
-	/**
-	 * Instantiate a new {@link ManageableCollection}
-	 * @param manageableCollectionClassName The manageable collection class name
-	 * @return an emtpy created {@link ManageableCollection}
-	 */
-    public static ManageableCollection getManageableCollection(String manageableCollectionClassName)
-    {
-        try
-        {
+public class ManageableCollectionUtil {
+
+    /**
+     * Instantiate a new {@link ManageableCollection}
+     * @param manageableCollectionClassName The manageable collection class name
+     * @return an emtpy created {@link ManageableCollection}
+     */
+    public static ManageableCollection getManageableCollection(String manageableCollectionClassName) {
+        try {
             Class collectionClass = Class.forName(manageableCollectionClassName);
+
             return (ManageableCollection) collectionClass.newInstance();
         }
-        catch (Exception e)
-        {
-            throw new PersistenceException("Impossible to create the manageable collection : " + manageableCollectionClassName, e);
+        catch (Exception e) {
+            throw new JcrMappingException("Cannot create manageable collection : "
+                                           + manageableCollectionClassName,
+                                           e);
         }
     }
 
-	/**
-	 * Instantiate a new {@link ManageableCollection}
-	 * @param collectionClass the collection class name 
-	 * @return an emtpy created {@link ManageableCollection}
-	 */
-    
-    public static ManageableCollection getManageableCollection(Class collectionClass)
-    {
-        try
-        {
+    /**
+     * Instantiate a new {@link ManageableCollection}
+     * @param collectionClass the collection class name
+     * @return an emtpy created {@link ManageableCollection}
+     */
 
-            if (collectionClass.equals(ArrayList.class))
-            {
+    public static ManageableCollection getManageableCollection(Class collectionClass) {
+        try {
+
+            if (collectionClass.equals(ArrayList.class)) {
                 return new ManageableArrayList();
             }
 
-            if (collectionClass.equals(Vector.class))
-            {
+            if (collectionClass.equals(Vector.class)) {
                 return new ManageableVector();
             }
 
-            if (collectionClass.equals(Collection.class) || collectionClass.equals(List.class))
-            {
+            if (collectionClass.equals(Collection.class) || collectionClass.equals(List.class)) {
                 return new ManageableArrayList();
             }
-            
-            Object collection  = collectionClass.newInstance();
-            if (! (collection instanceof ManageableCollection))
-            {
-               throw new PersistenceException("Unsupported collection type :" + collectionClass.getName());
+
+            Object collection = collectionClass.newInstance();
+            if (!(collection instanceof ManageableCollection)) {
+                throw new JcrMappingException("Unsupported collection type :"
+                                               + collectionClass.getName());
             }
-            else
-            {
+            else {
                 return (ManageableCollection) collection;
             }
         }
-        catch (Exception e)
-        {
-            throw new PersistenceException("Impossible to create the manageable collection", e);
+        catch (Exception e) {
+            throw new JcrMappingException("Cannot create manageable collection", e);
         }
     }
 
@@ -99,52 +91,48 @@ public class ManageableCollectionUtil
      * Convert a java Collection object into a {@link ManageableCollection}.
      * Until now, only the following class are supported :
      * Collection, List, ArrayList, Vector
-     * 
+     *
      * If you need a Map, you have to write your own {@link ManageableCollection}.
      * @param object the java collection or Map
      * @return The converted {@link ManageableCollection}
      *
      */
-    public static ManageableCollection getManageableCollection(Object object)
-    {
-        try
-        {
-            if (object == null)
-            {
+    public static ManageableCollection getManageableCollection(Object object) {
+        try {
+            if (object == null) {
                 return null;
             }
 
-            if (object instanceof ManageableCollection)
-            {
+            if (object instanceof ManageableCollection) {
                 return (ManageableCollection) object;
-                
+
             }
-            if (object.getClass().equals(ArrayList.class))
-            {
-                ManageableArrayList manageableArrayList =  new ManageableArrayList();
+            if (object.getClass().equals(ArrayList.class)) {
+                ManageableArrayList manageableArrayList = new ManageableArrayList();
                 manageableArrayList.addAll((Collection) object);
+
                 return manageableArrayList;
             }
 
-            if (object.getClass().equals(Vector.class))
-            {
+            if (object.getClass().equals(Vector.class)) {
                 ManageableVector manageableVector = new ManageableVector();
                 manageableVector.addAll((Collection) object);
+
                 return manageableVector;
             }
 
-            if (object.getClass().equals(Collection.class) || object.getClass().equals(List.class))
-            {
-                ManageableArrayList manageableArrayList =  new ManageableArrayList();
+            if (object.getClass().equals(Collection.class)
+                || object.getClass().equals(List.class)) {
+                ManageableArrayList manageableArrayList = new ManageableArrayList();
                 manageableArrayList.addAll((Collection) object);
+
                 return manageableArrayList;
             }
-
-            throw new PersistenceException("Unsupported collection type :" + object.getClass().getName());
         }
-        catch (Exception e)
-        {
-            throw new PersistenceException("Impossible to create the manageable collection", e);
+        catch (Exception e) {
+            throw new JcrMappingException("Impossible to create the manageable collection", e);
         }
+        
+        throw new JcrMappingException("Unsupported collection type :" + object.getClass().getName());
     }
 }
