@@ -39,13 +39,6 @@
 	</repository>
 
 	<dependencies>
-		<!--
-		<dependency>
-			<id>graffito-commons</id>
-			<groupId>org.apache.portals.graffito</groupId>
-			<version>1.0-a1-dev</version>
-		</dependency>
-		-->
 		<dependency>
 			<groupId>org.apache.jackrabbit</groupId>
 			<artifactId>jackrabbit</artifactId>
@@ -147,6 +140,25 @@
 			${basedir}/src/test
 		</unitTestSourceDirectory>
 		<unitTest>
+			<includes>
+				<include>
+					org/apache/portals/graffito/jcr/AllTests.java
+				</include>	
+			</includes>	
+			<excludes>
+				<exclude>**/*TestBase.java</exclude>
+			</excludes>			
+			<resources>
+				<resource>
+					<directory>${basedir}/src/test</directory>
+					<excludes>
+						<exclude>**/*.java</exclude>
+					</excludes>
+				</resource>
+			</resources>
+		</unitTest>
+		<!--
+		<unitTest>
 			<excludes>
 				<exclude>
 					org/apache/portals/graffito/jcr/testmodel/**/*.java
@@ -162,7 +174,7 @@
 				</resource>
 			</resources>
 		</unitTest>
-
+		-->
 		<resources>
 			<resource>
 				<directory>${basedir}/src/java</directory>
