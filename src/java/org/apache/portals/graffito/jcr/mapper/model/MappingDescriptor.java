@@ -33,12 +33,30 @@ public class MappingDescriptor {
 
     private Mapper mapper;
 
+    private String packageName;
+    
+    public void setPackage(String pckgName) {
+        this.packageName = pckgName;
+    }
+    
     /**
      * Add a new ClassDescriptor
      *
      * @param classDescriptor The class descriptor to add
      */
     public void addClassDescriptor(ClassDescriptor classDescriptor) {
+        if (null != this.packageName && !"".equals(this.packageName)) {
+            classDescriptor.setClassName(this.packageName + "." + classDescriptor.getClassName());
+
+            if (null != classDescriptor.getSuperClass() && !"".equals(classDescriptor.getSuperClass())) {
+                classDescriptor.setSuperClass(this.packageName + "." + classDescriptor.getSuperClass());
+            }
+        }
+
+        if (!classDescriptor.validate()) {
+            return;
+        }
+
         classDescriptors.put(classDescriptor.getClassName(), classDescriptor);
         classDescriptor.setMappingDescriptor(this);
     }
