@@ -18,10 +18,13 @@ package org.apache.portals.graffito.jcr.mapper.impl;
 
 
 import java.io.InputStream;
+import java.util.Iterator;
+import java.util.Map;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.portals.graffito.jcr.exception.InitMapperException;
+import org.apache.portals.graffito.jcr.exception.JcrMappingException;
 import org.apache.portals.graffito.jcr.mapper.Mapper;
 import org.apache.portals.graffito.jcr.mapper.model.ClassDescriptor;
 import org.apache.portals.graffito.jcr.mapper.model.MappingDescriptor;
@@ -142,6 +145,9 @@ public class DigesterMapperImpl implements Mapper {
                 this.mappingDescriptor.getClassDescriptors().putAll(anotherMappingDescriptor.getClassDescriptors());
             }
         }
+        if (null != this.mappingDescriptor) {
+            solveReferences();
+        }
         else {
             throw new InitMapperException("No mappings were provided");
         }
@@ -149,6 +155,26 @@ public class DigesterMapperImpl implements Mapper {
         return this;
     }
 
+    private void solveReferences() {
+        for(Iterator it = this.mappingDescriptor.getClassDescriptors().keySet().iterator(); it.hasNext(); ) {
+            Map.Entry entry = (Map.Entry) it.next();
+            ClassDescriptor cd = (ClassDescriptor) entry.getValue();
+            
+            if (null != cd.getSuperClass() && !"".equals(cd.getSuperClass())) {
+                ClassDescriptor superClassDescriptor = this.mappingDescriptor.getClassDescriptor(cd.getSuperClass());
+                
+                if (null == superClassDescriptor) {
+                    throw new JcrMappingException("Cannot find mapping for class "
+                            + cd.getSuperClass() + " references as extends from "
+                            + cd.getClassName());
+                }
+                else {
+                    cd.setSuperClassDescriptor(superClassDescriptor);
+                }
+            }
+        }
+    }
+    
     /**
      *
      * @see org.apache.portals.graffito.jcr.mapper.Mapper#getClassDescriptor(java.lang.Class)

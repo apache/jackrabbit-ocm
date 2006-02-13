@@ -60,6 +60,7 @@ public class DigesterDescriptorReader
 			digester.setValidating(this.validating);
 
 			digester.addObjectCreate("graffito-jcr", MappingDescriptor.class);
+            digester.addSetProperties("graffito-jcr", "package", "package");
 
 			// --------------------------------------------------------------------------------
 			// Rules used for the class-descriptor element
@@ -70,6 +71,9 @@ public class DigesterDescriptorReader
 			digester.addSetProperties("graffito-jcr/class-descriptor", "jcrNodeType", "jcrNodeType");
             digester.addSetProperties("graffito-jcr/class-descriptor", "jcrSuperTypes", "jcrSuperTypes");
             digester.addSetProperties("graffito-jcr/class-descriptor", "jcrMixinTypes", "jcrMixinTypesList");
+            digester.addSetProperties("graffito-jcr/class-descriptor", "extends", "superClass");
+            digester.addSetProperties("graffito-jcr/class-descriptor", "abstract", "abstract");
+            digester.addSetProperties("graffito-jcr/class-descriptor", "discriminatorValue", "discriminatorValue");
 
 			digester.addSetNext("graffito-jcr/class-descriptor", "addClassDescriptor");
 
@@ -83,6 +87,7 @@ public class DigesterDescriptorReader
 			digester.addSetProperties("graffito-jcr/class-descriptor/field-descriptor", "jcrName", "jcrName");
 			digester.addSetProperties("graffito-jcr/class-descriptor/field-descriptor", "id", "id");
 			digester.addSetProperties("graffito-jcr/class-descriptor/field-descriptor", "path", "path");
+            digester.addSetProperties("graffito-jcr/class-descriptor/field-descriptor", "descriminator", "descriminator");
             digester.addSetProperties("graffito-jcr/class-descriptor/field-descriptor", "jcrType", "jcrType");
             digester.addSetProperties("graffito-jcr/class-descriptor/field-descriptor", "jcrAutoCreated", "jcrAutoCreated");
             digester.addSetProperties("graffito-jcr/class-descriptor/field-descriptor", "jcrMandatory", "jcrMandatory");
@@ -130,7 +135,7 @@ public class DigesterDescriptorReader
             digester.addSetProperties("graffito-jcr/class-descriptor/collection-descriptor", "jcrSameNameSiblings", "jcrSameNameSiblings");            
 			digester.addSetNext("graffito-jcr/class-descriptor/collection-descriptor", "addCollectionDescriptor");
 
-			return (MappingDescriptor) digester.parse(stream);
+            return (MappingDescriptor) digester.parse(stream);
 		}
 		catch (Exception e)
 		{

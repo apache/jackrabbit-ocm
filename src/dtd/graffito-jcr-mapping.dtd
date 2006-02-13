@@ -18,12 +18,20 @@
 -->
 
 <!ELEMENT graffito-jcr (class-descriptor*)>
+
+<!ATTLIST graffito-jcr package CDATA #IMPLIED>
+
 <!--
     Class descriptor - Each class descriptor describes the mapping strategy used for one a java class
-    * className : the className
+    * className : the class name
     * jcrNodeType : the primary jcr node type, it can be nt:unstructured
     * jcrSuperTypes : the jcr super types, optional
     * jcrMixinTypes: the jcr mixin types (comma separated list) (optional)
+    * extends: name of super class (optional)
+    * extends-strategy:
+    * polymorphism: specify the behavior of this class in queries; default implicit
+    * abstract: true if this class is abstract and it is used in hierarchy mappings
+    * discriminator-value: use only when extends-strategy="concreteclass" and abstract="false"
 -->
 <!ELEMENT class-descriptor (field-descriptor*, bean-descriptor*, collection-descriptor*)>
 
@@ -31,7 +39,11 @@
 	className CDATA #REQUIRED
 	jcrNodeType CDATA #IMPLIED
     jcrSuperTypes CDATA #IMPLIED
-    jcrMixinTypes CDATA #IMPLIED>
+    jcrMixinTypes CDATA #IMPLIED
+    extends CDATA #IMPLIED
+	abstract (true|false) "false"
+	discriminatorValue CDATA #IMPLIED
+>
 
 <!--
     Field descriptor - A field descriptor maps one atomic object attribute (primitive types, String, Long, ...)  into a JCR property
@@ -55,6 +67,7 @@
 	jcrName CDATA #IMPLIED 
 	id (true | false) "false"
 	path (true | false) "false"
+	descriminator (true | false) "false"
     jcrType (String | Date | Long | Double | Boolean | Binary) #IMPLIED
     jcrAutoCreated (true | false) "false"
     jcrMandatory (true | false) "false"
