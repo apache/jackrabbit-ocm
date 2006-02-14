@@ -28,8 +28,6 @@ import org.apache.portals.graffito.jcr.exception.IncorrectAtomicTypeException;
  */
 public interface Filter
 {
-
-	
     /**
      * Set the filter scope. The scope is an Node path specifying where to search in the content tree.
      * For example, 
@@ -39,7 +37,7 @@ public interface Filter
      * @param scope The filter scope
      *  
      */
-    public void setScope(String scope);
+    void setScope(String scope);
         
     
     /**
@@ -47,7 +45,7 @@ public interface Filter
      * 
      * @return The filter scope
      */
-    public String getScope();
+    String getScope();
     
     
     /**
@@ -57,33 +55,33 @@ public interface Filter
      * @param scope either a a jcr node or propserty. If a node is used, all properties of this node are searche (following the internal index
      * @param fullTextSearch The full text search string  
      */
-    public void addContains(String scope, String fullTextSearch) throws IncorrectAtomicTypeException;   
+    Filter addContains(String scope, String fullTextSearch);
         
-	public void addBetween(String arg0, Object arg1, Object arg2) throws IncorrectAtomicTypeException;
+	Filter addBetween(String arg0, Object arg1, Object arg2);
 
-	public void addEqualTo(String arg0, Object arg1) throws IncorrectAtomicTypeException;
+	Filter addEqualTo(String arg0, Object arg1);
 
-	public void addGreaterOrEqualThan(String arg0, Object arg1) throws IncorrectAtomicTypeException;
+	Filter addGreaterOrEqualThan(String arg0, Object arg1);
 
-	public void addGreaterThan(String arg0, Object arg1) throws IncorrectAtomicTypeException;
+	Filter addGreaterThan(String arg0, Object arg1);
 
-	public void addLessOrEqualThan(String arg0, Object arg1) throws IncorrectAtomicTypeException;
+	Filter addLessOrEqualThan(String arg0, Object arg1);
 	
-	public void addLessThan(String arg0, Object arg1) throws IncorrectAtomicTypeException;
+	Filter addLessThan(String arg0, Object arg1);
 
-	public void addLike(String arg0, Object arg1) throws IncorrectAtomicTypeException;
+	Filter addLike(String arg0, Object arg1);
 
-	public void addNotEqualTo(String arg0, Object arg1) throws IncorrectAtomicTypeException;
+	Filter addNotEqualTo(String arg0, Object arg1);
 
-	public void addNotNull(String arg0) throws IncorrectAtomicTypeException;
+	Filter addNotNull(String arg0);
 
-	public void addIsNull(String arg0) throws IncorrectAtomicTypeException;
+	Filter addIsNull(String arg0);
 	
-	public void addOrFilter(Filter arg0) throws IncorrectAtomicTypeException;
+	Filter addOrFilter(Filter arg0);
 	
-	public void addJCRExpression(String jcrExpression) throws IncorrectAtomicTypeException;
+	Filter addJCRExpression(String jcrExpression);
 	
-    public Class getFilterClass();	
+    Class getFilterClass();
 	
 
 }
