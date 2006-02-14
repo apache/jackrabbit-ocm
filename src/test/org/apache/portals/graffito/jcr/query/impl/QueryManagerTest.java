@@ -60,8 +60,8 @@ public class QueryManagerTest extends TestBase
     	{
     	      QueryManager queryManager = this.getQueryManager();
     	      Filter filter = queryManager.createFilter(C.class);
-    	      filter.addEqualTo("name", "a test value");
-    	      filter.addEqualTo("id", new Integer(1));
+    	      filter.addEqualTo("name", "a test value")
+                    .addEqualTo("id", new Integer(1));
     	      filter.setScope("/test//");
     	      
     	      Query query = queryManager.createQuery(filter);
@@ -84,8 +84,8 @@ public class QueryManagerTest extends TestBase
     	{
     	      QueryManager queryManager = this.getQueryManager();
     	      Filter filter = queryManager.createFilter(C.class);
-    	      filter.addEqualTo("name", "a test value");
-    	      filter.addEqualTo("id", new Integer(1));    	      
+    	      filter.addEqualTo("name", "a test value")
+    	            .addEqualTo("id", new Integer(1));
     	      
     	      Query query = queryManager.createQuery(filter);
     	      String jcrExpression = queryManager.buildJCRExpression(query);
