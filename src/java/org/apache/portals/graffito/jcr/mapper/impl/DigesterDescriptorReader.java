@@ -70,7 +70,7 @@ public class DigesterDescriptorReader
 			digester.addSetProperties("graffito-jcr/class-descriptor", "className", "className");
 			digester.addSetProperties("graffito-jcr/class-descriptor", "jcrNodeType", "jcrNodeType");
             digester.addSetProperties("graffito-jcr/class-descriptor", "jcrSuperTypes", "jcrSuperTypes");
-            digester.addSetProperties("graffito-jcr/class-descriptor", "jcrMixinTypes", "jcrMixinTypesList");
+            digester.addSetProperties("graffito-jcr/class-descriptor", "jcrMixinTypes", "jcrMixinTypes");
             digester.addSetProperties("graffito-jcr/class-descriptor", "extends", "superClass");
             digester.addSetProperties("graffito-jcr/class-descriptor", "abstract", "abstract");
             digester.addSetProperties("graffito-jcr/class-descriptor", "discriminatorValue", "discriminatorValue");

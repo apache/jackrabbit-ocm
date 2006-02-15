@@ -159,6 +159,10 @@ public class ObjectConverterImpl implements ObjectConverter {
             }
         }
 
+        if (classDescriptor.usesNodeTypePerHierarchyStrategy()) {
+
+        }
+
         storeSimpleFields(session, object, classDescriptor, objectNode);
         insertBeanFields(session, object, classDescriptor, objectNode);
         insertCollectionFields(session, object, classDescriptor, objectNode);
@@ -195,7 +199,17 @@ public class ObjectConverterImpl implements ObjectConverter {
         try {
             ClassDescriptor classDescriptor = getClassDescriptor(object.getClass());
             Node objectNode = parentNode.getNode(nodeName);
-            
+
+            if (!objectNode.getPrimaryNodeType().getName().equals(classDescriptor.getJcrNodeType())) {
+                throw new PersistenceException("Cannot update object of type "
+                        + object.getClass().getName()
+                        + ". Node type '"
+                        + objectNode.getPrimaryNodeType().getName()
+                        + "' doesn't match mapping node type '"
+                        + classDescriptor.getJcrNodeType()
+                        + "'.");
+            }
+
             storeSimpleFields(session, object, classDescriptor, objectNode);
             updateBeanFields(session, object, classDescriptor, objectNode);
             updateCollectionFields(session, object, classDescriptor, objectNode);
@@ -222,7 +236,35 @@ public class ObjectConverterImpl implements ObjectConverter {
             }
 
             ClassDescriptor classDescriptor = getClassDescriptor(clazz);
+
+            if (classDescriptor.isAbstract()) {
+                throw new PersistenceException("Cannot fetch declared abstract object of type "
+                + clazz.getName());
+            }
+
             Node node = (Node) session.getItem(path);
+
+            if (!node.getPrimaryNodeType().getName().equals(classDescriptor.getJcrNodeType())
+                && 
+                !("nt:frozenNode".equals(node.getPrimaryNodeType().getName()) 
+                 && node.getProperty("jcr:frozenPrimaryType").getString().equals(classDescriptor.getJcrNodeType()))) {
+                throw new PersistenceException("Cannot fetch object of type '"
+                    + clazz.getName()
+                    + "'. Node type '"
+                    + node.getPrimaryNodeType().getName()
+                    + "' does not match descriptor node type '"
+                    + classDescriptor.getJcrNodeType()
+                    + "'");
+            }
+            if (classDescriptor.usesNodeTypePerHierarchyStrategy()) {
+                String discriminatorProperty = classDescriptor.getDiscriminatorFieldDescriptor().getJcrName();
+
+                if (!node.hasProperty(discriminatorProperty)) {
+                     throw new PersistenceException("Cannot fetch object of type '"
+                        + clazz.getName()
+                        + "' using NODETYPE_PER_HIERARCHY. Discriminator property is not present.");
+                }
+            }
             Object object = ReflectionUtils.newInstance(clazz);
 
             retrieveSimpleFields(session, classDescriptor, node, object);
@@ -286,7 +328,20 @@ public class ObjectConverterImpl implements ObjectConverter {
                     }
                     
                     ReflectionUtils.setNestedProperty(initializedBean, fieldName, node.getPath());
-                } else {
+                }
+                else if (classDescriptor.usesNodeTypePerHierarchyStrategy() && fieldDescriptor.isDiscriminator()) {
+                    if (null != classDescriptor.getDiscriminatorValue()) {
+                        if (null == initializedBean) {
+                            initializedBean = ReflectionUtils.newInstance(classDescriptor.getClassName());
+                        }
+
+                        ReflectionUtils.setNestedProperty(initializedBean, fieldName, classDescriptor.getDiscriminatorValue());
+                    }
+                    else {
+                        throw new PersistenceException("Class '" + classDescriptor.getClassName() + "' does not declare a valid discriminator value.");
+                    }
+                }
+                else {
                     if (node.hasProperty(propertyName)) {
                         Value propValue = node.getProperty(propertyName).getValue();
                         if (null != propValue && null == initializedBean) { // HINT: lazy initialize target bean
@@ -531,6 +586,19 @@ public class ObjectConverterImpl implements ObjectConverter {
                 if (fieldDescriptor.isPath()) {
                     continue;
                 }
+
+                // Discriminator is already written
+                if (classDescriptor.usesNodeTypePerHierarchyStrategy() && fieldDescriptor.isDiscriminator()) {
+                    if (null != classDescriptor.getDiscriminatorValue() && !"".equals(classDescriptor.getDiscriminatorValue())) {
+                        objectNode.setProperty(fieldDescriptor.getJcrName(), classDescriptor.getDiscriminatorValue());
+                    }
+                    else {
+                        throw new PersistenceException("Cannot persist object of type " + object.getClass().getName()
+                            + " Missing discriminator value from class descriptor.");
+                    }
+
+                    continue;
+                }
     
                 String fieldName = fieldDescriptor.getFieldName();
                 String jcrName = fieldDescriptor.getJcrName();
@@ -651,7 +719,11 @@ public class ObjectConverterImpl implements ObjectConverter {
             throw new JcrMappingException("Class of type: " + beanClass.getName()
                     + " is not JCR persistable. Maybe element 'class-descriptor' for this type in mapping file is missing");
         }
-  
+
+        if(classDescriptor.isAbstract()) {
+            throw new PersistenceException("Cannot persist/retrieve abstract class " + beanClass.getName());
+        }
+
         return classDescriptor;
     }
 }

@@ -18,9 +18,10 @@ package org.apache.portals.graffito.jcr.mapper.impl;
 
 
 import java.io.InputStream;
+import java.util.ArrayList;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
-
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.portals.graffito.jcr.exception.InitMapperException;
@@ -146,7 +147,14 @@ public class DigesterMapperImpl implements Mapper {
             }
         }
         if (null != this.mappingDescriptor) {
-            solveReferences();
+            List errors = new ArrayList();
+            solveReferences(errors);
+            validateDescriptors(errors);
+
+            if (!errors.isEmpty()) {
+                throw new InitMapperException("Mapping files contain errors."
+                        + getErrorMessage(errors));
+            }
         }
         else {
             throw new InitMapperException("No mappings were provided");
@@ -155,17 +163,43 @@ public class DigesterMapperImpl implements Mapper {
         return this;
     }
 
-    private void solveReferences() {
-        for(Iterator it = this.mappingDescriptor.getClassDescriptors().keySet().iterator(); it.hasNext(); ) {
+    private String getErrorMessage(List errors) {
+        final String lineSep = System.getProperty("line.separator");
+        StringBuffer buf = new StringBuffer();
+        for(Iterator it = errors.iterator(); it.hasNext();) {
+            buf.append(lineSep).append(it.next());
+        }
+
+        return buf.toString();
+    }
+
+    private void validateDescriptors(List errors) {
+        for(Iterator it = this.mappingDescriptor.getClassDescriptors().entrySet().iterator(); it.hasNext(); ) {
             Map.Entry entry = (Map.Entry) it.next();
             ClassDescriptor cd = (ClassDescriptor) entry.getValue();
-            
+
+            try {
+                cd.afterPropertiesSet();
+            }
+            catch(JcrMappingException jme) {
+                log.warn("Mapping of class " + cd.getClassName() + " is invalid", jme);
+                errors.add(jme.getMessage());
+            }
+        }
+    }
+
+    private List solveReferences(List errors) {
+        for(Iterator it = this.mappingDescriptor.getClassDescriptors().entrySet().iterator(); it.hasNext(); ) {
+            Map.Entry entry = (Map.Entry) it.next();
+            ClassDescriptor cd = (ClassDescriptor) entry.getValue();
+
             if (null != cd.getSuperClass() && !"".equals(cd.getSuperClass())) {
                 ClassDescriptor superClassDescriptor = this.mappingDescriptor.getClassDescriptor(cd.getSuperClass());
-                
+
                 if (null == superClassDescriptor) {
-                    throw new JcrMappingException("Cannot find mapping for class "
-                            + cd.getSuperClass() + " references as extends from "
+                    errors.add("Cannot find mapping for class "
+                            + cd.getSuperClass()
+                            + " referenced as extends from "
                             + cd.getClassName());
                 }
                 else {
@@ -173,6 +207,8 @@ public class DigesterMapperImpl implements Mapper {
                 }
             }
         }
+
+        return errors;
     }
     
     /**

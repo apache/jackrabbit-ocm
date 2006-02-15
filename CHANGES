@@ -1,7 +1,11 @@
+20060215
+support for persisting/fetching inheritance
+
 20060214
 basic support for inheritance
 
 = TODO =
++ Add tests for persistence/fetching of inheritting objects
 + Add exception tests
 + Review query/filters
 

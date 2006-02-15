@@ -20,6 +20,7 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
+import org.apache.portals.graffito.jcr.exception.JcrMappingException;
 
 /**
  *
@@ -29,8 +30,8 @@ import java.util.Map;
  * @author <a href='mailto:the_mindstorm[at]evolva[dot]ro'>Alexandru Popescu</a>
  */
 public class ClassDescriptor {
-    public static final String NODETYPE_PER_HIERARCHY = "nodetypeperhierarchy";
-    public static final String NODETYPE_PER_CONCRETECLASS = "nodetypeperconcreteclass";
+    private static final String NODETYPE_PER_HIERARCHY = "nodetypeperhierarchy";
+    private static final String NODETYPE_PER_CONCRETECLASS = "nodetypeperconcreteclass";
 
     private MappingDescriptor mappingDescriptor;
     private ClassDescriptor superClassDescriptor;
@@ -71,7 +72,7 @@ public class ClassDescriptor {
     /**
      * @return Returns the descriminatorValue.
      */
-    public String getDescriminatorValue() {
+    public String getDiscriminatorValue() {
         return descriminatorValue;
     }
 
@@ -83,7 +84,7 @@ public class ClassDescriptor {
      * 
      * @param descriminatorValue The descriminatorValue to set.
      */
-    public void setDescriminatorValue(String descriminatorValue) {
+    public void setDiscriminatorValue(String descriminatorValue) {
         this.descriminatorValue= descriminatorValue;
     }
 
@@ -95,10 +96,19 @@ public class ClassDescriptor {
      * @return Returns {@link #NODETYPE_PER_HIERARCHY} or {@link #NODETYPE_PER_CONCRETECLASS} or
      * <tt>null</tt>
      */
+/*
     public String getExtendsStrategy() {
         return extendsStrategy;
     }
+*/
 
+    public boolean usesNodeTypePerHierarchyStrategy() {
+        return NODETYPE_PER_HIERARCHY.equals(this.extendsStrategy);
+    }
+
+    public boolean usesNodeTypePerConcreteClassStrategy() {
+        return NODETYPE_PER_CONCRETECLASS.equals(this.extendsStrategy);
+    }
     /**
      * @return Returns the className.
      */
@@ -162,7 +172,7 @@ public class ClassDescriptor {
      * @return all {@link FieldDescriptor} defined in this ClassDescriptor
      */
     public Collection getFieldDescriptors() {
-        return this.fieldDescriptors.values();
+        return this.allFields.values();
     }
 
     /**
@@ -242,7 +252,7 @@ public class ClassDescriptor {
     public boolean hasDiscriminatorField() {
         return this.discriminatorFieldDescriptor != null;
     }
-    
+
     /**
      * Check if this class has an ID
      * @return true if the class has an ID
@@ -290,14 +300,16 @@ public class ClassDescriptor {
      *
      * @param mixinTypes command separated list of mixins
      */
-    public void setJcrMixinTypesList(String mixinTypes) {
-        if (null != mixinTypes) {
-            setJcrMixinTypes(mixinTypes.split(","));
-        }
-    }
+//    public void setJcrMixinTypesList(String[] mixinTypes) {
+//        if (null != mixinTypes) {
+//            setJcrMixinTypes(mixinTypes[0].split(","));
+//        }
+//    }
 
     public void setJcrMixinTypes(String[] mixinTypes) {
-        jcrMixinTypes = mixinTypes;
+        if (null != mixinTypes && mixinTypes.length == 1) {
+            jcrMixinTypes = mixinTypes[0].split(" *, *");
+        }
     }
 
     /**
@@ -315,10 +327,57 @@ public class ClassDescriptor {
     }
 
     /**
-     * @return <tt>true</tt> if the class descriptor is correct;
-     * <tt>false</tt> otherwise
+     * Revisit information in this descriptor and fills in more.
      */
-    public boolean validate() {
+    public void afterPropertiesSet() {
+        lookupSuperDescriptor();
+
+        lookupInheritanceSettings();
+
+        validateInheritanceSettings();
+    }
+
+    private void validateInheritanceSettings() {
+        if (NODETYPE_PER_CONCRETECLASS.equals(this.extendsStrategy)) {
+            this.discriminatorFieldDescriptor = findDiscriminatorField();
+
+            if (null != this.discriminatorFieldDescriptor) {
+                throw new JcrMappingException("");
+            }
+        }
+        else if (NODETYPE_PER_HIERARCHY.equals(this.extendsStrategy)) {
+            this.discriminatorFieldDescriptor = findDiscriminatorField();
+
+            if (null == this.discriminatorFieldDescriptor) {
+                throw new JcrMappingException("");
+            }
+        }
+    }
+
+    private FieldDescriptor findDiscriminatorField() {
+        if (null != this.discriminatorFieldDescriptor) {
+            return this.discriminatorFieldDescriptor;
+        }
+
+        if (null != this.superClassDescriptor) {
+            return this.superClassDescriptor.findDiscriminatorField();
+        }
+
+        return null;
+    }
+
+    private void lookupInheritanceSettings() {
+        if (null != this.superClassDescriptor) {
+            if (this.jcrNodeType.equals(this.superClassDescriptor.jcrNodeType)) {
+                this.extendsStrategy = NODETYPE_PER_HIERARCHY;
+            }
+            else {
+                this.extendsStrategy = NODETYPE_PER_CONCRETECLASS;
+            }
+        }
+    }
+
+    private void lookupSuperDescriptor() {
         if (null == this.superClassDescriptor) {
             this.allFields = this.fieldDescriptors;
             this.allBeans = this.beanDescriptors;
@@ -328,20 +387,7 @@ public class ClassDescriptor {
             this.allFields = merge(this.fieldDescriptors, this.superClassDescriptor.getFieldDescriptors());
             this.allBeans = merge(this.beanDescriptors, this.superClassDescriptor.getBeanDescriptors());
             this.allCollections = merge(this.collectionDescriptors, this.superClassDescriptor.getCollectionDescriptors());
-
-            if (null == this.discriminatorFieldDescriptor) {
-                this.discriminatorFieldDescriptor = this.superClassDescriptor.getDiscriminatorFieldDescriptor();
-            }
-
-            if (null == this.discriminatorFieldDescriptor) {
-                this.extendsStrategy = NODETYPE_PER_HIERARCHY;
-            }
-            else {
-                this.extendsStrategy = NODETYPE_PER_CONCRETECLASS;
-            }
         }
-
-        return true;
     }
 
     /**
