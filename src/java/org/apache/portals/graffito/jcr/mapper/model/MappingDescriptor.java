@@ -53,10 +53,6 @@ public class MappingDescriptor {
             }
         }
 
-        if (!classDescriptor.validate()) {
-            return;
-        }
-
         classDescriptors.put(classDescriptor.getClassName(), classDescriptor);
         classDescriptor.setMappingDescriptor(this);
     }
