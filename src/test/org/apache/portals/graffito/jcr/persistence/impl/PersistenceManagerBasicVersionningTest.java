@@ -106,7 +106,7 @@ public class PersistenceManagerBasicVersionningTest extends TestBase
              catch(Exception e)
              {
             	 e.printStackTrace();
-            	 fail();
+            	 fail(e.getMessage());
             	 
              }
 	}
