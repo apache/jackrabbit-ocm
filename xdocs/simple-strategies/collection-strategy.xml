@@ -62,10 +62,15 @@
 	... other subnodes for page1 ... 
 				]]></source>		  
 				</p>						
-				<p>Creating a subnode like this example (mysite/page1/paragraphs) is the default behavior. See the section <a href="../advanced-strategies/advanced-collections-strategy.html">Reviewing the collection-descriptor</a> to get other collection-field mapping strategies.</p>
+				<p>Creating subnodes like this example (mysite/page1/paragraphs) is the default behavior. See the section <a href="../advanced-strategies/advanced-collections-strategy.html">Reviewing the collection-descriptor</a> to get other collection-field mapping strategies.</p>
 								
 								
 			</subsection>
+			<subsection name="Supported Collection Types">
+				<p>Current supported collection types are Collection, List, ArrayList and Vector. It is also possible other Collection or Map types with the ManageableCollection interface. See the section <a href="../advanced-strategies/advanced-collections-strategy.html">Reviewing the collection-descriptor</a> to get more information on the ManageableCollection.</p>
+				<p></p>
+			</subsection>	
+			
 		</section>
 	</body>
 </document>
