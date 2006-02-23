@@ -55,7 +55,7 @@ limitations under the License.
 										
 	<class-descriptor className="[Reference to a class to map]" ...">
 								
-		... Contains the reference to the class attribute ...
+		... Contains the references to the class attributes ...
 										
 	</class-descriptor>
 									

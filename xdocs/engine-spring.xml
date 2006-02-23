@@ -22,7 +22,7 @@ limitations under the License.
 	</properties>
 	<body>
 		<section name="Spring Integration ">
-			<p>TO DO</p>
+			<p>We are currently working on the Spring integration. You can follow our work in the folder <code>[graffito-trunk-folder]/jcr/spring</code>.</p>
 		</section>
 	</body>
 </document>

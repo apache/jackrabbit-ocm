@@ -35,8 +35,8 @@ limitations under the License.
 					<li>The PageInfo class contains the title and the page description. We are using the pageInfo here to see all mapping features (see the bean-descriptors). In real application, this class is not necessary :-)</li>
 					<li>Each paragraph contains a path and a text field.</li>
 				</ul>	
-				<p align="center"> <img src="./images/sample-model-doc.png" ></img></p>
-			</p>	
+			</p>					
+			<p align="center"><img src="../images/sample-model-doc.png" ></img></p>			
 			<p>
 				This object model could be too simple for real applications and it is used here just to simplify the description of the different mapping strategies. 
 			</p>	
