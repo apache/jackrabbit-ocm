@@ -19,11 +19,14 @@ package org.apache.portals.graffito.jcr.persistence.collectionconverter;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 import java.util.Vector;
 
 import org.apache.portals.graffito.jcr.exception.JcrMappingException;
 import org.apache.portals.graffito.jcr.persistence.collectionconverter.impl.ManageableArrayList;
+import org.apache.portals.graffito.jcr.persistence.collectionconverter.impl.ManageableSet;
 import org.apache.portals.graffito.jcr.persistence.collectionconverter.impl.ManageableVector;
 
 /**
@@ -69,10 +72,18 @@ public class ManageableCollectionUtil {
                 return new ManageableVector();
             }
 
+            if (collectionClass.equals(HashSet.class)) {
+                return new ManageableSet();
+            }
+            
             if (collectionClass.equals(Collection.class) || collectionClass.equals(List.class)) {
                 return new ManageableArrayList();
             }
 
+            if (collectionClass.equals(Set.class)) {
+                return new ManageableSet();
+            }
+            
             Object collection = collectionClass.newInstance();
             if (!(collection instanceof ManageableCollection)) {
                 throw new JcrMappingException("Unsupported collection type :"
@@ -121,12 +132,19 @@ public class ManageableCollectionUtil {
                 return manageableVector;
             }
 
+            if (object.getClass().equals(HashSet.class)) {
+                return new ManageableSet((Set) object);
+            }
+            
             if (object.getClass().equals(Collection.class)
                 || object.getClass().equals(List.class)) {
                 ManageableArrayList manageableArrayList = new ManageableArrayList();
                 manageableArrayList.addAll((Collection) object);
 
                 return manageableArrayList;
+            }
+            if (object.getClass().equals(Set.class)) {
+                return new ManageableSet((Set) object);
             }
         }
         catch (Exception e) {
