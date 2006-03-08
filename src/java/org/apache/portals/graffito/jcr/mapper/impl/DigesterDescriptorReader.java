@@ -18,6 +18,7 @@ package org.apache.portals.graffito.jcr.mapper.impl;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.InputStream;
+import java.net.URL;
 
 import org.apache.commons.digester.Digester;
 import org.apache.portals.graffito.jcr.exception.InitMapperException;
@@ -36,6 +37,7 @@ import org.apache.portals.graffito.jcr.mapper.model.MappingDescriptor;
 public class DigesterDescriptorReader
 {
     private boolean validating = true;
+    private URL dtdResolver;
     
     /**
      * Set if the mapping should be validated.
@@ -45,6 +47,10 @@ public class DigesterDescriptorReader
         this.validating= flag;
     }
 
+    public void setResolver(URL dtdResolver) {
+        this.dtdResolver = dtdResolver;
+    }
+    
 	/**
 	 * Load all class descriptors found in the xml mapping file.
 	 * 
@@ -58,7 +64,11 @@ public class DigesterDescriptorReader
 		{
 			Digester digester = new Digester();
 			digester.setValidating(this.validating);
-
+			if (null != this.dtdResolver) {
+                digester.register("-//The Apache Software Foundation//DTD Repository//EN",
+                                  this.dtdResolver.toString());
+            }
+            
 			digester.addObjectCreate("graffito-jcr", MappingDescriptor.class);
             digester.addSetProperties("graffito-jcr", "package", "package");
 

@@ -30,6 +30,8 @@ import javax.jcr.lock.LockException;
 import javax.jcr.nodetype.ConstraintViolationException;
 import javax.jcr.nodetype.NoSuchNodeTypeException;
 import javax.jcr.nodetype.PropertyDefinition;
+import javax.jcr.nodetype.NodeType;
+import javax.jcr.nodetype.NodeTypeManager;
 import javax.jcr.version.VersionException;
 
 import org.apache.portals.graffito.jcr.exception.JcrMappingException;
@@ -137,11 +139,11 @@ public class ObjectConverterImpl implements ObjectConverter {
         } 
         catch (NoSuchNodeTypeException nsnte) {
             throw new JcrMappingException("Unknown node type " + jcrNodeType
-                                          + " for mapped class " + object.getClass());
+                                          + " for mapped class " + object.getClass(), nsnte);
         } 
         catch (RepositoryException re) {
             throw new PersistenceException("Cannot create new node of type " + jcrNodeType
-                                           + " from mapped class " + object.getClass());
+                                           + " from mapped class " + object.getClass(), re);
         }
 
         if (null != classDescriptor.getJcrMixinTypes()) {
@@ -151,10 +153,10 @@ public class ObjectConverterImpl implements ObjectConverter {
                     objectNode.addMixin(mixinTypes[i].trim());
                 } catch (NoSuchNodeTypeException nsnte) {
                     throw new JcrMappingException("Unknown mixin type " + mixinTypes[i].trim()
-                                                  + " for mapped class " + object.getClass());
+                                                  + " for mapped class " + object.getClass(), nsnte);
                 } catch (RepositoryException re) {
                     throw new PersistenceException("Cannot create new node of type " + jcrNodeType
-                                                   + " from mapped class " + object.getClass());
+                                                   + " from mapped class " + object.getClass(), re);
                 }
             }
         }
@@ -200,15 +202,8 @@ public class ObjectConverterImpl implements ObjectConverter {
             ClassDescriptor classDescriptor = getClassDescriptor(object.getClass());
             Node objectNode = parentNode.getNode(nodeName);
 
-            if (!objectNode.getPrimaryNodeType().getName().equals(classDescriptor.getJcrNodeType())) {
-                throw new PersistenceException("Cannot update object of type "
-                        + object.getClass().getName()
-                        + ". Node type '"
-                        + objectNode.getPrimaryNodeType().getName()
-                        + "' doesn't match mapping node type '"
-                        + classDescriptor.getJcrNodeType()
-                        + "'.");
-            }
+            checkNodeType(session, classDescriptor);
+            checkCompatibleNodeTypes(session, objectNode, classDescriptor, false);
 
             storeSimpleFields(session, object, classDescriptor, objectNode);
             updateBeanFields(session, object, classDescriptor, objectNode);
@@ -242,20 +237,12 @@ public class ObjectConverterImpl implements ObjectConverter {
                 + clazz.getName());
             }
 
+            checkNodeType(session, classDescriptor);
+
             Node node = (Node) session.getItem(path);
 
-            if (!node.getPrimaryNodeType().getName().equals(classDescriptor.getJcrNodeType())
-                && 
-                !("nt:frozenNode".equals(node.getPrimaryNodeType().getName()) 
-                 && node.getProperty("jcr:frozenPrimaryType").getString().equals(classDescriptor.getJcrNodeType()))) {
-                throw new PersistenceException("Cannot fetch object of type '"
-                    + clazz.getName()
-                    + "'. Node type '"
-                    + node.getPrimaryNodeType().getName()
-                    + "' does not match descriptor node type '"
-                    + classDescriptor.getJcrNodeType()
-                    + "'");
-            }
+            checkCompatibleNodeTypes(session, node, classDescriptor, true);
+
             if (classDescriptor.usesNodeTypePerHierarchyStrategy()) {
                 String discriminatorProperty = classDescriptor.getDiscriminatorFieldDescriptor().getJcrName();
 
@@ -284,6 +271,98 @@ public class ObjectConverterImpl implements ObjectConverter {
     }
 
     /**
+     * Validates the node type used by the class descriptor.
+     *
+     * @param session the current session
+     * @param classDescriptor descriptor
+     * @throws JcrMappingException thrown if the node type is unknown
+     * @throws org.apache.portals.graffito.jcr.exception.RepositoryException thrown if
+     *  an error occured in the underlying repository
+     */
+    private void checkNodeType(Session session, ClassDescriptor classDescriptor) {
+        try {
+            session.getWorkspace().getNodeTypeManager().getNodeType(classDescriptor.getJcrNodeType());
+        }
+        catch(NoSuchNodeTypeException nsnte) {
+            throw new JcrMappingException("Mapping for class '"
+                + classDescriptor.getClassName()
+                + "' use unknown node type '"
+                + classDescriptor.getJcrNodeType()
+                + "'");
+        }
+        catch(RepositoryException re) {
+            throw new org.apache.portals.graffito.jcr.exception.RepositoryException(re);
+        }
+    }
+
+    /**
+     * Checks if the node type in the class descriptor is compatible with the
+     * specified node node type.
+     *
+     * @param session the current session
+     * @param node node against whose node type the compatibility is checked
+     * @param classDescriptor class descriptor
+     * @param checkVersionNode <tt>true</tt> if the check should continue in case the <tt>node</tt>
+     *  is a version node, <tt>false</tt> if no check against version node should be performed
+     *
+     * @throws PersistenceException thrown if node types are incompatible
+     * @throws org.apache.portals.graffito.jcr.exception.RepositoryException thrown if an error
+     *  occured in the underlying repository
+     */
+    private void checkCompatibleNodeTypes(Session session,
+                                          Node node,
+                                          ClassDescriptor classDescriptor,
+                                          boolean checkVersionNode) {
+        try {
+            NodeType nodeType = node.getPrimaryNodeType();
+
+            boolean compatible = checkCompatibleNodeTypes(nodeType, classDescriptor);
+
+            if (!compatible && checkVersionNode && "nt:frozenNode".equals(nodeType.getName())) {
+                NodeTypeManager ntMgr = session.getWorkspace().getNodeTypeManager();
+                nodeType = ntMgr.getNodeType(node.getProperty("jcr:frozenPrimaryType").getString());
+
+                compatible = checkCompatibleNodeTypes(nodeType, classDescriptor);
+            }
+
+            if (!compatible) {
+                throw new PersistenceException("Cannot map object of type '"
+                        + classDescriptor.getClassName()
+                        + "'. Node type '"
+                        + node.getPrimaryNodeType().getName()
+                        + "' does not match descriptor node type '"
+                        + classDescriptor.getJcrNodeType()
+                        + "'");
+            }
+        }
+        catch(RepositoryException re) {
+            throw new org.apache.portals.graffito.jcr.exception.RepositoryException(re);
+        }
+    }
+
+    /**
+     * Node types compatibility check.
+     *
+     * @param nodeType target node type
+     * @param descriptor descriptor containing source node type
+     * @return <tt>true</tt> if nodes are considered compatible, <tt>false</tt> otherwise
+     */
+    private boolean checkCompatibleNodeTypes(NodeType nodeType, ClassDescriptor descriptor) {
+        if(nodeType.getName().equals(descriptor.getJcrNodeType())) {
+            return true;
+        }
+
+        NodeType[] superTypes = nodeType.getSupertypes();
+        for(int i = 0; i < superTypes.length; i++) {
+            if(superTypes[i].getName().equals(descriptor.getJcrNodeType())) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    /**
      * @see org.apache.portals.graffito.jcr.persistence.objectconverter.ObjectConverter#getPath(javax.jcr.Session, java.lang.Object)
      * @throws JcrMappingException
      */
@@ -292,7 +371,7 @@ public class ObjectConverterImpl implements ObjectConverter {
 
         final FieldDescriptor pathFieldDescriptor = classDescriptor.getPathFieldDescriptor();
         if (pathFieldDescriptor == null) {
-            throw new JcrMappingException("Class of type: " 
+            throw new JcrMappingException("Class of type: "
                     + object.getClass().getName()
                     + " has no path mapping. Maybe attribute path=\"true\" for a field element of this class in jcrmapping.xml is missing?"
             );
