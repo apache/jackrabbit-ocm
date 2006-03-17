@@ -19,7 +19,10 @@ package org.apache.portals.graffito.jcr.mapper.model;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.apache.portals.graffito.jcr.mapper.Mapper;
+import org.apache.portals.graffito.jcr.mapper.impl.DigesterMapperImpl;
 
 /**
  * This class match to the complete xml mapping files.
@@ -29,6 +32,8 @@ import org.apache.portals.graffito.jcr.mapper.Mapper;
  * @version $Id: Exp $
  */
 public class MappingDescriptor {
+	
+	private static final Log log = LogFactory.getLog(MappingDescriptor.class);
     private HashMap classDescriptors = new HashMap();
 
     private Mapper mapper;
@@ -45,6 +50,8 @@ public class MappingDescriptor {
      * @param classDescriptor The class descriptor to add
      */
     public void addClassDescriptor(ClassDescriptor classDescriptor) {
+    	
+        log.debug("Adding the class descriptor for : " + classDescriptor.getClassName());	
         if (null != this.packageName && !"".equals(this.packageName)) {
             classDescriptor.setClassName(this.packageName + "." + classDescriptor.getClassName());
 

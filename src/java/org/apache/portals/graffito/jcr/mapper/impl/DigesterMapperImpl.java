@@ -203,6 +203,7 @@ public class DigesterMapperImpl implements Mapper {
                             + cd.getClassName());
                 }
                 else {
+                	    log.debug("Class " +cd.getClassName() +  " extends " + cd.getSuperClass());
                     cd.setSuperClassDescriptor(superClassDescriptor);
                 }
             }

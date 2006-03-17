@@ -67,7 +67,7 @@
 	jcrName CDATA #IMPLIED 
 	id (true | false) "false"
 	path (true | false) "false"
-	descriminator (true | false) "false"
+	discriminator (true | false) "false"
     jcrType (String | Date | Long | Double | Boolean | Binary) #IMPLIED
     jcrAutoCreated (true | false) "false"
     jcrMandatory (true | false) "false"

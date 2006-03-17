@@ -265,7 +265,7 @@ public interface PersistenceManager
      * @throws LockedException
      *             if path is locked (cannot lock same path again)
      */
-    String lock(String path, boolean isDeep, boolean isSessionScoped) throws LockedException;
+    public String lock(String path, boolean isDeep, boolean isSessionScoped) throws LockedException;
     
     /**
      * Unlock object stored on {@param path }.
@@ -279,7 +279,7 @@ public interface PersistenceManager
      * @throws IllegalUnlockException
      *             throws if the current operation does not own the current lock
      */
-    void unlock(String path, String lockToken) throws IllegalUnlockException;
+    public void unlock(String path, String lockToken) throws IllegalUnlockException;
     
     /**
      * Is that path locked?
@@ -287,12 +287,12 @@ public interface PersistenceManager
      * @param absPath
      * @return <code>true</code> if path locked
      */
-    boolean isLocked(String absPath);
+    public boolean isLocked(String absPath);
     
     /**
      * 
      * @return The query manager reference
      */
-    QueryManager getQueryManager();
+    public QueryManager getQueryManager();
         
 }

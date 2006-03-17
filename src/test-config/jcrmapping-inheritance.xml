@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!DOCTYPE graffito-jcr PUBLIC "-//The Apache Software Foundation//DTD Repository//EN" "./src/dtd/graffito-jcr-mapping.dtd">
+<graffito-jcr>
+    
+	<class-descriptor className="org.apache.portals.graffito.jcr.testmodel.inheritance.Ancestor" jcrNodeType="nt:unstructured"  abstract="true" >
+		<field-descriptor fieldName="path" path="true" />
+		<field-descriptor fieldName="ancestorField" jcrName="ancestorField" />
+		<field-descriptor fieldName="discriminator" jcrName="discriminator" discriminator="true"  />
+	</class-descriptor>
+
+	<class-descriptor className="org.apache.portals.graffito.jcr.testmodel.inheritance.Descendant" jcrNodeType="nt:unstructured" 
+	                                   extends="org.apache.portals.graffito.jcr.testmodel.inheritance.Ancestor" >
+		<field-descriptor fieldName="descendantField" jcrName="descendantField" />  
+	</class-descriptor >
+
+	<class-descriptor className="org.apache.portals.graffito.jcr.testmodel.inheritance.AnotherDescendant" jcrNodeType="nt:unstructured" 
+	                                   extends="org.apache.portals.graffito.jcr.testmodel.inheritance.Ancestor"  >                               
+		<field-descriptor fieldName="anotherDescendantField" jcrName="anotherDescendantField" />  
+
+	</class-descriptor>
+
+
+
+
+</graffito-jcr>
+ 

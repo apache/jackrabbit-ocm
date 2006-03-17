@@ -20,6 +20,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 
 import javax.jcr.InvalidItemStateException;
 import javax.jcr.Item;
@@ -44,13 +45,16 @@ import org.apache.portals.graffito.jcr.exception.LockedException;
 import org.apache.portals.graffito.jcr.exception.PersistenceException;
 import org.apache.portals.graffito.jcr.exception.VersionException;
 import org.apache.portals.graffito.jcr.mapper.Mapper;
+import org.apache.portals.graffito.jcr.mapper.impl.DigesterMapperImpl;
 import org.apache.portals.graffito.jcr.mapper.model.ClassDescriptor;
 import org.apache.portals.graffito.jcr.persistence.PersistenceManager;
+import org.apache.portals.graffito.jcr.persistence.atomictypeconverter.AtomicTypeConverterProvider;
 import org.apache.portals.graffito.jcr.persistence.atomictypeconverter.impl.DefaultAtomicTypeConverterProvider;
 import org.apache.portals.graffito.jcr.persistence.objectconverter.ObjectConverter;
 import org.apache.portals.graffito.jcr.persistence.objectconverter.impl.ObjectConverterImpl;
 import org.apache.portals.graffito.jcr.query.Query;
 import org.apache.portals.graffito.jcr.query.QueryManager;
+import org.apache.portals.graffito.jcr.query.impl.QueryManagerImpl;
 import org.apache.portals.graffito.jcr.version.Version;
 import org.apache.portals.graffito.jcr.version.VersionIterator;
 
@@ -111,6 +115,25 @@ public class PersistenceManagerImpl implements PersistenceManager {
         this.queryManager = queryManager;
     }
 
+    /**
+     * Creates a new <code>PersistenceManager</code> based on a JCR session and some xml mapping files. 
+     *
+     * @param session The JCR session
+     * @param xmlMappingFiles Graffito JCR mapping file used mainly to create the <code>Mapper</code> component
+     */
+    public PersistenceManagerImpl(Session session,String[] xmlMappingFiles ) 
+    {
+        this.session = session;
+		this.mapper = new DigesterMapperImpl(xmlMappingFiles).buildMapper();
+		DefaultAtomicTypeConverterProvider converterProvider = new DefaultAtomicTypeConverterProvider();
+        Map atomicTypeConverters = converterProvider.getAtomicTypeConverters();
+		this.queryManager = new QueryManagerImpl(mapper, atomicTypeConverters);
+        this.objectConverter = new ObjectConverterImpl(mapper, converterProvider);
+		
+        
+    }
+    
+    
     /**
      * Full constructor.
      * 

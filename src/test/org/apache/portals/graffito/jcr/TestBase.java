@@ -181,15 +181,18 @@ public abstract class TestBase extends TestCase
 		Repository repository = RepositoryUtil.getRepository("repositoryTest");
 		String[] files = { "./src/test-config/jcrmapping.xml", 
                            "./src/test-config/jcrmapping-atomic.xml",
-                           "./src/test-config/jcrmapping-beandescriptor.xml"};
+                           "./src/test-config/jcrmapping-beandescriptor.xml",
+                           "./src/test-config/jcrmapping-inheritance.xml"};
 		session = RepositoryUtil.login(repository, "superuser", "superuser");
+
 		
 		mapper = new DigesterMapperImpl(files).buildMapper();
         converterProvider = new DefaultAtomicTypeConverterProvider();
         Map atomicTypeConverters = converterProvider.getAtomicTypeConverters();
 		queryManager = new QueryManagerImpl(mapper, atomicTypeConverters);
         ObjectConverter objectConverter = new ObjectConverterImpl(mapper, converterProvider);
-		persistenceManager = new PersistenceManagerImpl(mapper, objectConverter, queryManager, session);		
+		persistenceManager = new PersistenceManagerImpl(mapper, objectConverter, queryManager, session);
+		
 	}
 
 	/**
