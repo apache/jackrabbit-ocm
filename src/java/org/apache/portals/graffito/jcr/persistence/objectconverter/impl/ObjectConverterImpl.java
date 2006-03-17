@@ -34,6 +34,8 @@ import javax.jcr.nodetype.NodeType;
 import javax.jcr.nodetype.NodeTypeManager;
 import javax.jcr.version.VersionException;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.apache.portals.graffito.jcr.exception.JcrMappingException;
 import org.apache.portals.graffito.jcr.exception.PersistenceException;
 import org.apache.portals.graffito.jcr.mapper.Mapper;
@@ -48,6 +50,7 @@ import org.apache.portals.graffito.jcr.persistence.collectionconverter.Collectio
 import org.apache.portals.graffito.jcr.persistence.collectionconverter.ManageableCollection;
 import org.apache.portals.graffito.jcr.persistence.collectionconverter.ManageableCollectionUtil;
 import org.apache.portals.graffito.jcr.persistence.collectionconverter.impl.DefaultCollectionConverterImpl;
+import org.apache.portals.graffito.jcr.persistence.impl.PersistenceManagerImpl;
 import org.apache.portals.graffito.jcr.persistence.objectconverter.ObjectConverter;
 import org.apache.portals.graffito.jcr.reflection.ReflectionUtils;
 import org.apache.portals.graffito.jcr.repository.RepositoryUtil;
@@ -59,6 +62,9 @@ import org.apache.portals.graffito.jcr.repository.RepositoryUtil;
  * @author <a href='mailto:the_mindstorm[at]evolva[dot]ro'>Alexandru Popescu</a>
  */
 public class ObjectConverterImpl implements ObjectConverter {
+    
+	private final static Log log = LogFactory.getLog(ObjectConverterImpl.class);
+    
     private static final AtomicTypeConverter NULL_CONVERTER = new NullTypeConverterImpl();
 
     private Mapper mapper;
@@ -232,17 +238,17 @@ public class ObjectConverterImpl implements ObjectConverter {
 
             ClassDescriptor classDescriptor = getClassDescriptor(clazz);
 
-            if (classDescriptor.isAbstract()) {
-                throw new PersistenceException("Cannot fetch declared abstract object of type "
-                + clazz.getName());
-            }
+//            if (classDescriptor.isAbstract()) {
+//                throw new PersistenceException("Cannot fetch declared abstract object of type "
+//                + clazz.getName());
+//            }
 
             checkNodeType(session, classDescriptor);
 
             Node node = (Node) session.getItem(path);
 
             checkCompatibleNodeTypes(session, node, classDescriptor, true);
-
+            Object object = null;
             if (classDescriptor.usesNodeTypePerHierarchyStrategy()) {
                 String discriminatorProperty = classDescriptor.getDiscriminatorFieldDescriptor().getJcrName();
 
@@ -251,8 +257,13 @@ public class ObjectConverterImpl implements ObjectConverter {
                         + clazz.getName()
                         + "' using NODETYPE_PER_HIERARCHY. Discriminator property is not present.");
                 }
+                
+                String className = node.getProperty(discriminatorProperty).getValue().getString();
+                object = ReflectionUtils.newInstance(className);
             }
-            Object object = ReflectionUtils.newInstance(clazz);
+            else {
+                object = ReflectionUtils.newInstance(clazz);
+            }   
 
             retrieveSimpleFields(session, classDescriptor, node, object);
             retrieveBeanFields(session, classDescriptor, node, path, object);
@@ -391,7 +402,7 @@ public class ObjectConverterImpl implements ObjectConverter {
                                         ClassDescriptor classDescriptor, 
                                         Node node, 
                                         Object object) {
-        Object initializedBean = object;
+       // Object initializedBean = object;
         try {
             Iterator fieldDescriptorIterator = classDescriptor.getFieldDescriptors().iterator();
     
@@ -402,37 +413,43 @@ public class ObjectConverterImpl implements ObjectConverter {
                 String propertyName = fieldDescriptor.getJcrName();
     
                 if (fieldDescriptor.isPath()) {
-                    if (null == initializedBean) { // HINT: lazy initialize target bean
-                        initializedBean = ReflectionUtils.newInstance(classDescriptor.getClassName());
-                    }
+//                    if (null == initializedBean) { // HINT: lazy initialize target bean
+//                        initializedBean = ReflectionUtils.newInstance(classDescriptor.getClassName());
+//                    }
                     
-                    ReflectionUtils.setNestedProperty(initializedBean, fieldName, node.getPath());
+//                    ReflectionUtils.setNestedProperty(initializedBean, fieldName, node.getPath());
+                	      ReflectionUtils.setNestedProperty(object, fieldName, node.getPath());                 
                 }
-                else if (classDescriptor.usesNodeTypePerHierarchyStrategy() && fieldDescriptor.isDiscriminator()) {
-                    if (null != classDescriptor.getDiscriminatorValue()) {
-                        if (null == initializedBean) {
-                            initializedBean = ReflectionUtils.newInstance(classDescriptor.getClassName());
-                        }
-
-                        ReflectionUtils.setNestedProperty(initializedBean, fieldName, classDescriptor.getDiscriminatorValue());
+                else if (classDescriptor.usesNodeTypePerHierarchyStrategy() && fieldDescriptor.isDiscriminator()) {                	    
+                	    
+                    if (node.hasProperty( classDescriptor.getDiscriminatorFieldDescriptor().getJcrName())) {
+//                        if (null == initializedBean) {
+//                            initializedBean = ReflectionUtils.newInstance(classDescriptor.getClassName());
+//                        }
+                        String value = node.getProperty( classDescriptor.getDiscriminatorFieldDescriptor().getJcrName()).getValue().getString();
+                        ReflectionUtils.setNestedProperty(object, fieldName, value);
                     }
                     else {
-                        throw new PersistenceException("Class '" + classDescriptor.getClassName() + "' does not declare a valid discriminator value.");
+                        throw new PersistenceException("Class '" + classDescriptor.getClassName() + "' have not a discriminator property.");
                     }
                 }
                 else {
                     if (node.hasProperty(propertyName)) {
                         Value propValue = node.getProperty(propertyName).getValue();
-                        if (null != propValue && null == initializedBean) { // HINT: lazy initialize target bean
-                            initializedBean = ReflectionUtils.newInstance(classDescriptor.getClassName());
-                        }
+//                        if (null != propValue && null == initializedBean) { // HINT: lazy initialize target bean
+//                            initializedBean = ReflectionUtils.newInstance(classDescriptor.getClassName());
+//                        }
 
                         AtomicTypeConverter converter= getAtomicTypeConverter(fieldDescriptor, 
-                                                                              initializedBean, 
+                                                                              object, 
                                                                               fieldName);
                         
                         Object fieldValue = converter.getObject(propValue);
-                        ReflectionUtils.setNestedProperty(initializedBean, fieldName, fieldValue);
+                        ReflectionUtils.setNestedProperty(object, fieldName, fieldValue);
+                    }
+                    else
+                    {
+                    	     log.warn("Class '" + classDescriptor.getClassName() + "' has an unmapped property : " + propertyName);	
                     }
                 }
             }
@@ -453,7 +470,7 @@ public class ObjectConverterImpl implements ObjectConverter {
                     re);
         }
         
-        return initializedBean;
+        return object;
     }
     
     /**
@@ -471,7 +488,8 @@ public class ObjectConverterImpl implements ObjectConverter {
             Class beanClass = ReflectionUtils.getPropertyType(object, beanName);
             Object bean = null;
             if (beanDescriptor.isInline()) {
-                bean = this.retrieveSimpleFields(session, getClassDescriptor(beanClass), node, null);
+            	    bean = ReflectionUtils.newInstance(beanClass);
+                bean = this.retrieveSimpleFields(session, getClassDescriptor(beanClass), node, bean);
             }
             else if (null != beanDescriptor.getBeanConverter()) {
                 bean = beanDescriptor.getBeanConverter().getObject(session,
@@ -660,27 +678,21 @@ public class ObjectConverterImpl implements ObjectConverter {
             Iterator fieldDescriptorIterator = classDescriptor.getFieldDescriptors().iterator();
             while (fieldDescriptorIterator.hasNext()) {
                 FieldDescriptor fieldDescriptor = (FieldDescriptor) fieldDescriptorIterator.next();
-    
-                //Of course, Path field is not updated as property
+
+                String fieldName = fieldDescriptor.getFieldName();
+                String jcrName = fieldDescriptor.getJcrName();
+
+
+                //Of course, Path field is not stored as property
                 if (fieldDescriptor.isPath()) {
                     continue;
                 }
 
-                // Discriminator is already written
                 if (classDescriptor.usesNodeTypePerHierarchyStrategy() && fieldDescriptor.isDiscriminator()) {
-                    if (null != classDescriptor.getDiscriminatorValue() && !"".equals(classDescriptor.getDiscriminatorValue())) {
-                        objectNode.setProperty(fieldDescriptor.getJcrName(), classDescriptor.getDiscriminatorValue());
-                    }
-                    else {
-                        throw new PersistenceException("Cannot persist object of type " + object.getClass().getName()
-                            + " Missing discriminator value from class descriptor.");
-                    }
-
+                     objectNode.setProperty(fieldDescriptor.getJcrName(), classDescriptor.getClassName());
                     continue;
                 }
     
-                String fieldName = fieldDescriptor.getFieldName();
-                String jcrName = fieldDescriptor.getJcrName();
     
                 boolean protectedProperty= fieldDescriptor.isJcrProtected();
                 
@@ -799,10 +811,12 @@ public class ObjectConverterImpl implements ObjectConverter {
                     + " is not JCR persistable. Maybe element 'class-descriptor' for this type in mapping file is missing");
         }
 
-        if(classDescriptor.isAbstract()) {
-            throw new PersistenceException("Cannot persist/retrieve abstract class " + beanClass.getName());
-        }
+//        if(classDescriptor.isAbstract()) 
+//        {
+//        	      throw new PersistenceException("Cannot persist/retrieve abstract class " + beanClass.getName());
+//        }
 
         return classDescriptor;
     }
+    
 }

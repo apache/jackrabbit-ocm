@@ -29,6 +29,8 @@ import org.apache.portals.graffito.jcr.mapper.model.FieldDescriptor;
 import org.apache.portals.graffito.jcr.persistence.objectconverter.impl.ObjectConverterImpl;
 import org.apache.portals.graffito.jcr.testmodel.A;
 import org.apache.portals.graffito.jcr.testmodel.B;
+import org.apache.portals.graffito.jcr.testmodel.inheritance.Ancestor;
+import org.apache.portals.graffito.jcr.testmodel.inheritance.Descendant;
 
 /**
  * Test Mapper
@@ -53,7 +55,7 @@ public class DigesterMapperImplTest extends TestCase
     }
 
     /**
-     * Test for getConverter
+     * Simple test mapper
      *
      */
     public void testMapper()    
@@ -94,7 +96,7 @@ public class DigesterMapperImplTest extends TestCase
     }
     
     /**
-     * Test for getConverter
+     * Test optional mapping properties
      *
      */
     public void testMapperOptionalProperties()    
@@ -159,4 +161,40 @@ public class DigesterMapperImplTest extends TestCase
               fail("Impossible to retrieve the converter " + e);
         }
     }
+    
+    /**
+     *
+     * Test inheritance mapping setting
+     */
+    public void testMapperInheritance()    
+    {
+        try
+        {
+            Mapper mapper = new DigesterMapperImpl("./src/test-config/jcrmapping-inheritance.xml").buildMapper();
+            assertNotNull("Mapper is null", mapper);
+            
+            ClassDescriptor classDescriptor = mapper.getClassDescriptor(Ancestor.class);
+            assertNotNull("Mapper is null", classDescriptor);
+            assertEquals("Incorrect path field", classDescriptor.getPathFieldDescriptor().getFieldName(), "path");
+            assertEquals("Incorrect discriminator field", classDescriptor.getDiscriminatorFieldDescriptor().getFieldName(), "discriminator");
+            assertTrue("The ancestor class is not abstract", classDescriptor.isAbstract());
+            assertNull("The ancestor class has an ancestor", classDescriptor.getSuperClassDescriptor());
+            
+            classDescriptor = mapper.getClassDescriptor(Descendant.class);
+            assertNotNull("Mapper is null", classDescriptor);
+            assertEquals("Incorrect path field", classDescriptor.getPathFieldDescriptor().getFieldName(), "path");
+            assertEquals("Incorrect discriminator field", classDescriptor.getDiscriminatorFieldDescriptor().getFieldName(), "discriminator");
+            assertNotNull("ancerstorField is null in the descendant class", classDescriptor.getFieldDescriptor("ancestorField"));
+            assertFalse("The descendant class is abstract", classDescriptor.isAbstract());
+            assertNotNull("The descendant class has not an ancestor", classDescriptor.getSuperClassDescriptor());
+            assertEquals("Invalid ancestor class for the descendant class", classDescriptor.getSuperClassDescriptor().getClassName(), "org.apache.portals.graffito.jcr.testmodel.inheritance.Ancestor");
+            
+        }
+        catch (JcrMappingException e)
+        {
+              e.printStackTrace();
+              fail("Impossible to retrieve the converter " + e);
+        }
+    }
+    
 }

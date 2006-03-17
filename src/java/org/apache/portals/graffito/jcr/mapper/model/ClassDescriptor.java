@@ -20,6 +20,9 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
+
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.apache.portals.graffito.jcr.exception.JcrMappingException;
 
 /**
@@ -30,6 +33,9 @@ import org.apache.portals.graffito.jcr.exception.JcrMappingException;
  * @author <a href='mailto:the_mindstorm[at]evolva[dot]ro'>Alexandru Popescu</a>
  */
 public class ClassDescriptor {
+	
+	private static final Log log = LogFactory.getLog(ClassDescriptor.class);
+	
     private static final String NODETYPE_PER_HIERARCHY = "nodetypeperhierarchy";
     private static final String NODETYPE_PER_CONCRETECLASS = "nodetypeperconcreteclass";
 
@@ -44,23 +50,18 @@ public class ClassDescriptor {
     private FieldDescriptor pathFieldDescriptor;
     private FieldDescriptor discriminatorFieldDescriptor;
 
-    private Map fieldDescriptors = new HashMap();
-    // collects all super field descriptors
-    private Map allFields = null;
-    private Map beanDescriptors = new HashMap();
-    // collects all super bean descriptors
-    private Map allBeans = null;
+    private Map fieldDescriptors = new HashMap();    
+    private Map beanDescriptors = new HashMap();        
     private Map collectionDescriptors = new HashMap();
-    // collects all super collection descriptors
-    private Map allCollections = null;
+        
     private Map fieldNames = new HashMap();
 
     private String superClassName;
     private String extendsStrategy;
     private boolean abstractClass = false;
-    private String descriminatorValue;
+   // private String discriminatorValue;
 
-
+    
     public void setAbstract(boolean flag) {
         this.abstractClass = flag;
     }
@@ -70,11 +71,11 @@ public class ClassDescriptor {
     }
 
     /**
-     * @return Returns the descriminatorValue.
+     * @return Returns the discriminatorValue.
      */
-    public String getDiscriminatorValue() {
-        return descriminatorValue;
-    }
+//    public String getDiscriminatorValue() {
+//        return discriminatorValue;
+//    }
 
     /**
      * In case this class is part of an hierarchy which is
@@ -82,11 +83,11 @@ public class ClassDescriptor {
      * value represents the value of the <tt>discriminator</tt>
      * property than identifies uniquely this type.
      * 
-     * @param descriminatorValue The descriminatorValue to set.
+     * @param discriminatorValue The discriminatorValue to set.
      */
-    public void setDiscriminatorValue(String descriminatorValue) {
-        this.descriminatorValue= descriminatorValue;
-    }
+//    public void setDiscriminatorValue(String discriminatorValue) {
+//        this.discriminatorValue= discriminatorValue;
+//    }
 
     /**
      * Returns the inheritance strategy used by this descriptor. It can be either
@@ -119,7 +120,7 @@ public class ClassDescriptor {
     /**
      * @param className The className to set.
      */
-    public void setClassName(String className) {
+    public void setClassName(String className) {    	   
         this.className = className;
     }
 
@@ -164,7 +165,7 @@ public class ClassDescriptor {
      * @return the {@link FieldDescriptor} found or null
      */
     public FieldDescriptor getFieldDescriptor(String fieldName) {
-        return (FieldDescriptor) this.allFields.get(fieldName);
+        return (FieldDescriptor) this.fieldDescriptors.get(fieldName);
     }
 
     /**
@@ -172,7 +173,7 @@ public class ClassDescriptor {
      * @return all {@link FieldDescriptor} defined in this ClassDescriptor
      */
     public Collection getFieldDescriptors() {
-        return this.allFields.values();
+        return this.fieldDescriptors.values();
     }
 
     /**
@@ -193,14 +194,14 @@ public class ClassDescriptor {
      * @return the {@link BeanDescriptor} found or null
      */
     public BeanDescriptor getBeanDescriptor(String fieldName) {
-        return (BeanDescriptor) this.allBeans.get(fieldName);
+        return (BeanDescriptor) this.beanDescriptors.get(fieldName);
     }
 
     /**
      * @return all {@link BeanDescriptor} defined in this ClassDescriptor
      */
     public Collection getBeanDescriptors() {
-        return this.allBeans.values();
+        return this.beanDescriptors.values();
     }
 
     /**
@@ -221,14 +222,14 @@ public class ClassDescriptor {
      * @return the {@link CollectionDescriptor} found or null
      */
     public CollectionDescriptor getCollectionDescriptor(String fieldName) {
-        return (CollectionDescriptor) this.allCollections.get(fieldName);
+        return (CollectionDescriptor) this.collectionDescriptors.get(fieldName);
     }
 
     /**
      * @return all {@link BeanDescriptor} defined in this ClassDescriptor
      */
     public Collection getCollectionDescriptors() {
-        return this.allCollections.values();
+        return this.collectionDescriptors.values();
     }
 
     /**
@@ -242,7 +243,17 @@ public class ClassDescriptor {
      * @return the fieldDescriptor path
      */
     public FieldDescriptor getPathFieldDescriptor() {
-        return pathFieldDescriptor;
+        if (null != this.pathFieldDescriptor) {
+            return this.pathFieldDescriptor;
+        }
+
+        if (null != this.superClassDescriptor) {
+            return this.superClassDescriptor.getPathFieldDescriptor();
+        }
+
+        return null;
+        
+    
     }
 
     public FieldDescriptor getDiscriminatorFieldDescriptor() {
@@ -378,15 +389,10 @@ public class ClassDescriptor {
     }
 
     private void lookupSuperDescriptor() {
-        if (null == this.superClassDescriptor) {
-            this.allFields = this.fieldDescriptors;
-            this.allBeans = this.beanDescriptors;
-            this.allCollections = this.collectionDescriptors;
-        }
-        else {
-            this.allFields = merge(this.fieldDescriptors, this.superClassDescriptor.getFieldDescriptors());
-            this.allBeans = merge(this.beanDescriptors, this.superClassDescriptor.getBeanDescriptors());
-            this.allCollections = merge(this.collectionDescriptors, this.superClassDescriptor.getCollectionDescriptors());
+        if (null != this.superClassDescriptor) {
+            this.fieldDescriptors = merge(this.fieldDescriptors, this.superClassDescriptor.getFieldDescriptors());
+            this.beanDescriptors = merge(this.beanDescriptors, this.superClassDescriptor.getBeanDescriptors());
+            this.collectionDescriptors = merge(this.collectionDescriptors, this.superClassDescriptor.getCollectionDescriptors());
         }
     }
 
@@ -429,6 +435,10 @@ public class ClassDescriptor {
             FieldDescriptor fd = (FieldDescriptor) it.next();
             if (!merged.containsKey(fd.getFieldName())) {
                 merged.put(fd.getFieldName(), fd);
+            }
+            else
+            {
+            	    log.warn("Field name conflict in " + this.className + " - field : " +fd.getFieldName() + " -  this  field name is also defined  in the ancestor class : " + this.getSuperClass());
             }
         }
 
