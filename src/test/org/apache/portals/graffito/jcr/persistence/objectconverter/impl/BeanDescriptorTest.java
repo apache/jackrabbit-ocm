@@ -86,7 +86,7 @@ public class BeanDescriptorTest extends TestBase {
     }
     
     public void testInlined() throws Exception {
-        System.out.println(".inlined");
+        System.out.println("inlined");
         
         B expB = new B();
         expB.setB1("b1value");
@@ -103,13 +103,13 @@ public class BeanDescriptorTest extends TestBase {
         
         assertEquals(expD.getD1(), actD.getD1());
         assertEquals(expB.getB1(), actD.getB1().getB1());
-        assertNull("B.b2 is protected", actD.getB1().getB2());
+        assertEquals(expB.getB2(), actD.getB1().getB2());
         
         DFull actDFull = (DFull) this.objectConverter.getObject(getSession(), DFull.class, "/someD");
         
         assertEquals(expD.getD1(), actDFull.getD1());
         assertEquals(expB.getB1(), actDFull.getB1());
-        assertNull("B.b2 is protected", actDFull.getB2());
+        assertEquals(expB.getB2(), actDFull.getB2());
         
         expB.setB1("updatedvalue1");
         
@@ -120,34 +120,29 @@ public class BeanDescriptorTest extends TestBase {
         
         assertEquals(expD.getD1(), actD.getD1());
         assertEquals(expB.getB1(), actD.getB1().getB1());
-        assertNull("B.b2 is protected", actD.getB1().getB2());
+        assertEquals(expB.getB2(), actD.getB1().getB2());
         
         actDFull = (DFull) this.objectConverter.getObject(getSession(), DFull.class, "/someD");
         
         assertEquals(expD.getD1(), actDFull.getD1());
         assertEquals(expB.getB1(), actDFull.getB1());
-        assertNull("B.b2 is protected", actDFull.getB2());
+        assertEquals(expB.getB2(), actDFull.getB2());
         
-//  Comment from Christophe : 
-// The following code breaks the unit test : D has an inner bean (b1) which contains a protected field (b2) . If b1 is set to null, 
-//        it is not possible to drop the inner bean because property  b2 is never set to null
-//   I'm wondering why to authorize a null value to a inner bean if this one contains a mandatory/protected property
+            
+        expD.setB1(null);
+        this.objectConverter.update(getSession(), expD);
+        getSession().save();
         
+        actD = (D) this.objectConverter.getObject(getSession(), D.class, "/someD");
         
-//        expD.setB1(null);
-//        this.objectConverter.update(getSession(), expD);
-//        getSession().save();
-//        
-//        actD = (D) this.objectConverter.getObject(getSession(), D.class, "/someD");
-//        
-//        assertEquals(expD.getD1(), actD.getD1());
-//        assertNull("b1 was removed", actD.getB1());
-//        
-//        actDFull = (DFull) this.objectConverter.getObject(getSession(), DFull.class, "/someD");
-//        
-//        assertEquals(expD.getD1(), actDFull.getD1());
-//        assertNull("b1 was removed", actDFull.getB1());
-//        assertNull("B.b2 is protected", actDFull.getB2());
+        assertEquals(expD.getD1(), actD.getD1());
+        assertNull("b1 was not  removed", actD.getB1());
+        
+        actDFull = (DFull) this.objectConverter.getObject(getSession(), DFull.class, "/someD");
+        
+        assertEquals(expD.getD1(), actDFull.getD1());
+        assertNull("b1 was not  removed", actDFull.getB1());
+        assertNull("b2 wan not remove", actDFull.getB2());
 
     }
     

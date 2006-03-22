@@ -16,6 +16,7 @@
 package org.apache.portals.graffito.jcr.mapper.model;
 
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -41,6 +42,7 @@ public class ClassDescriptor {
 
     private MappingDescriptor mappingDescriptor;
     private ClassDescriptor superClassDescriptor;
+    private Collection descendantClassDescriptors = new ArrayList();
 
     private String className;
     private String jcrNodeType;
@@ -59,8 +61,8 @@ public class ClassDescriptor {
     private String superClassName;
     private String extendsStrategy;
     private boolean abstractClass = false;
-   // private String discriminatorValue;
-
+    private boolean hasDescendant = false;
+   
     
     public void setAbstract(boolean flag) {
         this.abstractClass = flag;
@@ -69,39 +71,6 @@ public class ClassDescriptor {
     public boolean isAbstract() {
         return this.abstractClass;
     }
-
-    /**
-     * @return Returns the discriminatorValue.
-     */
-//    public String getDiscriminatorValue() {
-//        return discriminatorValue;
-//    }
-
-    /**
-     * In case this class is part of an hierarchy which is
-     * using <tt>NODETYPE_PER_HIERARCHY</tt> strategy the returned
-     * value represents the value of the <tt>discriminator</tt>
-     * property than identifies uniquely this type.
-     * 
-     * @param discriminatorValue The discriminatorValue to set.
-     */
-//    public void setDiscriminatorValue(String discriminatorValue) {
-//        this.discriminatorValue= discriminatorValue;
-//    }
-
-    /**
-     * Returns the inheritance strategy used by this descriptor. It can be either
-     * <tt>NODETYPE_PER_CONCRETECLASS</tt>, <tt>NODETYPE_PER_HIERARCHY</tt> or
-     * <tt>null</tt> if no inheritance mechanism is used.
-     *
-     * @return Returns {@link #NODETYPE_PER_HIERARCHY} or {@link #NODETYPE_PER_CONCRETECLASS} or
-     * <tt>null</tt>
-     */
-/*
-    public String getExtendsStrategy() {
-        return extendsStrategy;
-    }
-*/
 
     public boolean usesNodeTypePerHierarchyStrategy() {
         return NODETYPE_PER_HIERARCHY.equals(this.extendsStrategy);
@@ -256,12 +225,20 @@ public class ClassDescriptor {
     
     }
 
-    public FieldDescriptor getDiscriminatorFieldDescriptor() {
-        return this.discriminatorFieldDescriptor;
+    public FieldDescriptor getDiscriminatorFieldDescriptor() {       
+        if (null != this.discriminatorFieldDescriptor) {
+            return this.discriminatorFieldDescriptor;
+        }
+
+        if (null != this.superClassDescriptor) {
+            return this.superClassDescriptor.getDiscriminatorFieldDescriptor();
+        }
+
+        return null;        
     }
 
     public boolean hasDiscriminatorField() {
-        return this.discriminatorFieldDescriptor != null;
+        return this.getDiscriminatorFieldDescriptor() != null;
     }
 
     /**
@@ -279,6 +256,11 @@ public class ClassDescriptor {
      */
     public String getJcrName(String fieldName) {
         return (String) this.fieldNames.get(fieldName);
+    }
+    
+    public Map getFieldNames()
+    {
+        return this.fieldNames;
     }
 
     /** Get the JCR node super types.
@@ -342,22 +324,20 @@ public class ClassDescriptor {
      */
     public void afterPropertiesSet() {
         lookupSuperDescriptor();
-
         lookupInheritanceSettings();
-
         validateInheritanceSettings();
     }
 
     private void validateInheritanceSettings() {
         if (NODETYPE_PER_CONCRETECLASS.equals(this.extendsStrategy)) {
-            this.discriminatorFieldDescriptor = findDiscriminatorField();
+            this.discriminatorFieldDescriptor = getDiscriminatorFieldDescriptor();
 
             if (null != this.discriminatorFieldDescriptor) {
                 throw new JcrMappingException("");
             }
         }
         else if (NODETYPE_PER_HIERARCHY.equals(this.extendsStrategy)) {
-            this.discriminatorFieldDescriptor = findDiscriminatorField();
+            this.discriminatorFieldDescriptor = getDiscriminatorFieldDescriptor();
 
             if (null == this.discriminatorFieldDescriptor) {
                 throw new JcrMappingException("");
@@ -365,27 +345,28 @@ public class ClassDescriptor {
         }
     }
 
-    private FieldDescriptor findDiscriminatorField() {
-        if (null != this.discriminatorFieldDescriptor) {
-            return this.discriminatorFieldDescriptor;
-        }
 
-        if (null != this.superClassDescriptor) {
-            return this.superClassDescriptor.findDiscriminatorField();
-        }
-
-        return null;
-    }
 
     private void lookupInheritanceSettings() {
-        if (null != this.superClassDescriptor) {
-            if (this.jcrNodeType.equals(this.superClassDescriptor.jcrNodeType)) {
-                this.extendsStrategy = NODETYPE_PER_HIERARCHY;
-            }
-            else {
-                this.extendsStrategy = NODETYPE_PER_CONCRETECLASS;
-            }
-        }
+//        if (null != this.superClassDescriptor) {
+//            if (this.jcrNodeType.equals(this.superClassDescriptor.jcrNodeType)) {
+//                this.extendsStrategy = NODETYPE_PER_HIERARCHY;
+//            }
+//            else {
+//                this.extendsStrategy = NODETYPE_PER_CONCRETECLASS;
+//            }
+//        }
+    	     if ((null != this.superClassDescriptor) || (this.hasDescendants() ))
+    	     {
+    	    	       if (this.hasDiscriminatorField())
+    	    	       {
+    	    	    	        this.extendsStrategy = NODETYPE_PER_HIERARCHY;
+    	    	       }
+    	    	       else
+    	    	       {
+    	    	    	       this.extendsStrategy = NODETYPE_PER_CONCRETECLASS;
+    	    	       }
+    	     }
     }
 
     private void lookupSuperDescriptor() {
@@ -393,6 +374,9 @@ public class ClassDescriptor {
             this.fieldDescriptors = merge(this.fieldDescriptors, this.superClassDescriptor.getFieldDescriptors());
             this.beanDescriptors = merge(this.beanDescriptors, this.superClassDescriptor.getBeanDescriptors());
             this.collectionDescriptors = merge(this.collectionDescriptors, this.superClassDescriptor.getCollectionDescriptors());
+            this.fieldNames.putAll(this.superClassDescriptor.getFieldNames());
+            
+            
         }
     }
 
@@ -417,12 +401,30 @@ public class ClassDescriptor {
     public ClassDescriptor getSuperClassDescriptor() {
         return superClassDescriptor;
     }
+    
+    public Collection getDescendantClassDescriptors()
+    {
+    	     return this.descendantClassDescriptors;
+    }
+    
+    public void addDescendantClassDescriptor(ClassDescriptor classDescriptor)
+    {
+    	     this.descendantClassDescriptors.add(classDescriptor);
+    	     this.hasDescendant = true;
+    }
+    
+    public boolean hasDescendants()
+    {
+    	    return this.hasDescendant;
+    }
 
     /**
      * @param superClassDescriptor The superClassDescriptor to set.
      */
     public void setSuperClassDescriptor(ClassDescriptor superClassDescriptor) {
         this.superClassDescriptor= superClassDescriptor;
+        superClassDescriptor.addDescendantClassDescriptor(this);
+        
     }
 
     private Map merge(Map existing, Collection superSource) {
@@ -444,4 +446,11 @@ public class ClassDescriptor {
 
         return merged;
     }
+
+	public String toString() {
+		
+		return "Class Descriptor : " +  this.getClassName();
+	}
+    
+    
 }

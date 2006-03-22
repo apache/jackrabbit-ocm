@@ -1,8 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <!DOCTYPE graffito-jcr PUBLIC "-//The Apache Software Foundation//DTD Repository//EN" "./src/dtd/graffito-jcr-mapping.dtd">
-<graffito-jcr>
-    
+<graffito-jcr>    
 	<class-descriptor className="org.apache.portals.graffito.jcr.testmodel.inheritance.Ancestor" jcrNodeType="nt:unstructured"  abstract="true" >
 		<field-descriptor fieldName="path" path="true" />
 		<field-descriptor fieldName="ancestorField" jcrName="ancestorField" />
@@ -20,8 +19,10 @@
 
 	</class-descriptor>
 
+	<class-descriptor className="org.apache.portals.graffito.jcr.testmodel.inheritance.SubDescendant" jcrNodeType="nt:unstructured" 
+	                                   extends="org.apache.portals.graffito.jcr.testmodel.inheritance.Descendant"  >                               
+		<field-descriptor fieldName="subDescendantField" jcrName="subDescendantField" />  
 
-
-
+	</class-descriptor>
 </graffito-jcr>
  

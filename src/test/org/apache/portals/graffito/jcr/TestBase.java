@@ -30,6 +30,8 @@ import java.util.HashMap;
 import java.util.Map;
 
 import javax.jcr.ImportUUIDBehavior;
+import javax.jcr.Node;
+import javax.jcr.NodeIterator;
 import javax.jcr.Repository;
 import javax.jcr.Session;
 import javax.jcr.UnsupportedRepositoryOperationException;
@@ -39,6 +41,8 @@ import javax.jcr.nodetype.NodeTypeManager;
 
 import junit.framework.TestCase;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.apache.jackrabbit.core.nodetype.InvalidNodeTypeDefException;
 import org.apache.jackrabbit.core.nodetype.NodeTypeDef;
 import org.apache.jackrabbit.core.nodetype.NodeTypeManagerImpl;
@@ -60,6 +64,7 @@ import org.apache.portals.graffito.jcr.persistence.atomictypeconverter.impl.Stri
 import org.apache.portals.graffito.jcr.persistence.atomictypeconverter.impl.TimestampTypeConverterImpl;
 import org.apache.portals.graffito.jcr.persistence.atomictypeconverter.impl.UtilDateTypeConverterImpl;
 import org.apache.portals.graffito.jcr.persistence.impl.PersistenceManagerImpl;
+import org.apache.portals.graffito.jcr.persistence.impl.PersistenceManagerSimpleInheritanceTest;
 import org.apache.portals.graffito.jcr.persistence.objectconverter.ObjectConverter;
 import org.apache.portals.graffito.jcr.persistence.objectconverter.impl.ObjectConverterImpl;
 import org.apache.portals.graffito.jcr.query.QueryManager;
@@ -78,6 +83,8 @@ import org.xml.sax.ContentHandler;
 public abstract class TestBase extends TestCase
 {
 
+	private final static Log log = LogFactory.getLog(TestBase.class);
+	
 	protected Session session;
 
 	private PersistenceManager persistenceManager;
@@ -249,5 +256,29 @@ public abstract class TestBase extends TestCase
 	{
 		return this.queryManager;
 	}
+	
+	public void cleanUpRepisotory() {
+		try 
+		{
+				Session session = this.getSession();		
+				NodeIterator nodeIterator = session.getRootNode().getNodes();
+		
+				while (nodeIterator.hasNext())
+				{
+					Node node = nodeIterator.nextNode();
+					if (! node.getName().startsWith("jcr:"))
+					{
+					    log.debug("tearDown - remove : " + node.getPath());
+					    node.remove();
+					}
+				}
+				session.save();
+		}
+		catch(Exception e)
+		{
+			e.printStackTrace();
+		}
+	}
+
 
 }

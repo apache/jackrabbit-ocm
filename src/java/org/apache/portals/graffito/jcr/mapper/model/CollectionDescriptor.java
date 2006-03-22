@@ -262,5 +262,10 @@ public class CollectionDescriptor
     public void setJcrSameNameSiblings(boolean value)
     {
         this.jcrSameNameSiblings = value;
-    }    
+    }
+    
+	public String toString() {
+		
+		return "Collection Descriptor : " +  this.getFieldName();
+	}    
 }

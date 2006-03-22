@@ -16,10 +16,12 @@
  */
 package org.apache.portals.graffito.jcr.query.impl;
 
+import java.util.Iterator;
 import java.util.Map;
 
 import org.apache.portals.graffito.jcr.mapper.Mapper;
 import org.apache.portals.graffito.jcr.mapper.model.ClassDescriptor;
+import org.apache.portals.graffito.jcr.mapper.model.FieldDescriptor;
 import org.apache.portals.graffito.jcr.query.Filter;
 import org.apache.portals.graffito.jcr.query.Query;
 import org.apache.portals.graffito.jcr.query.QueryManager;
@@ -51,7 +53,45 @@ public class QueryManagerImpl implements QueryManager
 	{
 
 		Filter filter = query.getFilter();
+		
+        // Check if the class has  an inheritance discriminator field		
+		ClassDescriptor classDescriptor = mapper.getClassDescriptor(filter.getFilterClass()); 
+		if (classDescriptor.hasDiscriminatorField())
+		{
+			Filter discrininatorFilter = this.createFilter(query.getFilter().getFilterClass());
+			if ( ! classDescriptor.isAbstract())
+			{
+			    FieldDescriptor fieldDescriptor = classDescriptor.getDiscriminatorFieldDescriptor();
+		        discrininatorFilter.addEqualTo(fieldDescriptor.getFieldName(), filter.getFilterClass().getName());
+			}
+			
+			if (classDescriptor.hasDescendants())
+			{
+				
+			    	
+				Iterator  descendantDescriptorIterator = classDescriptor.getDescendantClassDescriptors().iterator();
+				ClassDescriptor descendantClassDescriptor = (ClassDescriptor)descendantDescriptorIterator.next();
+				FieldDescriptor fieldDescriptor = descendantClassDescriptor.getDiscriminatorFieldDescriptor();
+				 Filter descendantFilter = this.createFilter(query.getFilter().getFilterClass());				 
+				 descendantFilter.addEqualTo(fieldDescriptor.getFieldName(), descendantClassDescriptor.getClassName());
+				 discrininatorFilter = discrininatorFilter.addOrFilter(descendantFilter);
+				 
+				while (descendantDescriptorIterator.hasNext())
+				{
+					 descendantFilter = this.createFilter(query.getFilter().getFilterClass());
 					
+					 descendantClassDescriptor = (ClassDescriptor)descendantDescriptorIterator.next();
+					  fieldDescriptor = descendantClassDescriptor.getDiscriminatorFieldDescriptor();
+					 descendantFilter.addEqualTo(fieldDescriptor.getFieldName(), descendantClassDescriptor.getClassName());
+					 discrininatorFilter =  discrininatorFilter.addOrFilter(descendantFilter);
+				}
+				
+			}
+			
+			
+			 filter = filter.addAndFilter(discrininatorFilter);
+		}
+		
 		String jcrExp = "";
 		
 		// Add scope
@@ -69,6 +109,8 @@ public class QueryManagerImpl implements QueryManager
 
         // Add filter criteria
 		String filterExp = ((FilterImpl)filter).getJcrExpression();
+			
+		// Build the jcr filter
 		if ((filterExp != null) && ( ! filterExp.equals("")))
 		{
 		    jcrExp += "[" + filterExp + "]";

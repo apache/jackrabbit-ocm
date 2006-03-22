@@ -40,12 +40,10 @@ public class FilterImpl implements Filter {
 
     private Class claszz;
     private String scope = "";
-    private List jcrExpressions = new ArrayList();
+    private String jcrExpression = "";
 
     private ClassDescriptor classDescriptor;
     private Map atomicTypeConverters;
-
-    private String orJcrExpression;
 
     /**
      * Constructor
@@ -95,7 +93,7 @@ public class FilterImpl implements Filter {
                 + "')";
         }
 
-        jcrExpressions.add(jcrExpression);
+        addExpression(jcrExpression);
 
         return this;
     }
@@ -109,7 +107,7 @@ public class FilterImpl implements Filter {
             + " and @" + this.getJcrFieldName(fieldAttributeName) + " <= "
             + this.getStringValue(value2) + ")";
 
-        jcrExpressions.add(jcrExpression);
+        addExpression(jcrExpression);
 
         return this;
     }
@@ -120,7 +118,7 @@ public class FilterImpl implements Filter {
     public Filter addEqualTo(String fieldAttributeName, Object value) {
         String jcrExpression = "@" + this.getJcrFieldName(fieldAttributeName) + " = "
             + this.getStringValue(value);
-        jcrExpressions.add(jcrExpression);
+        addExpression(jcrExpression);
 
         return this;
     }
@@ -131,7 +129,7 @@ public class FilterImpl implements Filter {
     public Filter addGreaterOrEqualThan(String fieldAttributeName, Object value) {
         String jcrExpression = "@" + this.getJcrFieldName(fieldAttributeName) + " >= "
             + this.getStringValue(value);
-        jcrExpressions.add(jcrExpression);
+        addExpression(jcrExpression);
 
         return this;
     }
@@ -142,7 +140,7 @@ public class FilterImpl implements Filter {
     public Filter addGreaterThan(String fieldAttributeName, Object value) {
         String jcrExpression = "@" + this.getJcrFieldName(fieldAttributeName) + " > "
             + this.getStringValue(value);
-        jcrExpressions.add(jcrExpression);
+        addExpression(jcrExpression);
 
         return this;
     }
@@ -153,7 +151,7 @@ public class FilterImpl implements Filter {
     public Filter addLessOrEqualThan(String fieldAttributeName, Object value) {
         String jcrExpression = "@" + this.getJcrFieldName(fieldAttributeName) + " <= "
             + this.getStringValue(value);
-        jcrExpressions.add(jcrExpression);
+        addExpression(jcrExpression);
 
         return this;
     }
@@ -164,7 +162,7 @@ public class FilterImpl implements Filter {
     public Filter addLessThan(String fieldAttributeName, Object value) {
         String jcrExpression = "@" + this.getJcrFieldName(fieldAttributeName) + " < "
             + this.getStringValue(value);
-        jcrExpressions.add(jcrExpression);
+        addExpression(jcrExpression);
 
         return this;
     }
@@ -175,7 +173,7 @@ public class FilterImpl implements Filter {
     public Filter addLike(String fieldAttributeName, Object value) {
         String jcrExpression = "jcr:like(" + "@" + this.getJcrFieldName(fieldAttributeName) + ", '"
             + value + "')";
-        jcrExpressions.add(jcrExpression);
+        addExpression(jcrExpression);
 
         return this;
     }
@@ -186,7 +184,7 @@ public class FilterImpl implements Filter {
     public Filter addNotEqualTo(String fieldAttributeName, Object value) {
         String jcrExpression = "@" + this.getJcrFieldName(fieldAttributeName) + " != "
             + this.getStringValue(value);
-        jcrExpressions.add(jcrExpression);
+        addExpression(jcrExpression);
 
         return this;
     }
@@ -196,7 +194,7 @@ public class FilterImpl implements Filter {
      */
     public Filter addNotNull(String fieldAttributeName) {
         String jcrExpression = "@" + this.getJcrFieldName(fieldAttributeName);
-        jcrExpressions.add(jcrExpression);
+        addExpression(jcrExpression);
 
         return this;
     }
@@ -206,7 +204,7 @@ public class FilterImpl implements Filter {
      */
     public Filter addIsNull(String fieldAttributeName) {
         String jcrExpression = "not(@" + this.getJcrFieldName(fieldAttributeName) + ")";
-        jcrExpressions.add(jcrExpression);
+        addExpression(jcrExpression);
 
         return this;
     }
@@ -215,13 +213,36 @@ public class FilterImpl implements Filter {
      * @see org.apache.portals.graffito.jcr.query.Filter#addOrFilter(org.apache.portals.graffito.jcr.query.Filter)
      */
     public Filter addOrFilter(Filter filter) {
-        orJcrExpression = ((FilterImpl) filter).getJcrExpression();
-
+    	   if ( null == jcrExpression || "".equals(jcrExpression) )
+    	   {
+    		   jcrExpression =    ((FilterImpl) filter).getJcrExpression() ;    		   
+    	   }
+    	   else
+    	   {
+    	         jcrExpression =   "(" + jcrExpression + ")  or ( "  +  ((FilterImpl) filter).getJcrExpression() + ")";
+    	   }
         return this;
     }
 
+    /**
+     * @see org.apache.portals.graffito.jcr.query.Filter#addAndFilter(Filter)
+     */
+    public Filter addAndFilter(Filter filter) {
+ 	   if ( null == jcrExpression || "".equals(jcrExpression) )
+	   {
+		   jcrExpression =    ((FilterImpl) filter).getJcrExpression() ;    		   
+	   }
+	   else
+	   {
+	         jcrExpression =   "(" + jcrExpression + ") and  ( "  +  ((FilterImpl) filter).getJcrExpression() + ")";
+	   }
+       return this;
+
+    }
+    
+
     public Filter addJCRExpression(String jcrExpression) {
-        jcrExpressions.add(jcrExpression);
+       addExpression(jcrExpression);
 
         return this;
     }
@@ -244,28 +265,20 @@ public class FilterImpl implements Filter {
     }
 
     public String getJcrExpression() {
-        if ((orJcrExpression == null) || orJcrExpression.equals("")) {
-            return buildJcrExpression();
-        }
-        else {
-            return "(" + buildJcrExpression() + ") or (" + this.orJcrExpression + ")";
-        }
+    	     return this.jcrExpression;
     }
 
-    private String buildJcrExpression() {
-        int count = 1;
-        String jcrExp = "";
-
-        Iterator criteriaIterator = jcrExpressions.iterator();
-        while (criteriaIterator.hasNext()) {
-            if (count > 1) {
-                jcrExp += " and ";
-            }
-            jcrExp += (String) criteriaIterator.next();
-            count++;
-
+    private void addExpression(String jcrExpression) {
+            
+    	     if (this.jcrExpression.length() >0) {
+              	this.jcrExpression += " and ";
         }
-
-        return jcrExp;
+        this.jcrExpression += jcrExpression ;
     }
+
+	public String toString() {
+		return getJcrExpression();
+	}
+    
+   
 }

@@ -78,6 +78,8 @@ public interface Filter
 	Filter addIsNull(String arg0);
 	
 	Filter addOrFilter(Filter arg0);
+
+	Filter addAndFilter(Filter filter);
 	
 	Filter addJCRExpression(String jcrExpression);
 	
