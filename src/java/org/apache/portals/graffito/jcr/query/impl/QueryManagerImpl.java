@@ -58,37 +58,7 @@ public class QueryManagerImpl implements QueryManager
 		ClassDescriptor classDescriptor = mapper.getClassDescriptor(filter.getFilterClass()); 
 		if (classDescriptor.hasDiscriminatorField())
 		{
-			Filter discrininatorFilter = this.createFilter(query.getFilter().getFilterClass());
-			if ( ! classDescriptor.isAbstract())
-			{
-			    FieldDescriptor fieldDescriptor = classDescriptor.getDiscriminatorFieldDescriptor();
-		        discrininatorFilter.addEqualTo(fieldDescriptor.getFieldName(), filter.getFilterClass().getName());
-			}
-			
-			if (classDescriptor.hasDescendants())
-			{
-				
-			    	
-				Iterator  descendantDescriptorIterator = classDescriptor.getDescendantClassDescriptors().iterator();
-				ClassDescriptor descendantClassDescriptor = (ClassDescriptor)descendantDescriptorIterator.next();
-				FieldDescriptor fieldDescriptor = descendantClassDescriptor.getDiscriminatorFieldDescriptor();
-				 Filter descendantFilter = this.createFilter(query.getFilter().getFilterClass());				 
-				 descendantFilter.addEqualTo(fieldDescriptor.getFieldName(), descendantClassDescriptor.getClassName());
-				 discrininatorFilter = discrininatorFilter.addOrFilter(descendantFilter);
-				 
-				while (descendantDescriptorIterator.hasNext())
-				{
-					 descendantFilter = this.createFilter(query.getFilter().getFilterClass());
-					
-					 descendantClassDescriptor = (ClassDescriptor)descendantDescriptorIterator.next();
-					  fieldDescriptor = descendantClassDescriptor.getDiscriminatorFieldDescriptor();
-					 descendantFilter.addEqualTo(fieldDescriptor.getFieldName(), descendantClassDescriptor.getClassName());
-					 discrininatorFilter =  discrininatorFilter.addOrFilter(descendantFilter);
-				}
-				
-			}
-			
-			
+			Filter discrininatorFilter = buildDiscriminatorFilter(query,  classDescriptor);
 			 filter = filter.addAndFilter(discrininatorFilter);
 		}
 		
@@ -121,6 +91,28 @@ public class QueryManagerImpl implements QueryManager
 		
 		return jcrExp;
 		 
+	}
+
+	private Filter buildDiscriminatorFilter(Query query, ClassDescriptor classDescriptor) {
+		Filter discrininatorFilter = this.createFilter(query.getFilter().getFilterClass());
+		if ( ! classDescriptor.isAbstract())
+		{
+		    FieldDescriptor fieldDescriptor = classDescriptor.getDiscriminatorFieldDescriptor();
+		    discrininatorFilter.addEqualTo(fieldDescriptor.getFieldName(), classDescriptor.getClassName());
+		}
+		
+		if (classDescriptor.hasDescendants())
+		{
+			Iterator  descendantDescriptorIterator = classDescriptor.getDescendantClassDescriptors().iterator();
+			while (descendantDescriptorIterator.hasNext())
+			{
+				 ClassDescriptor descendantClassDescriptor = (ClassDescriptor)descendantDescriptorIterator.next();
+				 //Add subdescendant discriminator value
+				 discrininatorFilter =  discrininatorFilter.addOrFilter( this.buildDiscriminatorFilter(query, descendantClassDescriptor));
+			}
+			
+		}
+		return discrininatorFilter;
 	}
 	
 	private String getNodeType(Filter filter)

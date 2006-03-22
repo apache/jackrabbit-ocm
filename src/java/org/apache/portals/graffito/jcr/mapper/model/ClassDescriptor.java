@@ -348,14 +348,6 @@ public class ClassDescriptor {
 
 
     private void lookupInheritanceSettings() {
-//        if (null != this.superClassDescriptor) {
-//            if (this.jcrNodeType.equals(this.superClassDescriptor.jcrNodeType)) {
-//                this.extendsStrategy = NODETYPE_PER_HIERARCHY;
-//            }
-//            else {
-//                this.extendsStrategy = NODETYPE_PER_CONCRETECLASS;
-//            }
-//        }
     	     if ((null != this.superClassDescriptor) || (this.hasDescendants() ))
     	     {
     	    	       if (this.hasDiscriminatorField())
