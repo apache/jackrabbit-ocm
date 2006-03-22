@@ -16,11 +16,11 @@
  */
 package org.apache.portals.graffito.jcr.persistence.impl;
 
-import java.io.ByteArrayInputStream;
-import java.sql.Timestamp;
-import java.util.Calendar;
 import java.util.Collection;
-import java.util.Date;
+
+import javax.jcr.Node;
+import javax.jcr.NodeIterator;
+import javax.jcr.Session;
 
 import junit.framework.Test;
 import junit.framework.TestSuite;
@@ -34,11 +34,9 @@ import org.apache.portals.graffito.jcr.query.Filter;
 import org.apache.portals.graffito.jcr.query.Query;
 import org.apache.portals.graffito.jcr.query.QueryManager;
 import org.apache.portals.graffito.jcr.testmodel.Atomic;
-import org.apache.portals.graffito.jcr.testmodel.Paragraph;
 import org.apache.portals.graffito.jcr.testmodel.inheritance.Ancestor;
 import org.apache.portals.graffito.jcr.testmodel.inheritance.AnotherDescendant;
 import org.apache.portals.graffito.jcr.testmodel.inheritance.Descendant;
-import org.apache.portals.graffito.jcr.testmodel.inheritance.Folder;
 
 /**
  * Test inheritance with node type per hierarchy stategy (with discreminator field)
@@ -65,8 +63,11 @@ public class PersistenceManagerSimpleInheritanceTest extends TestBase {
 
 	public void tearDown() throws Exception {
 
+		cleanUpRepisotory();
 		super.tearDown();
+		
 	}
+
 
 	public void testRetrieveSingleton() {
 
@@ -109,12 +110,20 @@ public class PersistenceManagerSimpleInheritanceTest extends TestBase {
 			assertEquals("Descendant descendantField is invalid", descendant	.getDescendantField(), "descendantValue");
 
 
-// UNCOMMENT
-//			Ancestor ancestor = (Ancestor) persistenceManager.getObject(Ancestor.class,"/test");
-//			assertTrue("Invalid object instance", ancestor instanceof Descendant );
-//		    assertEquals("ancestor path is invalid", ancestor.getPath(), "/test");
-//   		    assertEquals("Desancestorcendant ancestorField is invalid", ancestor.getAncestorField(), "ancestorValue");
 
+			Ancestor ancestor = (Ancestor) persistenceManager.getObject(Ancestor.class,"/test");
+			assertTrue("Invalid object instance", ancestor instanceof Descendant );
+			assertEquals("Ancestor  path is invalid", ancestor.getPath(), "/test");
+			assertEquals("Ancestor ancestorField is invalid", ancestor.getAncestorField(), "anotherAncestorValue");
+			
+			
+			//---------------------------------------------------------------------------------------------------------
+			// Remove Descendant
+			//---------------------------------------------------------------------------------------------------------						
+//			persistenceManager.remove("/test");
+//			persistenceManager.save();
+			
+			
 		} catch (Exception e) {
 			e.printStackTrace();
 			fail();
@@ -122,7 +131,7 @@ public class PersistenceManagerSimpleInheritanceTest extends TestBase {
 
 	}
 
-	/*
+	
 	public void testRetrieveCollection() {
 		PersistenceManager persistenceManager = this.getPersistenceManager();
 
@@ -154,7 +163,7 @@ public class PersistenceManagerSimpleInheritanceTest extends TestBase {
 		persistenceManager.insert(anotherDescendant);
 
 		anotherDescendant = new AnotherDescendant();
-		anotherDescendant.setAnotherDescendantField("anotherDescendantValue");
+		anotherDescendant.setAnotherDescendantField("anotherDescendantValue2");
 		anotherDescendant.setAncestorField("ancestorValue5");
 		anotherDescendant.setPath("/anotherdescendant3");
 		persistenceManager.insert(anotherDescendant);
@@ -166,6 +175,9 @@ public class PersistenceManagerSimpleInheritanceTest extends TestBase {
 
 		persistenceManager.save();
 
+		//---------------------------------------------------------------------------------------------------------	
+		// Retrieve Descendant class
+		//---------------------------------------------------------------------------------------------------------			
 		QueryManager queryManager = persistenceManager.getQueryManager();
 		Filter filter = queryManager.createFilter(Descendant.class);
 		Query query = queryManager.createQuery(filter);
@@ -173,7 +185,36 @@ public class PersistenceManagerSimpleInheritanceTest extends TestBase {
 		Collection result = persistenceManager.getObjects(query);
 		assertEquals("Invalid number of Descendant found", result.size(), 2);
 
+		//---------------------------------------------------------------------------------------------------------	
+		// Retrieve AnotherDescendant class
+		//---------------------------------------------------------------------------------------------------------			
+		queryManager = persistenceManager.getQueryManager();
+		filter = queryManager.createFilter(AnotherDescendant.class);
+		filter.addEqualTo("anotherDescendantField", "anotherDescendantValue");
+		query = queryManager.createQuery(filter);
+
+		result = persistenceManager.getObjects(query);
+		assertEquals("Invalid number of AnotherDescendant found", result.size(),2);
+		
+		//---------------------------------------------------------------------------------------------------------	
+		// Retrieve AnotherDescendant class
+		//---------------------------------------------------------------------------------------------------------			
+		queryManager = persistenceManager.getQueryManager();
+		filter = queryManager.createFilter(Ancestor.class);		
+		query = queryManager.createQuery(filter);
+
+		result = persistenceManager.getObjects(query);
+		assertEquals("Invalid ancestor object found", result.size(),5);
+		
+		
+//		persistenceManager.remove("/descendant1");
+//		persistenceManager.remove("/descendant2");
+//		persistenceManager.remove("/anotherdescendant1");
+//		persistenceManager.remove("/anotherdescendant2");
+//		persistenceManager.remove("/anotherdescendant3");
+//		persistenceManager.remove("/atomic");
+//		persistenceManager.save();
 	}
-	*/
+	
 
 }

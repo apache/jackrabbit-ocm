@@ -58,8 +58,8 @@
 		<field-descriptor fieldName="b1" jcrName="b1" jcrType="String" jcrAutoCreated="false" jcrMandatory="false"
         jcrOnParentVersion="IGNORE" jcrProtected="false" jcrMultiple="false" />
 		
-        <field-descriptor fieldName="b2" jcrName="b2" jcrType="String" jcrAutoCreated="true" jcrMandatory="true"
-        jcrOnParentVersion="COPY" jcrProtected="true" jcrMultiple="true" />
+        <field-descriptor fieldName="b2" jcrName="b2" jcrType="String" jcrAutoCreated="false" jcrMandatory="false"
+        jcrOnParentVersion="IGNORE" jcrProtected="false" jcrMultiple="false" />
 
 	</class-descriptor>
 

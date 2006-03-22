@@ -239,4 +239,9 @@ public class BeanDescriptor {
     public ClassDescriptor getClassDescriptor() {
         return classDescriptor;
     }
+    
+	public String toString() {
+		
+		return "Bean Descriptor : " +  this.fieldName;
+	}    
 }

@@ -238,11 +238,6 @@ public class ObjectConverterImpl implements ObjectConverter {
 
             ClassDescriptor classDescriptor = getClassDescriptor(clazz);
 
-//            if (classDescriptor.isAbstract()) {
-//                throw new PersistenceException("Cannot fetch declared abstract object of type "
-//                + clazz.getName());
-//            }
-
             checkNodeType(session, classDescriptor);
 
             Node node = (Node) session.getItem(path);
@@ -259,6 +254,7 @@ public class ObjectConverterImpl implements ObjectConverter {
                 }
                 
                 String className = node.getProperty(discriminatorProperty).getValue().getString();
+                classDescriptor = getClassDescriptor(Class.forName(className));
                 object = ReflectionUtils.newInstance(className);
             }
             else {
@@ -270,7 +266,10 @@ public class ObjectConverterImpl implements ObjectConverter {
             retrieveCollectionFields(session, classDescriptor, node, object);
 
             return object;
-        }         
+        } 
+        catch(ClassNotFoundException clnf) {
+           	throw new PersistenceException("Impossible to instantiate the object at " + path, clnf);
+        }
         catch(PathNotFoundException pnfe) {
             // HINT should never get here
             throw new PersistenceException("Impossible to get the object at " + path, pnfe);
@@ -402,7 +401,7 @@ public class ObjectConverterImpl implements ObjectConverter {
                                         ClassDescriptor classDescriptor, 
                                         Node node, 
                                         Object object) {
-       // Object initializedBean = object;
+       Object initializedBean = object;
         try {
             Iterator fieldDescriptorIterator = classDescriptor.getFieldDescriptors().iterator();
     
@@ -413,21 +412,21 @@ public class ObjectConverterImpl implements ObjectConverter {
                 String propertyName = fieldDescriptor.getJcrName();
     
                 if (fieldDescriptor.isPath()) {
-//                    if (null == initializedBean) { // HINT: lazy initialize target bean
-//                        initializedBean = ReflectionUtils.newInstance(classDescriptor.getClassName());
-//                    }
+                    if (null == initializedBean) { // HINT: lazy initialize target bean
+                     initializedBean = ReflectionUtils.newInstance(classDescriptor.getClassName());
+                   }
                     
-//                    ReflectionUtils.setNestedProperty(initializedBean, fieldName, node.getPath());
-                	      ReflectionUtils.setNestedProperty(object, fieldName, node.getPath());                 
+                    ReflectionUtils.setNestedProperty(initializedBean, fieldName, node.getPath());
+                 
                 }
                 else if (classDescriptor.usesNodeTypePerHierarchyStrategy() && fieldDescriptor.isDiscriminator()) {                	    
                 	    
                     if (node.hasProperty( classDescriptor.getDiscriminatorFieldDescriptor().getJcrName())) {
-//                        if (null == initializedBean) {
-//                            initializedBean = ReflectionUtils.newInstance(classDescriptor.getClassName());
-//                        }
+                        if (null == initializedBean) {
+                            initializedBean = ReflectionUtils.newInstance(classDescriptor.getClassName());
+                        }
                         String value = node.getProperty( classDescriptor.getDiscriminatorFieldDescriptor().getJcrName()).getValue().getString();
-                        ReflectionUtils.setNestedProperty(object, fieldName, value);
+                        ReflectionUtils.setNestedProperty(initializedBean, fieldName, value);
                     }
                     else {
                         throw new PersistenceException("Class '" + classDescriptor.getClassName() + "' have not a discriminator property.");
@@ -436,16 +435,16 @@ public class ObjectConverterImpl implements ObjectConverter {
                 else {
                     if (node.hasProperty(propertyName)) {
                         Value propValue = node.getProperty(propertyName).getValue();
-//                        if (null != propValue && null == initializedBean) { // HINT: lazy initialize target bean
-//                            initializedBean = ReflectionUtils.newInstance(classDescriptor.getClassName());
-//                        }
+                        if (null != propValue && null == initializedBean) { // HINT: lazy initialize target bean
+                            initializedBean = ReflectionUtils.newInstance(classDescriptor.getClassName());
+                        }
 
                         AtomicTypeConverter converter= getAtomicTypeConverter(fieldDescriptor, 
-                                                                              object, 
+                                                                              initializedBean, 
                                                                               fieldName);
                         
                         Object fieldValue = converter.getObject(propValue);
-                        ReflectionUtils.setNestedProperty(object, fieldName, fieldValue);
+                        ReflectionUtils.setNestedProperty(initializedBean, fieldName, fieldValue);
                     }
                     else
                     {
@@ -470,7 +469,7 @@ public class ObjectConverterImpl implements ObjectConverter {
                     re);
         }
         
-        return object;
+        return initializedBean;
     }
     
     /**
@@ -487,8 +486,7 @@ public class ObjectConverterImpl implements ObjectConverter {
             String beanName = beanDescriptor.getFieldName();
             Class beanClass = ReflectionUtils.getPropertyType(object, beanName);
             Object bean = null;
-            if (beanDescriptor.isInline()) {
-            	    bean = ReflectionUtils.newInstance(beanClass);
+            if (beanDescriptor.isInline()) {            	    
                 bean = this.retrieveSimpleFields(session, getClassDescriptor(beanClass), node, bean);
             }
             else if (null != beanDescriptor.getBeanConverter()) {

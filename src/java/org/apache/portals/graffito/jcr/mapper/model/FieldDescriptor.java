@@ -295,4 +295,9 @@ public class FieldDescriptor {
 
         return null;
     }
+    
+	public String toString() {
+		
+		return "Field Descriptor : " +  this.getFieldName();
+	}    
 }
