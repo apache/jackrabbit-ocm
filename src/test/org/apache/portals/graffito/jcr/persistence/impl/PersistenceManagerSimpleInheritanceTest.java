@@ -18,10 +18,6 @@ package org.apache.portals.graffito.jcr.persistence.impl;
 
 import java.util.Collection;
 
-import javax.jcr.Node;
-import javax.jcr.NodeIterator;
-import javax.jcr.Session;
-
 import junit.framework.Test;
 import junit.framework.TestSuite;
 
@@ -37,6 +33,7 @@ import org.apache.portals.graffito.jcr.testmodel.Atomic;
 import org.apache.portals.graffito.jcr.testmodel.inheritance.Ancestor;
 import org.apache.portals.graffito.jcr.testmodel.inheritance.AnotherDescendant;
 import org.apache.portals.graffito.jcr.testmodel.inheritance.Descendant;
+import org.apache.portals.graffito.jcr.testmodel.inheritance.SubDescendant;
 
 /**
  * Test inheritance with node type per hierarchy stategy (with discreminator field)
@@ -117,13 +114,6 @@ public class PersistenceManagerSimpleInheritanceTest extends TestBase {
 			assertEquals("Ancestor ancestorField is invalid", ancestor.getAncestorField(), "anotherAncestorValue");
 			
 			
-			//---------------------------------------------------------------------------------------------------------
-			// Remove Descendant
-			//---------------------------------------------------------------------------------------------------------						
-//			persistenceManager.remove("/test");
-//			persistenceManager.save();
-			
-			
 		} catch (Exception e) {
 			e.printStackTrace();
 			fail();
@@ -150,6 +140,21 @@ public class PersistenceManagerSimpleInheritanceTest extends TestBase {
 		descendant.setPath("/descendant2");
 		persistenceManager.insert(descendant);
 
+		SubDescendant subDescendant = new SubDescendant();
+		subDescendant.setDescendantField("descendantValue2");
+		subDescendant.setAncestorField("ancestorValue2");
+		subDescendant.setPath("/subdescendant");
+		subDescendant.setSubDescendantField("subdescendantvalue");
+		persistenceManager.insert(subDescendant);		
+
+		 subDescendant = new SubDescendant();
+		subDescendant.setDescendantField("descendantValue3");
+		subDescendant.setAncestorField("ancestorValue2");
+		subDescendant.setPath("/subdescendant2");
+		subDescendant.setSubDescendantField("subdescendantvalue1");
+		persistenceManager.insert(subDescendant);		
+		
+		
 		AnotherDescendant anotherDescendant = new AnotherDescendant();
 		anotherDescendant.setAnotherDescendantField("anotherDescendantValue");
 		anotherDescendant.setAncestorField("ancestorValue3");
@@ -168,6 +173,7 @@ public class PersistenceManagerSimpleInheritanceTest extends TestBase {
 		anotherDescendant.setPath("/anotherdescendant3");
 		persistenceManager.insert(anotherDescendant);
 
+		
 		Atomic a = new Atomic();
 		a.setPath("/atomic");
 		a.setBooleanPrimitive(true);
@@ -183,7 +189,12 @@ public class PersistenceManagerSimpleInheritanceTest extends TestBase {
 		Query query = queryManager.createQuery(filter);
 
 		Collection result = persistenceManager.getObjects(query);
-		assertEquals("Invalid number of Descendant found", result.size(), 2);
+		assertEquals("Invalid number of Descendant found", result.size(), 4);
+		assertTrue("Invalid item in the collection", this.contains(result, "/descendant1", Descendant.class));
+		assertTrue("Invalid item in the collection", this.contains(result, "/descendant2", Descendant.class));
+		assertTrue("Invalid item in the collection", this.contains(result, "/subdescendant", SubDescendant.class));
+		assertTrue("Invalid item in the collection", this.contains(result, "/subdescendant2", SubDescendant.class));
+		
 
 		//---------------------------------------------------------------------------------------------------------	
 		// Retrieve AnotherDescendant class
@@ -195,26 +206,40 @@ public class PersistenceManagerSimpleInheritanceTest extends TestBase {
 
 		result = persistenceManager.getObjects(query);
 		assertEquals("Invalid number of AnotherDescendant found", result.size(),2);
+		assertTrue("Invalid item in the collection", this.contains(result, "/anotherdescendant1", AnotherDescendant.class));
+		assertTrue("Invalid item in the collection", this.contains(result, "/anotherdescendant2", AnotherDescendant.class));
+
+		//---------------------------------------------------------------------------------------------------------	
+		// Retrieve some descendants & subdescendants
+		//---------------------------------------------------------------------------------------------------------			
+		queryManager = persistenceManager.getQueryManager();
+		filter = queryManager.createFilter(Descendant.class);		
+		filter.addEqualTo("descendantField","descendantValue2");
+		query = queryManager.createQuery(filter);
+
+		result = persistenceManager.getObjects(query);
+		assertEquals("Invalid ancestor object found", result.size(),2);
+		assertTrue("Invalid item in the collection", this.contains(result, "/descendant2", Descendant.class));
+		assertTrue("Invalid item in the collection", this.contains(result, "/subdescendant", SubDescendant.class));
 		
 		//---------------------------------------------------------------------------------------------------------	
-		// Retrieve AnotherDescendant class
+		// Retrieve all class
 		//---------------------------------------------------------------------------------------------------------			
 		queryManager = persistenceManager.getQueryManager();
 		filter = queryManager.createFilter(Ancestor.class);		
 		query = queryManager.createQuery(filter);
 
 		result = persistenceManager.getObjects(query);
-		assertEquals("Invalid ancestor object found", result.size(),5);
-		
-		
-//		persistenceManager.remove("/descendant1");
-//		persistenceManager.remove("/descendant2");
-//		persistenceManager.remove("/anotherdescendant1");
-//		persistenceManager.remove("/anotherdescendant2");
-//		persistenceManager.remove("/anotherdescendant3");
-//		persistenceManager.remove("/atomic");
-//		persistenceManager.save();
-	}
-	
+		assertEquals("Invalid ancestor object found", result.size(),7);
+		assertTrue("Invalid item in the collection", this.contains(result, "/descendant1", Descendant.class));
+		assertTrue("Invalid item in the collection", this.contains(result, "/descendant2", Descendant.class));
+		assertTrue("Invalid item in the collection", this.contains(result, "/subdescendant", SubDescendant.class));
+		assertTrue("Invalid item in the collection", this.contains(result, "/subdescendant2", SubDescendant.class));
+		assertTrue("Invalid item in the collection", this.contains(result, "/anotherdescendant1", AnotherDescendant.class));
+		assertTrue("Invalid item in the collection", this.contains(result, "/anotherdescendant2", AnotherDescendant.class));
+		assertTrue("Invalid item in the collection", this.contains(result, "/anotherdescendant3", AnotherDescendant.class));		
 
+ 
+	}
+	    
 }

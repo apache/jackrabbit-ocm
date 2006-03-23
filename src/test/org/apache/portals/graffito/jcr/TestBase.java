@@ -24,9 +24,11 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.sql.Timestamp;
 import java.util.Calendar;
+import java.util.Collection;
 import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.Map;
 
 import javax.jcr.ImportUUIDBehavior;
@@ -69,7 +71,9 @@ import org.apache.portals.graffito.jcr.persistence.objectconverter.ObjectConvert
 import org.apache.portals.graffito.jcr.persistence.objectconverter.impl.ObjectConverterImpl;
 import org.apache.portals.graffito.jcr.query.QueryManager;
 import org.apache.portals.graffito.jcr.query.impl.QueryManagerImpl;
+import org.apache.portals.graffito.jcr.reflection.ReflectionUtils;
 import org.apache.portals.graffito.jcr.repository.RepositoryUtil;
+import org.apache.portals.graffito.jcr.testmodel.inheritance.Ancestor;
 import org.xml.sax.ContentHandler;
 
 /**
@@ -257,7 +261,30 @@ public abstract class TestBase extends TestCase
 		return this.queryManager;
 	}
 	
-	public void cleanUpRepisotory() {
+    protected boolean contains(Collection result, String path, Class objectClass)
+    {
+            Iterator iterator = result.iterator();
+            while (iterator.hasNext())
+            {
+                Object  object = (Ancestor) iterator.next();
+                if (ReflectionUtils.getNestedProperty(object, "path").equals(path))
+                {
+                    if (object.getClass() == objectClass)
+                    {
+                       return true;	
+                    }
+                    else
+                    {
+                    	   return false;
+                    }
+ 
+                }
+            }
+            return false;
+    }
+
+	
+	protected  void cleanUpRepisotory() {
 		try 
 		{
 				Session session = this.getSession();		
