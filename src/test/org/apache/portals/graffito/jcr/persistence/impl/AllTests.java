@@ -44,7 +44,9 @@ public class AllTests {
         suite.addTestSuite(PersistenceManagerSameNameSiblingTest.class);
         suite.addTestSuite(PersistenceManagerScopeQueryTest.class);
         suite.addTestSuite(PersistenceManagerSimpleQueryTest.class);
+        suite.addTestSuite(PersistenceManagerSimpleInheritanceTest.class);
         suite.addTestSuite(PersistenceManagerTest.class);
+        
         //$JUnit-END$
 
         return suite;
