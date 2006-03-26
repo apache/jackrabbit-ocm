@@ -66,7 +66,7 @@ import org.apache.portals.graffito.jcr.persistence.atomictypeconverter.impl.Stri
 import org.apache.portals.graffito.jcr.persistence.atomictypeconverter.impl.TimestampTypeConverterImpl;
 import org.apache.portals.graffito.jcr.persistence.atomictypeconverter.impl.UtilDateTypeConverterImpl;
 import org.apache.portals.graffito.jcr.persistence.impl.PersistenceManagerImpl;
-import org.apache.portals.graffito.jcr.persistence.impl.PersistenceManagerSimpleInheritanceTest;
+import org.apache.portals.graffito.jcr.persistence.impl.PersistenceManagerNtHierarchyTest;
 import org.apache.portals.graffito.jcr.persistence.objectconverter.ObjectConverter;
 import org.apache.portals.graffito.jcr.persistence.objectconverter.impl.ObjectConverterImpl;
 import org.apache.portals.graffito.jcr.query.QueryManager;

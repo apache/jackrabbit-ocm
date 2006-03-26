@@ -40,14 +40,14 @@ import org.apache.portals.graffito.jcr.testmodel.inheritance.SubDescendant;
  *
  * @author <a href="mailto:christophe.lombart@gmail.com">Christophe Lombart</a>
  */
-public class PersistenceManagerSimpleInheritanceTest extends TestBase {
-	private final static Log log = LogFactory.getLog(PersistenceManagerSimpleInheritanceTest.class);
+public class PersistenceManagerNtHierarchyTest extends TestBase {
+	private final static Log log = LogFactory.getLog(PersistenceManagerNtHierarchyTest.class);
 
 	/**
 	 * <p>Defines the test case name for junit.</p>
 	 * @param testName The test case name.
 	 */
-	public PersistenceManagerSimpleInheritanceTest(String testName) throws Exception {
+	public PersistenceManagerNtHierarchyTest(String testName) throws Exception {
 		super(testName);
 
 	}
@@ -55,7 +55,7 @@ public class PersistenceManagerSimpleInheritanceTest extends TestBase {
 	public static Test suite() {
 		// All methods starting with "test" will be executed in the test suite.
 		return new RepositoryLifecycleTestSetup(new TestSuite(
-				PersistenceManagerSimpleInheritanceTest.class));
+				PersistenceManagerNtHierarchyTest.class));
 	}
 
 	public void tearDown() throws Exception {

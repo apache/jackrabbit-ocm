@@ -2,6 +2,9 @@
 
 <!DOCTYPE graffito-jcr PUBLIC "-//The Apache Software Foundation//DTD Repository//EN" "./src/dtd/graffito-jcr-mapping.dtd">
 <graffito-jcr>    
+
+     <!--  MAPPING USED TO TEST NODE TYPE PER HIERARCHY  -->
+     
 	<class-descriptor className="org.apache.portals.graffito.jcr.testmodel.inheritance.Ancestor" jcrNodeType="nt:unstructured"  abstract="true" >
 		<field-descriptor fieldName="path" path="true" />
 		<field-descriptor fieldName="ancestorField" jcrName="ancestorField" />
@@ -24,5 +27,29 @@
 		<field-descriptor fieldName="subDescendantField" jcrName="subDescendantField" />  
 
 	</class-descriptor>
+	
+     <!--  MAPPING USED TO TEST NODE TYPE PER CONCRETE CLASS  -->	
+
+	<class-descriptor className="org.apache.portals.graffito.jcr.testmodel.inheritance.CmsObject" jcrNodeType="graffito:cmsobject"  abstract="true" >
+		<field-descriptor fieldName="path" path="true" />
+		<field-descriptor fieldName="name" jcrName="graffito:name" />
+	</class-descriptor>     
+	
+	<class-descriptor className="org.apache.portals.graffito.jcr.testmodel.inheritance.Document" jcrNodeType="graffito:document" 
+	                                   extends="org.apache.portals.graffito.jcr.testmodel.inheritance.CmsObject" >
+		<field-descriptor fieldName="contentType" jcrName="graffito:contenttype" />  
+		<field-descriptor fieldName="size" jcrName="graffito:size" />  	
+		<bean-descriptor fieldName="content" jcrName="graffito:content"  />	
+		
+	</class-descriptor >	
+
+	<class-descriptor className="org.apache.portals.graffito.jcr.testmodel.inheritance.Content" jcrNodeType="graffito:content"  >
+		<field-descriptor fieldName="path" path="true" />
+		<field-descriptor fieldName="encoding" jcrName="graffito:encoding" />
+		<field-descriptor fieldName="content" jcrName="graffito:binarycontent" />
+	</class-descriptor>     
+	
 </graffito-jcr>
+ 
+ 
  

@@ -105,7 +105,7 @@ abstract public class ReflectionUtils {
             PropertyUtils.setNestedProperty(object, fieldName, value);
         }
         catch(Exception ex) {
-            throw new JcrMappingException("Cannot set the field " + fieldName,
+            throw new JcrMappingException("Cannot set the field " + fieldName + " in the class : " + object.getClass().toString(),
                     ex);
         }
     }

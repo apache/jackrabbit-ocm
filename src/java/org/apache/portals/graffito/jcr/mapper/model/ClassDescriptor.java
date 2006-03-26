@@ -323,54 +323,61 @@ public class ClassDescriptor {
      * Revisit information in this descriptor and fills in more.
      */
     public void afterPropertiesSet() {
+
+        validateClassName();        
         lookupSuperDescriptor();
         lookupInheritanceSettings();
         validateInheritanceSettings();
     }
 
+	private void validateClassName() {
+		try {
+			Class objectClass = Class.forName(this.className);
+		} catch (ClassNotFoundException e) {			
+			 throw new JcrMappingException("Class not found : " + className);
+		}
+	}
+
+	private void lookupSuperDescriptor() {
+        if (null != this.superClassDescriptor) {
+            this.fieldDescriptors = merge(this.fieldDescriptors, this.superClassDescriptor.getFieldDescriptors());
+            this.beanDescriptors = merge(this.beanDescriptors, this.superClassDescriptor.getBeanDescriptors());
+            this.collectionDescriptors = merge(this.collectionDescriptors, this.superClassDescriptor.getCollectionDescriptors());
+            this.fieldNames.putAll(this.superClassDescriptor.getFieldNames());
+        }
+    }
+
+    private void lookupInheritanceSettings() {
+	     if ((null != this.superClassDescriptor) || (this.hasDescendants() ))
+	     {
+	    	       if (this.hasDiscriminatorField())
+	    	       {
+	    	    	        this.extendsStrategy = NODETYPE_PER_HIERARCHY;
+	    	       }
+	    	       else
+	    	       {
+	    	    	       this.extendsStrategy = NODETYPE_PER_CONCRETECLASS;
+	    	       }
+	     }
+   }
+	
     private void validateInheritanceSettings() {
         if (NODETYPE_PER_CONCRETECLASS.equals(this.extendsStrategy)) {
             this.discriminatorFieldDescriptor = getDiscriminatorFieldDescriptor();
 
             if (null != this.discriminatorFieldDescriptor) {
-                throw new JcrMappingException("");
+                throw new JcrMappingException("Discriminator specify for  the class : " + className + " but it is a node type per concrete class hierarchy");
             }
         }
         else if (NODETYPE_PER_HIERARCHY.equals(this.extendsStrategy)) {
             this.discriminatorFieldDescriptor = getDiscriminatorFieldDescriptor();
 
             if (null == this.discriminatorFieldDescriptor) {
-                throw new JcrMappingException("");
+                throw new JcrMappingException("No discriminator specify for the class : " + className);
             }
         }
     }
 
-
-
-    private void lookupInheritanceSettings() {
-    	     if ((null != this.superClassDescriptor) || (this.hasDescendants() ))
-    	     {
-    	    	       if (this.hasDiscriminatorField())
-    	    	       {
-    	    	    	        this.extendsStrategy = NODETYPE_PER_HIERARCHY;
-    	    	       }
-    	    	       else
-    	    	       {
-    	    	    	       this.extendsStrategy = NODETYPE_PER_CONCRETECLASS;
-    	    	       }
-    	     }
-    }
-
-    private void lookupSuperDescriptor() {
-        if (null != this.superClassDescriptor) {
-            this.fieldDescriptors = merge(this.fieldDescriptors, this.superClassDescriptor.getFieldDescriptors());
-            this.beanDescriptors = merge(this.beanDescriptors, this.superClassDescriptor.getBeanDescriptors());
-            this.collectionDescriptors = merge(this.collectionDescriptors, this.superClassDescriptor.getCollectionDescriptors());
-            this.fieldNames.putAll(this.superClassDescriptor.getFieldNames());
-            
-            
-        }
-    }
 
     /**
      * @return return the super class name if defined in mapping, or
@@ -397,6 +404,29 @@ public class ClassDescriptor {
     public Collection getDescendantClassDescriptors()
     {
     	     return this.descendantClassDescriptors;
+    }
+    
+    /**
+     * If the node type per concrete class strategy is used, we need to find a descendant class descriptor assigned to a node type
+     * This method is not used in other situation.
+     * 
+     * @param nodeType the node type for which the classdescriptor is required
+     * @return the classdescriptor found or null
+     * 
+     * @todo : maybe we have to review this implementation to have better performance. 
+     */
+    public ClassDescriptor getDescendantClassDescriptor(String nodeType)
+    {
+        Iterator iterator = this.descendantClassDescriptors.iterator();
+        while (iterator.hasNext())
+        {
+        	      ClassDescriptor descendantClassDescriptor = (ClassDescriptor) iterator.next();
+        	      if (descendantClassDescriptor.getJcrNodeType().equals(nodeType))
+        	      {
+        	    	     return descendantClassDescriptor;
+        	      }
+        }
+        return null;
     }
     
     public void addDescendantClassDescriptor(ClassDescriptor classDescriptor)

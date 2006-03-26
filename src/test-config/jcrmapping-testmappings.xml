@@ -4,16 +4,6 @@
 <graffito-jcr>
     
   
-	<class-descriptor className="org.apache.portals.graffito.jcr.testmodel.Folder" jcrNodeType="nt:unstructured">
-		<!-- Field-descriptor is used to map simple attributes to jcr property -->
-		<field-descriptor fieldName="path" path="true" />
-		<field-descriptor fieldName="name" jcrName="name" />
-		<field-descriptor fieldName="description" jcrName="description" />
-		<field-descriptor fieldName="title" jcrName="title" />
-		<field-descriptor fieldName="creationDate" jcrName="creationDate" />
-		<field-descriptor fieldName="lastModified" jcrName="lastModified" />
-
-	</class-descriptor>
 
 	<!--
 		The following classes are used to test object associations
