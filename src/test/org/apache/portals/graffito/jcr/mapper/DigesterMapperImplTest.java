@@ -32,7 +32,9 @@ import org.apache.portals.graffito.jcr.persistence.objectconverter.impl.ObjectCo
 import org.apache.portals.graffito.jcr.testmodel.A;
 import org.apache.portals.graffito.jcr.testmodel.B;
 import org.apache.portals.graffito.jcr.testmodel.inheritance.Ancestor;
+import org.apache.portals.graffito.jcr.testmodel.inheritance.CmsObject;
 import org.apache.portals.graffito.jcr.testmodel.inheritance.Descendant;
+import org.apache.portals.graffito.jcr.testmodel.inheritance.Document;
 import org.apache.portals.graffito.jcr.testmodel.inheritance.SubDescendant;
 
 /**
@@ -169,9 +171,9 @@ public class DigesterMapperImplTest extends TestCase
     
     /**
      *
-     * Test inheritance mapping setting
+     * Test Node Type per hierarchy setting
      */
-    public void testMapperInheritance()    
+    public void testMapperNtHierarchy()    
     {
         try
         {
@@ -236,4 +238,90 @@ public class DigesterMapperImplTest extends TestCase
         }
     }
     
+    
+    /**
+    *
+    * Test Node Type per hierarchy setting
+    */
+   public void testMapperNtConcreteClass()    
+   {
+       try
+       {
+   		String[] files = { "./src/test-config/jcrmapping.xml", 
+                   "./src/test-config/jcrmapping-atomic.xml",
+                   "./src/test-config/jcrmapping-beandescriptor.xml",
+                   "./src/test-config/jcrmapping-inheritance.xml"};
+   		    Mapper mapper = new DigesterMapperImpl(files) .buildMapper();            	
+          
+           assertNotNull("Mapper is null", mapper);
+           
+           ClassDescriptor classDescriptor = mapper.getClassDescriptor(CmsObject.class);
+           assertNotNull("Classdescriptor is null", classDescriptor);
+           assertEquals("Incorrect path field", classDescriptor.getPathFieldDescriptor().getFieldName(), "path");          
+           assertFalse("The cms object class  has discriminator", classDescriptor.hasDiscriminatorField());
+           assertNull("The cms object class has an discriminator field", classDescriptor.getDiscriminatorFieldDescriptor());
+           assertTrue("The cmsobject class is not abstract", classDescriptor.isAbstract());
+           assertNull("The cmsobject class has an ancestor", classDescriptor.getSuperClassDescriptor());           
+           assertFalse("The cmsobject class  have a node type per hierarchy strategy", classDescriptor.usesNodeTypePerHierarchyStrategy());
+           assertTrue("The cmsobject class  have not a node type per hierarchy strategy", classDescriptor.usesNodeTypePerConcreteClassStrategy());
+           assertTrue ("The cmsobject class has no descendant ", classDescriptor.hasDescendants());
+           assertEquals("Invalid number of descendants", classDescriptor.getDescendantClassDescriptors().size(), 1);
+           
+            classDescriptor = mapper.getClassDescriptor(Document.class);
+           assertNotNull("Classdescriptor is null", classDescriptor);
+           assertEquals("Incorrect path field", classDescriptor.getPathFieldDescriptor().getFieldName(), "path");          
+           assertFalse("The document class  has discriminator", classDescriptor.hasDiscriminatorField());
+           assertNull("The document has an discriminator field", classDescriptor.getDiscriminatorFieldDescriptor());
+           assertFalse("The document class is abstract", classDescriptor.isAbstract());
+           assertNotNull("The document class has not  an ancestor", classDescriptor.getSuperClassDescriptor());           
+           assertEquals("The document class has an invalid ancestor ancestor", classDescriptor.getSuperClassDescriptor().getClassName(), "org.apache.portals.graffito.jcr.testmodel.inheritance.CmsObject");
+           assertFalse("The document class  have a node type per hierarchy strategy", classDescriptor.usesNodeTypePerHierarchyStrategy());
+           assertTrue("The document class  have not a node type per hierarchy strategy", classDescriptor.usesNodeTypePerConcreteClassStrategy());
+           assertFalse ("The document class has no descendant ", classDescriptor.hasDescendants());
+           assertEquals("Invalid number of descendants", classDescriptor.getDescendantClassDescriptors().size(), 0);
+           
+           
+           
+           
+//           Collection descendandDescriptors = classDescriptor.getDescendantClassDescriptors();
+//           assertEquals("Invalid number of descendants", descendandDescriptors.size(), 2);
+//           
+//           classDescriptor = mapper.getClassDescriptor(Descendant.class);
+//           assertNotNull("Classdescriptor is null", classDescriptor);
+//           assertEquals("Incorrect path field", classDescriptor.getPathFieldDescriptor().getFieldName(), "path");
+//           assertEquals("Incorrect discriminator field", classDescriptor.getDiscriminatorFieldDescriptor().getFieldName(), "discriminator");
+//           assertTrue("The descendant  class has no discriminator", classDescriptor.hasDiscriminatorField());
+//           assertNotNull("ancerstorField is null in the descendant class", classDescriptor.getFieldDescriptor("ancestorField"));
+//           assertFalse("The descendant class is abstract", classDescriptor.isAbstract());
+//           assertNotNull("The descendant class has not an ancestor", classDescriptor.getSuperClassDescriptor());
+//           assertEquals("Invalid ancestor class for the descendant class", classDescriptor.getSuperClassDescriptor().getClassName(), "org.apache.portals.graffito.jcr.testmodel.inheritance.Ancestor");
+//           assertEquals("Incorrect JcrName", classDescriptor.getJcrName("discriminator"),"discriminator");
+//            descendandDescriptors = classDescriptor.getDescendantClassDescriptors();
+//           assertEquals("Invalid number of descendants", descendandDescriptors.size(), 1);
+//           assertTrue("Descendant  class doesn't have a node type per hierarchy strategy", classDescriptor.usesNodeTypePerHierarchyStrategy());
+//           assertFalse("Descendant class  have a node type per hierarchy strategy", classDescriptor.usesNodeTypePerConcreteClassStrategy());
+//
+//           
+//           classDescriptor = mapper.getClassDescriptor(SubDescendant.class);
+//           assertNotNull("Classdescriptor is null", classDescriptor);
+//           assertEquals("Incorrect path field", classDescriptor.getPathFieldDescriptor().getFieldName(), "path");
+//           assertEquals("Incorrect discriminator field", classDescriptor.getDiscriminatorFieldDescriptor().getFieldName(), "discriminator");
+//           assertTrue("The subdescendant  class has no discriminator", classDescriptor.hasDiscriminatorField());
+//           assertNotNull("ancestorField is null in the descendant class", classDescriptor.getFieldDescriptor("ancestorField"));
+//           assertFalse("The subdescendant class is abstract", classDescriptor.isAbstract());
+//           assertNotNull("The subdescendant class has not an ancestor", classDescriptor.getSuperClassDescriptor());
+//           assertEquals("Invalid ancestor class for the descendant class", classDescriptor.getSuperClassDescriptor().getClassName(), "org.apache.portals.graffito.jcr.testmodel.inheritance.Descendant");
+//           assertEquals("Incorrect JcrName", classDescriptor.getJcrName("discriminator"),"discriminator");
+//            descendandDescriptors = classDescriptor.getDescendantClassDescriptors();
+//           assertEquals("Invalid number of descendants", descendandDescriptors.size(), 0);
+//           assertTrue("SubDescendant  class doesn't have a node type per hierarchy strategy", classDescriptor.usesNodeTypePerHierarchyStrategy());
+//           assertFalse("SubDescendant class  have a node type per hierarchy strategy", classDescriptor.usesNodeTypePerConcreteClassStrategy());
+//           
+       }
+       catch (JcrMappingException e)
+       {
+             e.printStackTrace();
+             fail("Impossible to retrieve the converter " + e);
+       }
+   }    
 }

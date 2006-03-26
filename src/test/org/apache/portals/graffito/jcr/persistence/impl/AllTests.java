@@ -40,11 +40,12 @@ public class AllTests {
         suite.addTestSuite(PersistenceManagerBasicVersionningTest.class);
         suite.addTestSuite(PersistenceManagerIteratorQueryTest.class);
         suite.addTestSuite(PersistenceManagerMultiValueQueryTest.class);
+        suite.addTestSuite(PersistenceManagerNtConcreteClassTest.class);
+        suite.addTestSuite(PersistenceManagerNtHierarchyTest.class);
         suite.addTestSuite(PersistenceManagerRemoveTest.class);
         suite.addTestSuite(PersistenceManagerSameNameSiblingTest.class);
         suite.addTestSuite(PersistenceManagerScopeQueryTest.class);
-        suite.addTestSuite(PersistenceManagerSimpleQueryTest.class);
-        suite.addTestSuite(PersistenceManagerSimpleInheritanceTest.class);
+        suite.addTestSuite(PersistenceManagerSimpleQueryTest.class);      
         suite.addTestSuite(PersistenceManagerTest.class);
         
         //$JUnit-END$

@@ -33,12 +33,12 @@ import org.apache.commons.logging.LogFactory;
 public class Content 
 {
     protected final static Log log = LogFactory.getLog(Content.class);
-  
-    protected Long contentId;    
-   
+      
     protected byte[] content;
     
     protected String encoding;
+    
+    protected String path;
 
 
     /**
@@ -52,7 +52,7 @@ public class Content
     /**
      * @return Returns the content.
      */
-    public byte[] getContentByte()
+    public byte[] getContent()
     {
         
         return content;
@@ -84,6 +84,16 @@ public class Content
     {
         this.encoding = encoding;
     }
+
+	public String getPath() {
+		return path;
+	}
+
+	public void setPath(String path) {
+		this.path = path;
+	}
+    
+    
 }
 
 

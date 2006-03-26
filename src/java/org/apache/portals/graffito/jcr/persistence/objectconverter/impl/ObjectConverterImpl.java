@@ -258,7 +258,16 @@ public class ObjectConverterImpl implements ObjectConverter {
                 object = ReflectionUtils.newInstance(className);
             }
             else {
-                object = ReflectionUtils.newInstance(clazz);
+            	    if (classDescriptor.usesNodeTypePerConcreteClassStrategy())
+            	    {
+            	    	    String nodeType =  node.getPrimaryNodeType().getName();
+            	    	    if (! nodeType.equals(classDescriptor.getJcrNodeType()))
+            	    	    {
+            	    	        classDescriptor  = classDescriptor.getDescendantClassDescriptor(nodeType);
+            	    	    }
+            	    }
+                object = ReflectionUtils.newInstance(classDescriptor.getClassName());
+
             }   
 
             retrieveSimpleFields(session, classDescriptor, node, object);
