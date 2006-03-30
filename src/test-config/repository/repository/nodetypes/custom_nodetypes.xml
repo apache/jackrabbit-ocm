@@ -68,27 +68,46 @@
   
    <nodeType name="graffito:cmsobject" isMixin="false" hasOrderableChildNodes="false" primaryItemName="">
     <supertypes>
-      <supertype>mix:versionable</supertype>
       <supertype>nt:base</supertype>
     </supertypes>
     <propertyDefinition name="*" requiredType="undefined" autoCreated="false" mandatory="true" onParentVersion="COPY" protected="false" multiple="false" />
     <propertyDefinition name="graffito:name" requiredType="String" autoCreated="false" mandatory="true" onParentVersion="COPY" protected="false" multiple="false" />
+
   </nodeType>
+
+   <nodeType name="graffito:content" isMixin="false" hasOrderableChildNodes="false" primaryItemName="">
+    <supertypes>
+      <supertype>graffito:cmsobject</supertype>
+    </supertypes>
+  </nodeType>
+
 
    <nodeType name="graffito:document" isMixin="false" hasOrderableChildNodes="false" primaryItemName="">
     <supertypes>
-      <supertype>graffito:cmsobject</supertype>
+      <supertype>graffito:content</supertype>
     </supertypes>    
     <propertyDefinition name="graffito:contenttype" requiredType="String" autoCreated="false" mandatory="true" onParentVersion="COPY" protected="false" multiple="false" />
     <propertyDefinition name="graffito:size" requiredType="Long" autoCreated="false" mandatory="true" onParentVersion="COPY" protected="false" multiple="false" />    
-    <childNodeDefinition name="*" defaultPrimaryType="graffito:content" autoCreated="false" mandatory="false" onParentVersion="COPY" protected="false" sameNameSiblings="false">
+    <childNodeDefinition name="*" defaultPrimaryType="graffito:documentstream" autoCreated="false" mandatory="false" onParentVersion="COPY" protected="false" sameNameSiblings="false">
       <requiredPrimaryTypes>
-        <requiredPrimaryType>graffito:content</requiredPrimaryType>
+        <requiredPrimaryType>graffito:documentstream</requiredPrimaryType>
+      </requiredPrimaryTypes>
+    </childNodeDefinition>        
+  </nodeType>
+  
+  <nodeType name="graffito:folder" isMixin="false" hasOrderableChildNodes="false" primaryItemName="">
+    <supertypes>
+      <supertype>graffito:cmsobject</supertype>
+       <supertype>mix:referenceable</supertype>
+    </supertypes>    
+    <childNodeDefinition name="*" defaultPrimaryType="graffito:cmsobject" autoCreated="false" mandatory="false" onParentVersion="COPY" protected="false" sameNameSiblings="false">
+      <requiredPrimaryTypes>
+        <requiredPrimaryType>graffito:cmsobject</requiredPrimaryType>
       </requiredPrimaryTypes>
     </childNodeDefinition>        
   </nodeType>
 
-   <nodeType name="graffito:content" isMixin="false" hasOrderableChildNodes="false" primaryItemName="">
+   <nodeType name="graffito:documentstream" isMixin="false" hasOrderableChildNodes="false" primaryItemName="">
     <supertypes>
       <supertype>mix:versionable</supertype>
       <supertype>nt:base</supertype>

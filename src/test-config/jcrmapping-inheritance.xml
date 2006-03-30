@@ -33,17 +33,31 @@
 	<class-descriptor className="org.apache.portals.graffito.jcr.testmodel.inheritance.CmsObject" jcrNodeType="graffito:cmsobject"  abstract="true" >
 		<field-descriptor fieldName="path" path="true" />
 		<field-descriptor fieldName="name" jcrName="graffito:name" />
+		<!--  bean-descriptor  fieldName="parentFolder" 						 
+						  converter="org.apache.portals.graffito.jcr.persistence.objectconverter.impl.ParentBeanConverterImpl" / -->
+
 	</class-descriptor>     
-	
-	<class-descriptor className="org.apache.portals.graffito.jcr.testmodel.inheritance.Document" jcrNodeType="graffito:document" 
+
+	<class-descriptor className="org.apache.portals.graffito.jcr.testmodel.inheritance.Folder" jcrNodeType="graffito:folder" 
 	                                   extends="org.apache.portals.graffito.jcr.testmodel.inheritance.CmsObject" >
-		<field-descriptor fieldName="contentType" jcrName="graffito:contenttype" />  
-		<field-descriptor fieldName="size" jcrName="graffito:size" />  	
-		<bean-descriptor fieldName="content" jcrName="graffito:content"  />	
-		
+		<collection-descriptor fieldName="children" jcrName="graffito:children" proxy="false"
+                                                   elementClassName="org.apache.portals.graffito.jcr.testmodel.inheritance.CmsObject" />
+	                                   
+
 	</class-descriptor >	
 
-	<class-descriptor className="org.apache.portals.graffito.jcr.testmodel.inheritance.Content" jcrNodeType="graffito:content"  >
+	<class-descriptor className="org.apache.portals.graffito.jcr.testmodel.inheritance.Content" jcrNodeType="graffito:content" abstract="true"
+	                                   extends="org.apache.portals.graffito.jcr.testmodel.inheritance.CmsObject" >
+	</class-descriptor>	
+		
+	<class-descriptor className="org.apache.portals.graffito.jcr.testmodel.inheritance.Document" jcrNodeType="graffito:document" 
+	                                   extends="org.apache.portals.graffito.jcr.testmodel.inheritance.Content" >
+		<field-descriptor fieldName="contentType" jcrName="graffito:contenttype" />  
+		<field-descriptor fieldName="size" jcrName="graffito:size" />  	
+		<bean-descriptor fieldName="documentStream" jcrName="graffito:documentstream"  />			
+	</class-descriptor >	
+
+	<class-descriptor className="org.apache.portals.graffito.jcr.testmodel.inheritance.DocumentStream" jcrNodeType="graffito:documentstream"  >
 		<field-descriptor fieldName="path" path="true" />
 		<field-descriptor fieldName="encoding" jcrName="graffito:encoding" />
 		<field-descriptor fieldName="content" jcrName="graffito:binarycontent" />

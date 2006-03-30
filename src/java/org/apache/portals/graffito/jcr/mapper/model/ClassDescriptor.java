@@ -198,6 +198,7 @@ public class ClassDescriptor {
      * @return all {@link BeanDescriptor} defined in this ClassDescriptor
      */
     public Collection getCollectionDescriptors() {
+    	   
         return this.collectionDescriptors.values();
     }
 
@@ -339,10 +340,11 @@ public class ClassDescriptor {
 	}
 
 	private void lookupSuperDescriptor() {
-        if (null != this.superClassDescriptor) {
-            this.fieldDescriptors = merge(this.fieldDescriptors, this.superClassDescriptor.getFieldDescriptors());
-            this.beanDescriptors = merge(this.beanDescriptors, this.superClassDescriptor.getBeanDescriptors());
-            this.collectionDescriptors = merge(this.collectionDescriptors, this.superClassDescriptor.getCollectionDescriptors());
+		
+        if (null !=superClassDescriptor) {
+            this.fieldDescriptors = mergeFields(this.fieldDescriptors, this.superClassDescriptor.getFieldDescriptors());
+            this.beanDescriptors = mergeBeans(this.beanDescriptors, this.superClassDescriptor.getBeanDescriptors());
+            this.collectionDescriptors = mergeCollections(this.collectionDescriptors, this.superClassDescriptor.getCollectionDescriptors());
             this.fieldNames.putAll(this.superClassDescriptor.getFieldNames());
         }
     }
@@ -425,6 +427,15 @@ public class ClassDescriptor {
         	      {
         	    	     return descendantClassDescriptor;
         	      }
+        	      
+        	      if (descendantClassDescriptor.hasDescendants())
+        	      {
+        	    	      ClassDescriptor classDescriptor = descendantClassDescriptor.getDescendantClassDescriptor(nodeType);
+        	    	      if (classDescriptor != null)
+        	    	      {
+        	    	    	      return classDescriptor;
+        	    	      }
+        	      }
         }
         return null;
     }
@@ -449,26 +460,67 @@ public class ClassDescriptor {
         
     }
 
-    private Map merge(Map existing, Collection superSource) {
+    private Map mergeFields(Map existing, Collection superSource) {
         if (null == superSource) {
             return existing;
         }
 
         Map merged = new HashMap(existing);
         for(Iterator it = superSource.iterator(); it.hasNext();) {
-            FieldDescriptor fd = (FieldDescriptor) it.next();
-            if (!merged.containsKey(fd.getFieldName())) {
-                merged.put(fd.getFieldName(), fd);
+            FieldDescriptor fieldDescriptor = (FieldDescriptor) it.next();
+            if (!merged.containsKey(fieldDescriptor.getFieldName())) {
+                merged.put(fieldDescriptor.getFieldName(), fieldDescriptor);
             }
             else
             {
-            	    log.warn("Field name conflict in " + this.className + " - field : " +fd.getFieldName() + " -  this  field name is also defined  in the ancestor class : " + this.getSuperClass());
+            	    log.warn("Field name conflict in " + this.className + " - field : " +fieldDescriptor.getFieldName() + " -  this  field name is also defined  in the ancestor class : " + this.getSuperClass());
             }
         }
 
         return merged;
     }
 
+    
+    private Map mergeBeans(Map existing, Collection superSource) {
+        if (null == superSource) {
+            return existing;
+        }
+
+        Map merged = new HashMap(existing);
+        for(Iterator it = superSource.iterator(); it.hasNext();) {
+            BeanDescriptor beanDescriptor = (BeanDescriptor) it.next();
+            if (!merged.containsKey(beanDescriptor.getFieldName())) {
+                merged.put(beanDescriptor.getFieldName(), beanDescriptor);
+            }
+            else
+            {
+            	    log.warn("Bean name conflict in " + this.className + " - field : " +beanDescriptor.getFieldName() + " -  this  field name is also defined  in the ancestor class : " + this.getSuperClass());
+            }
+        }
+
+        return merged;
+    }
+    
+    private Map mergeCollections(Map existing, Collection superSource) {
+        if (null == superSource) {
+            return existing;
+        }
+
+        Map merged = new HashMap(existing);
+        for(Iterator it = superSource.iterator(); it.hasNext();) {
+            CollectionDescriptor collectionDescriptor = (CollectionDescriptor) it.next();
+            if (!merged.containsKey(collectionDescriptor.getFieldName())) {
+                merged.put(collectionDescriptor.getFieldName(), collectionDescriptor);
+            }
+            else
+            {
+            	    log.warn("Collection name conflict in " + this.className + " - field : " +collectionDescriptor.getFieldName() + " -  this  field name is also defined  in the ancestor class : " + this.getSuperClass());
+            }
+        }
+
+        return merged;
+    }    
+    
 	public String toString() {
 		
 		return "Class Descriptor : " +  this.getClassName();

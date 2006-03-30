@@ -29,6 +29,7 @@ public class CmsObject
     
     protected String path;        
     protected String name;
+    protected Folder parentFolder;
     
 	public String getName() {
 		return name;
@@ -42,6 +43,14 @@ public class CmsObject
 	public void setPath(String path) {
 		this.path = path;
 	}
+	public Folder getParentFolder() {
+		return parentFolder;
+	}
+	public void setParentFolder(Folder parentFolder) {
+		this.parentFolder = parentFolder;
+	}
+	
+	
         
         
 }

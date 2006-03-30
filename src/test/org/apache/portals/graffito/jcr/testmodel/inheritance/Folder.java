@@ -23,30 +23,25 @@ import java.util.List;
 /**
  * CMS Folder Test
  *
- * @author <a href="mailto:christophe.lombart@sword-technologies.com">Christophe Lombart</a>
+ * @author <a href="mailto:christophe.lombart@gmail.com">Christophe Lombart</a>
  * @version $Id: Folder.java,v 1.1 2004/12/22 20:36:59 christophe Exp $
  */
 public class Folder extends CmsObject 
 {
 
-    protected List folders;
-    protected List documents;
-    
-    /**
-     * @see org.apache.portals.graffito.model.Folder#getDocuments()
-     */
-    public List getDocuments()
-    {
-        return documents;
-    }
+    protected List children;
 
-    /**
-     * @see org.apache.portals.graffito.model.Folder#getFolders()
-     */
-    public List getFolders()
-    {
-        return folders;
-    }
+	public List getChildren() {
+		return children;
+	}
+
+	public void setChildren(List children) {
+		this.children = children;
+	}
     
+    public void addChild(CmsObject child)
+    {
+    	    children.add(child);
+    }
 }
 

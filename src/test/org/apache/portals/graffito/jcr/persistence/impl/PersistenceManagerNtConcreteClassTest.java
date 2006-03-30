@@ -16,6 +16,8 @@
  */
 package org.apache.portals.graffito.jcr.persistence.impl;
 
+import java.util.Collection;
+
 import junit.framework.Test;
 import junit.framework.TestSuite;
 
@@ -24,9 +26,15 @@ import org.apache.commons.logging.LogFactory;
 import org.apache.portals.graffito.jcr.RepositoryLifecycleTestSetup;
 import org.apache.portals.graffito.jcr.TestBase;
 import org.apache.portals.graffito.jcr.persistence.PersistenceManager;
+import org.apache.portals.graffito.jcr.query.Filter;
+import org.apache.portals.graffito.jcr.query.Query;
+import org.apache.portals.graffito.jcr.query.QueryManager;
+import org.apache.portals.graffito.jcr.testmodel.Atomic;
 import org.apache.portals.graffito.jcr.testmodel.inheritance.CmsObject;
 import org.apache.portals.graffito.jcr.testmodel.inheritance.Content;
+import org.apache.portals.graffito.jcr.testmodel.inheritance.DocumentStream;
 import org.apache.portals.graffito.jcr.testmodel.inheritance.Document;
+import org.apache.portals.graffito.jcr.testmodel.inheritance.Folder;
 
 /**
  * Test inheritance with node type per concrete class (without  discreminator field)
@@ -71,10 +79,10 @@ public class PersistenceManagerNtConcreteClassTest extends TestBase {
             document.setPath("/document1");
             document.setName("document name");
             document.setContentType("plain/text"); 
-            Content content = new Content();
-            content.setEncoding("utf-8");
-            content.setContent("Test Content".getBytes());
-            document.setContent(content);
+            DocumentStream documentStream = new DocumentStream();
+            documentStream.setEncoding("utf-8");
+            documentStream.setContent("Test Content".getBytes());
+            document.setDocumentStream(documentStream);
             
             persistenceManager.insert(document);
 			persistenceManager.save();
@@ -87,8 +95,8 @@ public class PersistenceManagerNtConcreteClassTest extends TestBase {
 			document = (Document) persistenceManager.getObject(Document.class, "/document1");
 			assertEquals("Document path is invalid", document.getPath(), "/document1");
 			assertEquals("Content type  is invalid", document.getContentType(), "plain/text");
-			assertNotNull("Content is null", document.getContent());
-			assertTrue("Invalid content", document.getContent().getEncoding().equals("utf-8"));
+			assertNotNull("document stream is null", document.getDocumentStream());
+			assertTrue("Invalid document stream ", document.getDocumentStream().getEncoding().equals("utf-8"));
 			
 			
 			//---------------------------------------------------------------------------------------------------------
@@ -105,8 +113,8 @@ public class PersistenceManagerNtConcreteClassTest extends TestBase {
 			assertEquals("document name is incorrect", document.getName(), "anotherName");
 			assertEquals("Document path is invalid", document.getPath(), "/document1");
 			assertEquals("Content type  is invalid", document.getContentType(), "plain/text");
-			assertNotNull("Content is null", document.getContent());
-			assertTrue("Invalid content", document.getContent().getEncoding().equals("utf-8"));
+			assertNotNull("document stream is null", document.getDocumentStream());
+			assertTrue("Invalid document stream", document.getDocumentStream().getEncoding().equals("utf-8"));
 
 			CmsObject cmsObject = (CmsObject) persistenceManager.getObject(CmsObject.class, "/document1");
 			assertEquals("cmsObject name is incorrect", cmsObject.getName(), "anotherName");
@@ -123,56 +131,50 @@ public class PersistenceManagerNtConcreteClassTest extends TestBase {
 	
 	public void testRetrieveCollection() {
 		PersistenceManager persistenceManager = this.getPersistenceManager();
-/*
-		//---------------------------------------------------------------------------------------------------------	
-		// Insert  descendant objects
+
+		//---------------------------------------------------------------------------------------------------------
+		// Insert descendant objects
 		//---------------------------------------------------------------------------------------------------------			
-		Descendant descendant = new Descendant();
-		descendant.setDescendantField("descendantValue");
-		descendant.setAncestorField("ancestorValue");
-		descendant.setPath("/descendant1");
-		persistenceManager.insert(descendant);
+        Document document = new Document();
+        document.setPath("/document1");
+        document.setName("document name 1");
+        document.setContentType("plain/text"); 
+        DocumentStream documentStream = new DocumentStream();
+        documentStream.setEncoding("utf-8");
+        documentStream.setContent("Test Content".getBytes());
+        document.setDocumentStream(documentStream);        
+        persistenceManager.insert(document);
+        
+        document = new Document();
+        document.setPath("/document2");        
+        document.setName("document name 2");
+        document.setContentType("plain/text"); 
+        documentStream = new DocumentStream();
+        documentStream.setEncoding("utf-8");
+        documentStream.setContent("Test Content".getBytes());
+        document.setDocumentStream(documentStream);       
+        persistenceManager.insert(document);
 
-		descendant = new Descendant();
-		descendant.setDescendantField("descendantValue2");
-		descendant.setAncestorField("ancestorValue2");
-		descendant.setPath("/descendant2");
-		persistenceManager.insert(descendant);
+        document = new Document();
+        document.setPath("/document3");        
+        document.setName("document 3");
+        document.setContentType("plain/text"); 
+        documentStream = new DocumentStream();
+        documentStream.setEncoding("utf-8");
+        documentStream.setContent("Test Content 3".getBytes());
+        document.setDocumentStream(documentStream);       
+        persistenceManager.insert(document);
+        
+        Folder folder = new Folder();
+        folder.setPath("/folder1");
+        folder.setName("folder1");
+        persistenceManager.insert(folder);
+ 
+         folder = new Folder();
+        folder.setPath("/folder2");
+        folder.setName("folder2");
+        persistenceManager.insert(folder);               		
 
-		SubDescendant subDescendant = new SubDescendant();
-		subDescendant.setDescendantField("descendantValue2");
-		subDescendant.setAncestorField("ancestorValue2");
-		subDescendant.setPath("/subdescendant");
-		subDescendant.setSubDescendantField("subdescendantvalue");
-		persistenceManager.insert(subDescendant);		
-
-		 subDescendant = new SubDescendant();
-		subDescendant.setDescendantField("descendantValue3");
-		subDescendant.setAncestorField("ancestorValue2");
-		subDescendant.setPath("/subdescendant2");
-		subDescendant.setSubDescendantField("subdescendantvalue1");
-		persistenceManager.insert(subDescendant);		
-		
-		
-		AnotherDescendant anotherDescendant = new AnotherDescendant();
-		anotherDescendant.setAnotherDescendantField("anotherDescendantValue");
-		anotherDescendant.setAncestorField("ancestorValue3");
-		anotherDescendant.setPath("/anotherdescendant1");
-		persistenceManager.insert(anotherDescendant);
-
-		anotherDescendant = new AnotherDescendant();
-		anotherDescendant.setAnotherDescendantField("anotherDescendantValue");
-		anotherDescendant.setAncestorField("ancestorValue4");
-		anotherDescendant.setPath("/anotherdescendant2");
-		persistenceManager.insert(anotherDescendant);
-
-		anotherDescendant = new AnotherDescendant();
-		anotherDescendant.setAnotherDescendantField("anotherDescendantValue2");
-		anotherDescendant.setAncestorField("ancestorValue5");
-		anotherDescendant.setPath("/anotherdescendant3");
-		persistenceManager.insert(anotherDescendant);
-
-		
 		Atomic a = new Atomic();
 		a.setPath("/atomic");
 		a.setBooleanPrimitive(true);
@@ -181,64 +183,60 @@ public class PersistenceManagerNtConcreteClassTest extends TestBase {
 		persistenceManager.save();
 
 		//---------------------------------------------------------------------------------------------------------	
-		// Retrieve Descendant class
+		// Retrieve Folders
 		//---------------------------------------------------------------------------------------------------------			
 		QueryManager queryManager = persistenceManager.getQueryManager();
-		Filter filter = queryManager.createFilter(Descendant.class);
+		Filter filter = queryManager.createFilter(Folder.class);
 		Query query = queryManager.createQuery(filter);
 
 		Collection result = persistenceManager.getObjects(query);
-		assertEquals("Invalid number of Descendant found", result.size(), 4);
-		assertTrue("Invalid item in the collection", this.contains(result, "/descendant1", Descendant.class));
-		assertTrue("Invalid item in the collection", this.contains(result, "/descendant2", Descendant.class));
-		assertTrue("Invalid item in the collection", this.contains(result, "/subdescendant", SubDescendant.class));
-		assertTrue("Invalid item in the collection", this.contains(result, "/subdescendant2", SubDescendant.class));
+		assertEquals("Invalid number of folders found", result.size(), 2);
+		assertTrue("Invalid item in the collection", this.contains(result, "/folder1",Folder.class));
+		assertTrue("Invalid item in the collection", this.contains(result, "/folder2", Folder.class));		
 		
-
+	
 		//---------------------------------------------------------------------------------------------------------	
-		// Retrieve AnotherDescendant class
+		// Retrieve Documents 
 		//---------------------------------------------------------------------------------------------------------			
 		queryManager = persistenceManager.getQueryManager();
-		filter = queryManager.createFilter(AnotherDescendant.class);
-		filter.addEqualTo("anotherDescendantField", "anotherDescendantValue");
+		filter = queryManager.createFilter(Document.class);
+		filter.addLike("name", "document name%");
 		query = queryManager.createQuery(filter);
 
 		result = persistenceManager.getObjects(query);
-		assertEquals("Invalid number of AnotherDescendant found", result.size(),2);
-		assertTrue("Invalid item in the collection", this.contains(result, "/anotherdescendant1", AnotherDescendant.class));
-		assertTrue("Invalid item in the collection", this.contains(result, "/anotherdescendant2", AnotherDescendant.class));
+		assertEquals("Invalid number of documents  found", result.size(),2);
+		assertTrue("Invalid item in the collection", this.contains(result, "/document1", Document.class));
+		assertTrue("Invalid item in the collection", this.contains(result, "/document2", Document.class));
 
 		//---------------------------------------------------------------------------------------------------------	
-		// Retrieve some descendants & subdescendants
+		// Retrieve Contents (ancestor of Documents) 
 		//---------------------------------------------------------------------------------------------------------			
 		queryManager = persistenceManager.getQueryManager();
-		filter = queryManager.createFilter(Descendant.class);		
-		filter.addEqualTo("descendantField","descendantValue2");
+		filter = queryManager.createFilter(Content.class);
+		filter.addLike("name", "document name%");
 		query = queryManager.createQuery(filter);
 
 		result = persistenceManager.getObjects(query);
-		assertEquals("Invalid ancestor object found", result.size(),2);
-		assertTrue("Invalid item in the collection", this.contains(result, "/descendant2", Descendant.class));
-		assertTrue("Invalid item in the collection", this.contains(result, "/subdescendant", SubDescendant.class));
+		assertEquals("Invalid number of documents  found", result.size(),2);
+		assertTrue("Invalid item in the collection", this.contains(result, "/document1", Document.class));
+		assertTrue("Invalid item in the collection", this.contains(result, "/document2", Document.class));
 		
+				
 		//---------------------------------------------------------------------------------------------------------	
-		// Retrieve all class
-		//---------------------------------------------------------------------------------------------------------			
+		// Retrieve all cmsobjects
+		//---------------------------------------------------------------------------------------------------------					
 		queryManager = persistenceManager.getQueryManager();
-		filter = queryManager.createFilter(Ancestor.class);		
+		filter = queryManager.createFilter(CmsObject.class);		
 		query = queryManager.createQuery(filter);
 
 		result = persistenceManager.getObjects(query);
-		assertEquals("Invalid ancestor object found", result.size(),7);
-		assertTrue("Invalid item in the collection", this.contains(result, "/descendant1", Descendant.class));
-		assertTrue("Invalid item in the collection", this.contains(result, "/descendant2", Descendant.class));
-		assertTrue("Invalid item in the collection", this.contains(result, "/subdescendant", SubDescendant.class));
-		assertTrue("Invalid item in the collection", this.contains(result, "/subdescendant2", SubDescendant.class));
-		assertTrue("Invalid item in the collection", this.contains(result, "/anotherdescendant1", AnotherDescendant.class));
-		assertTrue("Invalid item in the collection", this.contains(result, "/anotherdescendant2", AnotherDescendant.class));
-		assertTrue("Invalid item in the collection", this.contains(result, "/anotherdescendant3", AnotherDescendant.class));		
-
- */
+		assertEquals("Invalid ancestor object found", result.size(),5);
+		assertTrue("Invalid item in the collection", this.contains(result, "/document1", Document.class));
+		assertTrue("Invalid item in the collection", this.contains(result, "/document2", Document.class));	
+		assertTrue("Invalid item in the collection", this.contains(result, "/document3", Document.class));
+		assertTrue("Invalid item in the collection", this.contains(result, "/folder1",Folder.class));	
+		assertTrue("Invalid item in the collection", this.contains(result, "/folder2",Folder.class));
+	
 	}
 	    
 }
