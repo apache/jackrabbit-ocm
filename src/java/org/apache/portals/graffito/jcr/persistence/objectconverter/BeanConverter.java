@@ -22,7 +22,6 @@ import javax.jcr.Session;
 import org.apache.portals.graffito.jcr.exception.JcrMappingException;
 import org.apache.portals.graffito.jcr.exception.PersistenceException;
 import org.apache.portals.graffito.jcr.exception.RepositoryException;
-import org.apache.portals.graffito.jcr.mapper.Mapper;
 import org.apache.portals.graffito.jcr.mapper.model.BeanDescriptor;
 
 /**

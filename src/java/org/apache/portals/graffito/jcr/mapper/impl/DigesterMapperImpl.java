@@ -19,6 +19,7 @@ package org.apache.portals.graffito.jcr.mapper.impl;
 
 import java.io.InputStream;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -41,6 +42,7 @@ public class DigesterMapperImpl implements Mapper {
     private static final Log log = LogFactory.getLog(DigesterMapperImpl.class);
 
     private MappingDescriptor mappingDescriptor;
+    private Collection rootClassDescriptors = new ArrayList(); // contains the class descriptor which have not ancestors 
 
     private String[] mappingFiles;
     private InputStream[] mappingStreams;
@@ -148,8 +150,8 @@ public class DigesterMapperImpl implements Mapper {
         }
         if (null != this.mappingDescriptor) {
             List errors = new ArrayList();
-            solveReferences(errors);
-            validateDescriptors(errors);
+            errors =  solveReferences(errors);            
+            errors = validateDescriptors(errors, rootClassDescriptors);
 
             if (!errors.isEmpty()) {
                 throw new InitMapperException("Mapping files contain errors."
@@ -161,31 +163,6 @@ public class DigesterMapperImpl implements Mapper {
         }
         
         return this;
-    }
-
-    private String getErrorMessage(List errors) {
-        final String lineSep = System.getProperty("line.separator");
-        StringBuffer buf = new StringBuffer();
-        for(Iterator it = errors.iterator(); it.hasNext();) {
-            buf.append(lineSep).append(it.next());
-        }
-
-        return buf.toString();
-    }
-
-    private void validateDescriptors(List errors) {
-        for(Iterator it = this.mappingDescriptor.getClassDescriptors().entrySet().iterator(); it.hasNext(); ) {
-            Map.Entry entry = (Map.Entry) it.next();
-            ClassDescriptor cd = (ClassDescriptor) entry.getValue();
-
-            try {
-                cd.afterPropertiesSet();
-            }
-            catch(JcrMappingException jme) {
-                log.warn("Mapping of class " + cd.getClassName() + " is invalid", jme);
-                errors.add(jme.getMessage());
-            }
-        }
     }
 
     private List solveReferences(List errors) {
@@ -207,16 +184,56 @@ public class DigesterMapperImpl implements Mapper {
                     cd.setSuperClassDescriptor(superClassDescriptor);
                 }
             }
+            else
+            {
+                rootClassDescriptors.add(cd);	
+            }
         }
 
         return errors;
     }
     
     /**
-     *
-     * @see org.apache.portals.graffito.jcr.mapper.Mapper#getClassDescriptor(java.lang.Class)
+     * Validate all class descriptors.
+     * This method validates the toplevel ancestors and after the descendants. 
+     * Otherwise, we can have invalid settings in the class descritpors
+     * @param errors all errors found during the validation process
+     * @param classDescriptors the ancestor classdescriptors
+     * @return
      */
-    public ClassDescriptor getClassDescriptor(Class clazz) {
-        return mappingDescriptor.getClassDescriptor(clazz.getName());
-    }
+    private List  validateDescriptors(List errors, Collection classDescriptors ) {
+        for(Iterator it = classDescriptors.iterator(); it.hasNext(); ) {
+             ClassDescriptor classDescriptor = (ClassDescriptor) it.next();
+            try {
+                classDescriptor.afterPropertiesSet();
+                if (classDescriptor.hasDescendants())
+                {
+                	     errors = validateDescriptors(errors, classDescriptor.getDescendantClassDescriptors());
+                }
+            }
+            catch(JcrMappingException jme) {
+                log.warn("Mapping of class " + classDescriptor.getClassName() + " is invalid", jme);
+                errors.add(jme.getMessage());
+            }
+        }
+        return errors;
+    }    
+    
+    private String getErrorMessage(List errors) {
+        final String lineSep = System.getProperty("line.separator");
+        StringBuffer buf = new StringBuffer();
+        for(Iterator it = errors.iterator(); it.hasNext();) {
+            buf.append(lineSep).append(it.next());
+        }
+
+        return buf.toString();
+    }    
+    
+    /**
+    *
+    * @see org.apache.portals.graffito.jcr.mapper.Mapper#getClassDescriptor(java.lang.Class)
+    */
+   public ClassDescriptor getClassDescriptor(Class clazz) {
+       return mappingDescriptor.getClassDescriptor(clazz.getName());
+   }      
 }

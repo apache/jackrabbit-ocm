@@ -142,6 +142,7 @@ public class ObjectConverterImpl implements ObjectConverter {
         Node objectNode = null;
         try {
             objectNode = parentNode.addNode(nodeName, jcrNodeType);
+            
         } 
         catch (NoSuchNodeTypeException nsnte) {
             throw new JcrMappingException("Unknown node type " + jcrNodeType
@@ -696,7 +697,7 @@ public class ObjectConverterImpl implements ObjectConverter {
                 }
 
                 if (classDescriptor.usesNodeTypePerHierarchyStrategy() && fieldDescriptor.isDiscriminator()) {
-                     objectNode.setProperty(fieldDescriptor.getJcrName(), classDescriptor.getClassName());
+                     objectNode.setProperty(fieldDescriptor.getJcrName(), classDescriptor.getClassName());                     
                     continue;
                 }
     

@@ -25,14 +25,14 @@ import org.apache.commons.logging.LogFactory;
  * @author <a href="mailto:christophe.lombart@sword-technologies.com">Christophe Lombart</a>
  * 
  */
-public class Document extends CmsObject
+public class Document extends Content
 {
     protected final static Log log =  LogFactory.getLog(Document.class);
     
     protected long size;
     protected String contentType;   
         
-    protected Content content;
+    protected DocumentStream documentStream;
 
 
     /** 
@@ -70,15 +70,14 @@ public class Document extends CmsObject
         this.size = size;
     }
 
+	public DocumentStream getDocumentStream() {
+		return documentStream;
+	}
+
+	public void setDocumentStream(DocumentStream documentStream) {
+		this.documentStream = documentStream;
+	}
+
     
-    public Content getContent()
-    {
-        return content;
-    }
-    
-    public void setContent(Content content)
-    {
-        this.content = content;
-    }
 }
 

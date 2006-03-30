@@ -28,7 +28,6 @@ import org.apache.portals.graffito.jcr.mapper.model.BeanDescriptor;
 import org.apache.portals.graffito.jcr.mapper.model.ClassDescriptor;
 import org.apache.portals.graffito.jcr.mapper.model.CollectionDescriptor;
 import org.apache.portals.graffito.jcr.mapper.model.FieldDescriptor;
-import org.apache.portals.graffito.jcr.persistence.objectconverter.impl.ObjectConverterImpl;
 import org.apache.portals.graffito.jcr.testmodel.A;
 import org.apache.portals.graffito.jcr.testmodel.B;
 import org.apache.portals.graffito.jcr.testmodel.inheritance.Ancestor;
@@ -241,7 +240,7 @@ public class DigesterMapperImplTest extends TestCase
     
     /**
     *
-    * Test Node Type per hierarchy setting
+    * Test Node Type per concrete class  setting
     */
    public void testMapperNtConcreteClass()    
    {
@@ -251,6 +250,8 @@ public class DigesterMapperImplTest extends TestCase
                    "./src/test-config/jcrmapping-atomic.xml",
                    "./src/test-config/jcrmapping-beandescriptor.xml",
                    "./src/test-config/jcrmapping-inheritance.xml"};
+//      		String[] files = {  "./src/test-config/jcrmapping-inheritance.xml"};
+    	   
    		    Mapper mapper = new DigesterMapperImpl(files) .buildMapper();            	
           
            assertNotNull("Mapper is null", mapper);
@@ -265,7 +266,7 @@ public class DigesterMapperImplTest extends TestCase
            assertFalse("The cmsobject class  have a node type per hierarchy strategy", classDescriptor.usesNodeTypePerHierarchyStrategy());
            assertTrue("The cmsobject class  have not a node type per hierarchy strategy", classDescriptor.usesNodeTypePerConcreteClassStrategy());
            assertTrue ("The cmsobject class has no descendant ", classDescriptor.hasDescendants());
-           assertEquals("Invalid number of descendants", classDescriptor.getDescendantClassDescriptors().size(), 1);
+           assertEquals("Invalid number of descendants", classDescriptor.getDescendantClassDescriptors().size(), 2);
            
             classDescriptor = mapper.getClassDescriptor(Document.class);
            assertNotNull("Classdescriptor is null", classDescriptor);
@@ -274,7 +275,7 @@ public class DigesterMapperImplTest extends TestCase
            assertNull("The document has an discriminator field", classDescriptor.getDiscriminatorFieldDescriptor());
            assertFalse("The document class is abstract", classDescriptor.isAbstract());
            assertNotNull("The document class has not  an ancestor", classDescriptor.getSuperClassDescriptor());           
-           assertEquals("The document class has an invalid ancestor ancestor", classDescriptor.getSuperClassDescriptor().getClassName(), "org.apache.portals.graffito.jcr.testmodel.inheritance.CmsObject");
+           assertEquals("The document class has an invalid ancestor ancestor", classDescriptor.getSuperClassDescriptor().getClassName(), "org.apache.portals.graffito.jcr.testmodel.inheritance.Content");
            assertFalse("The document class  have a node type per hierarchy strategy", classDescriptor.usesNodeTypePerHierarchyStrategy());
            assertTrue("The document class  have not a node type per hierarchy strategy", classDescriptor.usesNodeTypePerConcreteClassStrategy());
            assertFalse ("The document class has no descendant ", classDescriptor.hasDescendants());

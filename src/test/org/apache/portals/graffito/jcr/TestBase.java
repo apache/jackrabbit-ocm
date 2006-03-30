@@ -266,7 +266,7 @@ public abstract class TestBase extends TestCase
             Iterator iterator = result.iterator();
             while (iterator.hasNext())
             {
-                Object  object = (Ancestor) iterator.next();
+                Object  object = iterator.next();
                 if (ReflectionUtils.getNestedProperty(object, "path").equals(path))
                 {
                     if (object.getClass() == objectClass)
