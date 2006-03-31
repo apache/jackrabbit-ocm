@@ -101,10 +101,8 @@ public class NTCollectionConverterImpl extends AbstractCollectionConverterImpl {
         if (collection == null) {
             return;
         }
-
-        Mapper mapper = collectionDescriptor.getClassDescriptor().getMappingDescriptor().getMapper();
-        ClassDescriptor elementClassDescriptor = mapper.getClassDescriptor(
-                ReflectionUtils.forName(collectionDescriptor.getElementClassName()));
+        
+        ClassDescriptor elementClassDescriptor = mapper.getClassDescriptor( ReflectionUtils.forName(collectionDescriptor.getElementClassName()));
 
         Iterator collectionIterator = collection.getIterator();
         int elementCollectionCount = 0;
@@ -201,9 +199,7 @@ public class NTCollectionConverterImpl extends AbstractCollectionConverterImpl {
                                                    Node parentNode,
                                                    CollectionDescriptor collectionDescriptor,
                                                    Class collectionFieldClass) throws RepositoryException {
-        Mapper mapper = collectionDescriptor.getClassDescriptor().getMappingDescriptor().getMapper();
-        ClassDescriptor elementClassDescriptor = mapper.getClassDescriptor(
-                ReflectionUtils.forName(collectionDescriptor.getElementClassName()));
+    	    ClassDescriptor elementClassDescriptor = mapper.getClassDescriptor( ReflectionUtils.forName(collectionDescriptor.getElementClassName())); 
         ManageableCollection collection = ManageableCollectionUtil.getManageableCollection(collectionFieldClass);
         Class elementClass = ReflectionUtils.forName(collectionDescriptor.getElementClassName());
         Iterator children = this.getCollectionNodes(session, parentNode,

@@ -133,7 +133,7 @@ public class PersistenceManagerNtConcreteClassTest extends TestBase {
 		PersistenceManager persistenceManager = this.getPersistenceManager();
 
 		//---------------------------------------------------------------------------------------------------------
-		// Insert descendant objects
+		// Insert cmsobjects
 		//---------------------------------------------------------------------------------------------------------			
         Document document = new Document();
         document.setPath("/document1");
@@ -170,11 +170,26 @@ public class PersistenceManagerNtConcreteClassTest extends TestBase {
         folder.setName("folder1");
         persistenceManager.insert(folder);
  
-         folder = new Folder();
-        folder.setPath("/folder2");
-        folder.setName("folder2");
-        persistenceManager.insert(folder);               		
 
+        document = new Document();        
+        document.setName("document4");
+        document.setContentType("plain/text"); 
+        documentStream = new DocumentStream();
+        documentStream.setEncoding("utf-8");
+        documentStream.setContent("Test Content 4".getBytes());
+        document.setDocumentStream(documentStream);       
+
+        Folder subFolder = new Folder();
+        subFolder.setName("subfolder");
+        
+        folder = new Folder();
+        folder.setPath("/folder2");
+        folder.setName("folder2");        
+        folder.addChild(document);
+        folder.addChild(subFolder);
+        persistenceManager.insert(folder);               		
+        
+        
 		Atomic a = new Atomic();
 		a.setPath("/atomic");
 		a.setBooleanPrimitive(true);
@@ -183,12 +198,12 @@ public class PersistenceManagerNtConcreteClassTest extends TestBase {
 		persistenceManager.save();
 
 		//---------------------------------------------------------------------------------------------------------	
-		// Retrieve Folders
+		// Retrieve Folders found on the root level
 		//---------------------------------------------------------------------------------------------------------			
 		QueryManager queryManager = persistenceManager.getQueryManager();
 		Filter filter = queryManager.createFilter(Folder.class);
 		Query query = queryManager.createQuery(filter);
-
+		filter.setScope("/");
 		Collection result = persistenceManager.getObjects(query);
 		assertEquals("Invalid number of folders found", result.size(), 2);
 		assertTrue("Invalid item in the collection", this.contains(result, "/folder1",Folder.class));
@@ -200,6 +215,7 @@ public class PersistenceManagerNtConcreteClassTest extends TestBase {
 		//---------------------------------------------------------------------------------------------------------			
 		queryManager = persistenceManager.getQueryManager();
 		filter = queryManager.createFilter(Document.class);
+		
 		filter.addLike("name", "document name%");
 		query = queryManager.createQuery(filter);
 
@@ -208,6 +224,24 @@ public class PersistenceManagerNtConcreteClassTest extends TestBase {
 		assertTrue("Invalid item in the collection", this.contains(result, "/document1", Document.class));
 		assertTrue("Invalid item in the collection", this.contains(result, "/document2", Document.class));
 
+		
+		//---------------------------------------------------------------------------------------------------------	
+		// Retrieve folder2 
+		//---------------------------------------------------------------------------------------------------------	
+		Folder folder2 = (Folder) persistenceManager.getObject(Folder.class, "/folder2");
+		assertNotNull("folder 2 is null", folder2);
+		assertEquals("Invalid number of cms object  found in folder2 children", folder2.getChildren().size() ,2);
+		assertTrue("Invalid item in the collection", this.contains(folder2.getChildren(), "/folder2/document4", Document.class));
+		assertTrue("Invalid item in the collection", this.contains(folder2.getChildren(), "/folder2/subfolder", Folder.class));
+		
+		
+		CmsObject cmsObject = (CmsObject) persistenceManager.getObject(CmsObject.class, "/folder2");
+		assertNotNull("folder 2 is null", cmsObject);
+		assertTrue("Invalid instance for folder 2",  cmsObject instanceof Folder);
+		assertEquals("Invalid number of documents  found in folder2 children",  folder2.getChildren().size(),2);
+		assertTrue("Invalid item in the collection", this.contains(folder2.getChildren(), "/folder2/document4", Document.class));
+		assertTrue("Invalid item in the collection", this.contains(folder2.getChildren(), "/folder2/subfolder", Folder.class));
+		
 		//---------------------------------------------------------------------------------------------------------	
 		// Retrieve Contents (ancestor of Documents) 
 		//---------------------------------------------------------------------------------------------------------			
@@ -223,20 +257,39 @@ public class PersistenceManagerNtConcreteClassTest extends TestBase {
 		
 				
 		//---------------------------------------------------------------------------------------------------------	
-		// Retrieve all cmsobjects
+		// Retrieve all cmsobjects found on the root level
 		//---------------------------------------------------------------------------------------------------------					
 		queryManager = persistenceManager.getQueryManager();
-		filter = queryManager.createFilter(CmsObject.class);		
+		filter = queryManager.createFilter(CmsObject.class);
+		filter.setScope("/");
 		query = queryManager.createQuery(filter);
 
 		result = persistenceManager.getObjects(query);
 		assertEquals("Invalid ancestor object found", result.size(),5);
 		assertTrue("Invalid item in the collection", this.contains(result, "/document1", Document.class));
 		assertTrue("Invalid item in the collection", this.contains(result, "/document2", Document.class));	
-		assertTrue("Invalid item in the collection", this.contains(result, "/document3", Document.class));
+		assertTrue("Invalid item in the collection", this.contains(result, "/document3", Document.class));		
 		assertTrue("Invalid item in the collection", this.contains(result, "/folder1",Folder.class));	
 		assertTrue("Invalid item in the collection", this.contains(result, "/folder2",Folder.class));
-	
+
+		
+		//---------------------------------------------------------------------------------------------------------	
+		// Retrieve all cmsobjects found anywhere
+		//---------------------------------------------------------------------------------------------------------					
+		queryManager = persistenceManager.getQueryManager();
+		filter = queryManager.createFilter(CmsObject.class);		
+		query = queryManager.createQuery(filter);
+
+		result = persistenceManager.getObjects(query);
+		assertEquals("Invalid ancestor object found", result.size(),7);
+		assertTrue("Invalid item in the collection", this.contains(result, "/document1", Document.class));
+		assertTrue("Invalid item in the collection", this.contains(result, "/document2", Document.class));	
+		assertTrue("Invalid item in the collection", this.contains(result, "/document3", Document.class));
+		assertTrue("Invalid item in the collection", this.contains(result, "/folder2/document4", Document.class));		
+		assertTrue("Invalid item in the collection", this.contains(result, "/folder1",Folder.class));	
+		assertTrue("Invalid item in the collection", this.contains(result, "/folder2",Folder.class));
+		assertTrue("Invalid item in the collection", this.contains(result, "/folder2/subfolder",Folder.class));
+		
 	}
 	    
 }

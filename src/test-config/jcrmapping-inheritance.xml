@@ -32,7 +32,7 @@
 
 	<class-descriptor className="org.apache.portals.graffito.jcr.testmodel.inheritance.CmsObject" jcrNodeType="graffito:cmsobject"  abstract="true" >
 		<field-descriptor fieldName="path" path="true" />
-		<field-descriptor fieldName="name" jcrName="graffito:name" />
+		<field-descriptor fieldName="name" jcrName="graffito:name" id="true" />
 		<!--  bean-descriptor  fieldName="parentFolder" 						 
 						  converter="org.apache.portals.graffito.jcr.persistence.objectconverter.impl.ParentBeanConverterImpl" / -->
 
@@ -40,10 +40,9 @@
 
 	<class-descriptor className="org.apache.portals.graffito.jcr.testmodel.inheritance.Folder" jcrNodeType="graffito:folder" 
 	                                   extends="org.apache.portals.graffito.jcr.testmodel.inheritance.CmsObject" >
-		<collection-descriptor fieldName="children" jcrName="graffito:children" proxy="false"
-                                                   elementClassName="org.apache.portals.graffito.jcr.testmodel.inheritance.CmsObject" />
-	                                   
-
+		<collection-descriptor fieldName="children" proxy="false" 
+		                       elementClassName="org.apache.portals.graffito.jcr.testmodel.inheritance.CmsObject" 
+		                       collectionConverter="org.apache.portals.graffito.jcr.persistence.collectionconverter.impl.NTCollectionConverterImpl" />
 	</class-descriptor >	
 
 	<class-descriptor className="org.apache.portals.graffito.jcr.testmodel.inheritance.Content" jcrNodeType="graffito:content" abstract="true"

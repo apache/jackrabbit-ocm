@@ -97,12 +97,11 @@
   
   <nodeType name="graffito:folder" isMixin="false" hasOrderableChildNodes="false" primaryItemName="">
     <supertypes>
-      <supertype>graffito:cmsobject</supertype>
-       <supertype>mix:referenceable</supertype>
+      <supertype>graffito:cmsobject</supertype>       
     </supertypes>    
-    <childNodeDefinition name="*" defaultPrimaryType="graffito:cmsobject" autoCreated="false" mandatory="false" onParentVersion="COPY" protected="false" sameNameSiblings="false">
+    <childNodeDefinition name="*" defaultPrimaryType="graffito:cmsobject" autoCreated="false" mandatory="false" onParentVersion="COPY" protected="false" sameNameSiblings="true">
       <requiredPrimaryTypes>
-        <requiredPrimaryType>graffito:cmsobject</requiredPrimaryType>
+        <requiredPrimaryType>graffito:cmsobject</requiredPrimaryType>         
       </requiredPrimaryTypes>
     </childNodeDefinition>        
   </nodeType>

@@ -15,6 +15,7 @@
  */
 package org.apache.portals.graffito.jcr.testmodel.inheritance;
 
+import java.util.ArrayList;
 import java.util.List;
 
 
@@ -29,7 +30,7 @@ import java.util.List;
 public class Folder extends CmsObject 
 {
 
-    protected List children;
+    protected List children = new ArrayList();
 
 	public List getChildren() {
 		return children;
