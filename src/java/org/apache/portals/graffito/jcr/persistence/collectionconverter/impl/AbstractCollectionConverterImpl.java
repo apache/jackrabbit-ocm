@@ -57,7 +57,7 @@ public abstract class AbstractCollectionConverterImpl implements CollectionConve
     public AbstractCollectionConverterImpl(Map atomicTypeConverters, 
                                            ObjectConverter objectConverter, 
                                            Mapper mapper) {
-    	this.atomicTypeConverters = atomicTypeConverters;
+    	    this.atomicTypeConverters = atomicTypeConverters;
         this.objectConverter = objectConverter;
         this.mapper = mapper;
     }

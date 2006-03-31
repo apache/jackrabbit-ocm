@@ -168,9 +168,6 @@ public class ObjectConverterImpl implements ObjectConverter {
             }
         }
 
-        if (classDescriptor.usesNodeTypePerHierarchyStrategy()) {
-
-        }
 
         storeSimpleFields(session, object, classDescriptor, objectNode);
         insertBeanFields(session, object, classDescriptor, objectNode);
@@ -646,12 +643,8 @@ public class ObjectConverterImpl implements ObjectConverter {
                 collectionDescriptorIterator.next();
             CollectionConverter collectionConverter = this.getCollectionConverter(session, collectionDescriptor);
             Object collection = ReflectionUtils.getNestedProperty(object, collectionDescriptor.getFieldName());
-            ManageableCollection manageableCollection = ManageableCollectionUtil
-                .getManageableCollection(collection);
-            collectionConverter.insertCollection(session,
-                                                 objectNode,
-                                                 collectionDescriptor,
-                                                 manageableCollection);
+            ManageableCollection manageableCollection = ManageableCollectionUtil.getManageableCollection(collection);
+            collectionConverter.insertCollection(session,objectNode,   collectionDescriptor, manageableCollection);
         }
     }
 
