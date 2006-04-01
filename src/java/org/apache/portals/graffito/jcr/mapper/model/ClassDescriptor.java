@@ -25,6 +25,7 @@ import java.util.Map;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.portals.graffito.jcr.exception.JcrMappingException;
+import org.apache.portals.graffito.jcr.reflection.ReflectionUtils;
 
 /**
  *
@@ -198,7 +199,6 @@ public class ClassDescriptor {
      * @return all {@link BeanDescriptor} defined in this ClassDescriptor
      */
     public Collection getCollectionDescriptors() {
-    	   
         return this.collectionDescriptors.values();
     }
 
@@ -222,8 +222,6 @@ public class ClassDescriptor {
         }
 
         return null;
-        
-    
     }
 
     public FieldDescriptor getDiscriminatorFieldDescriptor() {       
@@ -259,8 +257,7 @@ public class ClassDescriptor {
         return (String) this.fieldNames.get(fieldName);
     }
     
-    public Map getFieldNames()
-    {
+    public Map getFieldNames() {
         return this.fieldNames;
     }
 
@@ -294,12 +291,6 @@ public class ClassDescriptor {
      *
      * @param mixinTypes command separated list of mixins
      */
-//    public void setJcrMixinTypesList(String[] mixinTypes) {
-//        if (null != mixinTypes) {
-//            setJcrMixinTypes(mixinTypes[0].split(","));
-//        }
-//    }
-
     public void setJcrMixinTypes(String[] mixinTypes) {
         if (null != mixinTypes && mixinTypes.length == 1) {
             jcrMixinTypes = mixinTypes[0].split(" *, *");
@@ -324,7 +315,6 @@ public class ClassDescriptor {
      * Revisit information in this descriptor and fills in more.
      */
     public void afterPropertiesSet() {
-
         validateClassName();        
         lookupSuperDescriptor();
         lookupInheritanceSettings();
@@ -333,15 +323,14 @@ public class ClassDescriptor {
 
 	private void validateClassName() {
 		try {
-			Class objectClass = Class.forName(this.className);
-		} catch (ClassNotFoundException e) {			
-			 throw new JcrMappingException("Class not found : " + className);
+            ReflectionUtils.forName(this.className);
+		} catch (JcrMappingException e) {			
+			 throw new JcrMappingException("Class used in descriptor not found : " + className);
 		}
 	}
 
 	private void lookupSuperDescriptor() {
-		
-        if (null !=superClassDescriptor) {
+        if (null != superClassDescriptor) {
             this.fieldDescriptors = mergeFields(this.fieldDescriptors, this.superClassDescriptor.getFieldDescriptors());
             this.beanDescriptors = mergeBeans(this.beanDescriptors, this.superClassDescriptor.getBeanDescriptors());
             this.collectionDescriptors = mergeCollections(this.collectionDescriptors, this.superClassDescriptor.getCollectionDescriptors());
@@ -350,18 +339,15 @@ public class ClassDescriptor {
     }
 
     private void lookupInheritanceSettings() {
-	     if ((null != this.superClassDescriptor) || (this.hasDescendants() ))
-	     {
-	    	       if (this.hasDiscriminatorField())
-	    	       {
-	    	    	        this.extendsStrategy = NODETYPE_PER_HIERARCHY;
-	    	       }
-	    	       else
-	    	       {
-	    	    	       this.extendsStrategy = NODETYPE_PER_CONCRETECLASS;
-	    	       }
-	     }
-   }
+        if ((null != this.superClassDescriptor) || (this.hasDescendants() )) {
+            if (this.hasDiscriminatorField()) {
+                this.extendsStrategy = NODETYPE_PER_HIERARCHY;
+            }
+            else {
+                this.extendsStrategy = NODETYPE_PER_CONCRETECLASS;
+            }
+        }
+    }
 	
     private void validateInheritanceSettings() {
         if (NODETYPE_PER_CONCRETECLASS.equals(this.extendsStrategy)) {
@@ -403,8 +389,7 @@ public class ClassDescriptor {
         return superClassDescriptor;
     }
     
-    public Collection getDescendantClassDescriptors()
-    {
+    public Collection getDescendantClassDescriptors() {
     	     return this.descendantClassDescriptors;
     }
     
@@ -417,37 +402,31 @@ public class ClassDescriptor {
      * 
      * @todo : maybe we have to review this implementation to have better performance. 
      */
-    public ClassDescriptor getDescendantClassDescriptor(String nodeType)
-    {
+    public ClassDescriptor getDescendantClassDescriptor(String nodeType) {
         Iterator iterator = this.descendantClassDescriptors.iterator();
-        while (iterator.hasNext())
-        {
-        	      ClassDescriptor descendantClassDescriptor = (ClassDescriptor) iterator.next();
-        	      if (descendantClassDescriptor.getJcrNodeType().equals(nodeType))
-        	      {
-        	    	     return descendantClassDescriptor;
-        	      }
-        	      
-        	      if (descendantClassDescriptor.hasDescendants())
-        	      {
-        	    	      ClassDescriptor classDescriptor = descendantClassDescriptor.getDescendantClassDescriptor(nodeType);
-        	    	      if (classDescriptor != null)
-        	    	      {
-        	    	    	      return classDescriptor;
-        	    	      }
-        	      }
+        while (iterator.hasNext()) {
+            ClassDescriptor descendantClassDescriptor = (ClassDescriptor) iterator.next();
+  
+            if (descendantClassDescriptor.getJcrNodeType().equals(nodeType)) {
+                return descendantClassDescriptor;
+            }
+  
+            if (descendantClassDescriptor.hasDescendants()) {
+                ClassDescriptor classDescriptor = descendantClassDescriptor.getDescendantClassDescriptor(nodeType);
+                if (classDescriptor != null) {
+                    return classDescriptor;
+                }
+            }
         }
         return null;
     }
     
-    public void addDescendantClassDescriptor(ClassDescriptor classDescriptor)
-    {
+    public void addDescendantClassDescriptor(ClassDescriptor classDescriptor) {
     	     this.descendantClassDescriptors.add(classDescriptor);
     	     this.hasDescendant = true;
     }
     
-    public boolean hasDescendants()
-    {
+    public boolean hasDescendants() {
     	    return this.hasDescendant;
     }
 
@@ -457,7 +436,6 @@ public class ClassDescriptor {
     public void setSuperClassDescriptor(ClassDescriptor superClassDescriptor) {
         this.superClassDescriptor= superClassDescriptor;
         superClassDescriptor.addDescendantClassDescriptor(this);
-        
     }
 
     private Map mergeFields(Map existing, Collection superSource) {
@@ -471,9 +449,8 @@ public class ClassDescriptor {
             if (!merged.containsKey(fieldDescriptor.getFieldName())) {
                 merged.put(fieldDescriptor.getFieldName(), fieldDescriptor);
             }
-            else
-            {
-            	    log.warn("Field name conflict in " + this.className + " - field : " +fieldDescriptor.getFieldName() + " -  this  field name is also defined  in the ancestor class : " + this.getSuperClass());
+            else {
+                log.warn("Field name conflict in " + this.className + " - field : " +fieldDescriptor.getFieldName() + " -  this  field name is also defined  in the ancestor class : " + this.getSuperClass());
             }
         }
 
@@ -492,9 +469,8 @@ public class ClassDescriptor {
             if (!merged.containsKey(beanDescriptor.getFieldName())) {
                 merged.put(beanDescriptor.getFieldName(), beanDescriptor);
             }
-            else
-            {
-            	    log.warn("Bean name conflict in " + this.className + " - field : " +beanDescriptor.getFieldName() + " -  this  field name is also defined  in the ancestor class : " + this.getSuperClass());
+            else {
+                log.warn("Bean name conflict in " + this.className + " - field : " +beanDescriptor.getFieldName() + " -  this  field name is also defined  in the ancestor class : " + this.getSuperClass());
             }
         }
 
@@ -512,9 +488,8 @@ public class ClassDescriptor {
             if (!merged.containsKey(collectionDescriptor.getFieldName())) {
                 merged.put(collectionDescriptor.getFieldName(), collectionDescriptor);
             }
-            else
-            {
-            	    log.warn("Collection name conflict in " + this.className + " - field : " +collectionDescriptor.getFieldName() + " -  this  field name is also defined  in the ancestor class : " + this.getSuperClass());
+            else {
+                log.warn("Collection name conflict in " + this.className + " - field : " +collectionDescriptor.getFieldName() + " -  this  field name is also defined  in the ancestor class : " + this.getSuperClass());
             }
         }
 
@@ -522,9 +497,6 @@ public class ClassDescriptor {
     }    
     
 	public String toString() {
-		
 		return "Class Descriptor : " +  this.getClassName();
 	}
-    
-    
 }

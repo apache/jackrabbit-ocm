@@ -636,15 +636,15 @@ public class ObjectConverterImpl implements ObjectConverter {
                                         Object object,
                                         ClassDescriptor classDescriptor,
                                         Node objectNode) {
-        Iterator collectionDescriptorIterator = classDescriptor.getCollectionDescriptors()
-                                                               .iterator();
+        Iterator collectionDescriptorIterator = classDescriptor.getCollectionDescriptors().iterator();
+        
         while (collectionDescriptorIterator.hasNext()) {
-            CollectionDescriptor collectionDescriptor = (CollectionDescriptor)
-                collectionDescriptorIterator.next();
+            CollectionDescriptor collectionDescriptor = (CollectionDescriptor) collectionDescriptorIterator.next();
             CollectionConverter collectionConverter = this.getCollectionConverter(session, collectionDescriptor);
             Object collection = ReflectionUtils.getNestedProperty(object, collectionDescriptor.getFieldName());
             ManageableCollection manageableCollection = ManageableCollectionUtil.getManageableCollection(collection);
-            collectionConverter.insertCollection(session,objectNode,   collectionDescriptor, manageableCollection);
+            
+            collectionConverter.insertCollection(session,objectNode, collectionDescriptor, manageableCollection);
         }
     }
 
@@ -652,16 +652,14 @@ public class ObjectConverterImpl implements ObjectConverter {
                                         Object object,
                                         ClassDescriptor classDescriptor,
                                         Node objectNode) {
-        Iterator collectionDescriptorIterator = classDescriptor.getCollectionDescriptors()
-                                                               .iterator();
+        Iterator collectionDescriptorIterator = classDescriptor.getCollectionDescriptors().iterator();
+        
         while (collectionDescriptorIterator.hasNext()) {
-            CollectionDescriptor collectionDescriptor = (CollectionDescriptor)
-                collectionDescriptorIterator.next();
+            CollectionDescriptor collectionDescriptor = (CollectionDescriptor) collectionDescriptorIterator.next();
             CollectionConverter collectionConverter = this.getCollectionConverter(session, collectionDescriptor);
-            Object collection = ReflectionUtils.getNestedProperty(object,
-                    collectionDescriptor.getFieldName());
-            ManageableCollection manageableCollection = ManageableCollectionUtil
-                .getManageableCollection(collection);
+            Object collection = ReflectionUtils.getNestedProperty(object, collectionDescriptor.getFieldName());
+            ManageableCollection manageableCollection = ManageableCollectionUtil.getManageableCollection(collection);
+            
             collectionConverter.updateCollection(session,
                                                  objectNode,
                                                  collectionDescriptor,

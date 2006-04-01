@@ -16,6 +16,7 @@
  */
 package org.apache.portals.graffito.jcr.query.impl;
 
+
 import java.util.Iterator;
 import java.util.Map;
 
@@ -26,100 +27,93 @@ import org.apache.portals.graffito.jcr.query.Filter;
 import org.apache.portals.graffito.jcr.query.Query;
 import org.apache.portals.graffito.jcr.query.QueryManager;
 
-public class QueryManagerImpl implements QueryManager
-{
+public class QueryManagerImpl implements QueryManager {
 
-	private Mapper mapper;
-	private Map atomicTypeConverters;
-	public QueryManagerImpl(Mapper mapper,  Map atomicTypeConverters)
-	{
-		this.mapper = mapper;
-		this.atomicTypeConverters = atomicTypeConverters;
-	}
-	
-	public Filter createFilter(Class classQuery) 
-	{
+    private Mapper mapper;
+    private Map atomicTypeConverters;
 
-		return new FilterImpl(mapper.getClassDescriptor(classQuery), atomicTypeConverters, classQuery);
-	}
+    public QueryManagerImpl(Mapper mapper, Map atomicTypeConverters) {
+        this.mapper = mapper;
+        this.atomicTypeConverters = atomicTypeConverters;
+    }
 
-	public Query createQuery(Filter filter)
-	{
+    public Filter createFilter(Class classQuery) {
+        return new FilterImpl(mapper.getClassDescriptor(classQuery),
+                              atomicTypeConverters,
+                              classQuery);
+    }
 
-		return new QueryImpl(filter, mapper);
-	}
+    public Query createQuery(Filter filter) {
+        return new QueryImpl(filter, mapper);
+    }
 
-	public String buildJCRExpression(Query query)
-	{
+    public String buildJCRExpression(Query query) {
 
-		Filter filter = query.getFilter();
-		
-        // Check if the class has  an inheritance discriminator field		
-		ClassDescriptor classDescriptor = mapper.getClassDescriptor(filter.getFilterClass()); 
-		if (classDescriptor.hasDiscriminatorField())
-		{
-			Filter discrininatorFilter = buildDiscriminatorFilter(query,  classDescriptor);
-			 filter = filter.addAndFilter(discrininatorFilter);
-		}
-		
-		String jcrExp = "";
-		
-		// Add scope
-		if ((filter.getScope() != null && ( ! filter.getScope().equals(""))))
-		{
-			jcrExp +=  "/jcr:root" + filter.getScope() + "element(*, ";
-		}
-		else
-		{
-			jcrExp +=  "//element(*, ";
-		}
-		
-		// Add node type
-		jcrExp +=  this.getNodeType(filter) + ") ";
+        Filter filter = query.getFilter();
+
+        // Check if the class has  an inheritance discriminator field
+        ClassDescriptor classDescriptor = mapper.getClassDescriptor(filter.getFilterClass());
+        if (classDescriptor.hasDiscriminatorField()) {
+            Filter discrininatorFilter = buildDiscriminatorFilter(query, classDescriptor);
+            filter = filter.addAndFilter(discrininatorFilter);
+        }
+
+        String jcrExp = "";
+
+        // Add scope
+        if (((filter.getScope() != null) && (!filter.getScope().equals("")))) {
+            jcrExp += "/jcr:root" + filter.getScope() + "element(*, ";
+        }
+        else {
+            jcrExp += "//element(*, ";
+        }
+
+        // Add node type
+        jcrExp += this.getNodeType(filter) + ") ";
 
         // Add filter criteria
-		String filterExp = ((FilterImpl)filter).getJcrExpression();
-			
-		// Build the jcr filter
-		if ((filterExp != null) && ( ! filterExp.equals("")))
-		{
-		    jcrExp += "[" + filterExp + "]";
-		}
-		
-		// Add order by
-		jcrExp += ((QueryImpl)query).getOrderByExpression();
-		
-		return jcrExp;
-		 
-	}
+        String filterExp = ((FilterImpl) filter).getJcrExpression();
 
-	private Filter buildDiscriminatorFilter(Query query, ClassDescriptor classDescriptor) {
-		Filter discrininatorFilter = this.createFilter(query.getFilter().getFilterClass());
-		if ( ! classDescriptor.isAbstract())
-		{
-		    FieldDescriptor fieldDescriptor = classDescriptor.getDiscriminatorFieldDescriptor();
-		    discrininatorFilter.addEqualTo(fieldDescriptor.getFieldName(), classDescriptor.getClassName());
-		}
-		
-		if (classDescriptor.hasDescendants())
-		{
-			Iterator  descendantDescriptorIterator = classDescriptor.getDescendantClassDescriptors().iterator();
-			while (descendantDescriptorIterator.hasNext())
-			{
-				 ClassDescriptor descendantClassDescriptor = (ClassDescriptor)descendantDescriptorIterator.next();
-				 //Add subdescendant discriminator value
-				 discrininatorFilter =  discrininatorFilter.addOrFilter( this.buildDiscriminatorFilter(query, descendantClassDescriptor));
-			}
-			
-		}
-		return discrininatorFilter;
-	}
-	
-	private String getNodeType(Filter filter)
-	{
-		ClassDescriptor classDescriptor = mapper.getClassDescriptor(filter.getFilterClass());
-		return classDescriptor.getJcrNodeType();
-		
-	}
+        // Build the jcr filter
+        if ((filterExp != null) && (!filterExp.equals(""))) {
+            jcrExp += "[" + filterExp + "]";
+        }
+
+        // Add order by
+        jcrExp += ((QueryImpl) query).getOrderByExpression();
+
+        return jcrExp;
+
+    }
+
+    private Filter buildDiscriminatorFilter(Query query, ClassDescriptor classDescriptor) {
+        Filter discriminatorFilter = this.createFilter(query.getFilter().getFilterClass());
+        if (!classDescriptor.isAbstract()) {
+            FieldDescriptor fieldDescriptor = classDescriptor.getDiscriminatorFieldDescriptor();
+            discriminatorFilter.addEqualTo(fieldDescriptor.getFieldName(),
+                                           classDescriptor.getClassName());
+        }
+
+        if (classDescriptor.hasDescendants()) {
+            Iterator descendantDescriptorIterator = classDescriptor.getDescendantClassDescriptors().iterator();
+            
+            while (descendantDescriptorIterator.hasNext()) {
+                ClassDescriptor descendantClassDescriptor = (ClassDescriptor) descendantDescriptorIterator.next();
+
+                //Add subdescendant discriminator value
+                discriminatorFilter = discriminatorFilter.addOrFilter(
+                        this.buildDiscriminatorFilter(query, descendantClassDescriptor));
+            }
+
+        }
+
+        return discriminatorFilter;
+    }
+
+    private String getNodeType(Filter filter) {
+        ClassDescriptor classDescriptor = mapper.getClassDescriptor(filter.getFilterClass());
+
+        return classDescriptor.getJcrNodeType();
+    }
 
 }
