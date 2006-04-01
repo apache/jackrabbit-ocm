@@ -35,9 +35,9 @@ import org.apache.portals.graffito.jcr.query.Filter;
 public class FilterImpl implements Filter {
     private final static Log log = LogFactory.getLog(FilterImpl.class);
 
-    private Class claszz;
+    private Class clazz;
     private String scope = "";
-    private String jcrExpression = "";
+    private StringBuffer jcrExpression = new StringBuffer();
 
     private ClassDescriptor classDescriptor;
     private Map atomicTypeConverters;
@@ -50,7 +50,7 @@ public class FilterImpl implements Filter {
      * @param clazz
      */
     public FilterImpl(ClassDescriptor classDescriptor, Map atomicTypeConverters, Class clazz) {
-        this.claszz = clazz;
+        this.clazz = clazz;
         this.atomicTypeConverters = atomicTypeConverters;
         this.classDescriptor = classDescriptor;
     }
@@ -60,7 +60,7 @@ public class FilterImpl implements Filter {
      * @see org.apache.portals.graffito.jcr.query.Filter#getFilterClass()
      */
     public Class getFilterClass() {
-        return claszz;
+        return clazz;
     }
 
     /**
@@ -86,8 +86,7 @@ public class FilterImpl implements Filter {
             jcrExpression = "jcr:contains(., '" + fullTextSearch + "')";
         }
         else {
-            jcrExpression = "jcr:contains(@" + this.getJcrFieldName(scope) + ", '" + fullTextSearch
-                + "')";
+            jcrExpression = "jcr:contains(@" + this.getJcrFieldName(scope) + ", '" + fullTextSearch + "')";
         }
 
         addExpression(jcrExpression);
@@ -210,14 +209,17 @@ public class FilterImpl implements Filter {
      * @see org.apache.portals.graffito.jcr.query.Filter#addOrFilter(org.apache.portals.graffito.jcr.query.Filter)
      */
     public Filter addOrFilter(Filter filter) {
-    	   if ( null == jcrExpression || "".equals(jcrExpression) )
-    	   {
-    		   jcrExpression =    ((FilterImpl) filter).getJcrExpression() ;    		   
-    	   }
-    	   else
-    	   {
-    	         jcrExpression =   "(" + jcrExpression + ")  or ( "  +  ((FilterImpl) filter).getJcrExpression() + ")";
-    	   }
+        if ((null == jcrExpression) || "".equals(jcrExpression.toString())) {
+            jcrExpression = new StringBuffer(((FilterImpl) filter).getJcrExpression());
+        }
+        else {
+            jcrExpression = new StringBuffer("(");
+            jcrExpression.append(jcrExpression)
+                         .append(")  or ( ")
+                         .append(((FilterImpl) filter).getJcrExpression())
+                         .append(")");
+        }
+
         return this;
     }
 
@@ -225,21 +227,23 @@ public class FilterImpl implements Filter {
      * @see org.apache.portals.graffito.jcr.query.Filter#addAndFilter(Filter)
      */
     public Filter addAndFilter(Filter filter) {
- 	   if ( null == jcrExpression || "".equals(jcrExpression) )
-	   {
-		   jcrExpression =    ((FilterImpl) filter).getJcrExpression() ;    		   
-	   }
-	   else
-	   {
-	         jcrExpression =   "(" + jcrExpression + ") and  ( "  +  ((FilterImpl) filter).getJcrExpression() + ")";
-	   }
-       return this;
+        if ((null == jcrExpression) || "".equals(jcrExpression.toString())) {
+            jcrExpression = new StringBuffer(((FilterImpl) filter).getJcrExpression());
+        }
+        else {
+            jcrExpression = new StringBuffer("(");
+            jcrExpression.append(jcrExpression)
+                         .append(") and  ( ")
+                         .append(((FilterImpl) filter).getJcrExpression())
+                         .append(")");
+        }
+
+        return this;
 
     }
-    
 
     public Filter addJCRExpression(String jcrExpression) {
-       addExpression(jcrExpression);
+        addExpression(jcrExpression);
 
         return this;
     }
@@ -255,27 +259,25 @@ public class FilterImpl implements Filter {
     }
 
     private String getStringValue(Object value) {
-        AtomicTypeConverter atomicTypeConverter = (AtomicTypeConverter) atomicTypeConverters.get(
-                value.getClass());
+        AtomicTypeConverter atomicTypeConverter = (AtomicTypeConverter) atomicTypeConverters.get(value.getClass());
 
         return atomicTypeConverter.getStringValue(value);
     }
 
     public String getJcrExpression() {
-    	     return this.jcrExpression;
+        return this.jcrExpression.toString();
     }
 
     private void addExpression(String jcrExpression) {
-            
-    	     if (this.jcrExpression.length() >0) {
-              	this.jcrExpression += " and ";
+        if (this.jcrExpression.length() > 0) {
+            this.jcrExpression.append(" and ");
         }
-        this.jcrExpression += jcrExpression ;
+        
+        this.jcrExpression.append(jcrExpression);
     }
 
-	public String toString() {
-		return getJcrExpression();
-	}
-    
-   
+    public String toString() {
+        return getJcrExpression();
+    }
+
 }

@@ -180,12 +180,11 @@ public class DigesterMapperImpl implements Mapper {
                             + cd.getClassName());
                 }
                 else {
-                	    log.debug("Class " +cd.getClassName() +  " extends " + cd.getSuperClass());
+            	    log.debug("Class " +cd.getClassName() +  " extends " + cd.getSuperClass());
                     cd.setSuperClassDescriptor(superClassDescriptor);
                 }
             }
-            else
-            {
+            else {
                 rootClassDescriptors.add(cd);	
             }
         }
@@ -203,12 +202,11 @@ public class DigesterMapperImpl implements Mapper {
      */
     private List  validateDescriptors(List errors, Collection classDescriptors ) {
         for(Iterator it = classDescriptors.iterator(); it.hasNext(); ) {
-             ClassDescriptor classDescriptor = (ClassDescriptor) it.next();
+            ClassDescriptor classDescriptor = (ClassDescriptor) it.next();
             try {
                 classDescriptor.afterPropertiesSet();
-                if (classDescriptor.hasDescendants())
-                {
-                	     errors = validateDescriptors(errors, classDescriptor.getDescendantClassDescriptors());
+                if (classDescriptor.hasDescendants()) {
+                    errors = validateDescriptors(errors, classDescriptor.getDescendantClassDescriptors());
                 }
             }
             catch(JcrMappingException jme) {
