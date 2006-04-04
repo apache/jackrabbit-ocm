@@ -48,7 +48,6 @@ import org.apache.portals.graffito.jcr.mapper.Mapper;
 import org.apache.portals.graffito.jcr.mapper.impl.DigesterMapperImpl;
 import org.apache.portals.graffito.jcr.mapper.model.ClassDescriptor;
 import org.apache.portals.graffito.jcr.persistence.PersistenceManager;
-import org.apache.portals.graffito.jcr.persistence.atomictypeconverter.AtomicTypeConverterProvider;
 import org.apache.portals.graffito.jcr.persistence.atomictypeconverter.impl.DefaultAtomicTypeConverterProvider;
 import org.apache.portals.graffito.jcr.persistence.objectconverter.ObjectConverter;
 import org.apache.portals.graffito.jcr.persistence.objectconverter.impl.ObjectConverterImpl;
@@ -90,12 +89,6 @@ public class PersistenceManagerImpl implements PersistenceManager {
      */
     protected ObjectConverter objectConverter;
 
-    /**
-     * No-arg constructor. 
-     * Permits post initialization.
-     */
-    public PersistenceManagerImpl() {
-    }
     
     /**
      * Creates a new <code>PersistenceManager</code> that uses the passed in
