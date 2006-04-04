@@ -55,6 +55,8 @@ import org.apache.portals.graffito.jcr.persistence.objectconverter.ObjectConvert
 import org.apache.portals.graffito.jcr.reflection.ReflectionUtils;
 import org.apache.portals.graffito.jcr.repository.RepositoryUtil;
 
+import sun.reflect.misc.ReflectUtil;
+
 /**
  * Default implementation for {@link ObjectConverterImpl}
  *
@@ -70,6 +72,8 @@ public class ObjectConverterImpl implements ObjectConverter {
     private Mapper mapper;
 
     private AtomicTypeConverterProvider atomicTypeConverterProvider;
+    
+    private ProxyManager proxyManager;
 
     /**
      * No-arg constructor.
@@ -87,6 +91,7 @@ public class ObjectConverterImpl implements ObjectConverter {
     public ObjectConverterImpl(Mapper mapper, AtomicTypeConverterProvider converterProvider) {
         this.mapper = mapper;
         this.atomicTypeConverterProvider = converterProvider;
+        this.proxyManager = new ProxyManager(this);
     }
 
     /**
@@ -203,7 +208,7 @@ public class ObjectConverterImpl implements ObjectConverter {
      */
     public void update(Session session, Node parentNode, String nodeName, Object object) {
         try {
-            ClassDescriptor classDescriptor = getClassDescriptor(object.getClass());
+            ClassDescriptor classDescriptor = getClassDescriptor(ReflectionUtils.getBeanClass(object));
             Node objectNode = parentNode.getNode(nodeName);
 
             checkNodeType(session, classDescriptor);
@@ -419,7 +424,8 @@ public class ObjectConverterImpl implements ObjectConverter {
                 String propertyName = fieldDescriptor.getJcrName();
     
                 if (fieldDescriptor.isPath()) {
-                    if (null == initializedBean) { // HINT: lazy initialize target bean
+                    // 	 HINT: lazy initialize target bean - The bean can be null when it is inline
+                    if (null == initializedBean) { 
                      initializedBean = ReflectionUtils.newInstance(classDescriptor.getClassName());
                    }
                     
@@ -442,7 +448,8 @@ public class ObjectConverterImpl implements ObjectConverter {
                 else {
                     if (node.hasProperty(propertyName)) {
                         Value propValue = node.getProperty(propertyName).getValue();
-                        if (null != propValue && null == initializedBean) { // HINT: lazy initialize target bean
+                        // 	 HINT: lazy initialize target bean - The bean can be null when it is inline
+                        if (null != propValue && null == initializedBean) { 
                             initializedBean = ReflectionUtils.newInstance(classDescriptor.getClassName());
                         }
 
@@ -482,38 +489,37 @@ public class ObjectConverterImpl implements ObjectConverter {
     /**
      * Retrieve bean fields
      */
-    private void retrieveBeanFields(Session session,
-                                    ClassDescriptor classDescriptor,
-                                    Node node,
-                                    String path,
-                                    Object object) {
-        Iterator beanDescriptorIterator = classDescriptor.getBeanDescriptors().iterator();
-        while (beanDescriptorIterator.hasNext()) {
-            BeanDescriptor beanDescriptor = (BeanDescriptor) beanDescriptorIterator.next();
-            String beanName = beanDescriptor.getFieldName();
-            Class beanClass = ReflectionUtils.getPropertyType(object, beanName);
-            Object bean = null;
-            if (beanDescriptor.isInline()) {            	    
-                bean = this.retrieveSimpleFields(session, getClassDescriptor(beanClass), node, bean);
-            }
-            else if (null != beanDescriptor.getBeanConverter()) {
-                bean = beanDescriptor.getBeanConverter().getObject(session,
-                        node,
-                        beanDescriptor,
-                        beanClass);
-            }
-            else {
-                bean = this.getObject(session,
-                                      beanClass,
-                                      path + "/" + beanDescriptor.getJcrName());
-            }
-            ReflectionUtils.setNestedProperty(object, beanName, bean);
-        }
+    private void retrieveBeanFields(Session session, ClassDescriptor classDescriptor,  Node node, String path, Object object) {
+        Iterator beanDescriptorIterator = classDescriptor.getBeanDescriptors()
+				.iterator();
+		while (beanDescriptorIterator.hasNext()) {
+			BeanDescriptor beanDescriptor = (BeanDescriptor) beanDescriptorIterator
+					.next();
+			String beanName = beanDescriptor.getFieldName();
+			Class beanClass = ReflectionUtils.getPropertyType(object, beanName);
+			Object bean = null;
+			if (beanDescriptor.isProxy()) {
+				bean = proxyManager.createBeanProxy(session, beanClass, path + "/" + beanDescriptor.getJcrName());
+
+			} else {
+				if (beanDescriptor.isInline()) {
+					bean = this.retrieveSimpleFields(session,
+							getClassDescriptor(beanClass), node, bean);
+				} else if (null != beanDescriptor.getBeanConverter()) {
+					bean = beanDescriptor.getBeanConverter().getObject(session,
+							node, beanDescriptor, beanClass);
+				} else {
+					bean = this.getObject(session, beanClass, path + "/"
+							+ beanDescriptor.getJcrName());
+				}
+			}
+			ReflectionUtils.setNestedProperty(object, beanName, bean);
+		}
     }
 
     /**
-     * Retrieve Collection fields
-     */
+	 * Retrieve Collection fields
+	 */
     private void retrieveCollectionFields(Session session,
                                           ClassDescriptor classDescriptor,
                                           Node node,
@@ -579,8 +585,7 @@ public class ObjectConverterImpl implements ObjectConverter {
             while (beanDescriptorIterator.hasNext()) {
                 BeanDescriptor beanDescriptor = (BeanDescriptor) beanDescriptorIterator.next();
                 jcrName = beanDescriptor.getJcrName();
-                Object bean = ReflectionUtils.getNestedProperty(object,
-                                                                beanDescriptor.getFieldName());
+                Object bean = ReflectionUtils.getNestedProperty(object, beanDescriptor.getFieldName());
 
                 // if the bean is null, remove existing node
                 if ((bean == null)) {

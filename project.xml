@@ -130,7 +130,11 @@
 			</properties>
 		</dependency>
 		
-
+	   <dependency>
+    	 		 <id>cglib</id>
+      		<version>${cglib.version}</version>
+	   </dependency>
+		
 	</dependencies>
 
 	<build>

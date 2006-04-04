@@ -17,6 +17,8 @@ package org.apache.portals.graffito.jcr.reflection;
 
 import java.lang.reflect.InvocationTargetException;
 
+import net.sf.cglib.proxy.Enhancer;
+
 import org.apache.commons.beanutils.ConstructorUtils;
 import org.apache.commons.beanutils.PropertyUtils;
 import org.apache.portals.graffito.jcr.exception.JcrMappingException;
@@ -136,5 +138,21 @@ abstract public class ReflectionUtils {
         catch(Exception ex) {
             throw new JcrMappingException("Cannot load class " + clazz, ex);
         }
+    }
+    
+    public static boolean isProxy(Class beanClass)
+    {
+         return Enhancer.isEnhanced(beanClass);	
+    }
+    
+    public static Class getBeanClass(Object bean)
+    {
+    	     Class beanClass = bean.getClass();
+         if (isProxy(beanClass))
+         {
+        	     //CGLIB specific
+        	 	return beanClass.getSuperclass();
+         }
+         return beanClass;
     }
 }
