@@ -214,6 +214,18 @@ public class NTCollectionConverterImpl extends AbstractCollectionConverterImpl {
 
         return collection;
     }
+    
+    /**
+     * @see AbstractCollectionConverterImpl#doIsNull(Session, Node, CollectionDescriptor, Class)
+     */
+    protected boolean doIsNull(Session session,
+                                              Node parentNode,
+                                              CollectionDescriptor collectionDescriptor,
+                                              Class collectionFieldClass) throws RepositoryException {
+
+    	    // This collection converter returns at least a empty collection (see in doGetCollection) 
+        return false;
+    }         
 
     private Collection getCollectionNodes(Session session, Node parentNode, String itemNodeType)
     throws PathNotFoundException, ValueFormatException, RepositoryException {

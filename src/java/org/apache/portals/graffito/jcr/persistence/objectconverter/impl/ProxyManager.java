@@ -16,6 +16,7 @@
 
 package org.apache.portals.graffito.jcr.persistence.objectconverter.impl;
 
+import javax.jcr.Node;
 import javax.jcr.RepositoryException;
 import javax.jcr.Session;
 
@@ -24,20 +25,18 @@ import net.sf.cglib.proxy.LazyLoader;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.apache.portals.graffito.jcr.mapper.model.CollectionDescriptor;
+import org.apache.portals.graffito.jcr.persistence.collectionconverter.CollectionConverter;
+import org.apache.portals.graffito.jcr.persistence.collectionconverter.ManageableCollection;
+import org.apache.portals.graffito.jcr.persistence.collectionconverter.ManageableCollectionUtil;
 import org.apache.portals.graffito.jcr.persistence.objectconverter.ObjectConverter;
 
 public class ProxyManager {
 
 	 private final static Log log = LogFactory.getLog(ProxyManager.class);
 	
-	 private ObjectConverter objectConverter;
 	 
-	 public ProxyManager(ObjectConverter objectConverter)
-	 {
-		 	this.objectConverter = objectConverter;
-	 }
-	 
-	public  Object createBeanProxy(Session session, Class beanClass, String path) 
+	public  Object createBeanProxy(Session session, ObjectConverter objectConverter,  Class beanClass, String path) 
 	{
 		
        try {
@@ -45,13 +44,24 @@ public class ProxyManager {
 				return null;
 			}
 		} catch (RepositoryException e) {
-			throw new org.apache.portals.graffito.jcr.exception.RepositoryException(
-					"Impossible to check,if the object exits on " + path, e);
+			throw new org.apache.portals.graffito.jcr.exception.RepositoryException(	"Impossible to check,if the object exits on " + path, e);
 		}
-		
-		log.debug("Create proxy for " + path);
-		LazyLoader loader = new BeanLazyLoader(this.objectConverter, session, beanClass, path) ;		
+				
+		LazyLoader loader = new BeanLazyLoader(objectConverter, session, beanClass, path) ;		
 		return  Enhancer.create(beanClass, loader);
 	}
 
+	
+	public  Object createCollectionProxy(Session session, CollectionConverter collectionConverter, Node parentNode,  CollectionDescriptor collectionDescriptor, Class collectionFieldClass) 
+	{	
+		
+		if (collectionConverter.isNull(session, parentNode, collectionDescriptor, collectionFieldClass)) 	{
+			return null;
+		}
+		
+		ManageableCollection manageableCollection = ManageableCollectionUtil.getManageableCollection(collectionFieldClass);
+		
+		LazyLoader loader = new CollectionLazyLoader(collectionConverter, session, parentNode, collectionDescriptor, collectionFieldClass);
+		return  Enhancer.create(manageableCollection.getClass(), loader);
+	}	
 }

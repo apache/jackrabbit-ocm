@@ -359,9 +359,9 @@ public class DigesterMapperImplTest extends TestCase {
 
 			ClassDescriptor classDescriptor = mapper.getClassDescriptor(Main.class);
 			assertNotNull("ClassDescriptor is null", classDescriptor);
-			assertTrue("Invalid proxy setting", classDescriptor.getBeanDescriptor("proxyDetail").isProxy());
-			assertFalse("Invalid proxy setting", classDescriptor.getBeanDescriptor("detail").isProxy());
-			
+			assertTrue("Invalid proxy setting for bean field proxyDetail ", classDescriptor.getBeanDescriptor("proxyDetail").isProxy());
+			assertFalse("Invalid proxy setting for bean field detail  ", classDescriptor.getBeanDescriptor("detail").isProxy());
+			assertTrue("Invalid proxy setting for collection field proxyDetail ", classDescriptor.getCollectionDescriptor("proxyCollection").isProxy());
 			
 		} catch (JcrMappingException e) {
 			e.printStackTrace();

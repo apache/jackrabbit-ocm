@@ -291,5 +291,52 @@ public class PersistenceManagerNtConcreteClassTest extends TestBase {
 		assertTrue("Invalid item in the collection", this.contains(result, "/folder2/subfolder",Folder.class));
 		
 	}
+	  
+	public void testBeanCollection() {
+		PersistenceManager persistenceManager = this.getPersistenceManager();
+
+		//---------------------------------------------------------------------------------------------------------
+		// Insert cmsobjects
+		//---------------------------------------------------------------------------------------------------------
+		 Folder folder = new Folder();		
+	     folder.setPath("/mainfolder");
+	     folder.setName("Main folder");        
 	    
+	     for (int i=1; i<=100;i++)
+	     {
+	         Document document = new Document();	        
+	         document.setName("document" + i);
+	         document.setContentType("plain/text"); 
+	         DocumentStream documentStream = new DocumentStream();
+	         documentStream.setEncoding("utf-8");
+	         documentStream.setContent("Test Content".getBytes());
+	         document.setDocumentStream(documentStream);
+	         folder.addChild(document);
+	         
+	         Folder subFolder = new Folder();
+	         subFolder.setName("folder" + i);
+	         subFolder.addChild(document);
+	         folder.addChild(subFolder);
+	         	    	 
+	     }
+	     log.debug("Save the folder and its 200 children");   
+	     persistenceManager.insert(folder);
+	     persistenceManager.save();
+	     log.debug("End - Save the folder and its 200 children");
+
+		//---------------------------------------------------------------------------------------------------------	
+		// Retrieve Folder
+		//---------------------------------------------------------------------------------------------------------			
+		folder  = (Folder) persistenceManager.getObject(Folder.class,"/mainfolder");
+		assertNotNull("Folder is null",folder);		
+		Collection children = folder.getChildren();
+		assertEquals("Invalid number of children", children.size(), 200);
+	     for (int i=1; i<=100;i++)
+	     {
+		     assertTrue("Invalid item in the collection : " +"/mainfolder/document" + i , this.contains(children, "/mainfolder/document" + i,Document.class));
+		    assertTrue("Invalid item in the collection : " + "/mainfolder/folder" + i, this.contains(children, "/mainfolder/folder" + i, Folder.class));
+	     }
+		
+	
+	}	
 }
