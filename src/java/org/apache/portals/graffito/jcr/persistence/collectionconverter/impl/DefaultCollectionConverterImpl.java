@@ -136,13 +136,14 @@ public class DefaultCollectionConverterImpl extends AbstractCollectionConverterI
                                  Node parentNode,
                                  CollectionDescriptor collectionDescriptor,
                                  ManageableCollection collection) throws RepositoryException {
-        String jcrName = getCollectionJcrName(collectionDescriptor);
-
-        if (collection == null) {
-            if (parentNode.hasNode(jcrName)) {
+        
+    	    String jcrName = getCollectionJcrName(collectionDescriptor);
+        if (collection == null)
+        {
+            if (parentNode.hasNode(jcrName)) 
+            {
                 parentNode.getNode(jcrName).remove();
             }
-
             return;
         }
 
@@ -213,7 +214,7 @@ public class DefaultCollectionConverterImpl extends AbstractCollectionConverterI
                                               Class collectionFieldClass) throws RepositoryException {
         String jcrName = getCollectionJcrName(collectionDescriptor);
 
-        if (!parentNode.hasNode(jcrName)) {
+        if (parentNode == null || !parentNode.hasNode(jcrName)) {
             return null;
         }
 
@@ -230,4 +231,19 @@ public class DefaultCollectionConverterImpl extends AbstractCollectionConverterI
 
         return collection;
     }
+    
+    /**
+     * @see AbstractCollectionConverterImpl#doIsNull(Session, Node, CollectionDescriptor, Class)
+     */
+    protected boolean doIsNull(Session session,
+                                              Node parentNode,
+                                              CollectionDescriptor collectionDescriptor,
+                                              Class collectionFieldClass) throws RepositoryException {
+        String jcrName = getCollectionJcrName(collectionDescriptor);
+
+        if (parentNode == null || !parentNode.hasNode(jcrName)) {
+            return true;
+        }
+        return false;
+    }    
 }

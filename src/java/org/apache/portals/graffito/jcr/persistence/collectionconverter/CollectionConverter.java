@@ -68,4 +68,20 @@ public interface CollectionConverter
 	public ManageableCollection getCollection(Session session, Node parentNode, 
 			                                  CollectionDescriptor collectionDescriptor, Class collectionFieldClass) throws PersistenceException;
 
+	
+	/**
+	 * Check if the collection is null. This method is mainly used in the Proxy manager to return a null value or a proxy object
+	 * Without proxy proxy, this method is never called. 
+	 * 
+	 * @param session The JCR session 
+	 * @param parentNode the node which contains the collection element
+	 * @param collectionDescriptor The collection descriptor
+	 * @param collectionFieldClass The collection class to used (ArrayList, Vector, ..) 
+	 * @return true if the collection contains elements.
+	 * 
+	 * 
+	 * @throws PersistenceException when it is not possible to retrieve the collection 
+	 */	
+	public boolean isNull(Session session, Node parentNode, 
+                                      CollectionDescriptor collectionDescriptor, Class collectionFieldClass) throws PersistenceException;
 }

@@ -16,6 +16,8 @@
  */
 package org.apache.portals.graffito.jcr.testmodel.proxy;
 
+import java.util.Collection;
+
 public class Main 
 {
 
@@ -23,6 +25,8 @@ public class Main
 	private Detail proxyDetail;
 	private Detail nullDetail; 
     private Detail detail;
+    private Collection proxyCollection;
+    private Collection nullProxyCollection;
 
      
 	public String getPath() {
@@ -56,7 +60,23 @@ public class Main
 	public void setNullDetail(Detail nullDetail) {
 		this.nullDetail = nullDetail;
 	}
-     
+
+	public Collection getProxyCollection() {
+		return proxyCollection;
+	}
+
+	public void setProxyCollection(Collection proxyCollection) {
+		this.proxyCollection = proxyCollection;
+	}
+
+	public Collection getNullProxyCollection() {
+		return nullProxyCollection;
+	}
+
+	public void setNullProxyCollection(Collection nullProxyCollection) {
+		this.nullProxyCollection = nullProxyCollection;
+	}
+	
 	
      
 }

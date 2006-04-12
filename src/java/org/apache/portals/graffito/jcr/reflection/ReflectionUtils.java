@@ -141,7 +141,7 @@ abstract public class ReflectionUtils {
     }
     
     public static boolean isProxy(Class beanClass)
-    {
+    {    	        	     
          return Enhancer.isEnhanced(beanClass);	
     }
     
@@ -155,4 +155,5 @@ abstract public class ReflectionUtils {
          }
          return beanClass;
     }
+    
 }

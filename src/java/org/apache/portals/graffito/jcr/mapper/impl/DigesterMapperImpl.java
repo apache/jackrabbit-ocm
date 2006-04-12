@@ -195,7 +195,7 @@ public class DigesterMapperImpl implements Mapper {
     /**
      * Validate all class descriptors.
      * This method validates the toplevel ancestors and after the descendants. 
-     * Otherwise, we can have invalid settings in the class descritpors
+     * Otherwise, we can have invalid settings in the class descriptors
      * @param errors all errors found during the validation process
      * @param classDescriptors the ancestor classdescriptors
      * @return

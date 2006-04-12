@@ -161,4 +161,19 @@ public class MultiValueCollectionConverterImpl extends AbstractCollectionConvert
                   vfe);
         }
     }
+    
+    /**
+     * @see AbstractCollectionConverterImpl#doIsNull(Session, Node, CollectionDescriptor, Class)
+     */
+    protected boolean doIsNull(Session session,
+                                              Node parentNode,
+                                              CollectionDescriptor collectionDescriptor,
+                                              Class collectionFieldClass) throws RepositoryException {
+        String jcrName = getCollectionJcrName(collectionDescriptor);
+
+         if (!parentNode.hasProperty(jcrName)) {
+            return true;
+        }
+        return false;
+    }     
 }

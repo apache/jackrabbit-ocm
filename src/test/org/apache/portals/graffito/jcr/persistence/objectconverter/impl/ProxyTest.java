@@ -16,6 +16,9 @@
  */
 package org.apache.portals.graffito.jcr.persistence.objectconverter.impl;
 
+import java.util.ArrayList;
+import java.util.Collection;
+
 import junit.framework.Test;
 import junit.framework.TestSuite;
 
@@ -80,7 +83,6 @@ public class ProxyTest extends TestBase {
 			//---------------------------------------------------------------------------------------------------------
 			// Retrieve the main object
 			//---------------------------------------------------------------------------------------------------------						
-
 			main = (Main) persistenceManager.getObject(Main.class, "/test");
 			assertNotNull("detail is null", main.getDetail());
 			assertTrue("Invalid detail bean", main.getDetail().getField().equals("FieldValue"));
@@ -129,9 +131,67 @@ public class ProxyTest extends TestBase {
 			e.printStackTrace();
 			fail();
 		}
-       
+
+		
 	}
 	
+	public void testCollectionProxy() {
+
+		try {
+			PersistenceManager persistenceManager = this.getPersistenceManager();
+
+			ArrayList  details= new ArrayList();
+			for(int i=1; i<=100;i++)
+			{
+				Detail detail = new Detail();
+				detail.setField("field" + i);				
+				details.add(detail);
+			}
+			
+			Main main = new Main();
+			main.setProxyCollection(details);
+			main.setPath("/test");							
+            persistenceManager.insert(main);
+			persistenceManager.save();
+			
+			
+			//---------------------------------------------------------------------------------------------------------
+			// Retrieve the main object
+			//---------------------------------------------------------------------------------------------------------						
+			main = (Main) persistenceManager.getObject(Main.class, "/test");
+			assertNotNull("main is null", main);
+
+            Collection result = main.getProxyCollection();
+            assertEquals("Invalide size", result.size(), 100);
+            assertNull("nullcollectionproxy  is not null", main.getNullProxyCollection());
+			
+			//---------------------------------------------------------------------------------------------------------
+			// Update  
+			//---------------------------------------------------------------------------------------------------------
+            
+            Detail detail = new Detail();
+			detail.setField("newFieldValue");			
+			result.add(detail);
+			main.setProxyCollection(result);
+			persistenceManager.update(main);
+			persistenceManager.save();
+
+			//---------------------------------------------------------------------------------------------------------
+			// Retrieve the main object
+			//---------------------------------------------------------------------------------------------------------						
+			main = (Main) persistenceManager.getObject(Main.class, "/test");
+			assertNotNull("main  is null", main);
+            assertEquals("Invalide size",main.getProxyCollection().size(), 101);
+            assertNull("nullcollectionproxy  is not null", main.getNullProxyCollection());
+            
+	
+		} catch (Exception e) {
+			e.printStackTrace();
+			fail();
+		}
+
+		
+	}
 
 
 
