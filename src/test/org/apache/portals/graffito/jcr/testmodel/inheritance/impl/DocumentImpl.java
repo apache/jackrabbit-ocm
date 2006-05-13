@@ -13,11 +13,12 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.apache.portals.graffito.jcr.testmodel.inheritance;
+package org.apache.portals.graffito.jcr.testmodel.inheritance.impl;
 
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.apache.portals.graffito.jcr.testmodel.interfaces.Document;
 
 /**
  * CMS VersionnedDocument implementation.
@@ -25,9 +26,9 @@ import org.apache.commons.logging.LogFactory;
  * @author <a href="mailto:christophe.lombart@sword-technologies.com">Christophe Lombart</a>
  * 
  */
-public class Document extends Content
+public class DocumentImpl extends ContentImpl implements Document
 {
-    protected final static Log log =  LogFactory.getLog(Document.class);
+    protected final static Log log =  LogFactory.getLog(DocumentImpl.class);
     
     protected long size;
     protected String contentType;   
@@ -35,45 +36,49 @@ public class Document extends Content
     protected DocumentStream documentStream;
 
 
-    /** 
-     * @see org.apache.portals.graffito.model.Document#getContentType()
-     */
+    /* (non-Javadoc)
+	 * @see org.apache.portals.graffito.jcr.testmodel.inheritance.impl.Document#getContentType()
+	 */
     public String getContentType()
     {
         return this.contentType;
     }
 
-    /**
-     * @see org.apache.portals.graffito.model.Document#setContentType(java.lang.String)
-     */
+    /* (non-Javadoc)
+	 * @see org.apache.portals.graffito.jcr.testmodel.inheritance.impl.Document#setContentType(java.lang.String)
+	 */
     public void setContentType(String contentType)
     {
         this.contentType = contentType;
     }
 
 
-    /**
-     * 
-     * @see org.apache.portals.graffito.model.Document#getSize()
-     */
+    /* (non-Javadoc)
+	 * @see org.apache.portals.graffito.jcr.testmodel.inheritance.impl.Document#getSize()
+	 */
     public long getSize()
     {
         return size;
     }
 
-    /**
-     * 
-     * @see org.apache.portals.graffito.model.Document#setSize(long)
-     */
+    /* (non-Javadoc)
+	 * @see org.apache.portals.graffito.jcr.testmodel.inheritance.impl.Document#setSize(long)
+	 */
     public void setSize(long size)
     {
         this.size = size;
     }
 
+	/* (non-Javadoc)
+	 * @see org.apache.portals.graffito.jcr.testmodel.inheritance.impl.Document#getDocumentStream()
+	 */
 	public DocumentStream getDocumentStream() {
 		return documentStream;
 	}
 
+	/* (non-Javadoc)
+	 * @see org.apache.portals.graffito.jcr.testmodel.inheritance.impl.Document#setDocumentStream(org.apache.portals.graffito.jcr.testmodel.inheritance.impl.DocumentStream)
+	 */
 	public void setDocumentStream(DocumentStream documentStream) {
 		this.documentStream = documentStream;
 	}

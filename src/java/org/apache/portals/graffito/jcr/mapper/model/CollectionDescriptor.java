@@ -105,7 +105,7 @@ public class CollectionDescriptor
      * 
      * @return The collection converter class name 
      */
-    public String getCollectionConverterClassName()
+    public String getCollectionConverter()
     {
         return collectionConverterClassName;
     }
@@ -114,7 +114,7 @@ public class CollectionDescriptor
      * Set the collection converter class name
      * @param collectionConverterClassName The converter to set
      */
-    public void setCollectionConverterClassName(String collectionConverterClassName)
+    public void setCollectionConverter(String collectionConverterClassName)
     {
         this.collectionConverterClassName = collectionConverterClassName;
     }

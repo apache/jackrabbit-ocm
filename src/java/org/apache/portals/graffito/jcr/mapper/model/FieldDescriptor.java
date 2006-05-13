@@ -38,7 +38,7 @@ public class FieldDescriptor {
     private ClassDescriptor classDescriptor;
     private boolean id;
     private boolean path;
-    private boolean discriminator;
+   
 
     /**
      * @return Returns the fieldName.
@@ -241,14 +241,6 @@ public class FieldDescriptor {
      */
     public void setJcrMultiple(boolean value) {
         this.jcrMultiple = value;
-    }
-
-    public void setDiscriminator(boolean value) {
-        this.discriminator = value;
-    }
-
-    public boolean isDiscriminator() {
-        return this.discriminator;
     }
 
     /**

@@ -28,21 +28,26 @@
     * jcrSuperTypes : the jcr super types, optional
     * jcrMixinTypes: the jcr mixin types (comma separated list) (optional)
     * extends: name of super class (optional)
-    * extends-strategy:
-    * polymorphism: specify the behavior of this class in queries; default implicit
     * abstract: true if this class is abstract and it is used in hierarchy mappings
-    * discriminator-value: use only when extends-strategy="concreteclass" and abstract="false"
+    * discriminator true if the mapped node  requires  an graffito:discriminator node type. This type contains a classname property.
 -->
-<!ELEMENT class-descriptor (field-descriptor*, bean-descriptor*, collection-descriptor*)>
+<!ELEMENT class-descriptor (implement-descriptor*, field-descriptor*, bean-descriptor*, collection-descriptor*)>
 
 <!ATTLIST class-descriptor
 	className CDATA #REQUIRED
 	jcrNodeType CDATA #IMPLIED
     jcrSuperTypes CDATA #IMPLIED
     jcrMixinTypes CDATA #IMPLIED
-    extends CDATA #IMPLIED
+    extend CDATA #IMPLIED
 	abstract (true|false) "false"
-	discriminatorValue CDATA #IMPLIED
+	interface (true|false) "false"
+	discriminator (true|false) "true"
+>
+
+<!ELEMENT implement-descriptor EMPTY>
+
+<!ATTLIST implement-descriptor
+	interfaceName CDATA #REQUIRED
 >
 
 <!--
@@ -67,7 +72,6 @@
 	jcrName CDATA #IMPLIED 
 	id (true | false) "false"
 	path (true | false) "false"
-	discriminator (true | false) "false"
     jcrType (String | Date | Long | Double | Boolean | Binary) #IMPLIED
     jcrAutoCreated (true | false) "false"
     jcrMandatory (true | false) "false"

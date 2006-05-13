@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.apache.portals.graffito.jcr.testmodel.inheritance;
+package org.apache.portals.graffito.jcr.testmodel.inheritance.impl;
 
 
 import java.io.ByteArrayInputStream;

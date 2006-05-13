@@ -3,34 +3,58 @@
 <!DOCTYPE graffito-jcr PUBLIC "-//The Apache Software Foundation//DTD Repository//EN" "./src/dtd/graffito-jcr-mapping.dtd">
 <graffito-jcr>    
 
-     <!--  MAPPING USED TO TEST NODE TYPE PER HIERARCHY  -->
+     <!--MAPPING USED TO TEST INTERFACES WITHOUT NODE TYPE   -->	
+
+	<class-descriptor className="org.apache.portals.graffito.jcr.testmodel.interfaces.Interface"  interface="true"  />
+	
+	<class-descriptor className="org.apache.portals.graffito.jcr.testmodel.interfaces.AnotherInterface"  interface="true" />
+
+     <!--MAPPING USED TO TEST INTERFACES WITH NODE TYPE   -->	
+	<class-descriptor className="org.apache.portals.graffito.jcr.testmodel.interfaces.CmsObject"  interface="true" discriminator="false"
+	                                   jcrNodeType="graffito:cmsobject" />
+
+	<class-descriptor className="org.apache.portals.graffito.jcr.testmodel.interfaces.Folder"  interface="true" discriminator="false" 
+	                                   extend="org.apache.portals.graffito.jcr.testmodel.interfaces.CmsObject"  jcrNodeType="graffito:folder" />
+
+	<class-descriptor className="org.apache.portals.graffito.jcr.testmodel.interfaces.Content"  interface="true" discriminator="false" 
+	                                   extend="org.apache.portals.graffito.jcr.testmodel.interfaces.CmsObject"  jcrNodeType="graffito:content"  />
+	                                   
+	<class-descriptor className="org.apache.portals.graffito.jcr.testmodel.interfaces.Document"  interface="true" discriminator="false" 
+	                                   extend="org.apache.portals.graffito.jcr.testmodel.interfaces.Content"  jcrNodeType="graffito:document"  />
+	                                   
+	                                   
+     <!--  MAPPING USED TO TEST NODE TYPE PER HIERARCHY  -->	
      
-	<class-descriptor className="org.apache.portals.graffito.jcr.testmodel.inheritance.Ancestor" jcrNodeType="nt:unstructured"  abstract="true" >
+	<class-descriptor className="org.apache.portals.graffito.jcr.testmodel.inheritance.Ancestor"  abstract="true" >
 		<field-descriptor fieldName="path" path="true" />
 		<field-descriptor fieldName="ancestorField" jcrName="ancestorField" />
-		<field-descriptor fieldName="discriminator" jcrName="discriminator" discriminator="true"  />
 	</class-descriptor>
 
-	<class-descriptor className="org.apache.portals.graffito.jcr.testmodel.inheritance.Descendant" jcrNodeType="nt:unstructured" 
-	                                   extends="org.apache.portals.graffito.jcr.testmodel.inheritance.Ancestor" >
+	<class-descriptor className="org.apache.portals.graffito.jcr.testmodel.inheritance.Descendant" 
+	                                   extend="org.apache.portals.graffito.jcr.testmodel.inheritance.Ancestor">
+	    <implement-descriptor interfaceName="org.apache.portals.graffito.jcr.testmodel.interfaces.AnotherInterface" />
 		<field-descriptor fieldName="descendantField" jcrName="descendantField" />  
 	</class-descriptor >
 
-	<class-descriptor className="org.apache.portals.graffito.jcr.testmodel.inheritance.AnotherDescendant" jcrNodeType="nt:unstructured" 
-	                                   extends="org.apache.portals.graffito.jcr.testmodel.inheritance.Ancestor"  >                               
+	<class-descriptor className="org.apache.portals.graffito.jcr.testmodel.inheritance.AnotherDescendant" 
+	                                   extend="org.apache.portals.graffito.jcr.testmodel.inheritance.Ancestor"  >
+	    <implement-descriptor interfaceName="org.apache.portals.graffito.jcr.testmodel.interfaces.Interface" />	                                   
 		<field-descriptor fieldName="anotherDescendantField" jcrName="anotherDescendantField" />  
 
 	</class-descriptor>
 
-	<class-descriptor className="org.apache.portals.graffito.jcr.testmodel.inheritance.SubDescendant" jcrNodeType="nt:unstructured" 
-	                                   extends="org.apache.portals.graffito.jcr.testmodel.inheritance.Descendant"  >                               
+	<class-descriptor className="org.apache.portals.graffito.jcr.testmodel.inheritance.SubDescendant" 
+	                                   extend="org.apache.portals.graffito.jcr.testmodel.inheritance.Descendant"  >                               
 		<field-descriptor fieldName="subDescendantField" jcrName="subDescendantField" />  
 
 	</class-descriptor>
 	
      <!--  MAPPING USED TO TEST NODE TYPE PER CONCRETE CLASS  -->	
 
-	<class-descriptor className="org.apache.portals.graffito.jcr.testmodel.inheritance.CmsObject" jcrNodeType="graffito:cmsobject"  abstract="true" >
+	<class-descriptor className="org.apache.portals.graffito.jcr.testmodel.inheritance.impl.CmsObjectImpl" jcrNodeType="graffito:cmsobjectimpl"  
+	                                   discriminator="false" abstract="true" >
+		<implement-descriptor interfaceName="org.apache.portals.graffito.jcr.testmodel.interfaces.CmsObject" />	  	                                    
+		
 		<field-descriptor fieldName="path" path="true" />
 		<field-descriptor fieldName="name" jcrName="graffito:name" id="true" />
 		<!--  bean-descriptor  fieldName="parentFolder" 						 
@@ -38,25 +62,28 @@
 
 	</class-descriptor>     
 
-	<class-descriptor className="org.apache.portals.graffito.jcr.testmodel.inheritance.Folder" jcrNodeType="graffito:folder" 
-	                                   extends="org.apache.portals.graffito.jcr.testmodel.inheritance.CmsObject" >
+	<class-descriptor className="org.apache.portals.graffito.jcr.testmodel.inheritance.impl.FolderImpl" jcrNodeType="graffito:folderimpl" 
+	                                    extend="org.apache.portals.graffito.jcr.testmodel.inheritance.impl.CmsObjectImpl" >
+		<implement-descriptor interfaceName="org.apache.portals.graffito.jcr.testmodel.interfaces.Folder" />	  		                                    
 		<collection-descriptor fieldName="children" proxy="true" 
-		                       elementClassName="org.apache.portals.graffito.jcr.testmodel.inheritance.CmsObject" 
+		                       elementClassName="org.apache.portals.graffito.jcr.testmodel.inheritance.impl.CmsObjectImpl" 
 		                       collectionConverter="org.apache.portals.graffito.jcr.persistence.collectionconverter.impl.NTCollectionConverterImpl" />
 	</class-descriptor >	
 
-	<class-descriptor className="org.apache.portals.graffito.jcr.testmodel.inheritance.Content" jcrNodeType="graffito:content" abstract="true"
-	                                   extends="org.apache.portals.graffito.jcr.testmodel.inheritance.CmsObject" >
+	<class-descriptor className="org.apache.portals.graffito.jcr.testmodel.inheritance.impl.ContentImpl" jcrNodeType="graffito:contentimpl" abstract="true"
+	                                   extend="org.apache.portals.graffito.jcr.testmodel.inheritance.impl.CmsObjectImpl" >
+       		<implement-descriptor interfaceName="org.apache.portals.graffito.jcr.testmodel.interfaces.Content" />	  		                                    
 	</class-descriptor>	
 		
-	<class-descriptor className="org.apache.portals.graffito.jcr.testmodel.inheritance.Document" jcrNodeType="graffito:document" 
-	                                   extends="org.apache.portals.graffito.jcr.testmodel.inheritance.Content" >
+	<class-descriptor className="org.apache.portals.graffito.jcr.testmodel.inheritance.impl.DocumentImpl" jcrNodeType="graffito:documentimpl" 
+	                                    extend="org.apache.portals.graffito.jcr.testmodel.inheritance.impl.ContentImpl" >
+		<implement-descriptor interfaceName="org.apache.portals.graffito.jcr.testmodel.interfaces.Document" />	  		                                    	                                    
 		<field-descriptor fieldName="contentType" jcrName="graffito:contenttype" />  
 		<field-descriptor fieldName="size" jcrName="graffito:size" />  	
 		<bean-descriptor fieldName="documentStream" jcrName="graffito:documentstream" proxy="true"  />			
 	</class-descriptor >	
 
-	<class-descriptor className="org.apache.portals.graffito.jcr.testmodel.inheritance.DocumentStream" jcrNodeType="graffito:documentstream"  >
+	<class-descriptor className="org.apache.portals.graffito.jcr.testmodel.inheritance.impl.DocumentStream" jcrNodeType="graffito:documentstream"  >
 		<field-descriptor fieldName="path" path="true" />
 		<field-descriptor fieldName="encoding" jcrName="graffito:encoding" />
 		<field-descriptor fieldName="content" jcrName="graffito:binarycontent" />

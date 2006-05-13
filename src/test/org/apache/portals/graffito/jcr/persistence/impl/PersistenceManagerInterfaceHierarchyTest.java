@@ -30,24 +30,25 @@ import org.apache.portals.graffito.jcr.query.Filter;
 import org.apache.portals.graffito.jcr.query.Query;
 import org.apache.portals.graffito.jcr.query.QueryManager;
 import org.apache.portals.graffito.jcr.testmodel.Atomic;
-import org.apache.portals.graffito.jcr.testmodel.inheritance.Ancestor;
 import org.apache.portals.graffito.jcr.testmodel.inheritance.AnotherDescendant;
 import org.apache.portals.graffito.jcr.testmodel.inheritance.Descendant;
 import org.apache.portals.graffito.jcr.testmodel.inheritance.SubDescendant;
+import org.apache.portals.graffito.jcr.testmodel.interfaces.AnotherInterface;
+import org.apache.portals.graffito.jcr.testmodel.interfaces.Interface;
 
 /**
- * Test inheritance with node type per hierarchy stategy (with discreminator field)
+ * Test interface (with discreminator field)
  *
  * @author <a href="mailto:christophe.lombart@gmail.com">Christophe Lombart</a>
  */
-public class PersistenceManagerNtHierarchyTest extends TestBase {
-	private final static Log log = LogFactory.getLog(PersistenceManagerNtHierarchyTest.class);
+public class PersistenceManagerInterfaceHierarchyTest extends TestBase {
+	private final static Log log = LogFactory.getLog(PersistenceManagerInterfaceHierarchyTest.class);
 
 	/**
 	 * <p>Defines the test case name for junit.</p>
 	 * @param testName The test case name.
 	 */
-	public PersistenceManagerNtHierarchyTest(String testName) throws Exception {
+	public PersistenceManagerInterfaceHierarchyTest(String testName) throws Exception {
 		super(testName);
 
 	}
@@ -55,7 +56,7 @@ public class PersistenceManagerNtHierarchyTest extends TestBase {
 	public static Test suite() {
 		// All methods starting with "test" will be executed in the test suite.
 		return new RepositoryLifecycleTestSetup(new TestSuite(
-				PersistenceManagerNtHierarchyTest.class));
+				PersistenceManagerInterfaceHierarchyTest.class));
 	}
 
 	public void tearDown() throws Exception {
@@ -72,57 +73,37 @@ public class PersistenceManagerNtHierarchyTest extends TestBase {
 			PersistenceManager persistenceManager = this.getPersistenceManager();
 
 			//---------------------------------------------------------------------------------------------------------
-			// Insert a descendant object
+			// Insert 
 			//---------------------------------------------------------------------------------------------------------			
-			Descendant descendant = new Descendant();
-			descendant.setDescendantField("descendantValue");
-			descendant.setAncestorField("ancestorValue");
-			descendant.setPath("/test");
-			persistenceManager.insert(descendant);
+			AnotherDescendant  anotherDescendant = new AnotherDescendant();
+			anotherDescendant.setAnotherDescendantField("anotherDescendantValue");
+			anotherDescendant.setAncestorField("ancestorValue");
+			anotherDescendant.setPath("/test");
+			persistenceManager.insert(anotherDescendant);
+
 			persistenceManager.save();
 
 			//---------------------------------------------------------------------------------------------------------
-			// Retrieve a descendant object
+			// Retrieve 
 			//---------------------------------------------------------------------------------------------------------						
-			descendant = null;
-			descendant = (Descendant) persistenceManager.getObject(	Descendant.class, "/test");
-			assertEquals("Descendant path is invalid", descendant.getPath(), "/test");
-			assertEquals("Descendant ancestorField is invalid", descendant.getAncestorField(), "ancestorValue");
-			assertEquals("Descendant descendantField is invalid", descendant	.getDescendantField(), "descendantValue");
-
-			//---------------------------------------------------------------------------------------------------------
-			// Update  a descendant object
-			//---------------------------------------------------------------------------------------------------------						
-			descendant.setAncestorField("anotherAncestorValue");
-			persistenceManager.update(descendant);
-			persistenceManager.save();
-
-			//---------------------------------------------------------------------------------------------------------
-			// Retrieve the updated descendant object
-			//---------------------------------------------------------------------------------------------------------						
-			descendant = null;
-			descendant = (Descendant) persistenceManager.getObject(	Descendant.class, "/test");
-			assertEquals("Descendant path is invalid", descendant.getPath(), "/test");
-			assertEquals("Descendant ancestorField is invalid", descendant.getAncestorField(), "anotherAncestorValue");
-			assertEquals("Descendant descendantField is invalid", descendant	.getDescendantField(), "descendantValue");
-
-
-
-			Ancestor ancestor = (Ancestor) persistenceManager.getObject(Ancestor.class,"/test");
-			assertTrue("Invalid object instance", ancestor instanceof Descendant );
-			assertEquals("Ancestor  path is invalid", ancestor.getPath(), "/test");
-			assertEquals("Ancestor ancestorField is invalid", ancestor.getAncestorField(), "anotherAncestorValue");
+			Interface result =  (Interface) persistenceManager.getObject(Interface.class, "/test");
+			assertNotNull("Object is null", result);
+			anotherDescendant = (AnotherDescendant) result; 
 			
-			
+			assertEquals("Descendant path is invalid", anotherDescendant.getPath(), "/test");
+			assertEquals("Descendant ancestorField is invalid", anotherDescendant.getAncestorField(), "ancestorValue");
+			assertEquals("Descendant descendantField is invalid", anotherDescendant	.getAnotherDescendantField(), "anotherDescendantValue");
+
 		} catch (Exception e) {
 			e.printStackTrace();
 			fail();
 		}
 
 	}
-
+	
 	
 	public void testRetrieveCollection() {
+		
 		PersistenceManager persistenceManager = this.getPersistenceManager();
 
 		//---------------------------------------------------------------------------------------------------------	
@@ -182,64 +163,33 @@ public class PersistenceManagerNtHierarchyTest extends TestBase {
 		persistenceManager.save();
 
 		//---------------------------------------------------------------------------------------------------------	
-		// Retrieve Descendant class
+		// Retrieve Descendant class (implements  Interface.class)
 		//---------------------------------------------------------------------------------------------------------			
 		QueryManager queryManager = persistenceManager.getQueryManager();
-		Filter filter = queryManager.createFilter(Descendant.class);
+		Filter filter = queryManager.createFilter(Interface.class);
 		Query query = queryManager.createQuery(filter);
 
 		Collection result = persistenceManager.getObjects(query);
-		assertEquals("Invalid number of Descendant found", result.size(), 4);
-		assertTrue("Invalid item in the collection", this.contains(result, "/descendant1", Descendant.class));
-		assertTrue("Invalid item in the collection", this.contains(result, "/descendant2", Descendant.class));
-		assertTrue("Invalid item in the collection", this.contains(result, "/subdescendant", SubDescendant.class));
-		assertTrue("Invalid item in the collection", this.contains(result, "/subdescendant2", SubDescendant.class));
+		assertEquals("Invalid number of  interface  found", result.size(),3);
+		assertTrue("Invalid item in the collection", this.contains(result, "/anotherdescendant1", AnotherDescendant.class));
+		assertTrue("Invalid item in the collection", this.contains(result, "/anotherdescendant2", AnotherDescendant.class));
+		assertTrue("Invalid item in the collection", this.contains(result, "/anotherdescendant3", AnotherDescendant.class));
 		
 
 		//---------------------------------------------------------------------------------------------------------	
-		// Retrieve AnotherDescendant class
+		// Retrieve Descendant class and its children (implements  AnotherInterface.class)
 		//---------------------------------------------------------------------------------------------------------			
-		queryManager = persistenceManager.getQueryManager();
-		filter = queryManager.createFilter(AnotherDescendant.class);
-		filter.addEqualTo("anotherDescendantField", "anotherDescendantValue");
+	    queryManager = persistenceManager.getQueryManager();
+		filter = queryManager.createFilter(AnotherInterface.class);
 		query = queryManager.createQuery(filter);
 
 		result = persistenceManager.getObjects(query);
-		assertEquals("Invalid number of AnotherDescendant found", result.size(),2);
-		assertTrue("Invalid item in the collection", this.contains(result, "/anotherdescendant1", AnotherDescendant.class));
-		assertTrue("Invalid item in the collection", this.contains(result, "/anotherdescendant2", AnotherDescendant.class));
-
-		//---------------------------------------------------------------------------------------------------------	
-		// Retrieve some descendants & subdescendants
-		//---------------------------------------------------------------------------------------------------------			
-		queryManager = persistenceManager.getQueryManager();
-		filter = queryManager.createFilter(Descendant.class);		
-		filter.addEqualTo("descendantField","descendantValue2");
-		query = queryManager.createQuery(filter);
-
-		result = persistenceManager.getObjects(query);
-		assertEquals("Invalid ancestor object found", result.size(),2);
-		assertTrue("Invalid item in the collection", this.contains(result, "/descendant2", Descendant.class));
-		assertTrue("Invalid item in the collection", this.contains(result, "/subdescendant", SubDescendant.class));
-		
-		//---------------------------------------------------------------------------------------------------------	
-		// Retrieve all class
-		//---------------------------------------------------------------------------------------------------------			
-		queryManager = persistenceManager.getQueryManager();
-		filter = queryManager.createFilter(Ancestor.class);		
-		query = queryManager.createQuery(filter);
-
-		result = persistenceManager.getObjects(query);
-		assertEquals("Invalid ancestor object found", result.size(),7);
+		assertEquals("Invalid number of  interface  found", result.size(),4);
 		assertTrue("Invalid item in the collection", this.contains(result, "/descendant1", Descendant.class));
 		assertTrue("Invalid item in the collection", this.contains(result, "/descendant2", Descendant.class));
-		assertTrue("Invalid item in the collection", this.contains(result, "/subdescendant", SubDescendant.class));
-		assertTrue("Invalid item in the collection", this.contains(result, "/subdescendant2", SubDescendant.class));
-		assertTrue("Invalid item in the collection", this.contains(result, "/anotherdescendant1", AnotherDescendant.class));
-		assertTrue("Invalid item in the collection", this.contains(result, "/anotherdescendant2", AnotherDescendant.class));
-		assertTrue("Invalid item in the collection", this.contains(result, "/anotherdescendant3", AnotherDescendant.class));		
+		assertTrue("Invalid item in the collection", this.contains(result, "/subdescendant",SubDescendant.class));		
+		assertTrue("Invalid item in the collection", this.contains(result, "/subdescendant2",SubDescendant.class));
 
- 
 	}
-	    
+	
 }

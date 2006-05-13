@@ -1,5 +1,5 @@
 /*
- * Copyright 2000-2004 The Apache Software Foundation.
+ * Copyright 2000-2005 The Apache Software Foundation.
  * 
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,26 +13,22 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.apache.portals.graffito.jcr.testmodel.inheritance;
+package org.apache.portals.graffito.jcr.persistence;
 
-import org.apache.portals.graffito.jcr.testmodel.interfaces.AnotherInterface;
 
-public class Descendant extends Ancestor implements AnotherInterface {
 
-	protected String descendantField;
-
+/**
+ *  
+ * General Persistence Constants use in several classes
+ * 
+ * @author <a href="mailto:christophe.lombart@gmail.com">Lombart Christophe </a>
+ * 
+ */
+public interface PersistenceConstant
+{
+	public static final String NT_UNSTRUCTURED = "nt:unstructured";    
+	public static final String DISCRIMINATOR_NODE_TYPE = "graffito:discriminator";
+	public static final String DISCRIMINATOR_PROPERTY_NAME = "graffito:classname"; 
 	
-
-	public String getDescendantField() {
-		return descendantField;
-	}
-
-	public void setDescendantField(String descendantField) {
-		this.descendantField = descendantField;
-	}
-
-
-	
-	
-
+        
 }

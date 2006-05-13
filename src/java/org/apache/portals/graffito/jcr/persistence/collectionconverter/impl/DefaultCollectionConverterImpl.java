@@ -100,7 +100,7 @@ public class DefaultCollectionConverterImpl extends AbstractCollectionConverterI
         if (jcrName == null) {
             throw new JcrMappingException(
                     "The JcrName attribute is not defined for the CollectionDescriptor : "
-                    + collectionDescriptor.getFieldName());
+                    + collectionDescriptor.getFieldName() + " for the classdescriptor : " + collectionDescriptor.getClassDescriptor().getClassName());
         }
 
         Node collectionNode = parentNode.addNode(jcrName);

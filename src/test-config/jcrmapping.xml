@@ -53,14 +53,14 @@
 
 	</class-descriptor>
 
-	<class-descriptor className="org.apache.portals.graffito.jcr.testmodel.C" jcrNodeType="graffito:C">
+	<class-descriptor className="org.apache.portals.graffito.jcr.testmodel.C" jcrNodeType="graffito:C" discriminator="false" >
 		<!-- Field-descriptor is used to map simple attributes to jcr property -->
 		<field-descriptor fieldName="id" jcrName="graffito:id" 	id="true" />
 		<field-descriptor fieldName="name" jcrName="graffito:name" />
 	</class-descriptor>
 
 
-	<class-descriptor className="org.apache.portals.graffito.jcr.testmodel.Page" jcrNodeType="graffito:page">
+	<class-descriptor className="org.apache.portals.graffito.jcr.testmodel.Page" jcrNodeType="graffito:page" discriminator="false" >
 		<field-descriptor fieldName="path" path="true" />
 		<field-descriptor fieldName="title" jcrName="graffito:title" />
 		<collection-descriptor fieldName="paragraphs" proxy="false" 
@@ -68,23 +68,23 @@
 		                       collectionConverter="org.apache.portals.graffito.jcr.persistence.collectionconverter.impl.NTCollectionConverterImpl" />
 	</class-descriptor>
 
-	<class-descriptor className="org.apache.portals.graffito.jcr.testmodel.Paragraph" jcrNodeType="graffito:paragraph">
+	<class-descriptor className="org.apache.portals.graffito.jcr.testmodel.Paragraph" jcrNodeType="graffito:paragraph" discriminator="false" >
 		<field-descriptor fieldName="path" path="true" />
 		<field-descriptor fieldName="text" jcrName="graffito:text"/>
 	</class-descriptor>
 
 
-	<class-descriptor className="org.apache.portals.graffito.jcr.testmodel.hashmap.Main" jcrNodeType="nt:unstructured">
+	<class-descriptor className="org.apache.portals.graffito.jcr.testmodel.hashmap.Main" jcrNodeType="nt:unstructured" discriminator="false" >
 		<field-descriptor fieldName="path" path="true" />
 		<field-descriptor fieldName="text" jcrName="text" />
-		<collection-descriptor fieldName="elements" proxy="false" 
+		<collection-descriptor fieldName="elements"  proxy="false" 
 		                       elementClassName="org.apache.portals.graffito.jcr.testmodel.hashmap.Element" 
 		                       collectionConverter="org.apache.portals.graffito.jcr.persistence.collectionconverter.impl.NTCollectionConverterImpl" 
 		                       collectionClassName="org.apache.portals.graffito.jcr.testmodel.hashmap.HashMapElement" />
 		                       
 	</class-descriptor>
 
-	<class-descriptor className="org.apache.portals.graffito.jcr.testmodel.hashmap.Element" jcrNodeType="graffito:element">
+	<class-descriptor className="org.apache.portals.graffito.jcr.testmodel.hashmap.Element" jcrNodeType="graffito:element" discriminator="false" >
 		<field-descriptor fieldName="id" jcrName="graffito:id"  />
 		<field-descriptor fieldName="text" jcrName="graffito:text" />
 	</class-descriptor>

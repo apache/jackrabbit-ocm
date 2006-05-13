@@ -15,7 +15,9 @@
  */
 package org.apache.portals.graffito.jcr.testmodel.inheritance;
 
-public class AnotherDescendant extends Ancestor {
+import org.apache.portals.graffito.jcr.testmodel.interfaces.Interface;
+
+public class AnotherDescendant extends Ancestor implements Interface{
 
 	protected String anotherDescendantField;
 

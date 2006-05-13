@@ -23,13 +23,14 @@ import java.util.Map;
 import org.apache.portals.graffito.jcr.mapper.Mapper;
 import org.apache.portals.graffito.jcr.mapper.model.ClassDescriptor;
 import org.apache.portals.graffito.jcr.mapper.model.FieldDescriptor;
+import org.apache.portals.graffito.jcr.persistence.PersistenceConstant;
 import org.apache.portals.graffito.jcr.query.Filter;
 import org.apache.portals.graffito.jcr.query.Query;
 import org.apache.portals.graffito.jcr.query.QueryManager;
 
 public class QueryManagerImpl implements QueryManager {
-
-    private Mapper mapper;
+    
+	private Mapper mapper;
     private Map atomicTypeConverters;
 
     public QueryManagerImpl(Mapper mapper, Map atomicTypeConverters) {
@@ -53,7 +54,7 @@ public class QueryManagerImpl implements QueryManager {
 
         // Check if the class has  an inheritance discriminator field
         ClassDescriptor classDescriptor = mapper.getClassDescriptor(filter.getFilterClass());
-        if (classDescriptor.hasDiscriminatorField()) {
+        if (classDescriptor.hasDiscriminator()) {
             Filter discrininatorFilter = buildDiscriminatorFilter(query, classDescriptor);
             filter = filter.addAndFilter(discrininatorFilter);
         }
@@ -88,10 +89,8 @@ public class QueryManagerImpl implements QueryManager {
 
     private Filter buildDiscriminatorFilter(Query query, ClassDescriptor classDescriptor) {
         Filter discriminatorFilter = this.createFilter(query.getFilter().getFilterClass());
-        if (!classDescriptor.isAbstract()) {
-            FieldDescriptor fieldDescriptor = classDescriptor.getDiscriminatorFieldDescriptor();
-            discriminatorFilter.addEqualTo(fieldDescriptor.getFieldName(),
-                                           classDescriptor.getClassName());
+        if (!classDescriptor.isAbstract() && (! classDescriptor.isInterface()) ) {        
+            discriminatorFilter.addJCRExpression("@" + PersistenceConstant.DISCRIMINATOR_PROPERTY_NAME + "='" +    classDescriptor.getClassName() + "'");
         }
 
         if (classDescriptor.hasDescendants()) {
@@ -113,7 +112,15 @@ public class QueryManagerImpl implements QueryManager {
     private String getNodeType(Filter filter) {
         ClassDescriptor classDescriptor = mapper.getClassDescriptor(filter.getFilterClass());
 
-        return classDescriptor.getJcrNodeType();
+        String jcrNodeType = classDescriptor.getJcrNodeType();
+        if (jcrNodeType == null || jcrNodeType.equals(""))
+        	{
+           return PersistenceConstant.NT_UNSTRUCTURED;	
+        	}
+        else
+        {
+           return jcrNodeType;	
+        }
     }
 
 }

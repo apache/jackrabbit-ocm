@@ -13,36 +13,16 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.apache.portals.graffito.jcr.testmodel.inheritance;
+package org.apache.portals.graffito.jcr.testmodel.interfaces;
 
-import java.util.ArrayList;
 import java.util.List;
 
+public interface Folder  extends CmsObject{
 
+	public List getChildren();
 
+	public void setChildren(List children);
 
-/**
- * CMS Folder Test
- *
- * @author <a href="mailto:christophe.lombart@gmail.com">Christophe Lombart</a>
- * @version $Id: Folder.java,v 1.1 2004/12/22 20:36:59 christophe Exp $
- */
-public class Folder extends CmsObject 
-{
+	public void addChild(CmsObject child);
 
-    protected List children = new ArrayList();
-
-	public List getChildren() {
-		return children;
-	}
-
-	public void setChildren(List children) {
-		this.children = children;
-	}
-    
-    public void addChild(CmsObject child)
-    {
-    	    children.add(child);
-    }
 }
-
