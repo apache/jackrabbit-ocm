@@ -13,7 +13,9 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.apache.portals.graffito.jcr.testmodel.inheritance;
+package org.apache.portals.graffito.jcr.testmodel.inheritance.impl;
+
+import org.apache.portals.graffito.jcr.testmodel.interfaces.Content;
 
 
 
@@ -25,7 +27,7 @@ package org.apache.portals.graffito.jcr.testmodel.inheritance;
  * @author <a href="mailto:christophe.lombart@gmail.com">Christophe Lombart</a>
  * 
  */
-public abstract class Content  extends CmsObject
+public abstract class ContentImpl  extends CmsObjectImpl implements Content
 {
 }
 

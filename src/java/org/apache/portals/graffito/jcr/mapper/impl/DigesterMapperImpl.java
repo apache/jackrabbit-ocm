@@ -170,23 +170,53 @@ public class DigesterMapperImpl implements Mapper {
             Map.Entry entry = (Map.Entry) it.next();
             ClassDescriptor cd = (ClassDescriptor) entry.getValue();
 
-            if (null != cd.getSuperClass() && !"".equals(cd.getSuperClass())) {
-                ClassDescriptor superClassDescriptor = this.mappingDescriptor.getClassDescriptor(cd.getSuperClass());
+            if (null != cd.getExtend() && !"".equals(cd.getExtend())) 
+            {
+                ClassDescriptor superClassDescriptor = this.mappingDescriptor.getClassDescriptor(cd.getExtend());
 
-                if (null == superClassDescriptor) {
+                if (null == superClassDescriptor) 
+                {
                     errors.add("Cannot find mapping for class "
-                            + cd.getSuperClass()
+                            + cd.getExtend()
                             + " referenced as extends from "
                             + cd.getClassName());
                 }
-                else {
-            	    log.debug("Class " +cd.getClassName() +  " extends " + cd.getSuperClass());
+                else 
+                {
+            	       log.debug("Class " +cd.getClassName() +  " extends " + cd.getExtend());
                     cd.setSuperClassDescriptor(superClassDescriptor);
                 }
             }
-            else {
-                rootClassDescriptors.add(cd);	
+            else
+            {
+                   rootClassDescriptors.add(cd);
             }
+            
+            Collection interfaces = cd.getImplements();
+            if (interfaces.size() > 0) 
+            {	
+            	      for (Iterator iterator = interfaces.iterator(); iterator.hasNext();)
+            	      {
+            	    	          String interfaceName= (String) iterator.next();
+                          ClassDescriptor interfaceClassDescriptor = this.mappingDescriptor.getClassDescriptor(interfaceName);
+
+                          if (null == interfaceClassDescriptor) 
+                          {
+                              errors.add("Cannot find mapping for interface "
+                                      + interfaceName
+                                      + " referenced as implements from "
+                                      + cd.getClassName());
+                          }
+                          else 
+                          {
+                      	       log.debug("Class " +cd.getClassName() +  " implements " + interfaceName);
+                              //cd.setSuperClassDescriptor(interfaceClassDescriptor);
+                      	      interfaceClassDescriptor.addDescendantClassDescriptor(cd); 
+                          }
+            	    	      
+            	      }
+            }
+            
         }
 
         return errors;

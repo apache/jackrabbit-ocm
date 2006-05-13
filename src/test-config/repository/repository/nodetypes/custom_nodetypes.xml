@@ -66,7 +66,7 @@
     <propertyDefinition name="graffito:text" requiredType="String" autoCreated="false" mandatory="true" onParentVersion="COPY" protected="false" multiple="false" />    
   </nodeType>
   
-   <nodeType name="graffito:cmsobject" isMixin="false" hasOrderableChildNodes="false" primaryItemName="">
+   <nodeType name="graffito:cmsobjectimpl" isMixin="false" hasOrderableChildNodes="false" primaryItemName="">
     <supertypes>
       <supertype>nt:base</supertype>
     </supertypes>
@@ -75,16 +75,16 @@
 
   </nodeType>
 
-   <nodeType name="graffito:content" isMixin="false" hasOrderableChildNodes="false" primaryItemName="">
+   <nodeType name="graffito:contentimpl" isMixin="false" hasOrderableChildNodes="false" primaryItemName="">
     <supertypes>
-      <supertype>graffito:cmsobject</supertype>
+      <supertype>graffito:cmsobjectimpl</supertype>
     </supertypes>
   </nodeType>
 
 
-   <nodeType name="graffito:document" isMixin="false" hasOrderableChildNodes="false" primaryItemName="">
+   <nodeType name="graffito:documentimpl" isMixin="false" hasOrderableChildNodes="false" primaryItemName="">
     <supertypes>
-      <supertype>graffito:content</supertype>
+      <supertype>graffito:contentimpl</supertype>
     </supertypes>    
     <propertyDefinition name="graffito:contenttype" requiredType="String" autoCreated="false" mandatory="true" onParentVersion="COPY" protected="false" multiple="false" />
     <propertyDefinition name="graffito:size" requiredType="Long" autoCreated="false" mandatory="true" onParentVersion="COPY" protected="false" multiple="false" />    
@@ -95,13 +95,13 @@
     </childNodeDefinition>        
   </nodeType>
   
-  <nodeType name="graffito:folder" isMixin="false" hasOrderableChildNodes="false" primaryItemName="">
+  <nodeType name="graffito:folderimpl" isMixin="false" hasOrderableChildNodes="false" primaryItemName="">
     <supertypes>
-      <supertype>graffito:cmsobject</supertype>       
+      <supertype>graffito:cmsobjectimpl</supertype>       
     </supertypes>    
-    <childNodeDefinition name="*" defaultPrimaryType="graffito:cmsobject" autoCreated="false" mandatory="false" onParentVersion="COPY" protected="false" sameNameSiblings="true">
+    <childNodeDefinition name="*" defaultPrimaryType="graffito:cmsobjectimpl" autoCreated="false" mandatory="false" onParentVersion="COPY" protected="false" sameNameSiblings="true">
       <requiredPrimaryTypes>
-        <requiredPrimaryType>graffito:cmsobject</requiredPrimaryType>         
+        <requiredPrimaryType>graffito:cmsobjectimpl</requiredPrimaryType>         
       </requiredPrimaryTypes>
     </childNodeDefinition>        
   </nodeType>
@@ -116,6 +116,37 @@
     <propertyDefinition name="graffito:binarycontent" requiredType="Binary" autoCreated="false" mandatory="true" onParentVersion="COPY" protected="false" multiple="false" />    
   </nodeType>
 
-    
+   <nodeType name="graffito:discriminator" isMixin="true">
+    <supertypes>
+      <supertype>nt:base</supertype>
+    </supertypes>
+    <propertyDefinition name="graffito:classname" requiredType="String" autoCreated="false" mandatory="true" onParentVersion="COPY" protected="false" multiple="false" />    
+  </nodeType>
+   
+
+   <nodeType name="graffito:cmsobject" isMixin="true">
+    <supertypes>
+      <supertype>nt:base</supertype>
+    </supertypes>
+  </nodeType>    
+
+   <nodeType name="graffito:folder" isMixin="true">
+    <supertypes>
+      <supertype>graffito:cmsobject</supertype>
+    </supertypes>
+  </nodeType>    
+
+   <nodeType name="graffito:content" isMixin="true">
+    <supertypes>
+      <supertype>graffito:cmsobject</supertype>
+    </supertypes>
+  </nodeType>    
+
+   <nodeType name="graffito:document" isMixin="true">
+    <supertypes>
+      <supertype>graffito:content</supertype>
+    </supertypes>
+  </nodeType>    
+
 </nodeTypes>
 

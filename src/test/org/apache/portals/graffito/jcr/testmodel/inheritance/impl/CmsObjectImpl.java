@@ -13,7 +13,10 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.apache.portals.graffito.jcr.testmodel.inheritance;
+package org.apache.portals.graffito.jcr.testmodel.inheritance.impl;
+
+import org.apache.portals.graffito.jcr.testmodel.interfaces.CmsObject;
+import org.apache.portals.graffito.jcr.testmodel.interfaces.Folder;
 
 
 
@@ -24,28 +27,46 @@ package org.apache.portals.graffito.jcr.testmodel.inheritance;
  * 
  * 
  */
-public class CmsObject
+public class CmsObjectImpl implements CmsObject
 {
     
     protected String path;        
     protected String name;
     protected Folder parentFolder;
     
+	/* (non-Javadoc)
+	 * @see org.apache.portals.graffito.jcr.testmodel.inheritance.impl.CmsObject#getName()
+	 */
 	public String getName() {
 		return name;
 	}
+	/* (non-Javadoc)
+	 * @see org.apache.portals.graffito.jcr.testmodel.inheritance.impl.CmsObject#setName(java.lang.String)
+	 */
 	public void setName(String name) {
 		this.name = name;
 	}
+	/* (non-Javadoc)
+	 * @see org.apache.portals.graffito.jcr.testmodel.inheritance.impl.CmsObject#getPath()
+	 */
 	public String getPath() {
 		return path;
 	}
+	/* (non-Javadoc)
+	 * @see org.apache.portals.graffito.jcr.testmodel.inheritance.impl.CmsObject#setPath(java.lang.String)
+	 */
 	public void setPath(String path) {
 		this.path = path;
 	}
+	/* (non-Javadoc)
+	 * @see org.apache.portals.graffito.jcr.testmodel.inheritance.impl.CmsObject#getParentFolder()
+	 */
 	public Folder getParentFolder() {
 		return parentFolder;
 	}
+	/* (non-Javadoc)
+	 * @see org.apache.portals.graffito.jcr.testmodel.inheritance.impl.CmsObject#setParentFolder(org.apache.portals.graffito.jcr.testmodel.inheritance.impl.FolderImpl)
+	 */
 	public void setParentFolder(Folder parentFolder) {
 		this.parentFolder = parentFolder;
 	}

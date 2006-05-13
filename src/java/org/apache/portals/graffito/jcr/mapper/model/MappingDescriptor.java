@@ -55,8 +55,8 @@ public class MappingDescriptor {
         if (null != this.packageName && !"".equals(this.packageName)) {
             classDescriptor.setClassName(this.packageName + "." + classDescriptor.getClassName());
 
-            if (null != classDescriptor.getSuperClass() && !"".equals(classDescriptor.getSuperClass())) {
-                classDescriptor.setSuperClass(this.packageName + "." + classDescriptor.getSuperClass());
+            if (null != classDescriptor.getExtend() && !"".equals(classDescriptor.getExtend())) {
+                classDescriptor.setExtend(this.packageName + "." + classDescriptor.getExtend());
             }
         }
 

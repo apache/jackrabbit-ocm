@@ -26,7 +26,9 @@ import org.apache.portals.graffito.jcr.mapper.model.BeanDescriptor;
 import org.apache.portals.graffito.jcr.mapper.model.ClassDescriptor;
 import org.apache.portals.graffito.jcr.mapper.model.CollectionDescriptor;
 import org.apache.portals.graffito.jcr.mapper.model.FieldDescriptor;
+import org.apache.portals.graffito.jcr.mapper.model.ImplementDescriptor;
 import org.apache.portals.graffito.jcr.mapper.model.MappingDescriptor;
+import org.xml.sax.SAXParseException;
 
 /**
  * Helper class that reads the xml mapping file and load all class descriptors into memory (object graph)
@@ -68,80 +70,47 @@ public class DigesterDescriptorReader
                 digester.register("-//The Apache Software Foundation//DTD Repository//EN",
                                   this.dtdResolver.toString());
             }
-            
-			digester.addObjectCreate("graffito-jcr", MappingDescriptor.class);
-            digester.addSetProperties("graffito-jcr", "package", "package");
+			
+	        MappingDescriptor mappingDescriptor = new MappingDescriptor();
+	        digester.push(mappingDescriptor);
+			
+	       // TODO : activater the following line wich cause some bugs when loading the xml stream  
+           //digester.addSetProperties("graffito-jcr", package, pa);
 
 			// --------------------------------------------------------------------------------
 			// Rules used for the class-descriptor element
-			// --------------------------------------------------------------------------------
-
+			// --------------------------------------------------------------------------------	                        
 			digester.addObjectCreate("graffito-jcr/class-descriptor", ClassDescriptor.class);
-			digester.addSetProperties("graffito-jcr/class-descriptor", "className", "className");
-			digester.addSetProperties("graffito-jcr/class-descriptor", "jcrNodeType", "jcrNodeType");
-            digester.addSetProperties("graffito-jcr/class-descriptor", "jcrSuperTypes", "jcrSuperTypes");
-            digester.addSetProperties("graffito-jcr/class-descriptor", "jcrMixinTypes", "jcrMixinTypes");
-            digester.addSetProperties("graffito-jcr/class-descriptor", "extends", "superClass");
-            digester.addSetProperties("graffito-jcr/class-descriptor", "abstract", "abstract");
-			digester.addSetNext("graffito-jcr/class-descriptor", "addClassDescriptor");
+			digester.addSetProperties("graffito-jcr/class-descriptor");
+			digester.addSetNext("graffito-jcr/class-descriptor", "addClassDescriptor");		
 
 			// --------------------------------------------------------------------------------
 			// Rules used for the field-descriptor element
 			// --------------------------------------------------------------------------------
-
+			digester.addObjectCreate("graffito-jcr/class-descriptor/implement-descriptor", ImplementDescriptor.class);
+			digester.addSetProperties("graffito-jcr/class-descriptor/implement-descriptor");
+            digester.addSetNext("graffito-jcr/class-descriptor/implement-descriptor", "addImplementDescriptor");
+			
+			// --------------------------------------------------------------------------------
+			// Rules used for the field-descriptor element
+			// --------------------------------------------------------------------------------
 			digester.addObjectCreate("graffito-jcr/class-descriptor/field-descriptor", FieldDescriptor.class);
-			digester.addSetProperties("graffito-jcr/class-descriptor/field-descriptor", "fieldName", "fieldName");
-            digester.addSetProperties("graffito-jcr/class-descriptor/field-descriptor", "fieldType", "fieldType");
-			digester.addSetProperties("graffito-jcr/class-descriptor/field-descriptor", "jcrName", "jcrName");
-			digester.addSetProperties("graffito-jcr/class-descriptor/field-descriptor", "id", "id");
-			digester.addSetProperties("graffito-jcr/class-descriptor/field-descriptor", "path", "path");
-            digester.addSetProperties("graffito-jcr/class-descriptor/field-descriptor", "discriminator", "discriminator");
-            digester.addSetProperties("graffito-jcr/class-descriptor/field-descriptor", "jcrType", "jcrType");
-            digester.addSetProperties("graffito-jcr/class-descriptor/field-descriptor", "jcrAutoCreated", "jcrAutoCreated");
-            digester.addSetProperties("graffito-jcr/class-descriptor/field-descriptor", "jcrMandatory", "jcrMandatory");
-            digester.addSetProperties("graffito-jcr/class-descriptor/field-descriptor", "jcrOnParentVersion", "jcrOnParentVersion");
-            digester.addSetProperties("graffito-jcr/class-descriptor/field-descriptor", "jcrProtected", "jcrProtected");
-            digester.addSetProperties("graffito-jcr/class-descriptor/field-descriptor", "jcrMultiple", "jcrMultiple");
-
+			digester.addSetProperties("graffito-jcr/class-descriptor/field-descriptor");
             digester.addSetNext("graffito-jcr/class-descriptor/field-descriptor", "addFieldDescriptor");
 
 			// --------------------------------------------------------------------------------
 			// Rules used for the bean-descriptor element
 			// --------------------------------------------------------------------------------
-
 			digester.addObjectCreate("graffito-jcr/class-descriptor/bean-descriptor", BeanDescriptor.class);
-			digester.addSetProperties("graffito-jcr/class-descriptor/bean-descriptor", "fieldName", "fieldName");
-			digester.addSetProperties("graffito-jcr/class-descriptor/bean-descriptor", "jcrName", "jcrName");
-			digester.addSetProperties("graffito-jcr/class-descriptor/bean-descriptor", "proxy", "proxy");
-            digester.addSetProperties("graffito-jcr/class-descriptor/bean-descriptor", "inline", "inline");
-            digester.addSetProperties("graffito-jcr/class-descriptor/bean-descriptor", "converter", "converter");
-            digester.addSetProperties("graffito-jcr/class-descriptor/bean-descriptor", "jcrNodeType", "jcrNodeType");
-            digester.addSetProperties("graffito-jcr/class-descriptor/bean-descriptor", "jcrAutoCreated", "jcrAutoCreated");
-            digester.addSetProperties("graffito-jcr/class-descriptor/bean-descriptor", "jcrMandatory", "jcrMandatory");
-            digester.addSetProperties("graffito-jcr/class-descriptor/bean-descriptor", "jcrOnParentVersion", "jcrOnParentVersion");
-            digester.addSetProperties("graffito-jcr/class-descriptor/bean-descriptor", "jcrProtected", "jcrProtected");
-            digester.addSetProperties("graffito-jcr/class-descriptor/bean-descriptor", "jcrSameNameSiblings", "jcrSameNameSiblings");
-			
+			digester.addSetProperties("graffito-jcr/class-descriptor/bean-descriptor");
             digester.addSetNext("graffito-jcr/class-descriptor/bean-descriptor", "addBeanDescriptor");
 
 			// --------------------------------------------------------------------------------
 			// Rules used for the collection-descriptor element
 			// --------------------------------------------------------------------------------
-
 			digester.addObjectCreate("graffito-jcr/class-descriptor/collection-descriptor", CollectionDescriptor.class);
-			digester.addSetProperties("graffito-jcr/class-descriptor/collection-descriptor", "fieldName", "fieldName");
-			digester.addSetProperties("graffito-jcr/class-descriptor/collection-descriptor", "jcrName", "jcrName");
-			digester.addSetProperties("graffito-jcr/class-descriptor/collection-descriptor", "proxy", "proxy");
-			digester.addSetProperties("graffito-jcr/class-descriptor/collection-descriptor", "elementClassName", "elementClassName");
-			digester.addSetProperties("graffito-jcr/class-descriptor/collection-descriptor", "collectionConverter", "collectionConverterClassName");
-			digester.addSetProperties("graffito-jcr/class-descriptor/collection-descriptor", "collectionClassName", "collectionClassName");
-            digester.addSetProperties("graffito-jcr/class-descriptor/collection-descriptor", "jcrNodeType", "jcrNodeType");
-            digester.addSetProperties("graffito-jcr/class-descriptor/collection-descriptor", "jcrAutoCreated", "jcrAutoCreated");
-            digester.addSetProperties("graffito-jcr/class-descriptor/collection-descriptor", "jcrMandatory", "jcrMandatory");
-            digester.addSetProperties("graffito-jcr/class-descriptor/collection-descriptor", "jcrOnParentVersion", "jcrOnParentVersion");
-            digester.addSetProperties("graffito-jcr/class-descriptor/collection-descriptor", "jcrProtected", "jcrProtected");
-            digester.addSetProperties("graffito-jcr/class-descriptor/collection-descriptor", "jcrSameNameSiblings", "jcrSameNameSiblings");            
-			digester.addSetNext("graffito-jcr/class-descriptor/collection-descriptor", "addCollectionDescriptor");
+			digester.addSetProperties("graffito-jcr/class-descriptor/collection-descriptor");
+            digester.addSetNext("graffito-jcr/class-descriptor/collection-descriptor", "addCollectionDescriptor");			
 
             return (MappingDescriptor) digester.parse(stream);
 		}
@@ -164,9 +133,10 @@ public class DigesterDescriptorReader
 		{
 			return loadClassDescriptors(new FileInputStream(xmlFile));
 		}
+		
 		catch (FileNotFoundException e)
 		{
-			throw new InitMapperException(e);
+			throw new InitMapperException("Mapping file not found : " + xmlFile,e);
 		}
 	}
 }

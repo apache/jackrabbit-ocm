@@ -13,26 +13,8 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.apache.portals.graffito.jcr.testmodel.inheritance;
+package org.apache.portals.graffito.jcr.testmodel.interfaces;
 
-import org.apache.portals.graffito.jcr.testmodel.interfaces.AnotherInterface;
-
-public class Descendant extends Ancestor implements AnotherInterface {
-
-	protected String descendantField;
-
-	
-
-	public String getDescendantField() {
-		return descendantField;
-	}
-
-	public void setDescendantField(String descendantField) {
-		this.descendantField = descendantField;
-	}
-
-
-	
-	
+public interface Content extends CmsObject {
 
 }

@@ -38,10 +38,12 @@ public class AllTests {
         //$JUnit-BEGIN$
         suite.addTestSuite(PersistenceManagerAtomicQueryTest.class);
         suite.addTestSuite(PersistenceManagerBasicVersionningTest.class);
+        suite.addTestSuite(PersistenceManagerInheritanceConcreteClassTest.class);
+        suite.addTestSuite(PersistenceManagerInheritanceHierarchyTest.class);
+        suite.addTestSuite(PersistenceManagerInterfaceConcreteClassTest.class);
+        suite.addTestSuite(PersistenceManagerInterfaceHierarchyTest.class);        
         suite.addTestSuite(PersistenceManagerIteratorQueryTest.class);
-        suite.addTestSuite(PersistenceManagerMultiValueQueryTest.class);
-        suite.addTestSuite(PersistenceManagerNtConcreteClassTest.class);
-        suite.addTestSuite(PersistenceManagerNtHierarchyTest.class);
+        suite.addTestSuite(PersistenceManagerMultiValueQueryTest.class);       
         suite.addTestSuite(PersistenceManagerRemoveTest.class);
         suite.addTestSuite(PersistenceManagerSameNameSiblingTest.class);
         suite.addTestSuite(PersistenceManagerScopeQueryTest.class);

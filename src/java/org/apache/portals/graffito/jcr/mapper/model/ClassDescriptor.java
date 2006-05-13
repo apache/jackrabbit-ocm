@@ -20,6 +20,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
 
 import org.apache.commons.logging.Log;
@@ -51,7 +52,6 @@ public class ClassDescriptor {
     private String[] jcrMixinTypes = new String[0];
     private FieldDescriptor idFieldDescriptor;
     private FieldDescriptor pathFieldDescriptor;
-    private FieldDescriptor discriminatorFieldDescriptor;
 
     private Map fieldDescriptors = new HashMap();    
     private Map beanDescriptors = new HashMap();        
@@ -60,19 +60,45 @@ public class ClassDescriptor {
     private Map fieldNames = new HashMap();
 
     private String superClassName;
-    private String extendsStrategy;
-    private boolean abstractClass = false;
+    private String extendsStrategy;    
+    private boolean isAbstract = false;    
     private boolean hasDescendant = false;
+    private boolean hasDiscriminator = true; 
    
+       
+    private boolean isInterface=false;
+    private List interfaces = new ArrayList();
     
     public void setAbstract(boolean flag) {
-        this.abstractClass = flag;
+        this.isAbstract = flag;
     }
 
     public boolean isAbstract() {
-        return this.abstractClass;
+        return this.isAbstract;
     }
 
+    public void setInterface(boolean flag) {
+    	   this.isInterface = flag;
+    }
+       
+    public boolean isInterface() {
+    	    return isInterface;
+    }
+    
+    public boolean hasInterfaces()
+    {
+    	   return this.interfaces.size() > 0;
+    }
+
+    public void setDiscriminator(boolean flag)
+    {
+        this.hasDiscriminator = flag;	
+    }
+    
+    public boolean hasDiscriminator() {        
+ 	   return this.hasDiscriminator;
+ }    
+    
     public boolean usesNodeTypePerHierarchyStrategy() {
         return NODETYPE_PER_HIERARCHY.equals(this.extendsStrategy);
     }
@@ -120,14 +146,16 @@ public class ClassDescriptor {
         if (fieldDescriptor.isPath()) {
             this.pathFieldDescriptor = fieldDescriptor;
         }
-        if (fieldDescriptor.isDiscriminator()) {
-            this.discriminatorFieldDescriptor = fieldDescriptor;
-        }
 
         fieldDescriptors.put(fieldDescriptor.getFieldName(), fieldDescriptor);
         fieldNames.put(fieldDescriptor.getFieldName(), fieldDescriptor.getJcrName());
     }
 
+    public void addImplementDescriptor(ImplementDescriptor implementDescriptor)
+    {
+        interfaces.add(implementDescriptor.getInterfaceName());	
+    }
+    
     /**
      * Get the FieldDescriptor to used for a specific java bean attribute
      * @param fieldName The java bean attribute name
@@ -224,28 +252,13 @@ public class ClassDescriptor {
         return null;
     }
 
-    public FieldDescriptor getDiscriminatorFieldDescriptor() {       
-        if (null != this.discriminatorFieldDescriptor) {
-            return this.discriminatorFieldDescriptor;
-        }
-
-        if (null != this.superClassDescriptor) {
-            return this.superClassDescriptor.getDiscriminatorFieldDescriptor();
-        }
-
-        return null;        
-    }
-
-    public boolean hasDiscriminatorField() {
-        return this.getDiscriminatorFieldDescriptor() != null;
-    }
 
     /**
      * Check if this class has an ID
      * @return true if the class has an ID
      */
-    public boolean hasIdField() {
-        return this.idFieldDescriptor != null;
+    public boolean hasIdField() {        
+        return (this.idFieldDescriptor != null && ! this.idFieldDescriptor.equals(""));
     }
 
     /**
@@ -254,7 +267,31 @@ public class ClassDescriptor {
      * @return the JCR name found
      */
     public String getJcrName(String fieldName) {
-        return (String) this.fieldNames.get(fieldName);
+        String jcrName =  (String) this.fieldNames.get(fieldName);
+        if (this.isInterface && jcrName == null)
+        {
+            return this.getJcrNameFromDescendants(this, fieldName);          
+        }
+        
+        return jcrName;
+    }
+    
+    private String getJcrNameFromDescendants(ClassDescriptor classDescriptor, String fieldName )
+    {
+        Iterator  descendants = classDescriptor.getDescendantClassDescriptors().iterator();
+        while (descendants.hasNext())
+        {
+        	    ClassDescriptor descendant = (ClassDescriptor) descendants.next();
+        	    String jcrName =  (String) descendant.fieldNames.get(fieldName);
+        	    if(jcrName != null)
+        	    {
+        	    	   return jcrName;
+        	    }
+        	    return this.getJcrNameFromDescendants(descendant, fieldName);
+        }
+        return null;
+
+    	
     }
     
     public Map getFieldNames() {
@@ -319,7 +356,7 @@ public class ClassDescriptor {
         validateBeanFields();
         lookupSuperDescriptor();
         lookupInheritanceSettings();
-        validateInheritanceSettings();
+//        validateInheritanceSettings();
     }
 
 	private void validateClassName() {
@@ -346,16 +383,21 @@ public class ClassDescriptor {
 	
 	private void lookupSuperDescriptor() {
         if (null != superClassDescriptor) {
-            this.fieldDescriptors = mergeFields(this.fieldDescriptors, this.superClassDescriptor.getFieldDescriptors());
-            this.beanDescriptors = mergeBeans(this.beanDescriptors, this.superClassDescriptor.getBeanDescriptors());
-            this.collectionDescriptors = mergeCollections(this.collectionDescriptors, this.superClassDescriptor.getCollectionDescriptors());
-            this.fieldNames.putAll(this.superClassDescriptor.getFieldNames());
+            this.hasDiscriminator = superClassDescriptor.hasDiscriminator();
+            if (! this.isInterface)
+            {
+                this.fieldDescriptors = mergeFields(this.fieldDescriptors, this.superClassDescriptor.getFieldDescriptors());
+                this.beanDescriptors = mergeBeans(this.beanDescriptors, this.superClassDescriptor.getBeanDescriptors());
+                this.collectionDescriptors = mergeCollections(this.collectionDescriptors, this.superClassDescriptor.getCollectionDescriptors());            
+                this.fieldNames.putAll(this.superClassDescriptor.getFieldNames());
+            }
+        
         }
     }
 
     private void lookupInheritanceSettings() {
-        if ((null != this.superClassDescriptor) || (this.hasDescendants() )) {
-            if (this.hasDiscriminatorField()) {
+        if ((null != this.superClassDescriptor) || (this.hasDescendants()) || this.hasInterfaces()) {
+            if (this.hasDiscriminator()) {
                 this.extendsStrategy = NODETYPE_PER_HIERARCHY;
             }
             else {
@@ -364,36 +406,19 @@ public class ClassDescriptor {
         }
     }
 	
-    private void validateInheritanceSettings() {
-        if (NODETYPE_PER_CONCRETECLASS.equals(this.extendsStrategy)) {
-            this.discriminatorFieldDescriptor = getDiscriminatorFieldDescriptor();
-
-            if (null != this.discriminatorFieldDescriptor) {
-                throw new JcrMappingException("Discriminator specify for  the class : " + className + " but it is a node type per concrete class hierarchy");
-            }
-        }
-        else if (NODETYPE_PER_HIERARCHY.equals(this.extendsStrategy)) {
-            this.discriminatorFieldDescriptor = getDiscriminatorFieldDescriptor();
-
-            if (null == this.discriminatorFieldDescriptor) {
-                throw new JcrMappingException("No discriminator specify for the class : " + className);
-            }
-        }
-    }
-
 
     /**
      * @return return the super class name if defined in mapping, or
      * <tt>null</tt> if not set
      */
-    public String getSuperClass() {
+    public String getExtend() {
         return this.superClassName;
     }
 
     /**
      * @param className
      */
-    public void setSuperClass(String className) {
+    public void setExtend(String className) {
         this.superClassName = className;
     }
 
@@ -452,7 +477,13 @@ public class ClassDescriptor {
         this.superClassDescriptor= superClassDescriptor;
         superClassDescriptor.addDescendantClassDescriptor(this);
     }
+   
 
+    public Collection getImplements()
+    {
+    	    return interfaces;
+    }
+    
     private Map mergeFields(Map existing, Collection superSource) {
         if (null == superSource) {
             return existing;
@@ -464,9 +495,9 @@ public class ClassDescriptor {
             if (!merged.containsKey(fieldDescriptor.getFieldName())) {
                 merged.put(fieldDescriptor.getFieldName(), fieldDescriptor);
             }
-            else {
-                log.warn("Field name conflict in " + this.className + " - field : " +fieldDescriptor.getFieldName() + " -  this  field name is also defined  in the ancestor class : " + this.getSuperClass());
-            }
+//            else {
+//                log.warn("Field name conflict in " + this.className + " - field : " +fieldDescriptor.getFieldName() + " -  this  field name is also defined  in the ancestor class : " + this.getExtend());
+//            }
         }
 
         return merged;
@@ -484,9 +515,9 @@ public class ClassDescriptor {
             if (!merged.containsKey(beanDescriptor.getFieldName())) {
                 merged.put(beanDescriptor.getFieldName(), beanDescriptor);
             }
-            else {
-                log.warn("Bean name conflict in " + this.className + " - field : " +beanDescriptor.getFieldName() + " -  this  field name is also defined  in the ancestor class : " + this.getSuperClass());
-            }
+//            else {
+//                log.warn("Bean name conflict in " + this.className + " - field : " +beanDescriptor.getFieldName() + " -  this  field name is also defined  in the ancestor class : " + this.getExtend());
+//            }
         }
 
         return merged;
@@ -503,13 +534,33 @@ public class ClassDescriptor {
             if (!merged.containsKey(collectionDescriptor.getFieldName())) {
                 merged.put(collectionDescriptor.getFieldName(), collectionDescriptor);
             }
-            else {
-                log.warn("Collection name conflict in " + this.className + " - field : " +collectionDescriptor.getFieldName() + " -  this  field name is also defined  in the ancestor class : " + this.getSuperClass());
-            }
+//            else {
+//                log.warn("Collection name conflict in " + this.className + " - field : " +collectionDescriptor.getFieldName() + " -  this  field name is also defined  in the ancestor class : " + this.getExtend());
+//            }
         }
 
         return merged;
     }    
+    
+    
+//    private List mergeInterfaces(List  existing, Collection superSource) {
+//        if (null == superSource) {
+//            return existing;
+//        }
+//
+//        ArrayList merged = new ArrayList(existing);
+//        for (Iterator it = superSource.iterator(); it.hasNext();)
+//        {
+//             String interfaceName = (String) it.next();
+//             if (! merged.contains(interfaceName))
+//             {
+//            	     merged.add(interfaceName);
+//             }            	 
+//        }
+//        
+//        return merged;
+//    }    
+    
     
 	public String toString() {
 		return "Class Descriptor : " +  this.getClassName();

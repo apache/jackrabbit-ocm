@@ -66,7 +66,7 @@ import org.apache.portals.graffito.jcr.persistence.atomictypeconverter.impl.Stri
 import org.apache.portals.graffito.jcr.persistence.atomictypeconverter.impl.TimestampTypeConverterImpl;
 import org.apache.portals.graffito.jcr.persistence.atomictypeconverter.impl.UtilDateTypeConverterImpl;
 import org.apache.portals.graffito.jcr.persistence.impl.PersistenceManagerImpl;
-import org.apache.portals.graffito.jcr.persistence.impl.PersistenceManagerNtHierarchyTest;
+import org.apache.portals.graffito.jcr.persistence.impl.PersistenceManagerInheritanceHierarchyTest;
 import org.apache.portals.graffito.jcr.persistence.objectconverter.ObjectConverter;
 import org.apache.portals.graffito.jcr.persistence.objectconverter.impl.ObjectConverterImpl;
 import org.apache.portals.graffito.jcr.query.QueryManager;
@@ -268,7 +268,8 @@ public abstract class TestBase extends TestCase
             while (iterator.hasNext())
             {
                 Object  object = iterator.next();
-                if (ReflectionUtils.getNestedProperty(object, "path").equals(path))
+                String itemPath = (String)  ReflectionUtils.getNestedProperty(object, "path");
+                if (itemPath.equals(path))
                 {
                     if (object.getClass() == objectClass)
                     {

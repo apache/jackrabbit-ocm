@@ -3,7 +3,7 @@
 <!DOCTYPE graffito-jcr PUBLIC "-//The Apache Software Foundation//DTD Repository//EN" "./src/dtd/graffito-jcr-mapping.dtd">
 <graffito-jcr>
     
-	<class-descriptor className="org.apache.portals.graffito.jcr.testmodel.proxy.Main" 	jcrNodeType="nt:unstructured">
+	<class-descriptor className="org.apache.portals.graffito.jcr.testmodel.proxy.Main" 	jcrNodeType="nt:unstructured"  >
 		<!-- Field-descriptor is used to map simple attributes to jcr property -->
 		<field-descriptor fieldName="path" path="true" />
 		<bean-descriptor fieldName="proxyDetail" jcrName="proxydetail" proxy="true" jcrNodeType="nt:unstructured" />		
@@ -16,7 +16,7 @@
                                                   elementClassName="org.apache.portals.graffito.jcr.testmodel.proxy.Detail" jcrNodeType="nt:unstructured"/>                                                  		
 	</class-descriptor>
 
-	<class-descriptor 	className="org.apache.portals.graffito.jcr.testmodel.proxy.Detail" jcrNodeType="nt:unstructured">		
+	<class-descriptor 	className="org.apache.portals.graffito.jcr.testmodel.proxy.Detail" jcrNodeType="nt:unstructured" >		
 		<field-descriptor fieldName="path" path="true" />
 		<field-descriptor fieldName="field" jcrName="field" />
 	</class-descriptor>

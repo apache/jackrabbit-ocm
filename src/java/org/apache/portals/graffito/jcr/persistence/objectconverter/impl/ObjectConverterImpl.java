@@ -42,6 +42,7 @@ import org.apache.portals.graffito.jcr.mapper.model.BeanDescriptor;
 import org.apache.portals.graffito.jcr.mapper.model.ClassDescriptor;
 import org.apache.portals.graffito.jcr.mapper.model.CollectionDescriptor;
 import org.apache.portals.graffito.jcr.mapper.model.FieldDescriptor;
+import org.apache.portals.graffito.jcr.persistence.PersistenceConstant;
 import org.apache.portals.graffito.jcr.persistence.atomictypeconverter.AtomicTypeConverter;
 import org.apache.portals.graffito.jcr.persistence.atomictypeconverter.AtomicTypeConverterProvider;
 import org.apache.portals.graffito.jcr.persistence.atomictypeconverter.impl.NullTypeConverterImpl;
@@ -53,11 +54,12 @@ import org.apache.portals.graffito.jcr.persistence.objectconverter.ObjectConvert
 import org.apache.portals.graffito.jcr.reflection.ReflectionUtils;
 import org.apache.portals.graffito.jcr.repository.RepositoryUtil;
 
+import sun.reflect.misc.ReflectUtil;
+
 /**
  * Default implementation for {@link ObjectConverterImpl}
  * 
- * @author <a href="mailto:christophe.lombart@sword-technologies.com">Lombart
- *         Christophe </a>
+ * @author <a href="mailto:christophe.lombart@gmail.com">Lombart  Christophe </a>
  * @author <a href='mailto:the_mindstorm[at]evolva[dot]ro'>Alexandru Popescu</a>
  */
 public class ObjectConverterImpl implements ObjectConverter {
@@ -143,7 +145,7 @@ public class ObjectConverterImpl implements ObjectConverter {
 
 		String jcrNodeType = classDescriptor.getJcrNodeType();
 		if ((jcrNodeType == null) || jcrNodeType.equals("")) {
-			throw new JcrMappingException("Undefined node type for  " + parentNode);
+			jcrNodeType= PersistenceConstant.NT_UNSTRUCTURED;
 		}
 
 		Node objectNode = null;
@@ -157,20 +159,45 @@ public class ObjectConverterImpl implements ObjectConverter {
 					+ object.getClass(), re);
 		}
 
-		if (null != classDescriptor.getJcrMixinTypes()) {
-			String[] mixinTypes = classDescriptor.getJcrMixinTypes();
-			for (int i = 0; i < mixinTypes.length; i++) {
-				try {
-					objectNode.addMixin(mixinTypes[i].trim());
-				} catch (NoSuchNodeTypeException nsnte) {
-					throw new JcrMappingException("Unknown mixin type " + mixinTypes[i].trim() + " for mapped class "
-							+ object.getClass(), nsnte);
-				} catch (RepositoryException re) {
-					throw new PersistenceException("Cannot create new node of type " + jcrNodeType + " from mapped class "
-							+ object.getClass(), re);
+		String[] mixinTypes = classDescriptor.getJcrMixinTypes();
+		String mixinTypeName = null;
+		try {						
+			
+			// Add mixin types
+			if (null != classDescriptor.getJcrMixinTypes()) {
+				for (int i = 0; i < mixinTypes.length; i++) {
+					mixinTypeName = mixinTypes[i].trim();
+					objectNode.addMixin(mixinTypeName);
 				}
 			}
+			
+			// Add mixin types defined in the associated interfaces 
+			if (! classDescriptor.hasDiscriminator() && classDescriptor.hasInterfaces())
+			{
+				Iterator  interfacesIterator = classDescriptor.getImplements().iterator();
+				while (interfacesIterator.hasNext())
+				{
+					String interfaceName = (String)  interfacesIterator.next();
+					ClassDescriptor interfaceDescriptor =  mapper.getClassDescriptor(ReflectionUtils.forName(interfaceName));
+					objectNode.addMixin(interfaceDescriptor.getJcrNodeType().trim());
+				}			    
+			}
+			
+			// If required, add the discriminator node type 
+			if (classDescriptor.hasDiscriminator())
+			{
+				mixinTypeName = PersistenceConstant.DISCRIMINATOR_NODE_TYPE;
+				objectNode.addMixin(mixinTypeName);
+				objectNode.setProperty(PersistenceConstant.DISCRIMINATOR_PROPERTY_NAME, ReflectionUtils.getBeanClass(object).getName());
+			}
+		} catch (NoSuchNodeTypeException nsnte) {
+			throw new JcrMappingException(
+					"Unknown mixin type " + mixinTypeName + " for mapped class " + object.getClass(), nsnte);
+		} catch (RepositoryException re) {
+			throw new PersistenceException("Cannot create new node of type " + jcrNodeType + " from mapped class "
+					+ object.getClass(), re);
 		}
+		
 
 		storeSimpleFields(session, object, classDescriptor, objectNode);
 		insertBeanFields(session, object, classDescriptor, objectNode);
@@ -207,7 +234,8 @@ public class ObjectConverterImpl implements ObjectConverter {
 			Node objectNode = parentNode.getNode(nodeName);
 
 			checkNodeType(session, classDescriptor);
-			checkCompatibleNodeTypes(session, objectNode, classDescriptor, false);
+			
+			checkCompatiblePrimaryNodeTypes(session, objectNode, classDescriptor, false);
 
 			storeSimpleFields(session, object, classDescriptor, objectNode);
 			updateBeanFields(session, object, classDescriptor, objectNode);
@@ -235,18 +263,19 @@ public class ObjectConverterImpl implements ObjectConverter {
 			checkNodeType(session, classDescriptor);
 
 			Node node = (Node) session.getItem(path);
-
-			checkCompatibleNodeTypes(session, node, classDescriptor, true);
+            if (! classDescriptor.isInterface())
+            {
+			    checkCompatiblePrimaryNodeTypes(session, node, classDescriptor, true);
+            }
+            
 			Object object = null;
-			if (classDescriptor.usesNodeTypePerHierarchyStrategy()) {
-				String discriminatorProperty = classDescriptor.getDiscriminatorFieldDescriptor().getJcrName();
-
-				if (!node.hasProperty(discriminatorProperty)) {
+			if (classDescriptor.usesNodeTypePerHierarchyStrategy()) {				
+				if (!node.hasProperty(PersistenceConstant.DISCRIMINATOR_PROPERTY_NAME)) {
 					throw new PersistenceException("Cannot fetch object of type '" + clazz.getName()
 							+ "' using NODETYPE_PER_HIERARCHY. Discriminator property is not present.");
 				}
 
-				String className = node.getProperty(discriminatorProperty).getValue().getString();
+				String className = node.getProperty(PersistenceConstant.DISCRIMINATOR_PROPERTY_NAME).getValue().getString();
 				classDescriptor = getClassDescriptor(Class.forName(className));
 				object = ReflectionUtils.newInstance(className);
 			} else {
@@ -288,11 +317,31 @@ public class ObjectConverterImpl implements ObjectConverter {
 	 *             thrown if an error occured in the underlying repository
 	 */
 	private void checkNodeType(Session session, ClassDescriptor classDescriptor) {
+		String jcrTypeName = null;
 		try {
-			session.getWorkspace().getNodeTypeManager().getNodeType(classDescriptor.getJcrNodeType());
+			
+			
+			//Don't check the primary node type for interfaces. They are only associated to mixin node type
+			if ( classDescriptor.isInterface())
+			{
+				String[] mixinTypes = classDescriptor.getJcrMixinTypes();
+				for (int i=0; i<mixinTypes.length; i++)
+				{
+					jcrTypeName = mixinTypes[i];
+				     session.getWorkspace().getNodeTypeManager().getNodeType(jcrTypeName);
+				}
+			}
+			else
+			{
+				jcrTypeName = classDescriptor.getJcrNodeType();
+				if(jcrTypeName != null && !  jcrTypeName.equals(""))
+				{
+				    session.getWorkspace().getNodeTypeManager().getNodeType(jcrTypeName);
+				}
+			}
 		} catch (NoSuchNodeTypeException nsnte) {
-			throw new JcrMappingException("Mapping for class '" + classDescriptor.getClassName() + "' use unknown node type '"
-					+ classDescriptor.getJcrNodeType() + "'");
+			throw new JcrMappingException("Mapping for class '" + classDescriptor.getClassName() + "' use unknown primary or mixin node type '"
+					+  jcrTypeName  + "'");
 		} catch (RepositoryException re) {
 			throw new org.apache.portals.graffito.jcr.exception.RepositoryException(re);
 		}
@@ -318,7 +367,7 @@ public class ObjectConverterImpl implements ObjectConverter {
 	 * @throws org.apache.portals.graffito.jcr.exception.RepositoryException
 	 *             thrown if an error occured in the underlying repository
 	 */
-	private void checkCompatibleNodeTypes(Session session, Node node, ClassDescriptor classDescriptor, boolean checkVersionNode) {
+	private void checkCompatiblePrimaryNodeTypes(Session session, Node node, ClassDescriptor classDescriptor, boolean checkVersionNode) {
 		try {
 			NodeType nodeType = node.getPrimaryNodeType();
 
@@ -352,6 +401,13 @@ public class ObjectConverterImpl implements ObjectConverter {
 	 *         <tt>false</tt> otherwise
 	 */
 	private boolean checkCompatibleNodeTypes(NodeType nodeType, ClassDescriptor descriptor) {
+		
+		//return true if node type is not used
+		if (descriptor.getJcrNodeType() == null ||descriptor.getJcrNodeType().equals("") )
+		{
+			return true;
+		}
+		
 		if (nodeType.getName().equals(descriptor.getJcrNodeType())) {
 			return true;
 		}
@@ -412,14 +468,13 @@ public class ObjectConverterImpl implements ObjectConverter {
 
 					ReflectionUtils.setNestedProperty(initializedBean, fieldName, node.getPath());
 
-				} else if (classDescriptor.usesNodeTypePerHierarchyStrategy() && fieldDescriptor.isDiscriminator()) {
+				} else if (classDescriptor.usesNodeTypePerHierarchyStrategy() && classDescriptor.hasDiscriminator()) {
 
-					if (node.hasProperty(classDescriptor.getDiscriminatorFieldDescriptor().getJcrName())) {
+					if (node.hasProperty(PersistenceConstant.DISCRIMINATOR_PROPERTY_NAME)) {
 						if (null == initializedBean) {
 							initializedBean = ReflectionUtils.newInstance(classDescriptor.getClassName());
 						}
-						String value = node.getProperty(classDescriptor.getDiscriminatorFieldDescriptor().getJcrName())
-								.getValue().getString();
+						String value = node.getProperty(propertyName).getValue().getString();
 						ReflectionUtils.setNestedProperty(initializedBean, fieldName, value);
 					} else {
 						throw new PersistenceException("Class '" + classDescriptor.getClassName()
@@ -610,19 +665,13 @@ public class ObjectConverterImpl implements ObjectConverter {
 					continue;
 				}
 
-				if (classDescriptor.usesNodeTypePerHierarchyStrategy() && fieldDescriptor.isDiscriminator()) {
-					objectNode.setProperty(fieldDescriptor.getJcrName(), classDescriptor.getClassName());
-					continue;
-				}
-
 				boolean protectedProperty = fieldDescriptor.isJcrProtected();
 
 				if (objectNode.hasProperty(jcrName)) {
 					protectedProperty = objectNode.getProperty(jcrName).getDefinition().isProtected();
 				}
 
-				if (!protectedProperty) { // DO NOT TRY TO WRITE PROTECTED
-											// PROPERTIES
+				if (!protectedProperty) { // DO NOT TRY TO WRITE PROTECTED  PROPERTIES
 					Object fieldValue = ReflectionUtils.getNestedProperty(object, fieldName);
 					AtomicTypeConverter converter = getAtomicTypeConverter(fieldDescriptor, object, fieldName);
 					Value value = converter.getValue(valueFactory, fieldValue);
@@ -657,7 +706,7 @@ public class ObjectConverterImpl implements ObjectConverter {
 	}
 
 	private CollectionConverter getCollectionConverter(Session session, CollectionDescriptor collectionDescriptor) {
-		String className = collectionDescriptor.getCollectionConverterClassName();
+		String className = collectionDescriptor.getCollectionConverter();
 		Map atomicTypeConverters = this.atomicTypeConverterProvider.getAtomicTypeConverters();
 		if (className == null) {
 			return new DefaultCollectionConverterImpl(atomicTypeConverters, this, this.mapper);
