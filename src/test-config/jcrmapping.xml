@@ -74,7 +74,7 @@
 	</class-descriptor>
 
 
-	<class-descriptor className="org.apache.portals.graffito.jcr.testmodel.hashmap.Main" jcrNodeType="nt:unstructured" discriminator="false" >
+	<class-descriptor className="org.apache.portals.graffito.jcr.testmodel.hashmap.Main" jcrNodeType="nt:unstructured"  >
 		<field-descriptor fieldName="path" path="true" />
 		<field-descriptor fieldName="text" jcrName="text" />
 		<collection-descriptor fieldName="elements"  proxy="false" 

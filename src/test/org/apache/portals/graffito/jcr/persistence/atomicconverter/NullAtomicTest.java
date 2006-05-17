@@ -99,7 +99,7 @@ public class NullAtomicTest extends TestBase
             // Get the object
             // --------------------------------------------------------------------------------
             a = null;
-            a = (Atomic) persistenceManager.getObject(Atomic.class, "/test");
+            a = (Atomic) persistenceManager.getObject( "/test");
             assertNotNull("a is null", a);
             assertNull("Boolean object is not null", a.getBooleanObject());
             

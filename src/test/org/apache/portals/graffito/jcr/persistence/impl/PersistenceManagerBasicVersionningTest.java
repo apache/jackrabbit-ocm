@@ -97,8 +97,14 @@ public class PersistenceManagerBasicVersionningTest extends TestBase
             	 System.out.println("Root version : " + rootVersion.getName());
             	 //this.exportDocument("/home/christophe/export.xml", "/jcr:system/jcr:versionStorage", true, false);
             	             	
+             //Get the lasted version 
+            	 page = (Page) persistenceManager.getObject( "/page");
+            	 assertNotNull("Last version is nulll", page);
+            	 assertTrue("Invalid number of paragraph found in the last  version", page.getParagraphs().size() == 4);
+
+            	 
             	 //Get the object matching to the first version 
-            	 Page page1 = (Page) persistenceManager.getObject(Page.class, "/page", "1.0");
+            Page  page1 = (Page) persistenceManager.getObject( "/page", "1.0");
             	 assertNotNull("version 1.0 object is null", page1);
             	 assertTrue("Invalid number of paragraph found in the root version", page1.getParagraphs().size() == 3);
 

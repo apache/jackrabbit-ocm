@@ -22,7 +22,6 @@ import net.sf.cglib.proxy.Enhancer;
 import org.apache.commons.beanutils.ConstructorUtils;
 import org.apache.commons.beanutils.PropertyUtils;
 import org.apache.portals.graffito.jcr.exception.JcrMappingException;
-import org.apache.portals.graffito.jcr.persistence.collectionconverter.CollectionConverter;
 
 
 /**
@@ -83,17 +82,14 @@ abstract public class ReflectionUtils {
      * @param objects
      * @return
      */
-    public static CollectionConverter invokeConstructor(String className, 
-                                                        Object[] params) {
+    public static Object  invokeConstructor(String className,  Object[] params) {
         try {
             Class converterClass= Class.forName(className);
     
-            return (CollectionConverter) ConstructorUtils.invokeConstructor(converterClass, params);
+            return  ConstructorUtils.invokeConstructor(converterClass, params);
         }
         catch(Exception ex) {
-            throw new JcrMappingException("Cannot create instance for class "
-                    + className,
-                    ex);
+            throw new JcrMappingException("Cannot create instance for class "  + className,  ex);
         }
     }
 
@@ -121,9 +117,7 @@ abstract public class ReflectionUtils {
             return Class.forName(clazz).newInstance();
         }
         catch(Exception ex) {
-            throw new JcrMappingException("Cannot create instance for class "
-                    + clazz,
-                    ex);
+            throw new JcrMappingException("Cannot create instance for class "  + clazz, ex);
         }
     }
 

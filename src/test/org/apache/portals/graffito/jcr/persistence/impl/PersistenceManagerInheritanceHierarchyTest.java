@@ -85,7 +85,7 @@ public class PersistenceManagerInheritanceHierarchyTest extends TestBase {
 			// Retrieve a descendant object
 			//---------------------------------------------------------------------------------------------------------						
 			descendant = null;
-			descendant = (Descendant) persistenceManager.getObject(	Descendant.class, "/test");
+			descendant = (Descendant) persistenceManager.getObject(	 "/test");
 			assertEquals("Descendant path is invalid", descendant.getPath(), "/test");
 			assertEquals("Descendant ancestorField is invalid", descendant.getAncestorField(), "ancestorValue");
 			assertEquals("Descendant descendantField is invalid", descendant	.getDescendantField(), "descendantValue");
@@ -101,14 +101,12 @@ public class PersistenceManagerInheritanceHierarchyTest extends TestBase {
 			// Retrieve the updated descendant object
 			//---------------------------------------------------------------------------------------------------------						
 			descendant = null;
-			descendant = (Descendant) persistenceManager.getObject(	Descendant.class, "/test");
+			descendant = (Descendant) persistenceManager.getObject(	 "/test");
 			assertEquals("Descendant path is invalid", descendant.getPath(), "/test");
 			assertEquals("Descendant ancestorField is invalid", descendant.getAncestorField(), "anotherAncestorValue");
 			assertEquals("Descendant descendantField is invalid", descendant	.getDescendantField(), "descendantValue");
 
-
-
-			Ancestor ancestor = (Ancestor) persistenceManager.getObject(Ancestor.class,"/test");
+			Ancestor ancestor = (Ancestor) persistenceManager.getObject("/test");
 			assertTrue("Invalid object instance", ancestor instanceof Descendant );
 			assertEquals("Ancestor  path is invalid", ancestor.getPath(), "/test");
 			assertEquals("Ancestor ancestorField is invalid", ancestor.getAncestorField(), "anotherAncestorValue");

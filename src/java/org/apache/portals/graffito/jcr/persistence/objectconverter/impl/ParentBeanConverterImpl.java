@@ -25,57 +25,44 @@ import org.apache.portals.graffito.jcr.exception.PersistenceException;
 import org.apache.portals.graffito.jcr.exception.RepositoryException;
 import org.apache.portals.graffito.jcr.mapper.model.BeanDescriptor;
 import org.apache.portals.graffito.jcr.persistence.objectconverter.BeanConverter;
+import org.apache.portals.graffito.jcr.persistence.objectconverter.ObjectConverter;
 
-public class ParentBeanConverterImpl implements BeanConverter {
+public class ParentBeanConverterImpl extends AbstractBeanConverterImpl  implements BeanConverter {
 
 	private final static Log log = LogFactory.getLog(ParentBeanConverterImpl.class);
 	
+	public ParentBeanConverterImpl(ObjectConverter objectConverter) 
+	{
+		super(objectConverter);	
+	}
+
 	public void insert(Session session, Node parentNode, BeanDescriptor descriptor, Object object)
 			throws PersistenceException, RepositoryException, 	JcrMappingException {
-                  try {
-					log.debug("Reference Converter - path : " +parentNode.getPath());
-					log.debug("Reference Converter - descriptor : " + descriptor.getFieldName() + "-" + descriptor.getJcrName());
-					
-				} catch (javax.jcr.RepositoryException e) {
-					throw new RepositoryException(e);
-				} 
 	}
 
 	public void update(Session session, Node parentNode, 	BeanDescriptor descriptor, Object object)
 			throws PersistenceException, RepositoryException,	JcrMappingException {
-        try {
-			log.debug("Reference Converter - path : " +parentNode.getPath());
-			log.debug("Reference Converter - descriptor : " + descriptor.getFieldName() + "-" + descriptor.getJcrName());
-			
-		} catch (javax.jcr.RepositoryException e) {
-			throw new RepositoryException(e);
-		} 
-
-
 	}
 
 	public Object getObject(Session session, Node parentNode,BeanDescriptor descriptor, Class beanClass)
 			throws PersistenceException, RepositoryException,JcrMappingException {
         try {
-			log.debug("Reference Converter - path : " +parentNode.getPath());
-			log.debug("Reference Converter - descriptor : " + descriptor.getFieldName() + "-" + descriptor.getJcrName());
+			log.debug("ParentBeanConverter  - path : " +parentNode.getPath());
+			Node grandParentNode = parentNode.getParent();
+			if (grandParentNode.getPath().equals("/"))
+			{
+				return null;
+			}
+			return objectConverter.getObject(session, grandParentNode.getPath());
 			
 		} catch (javax.jcr.RepositoryException e) {
 			throw new RepositoryException(e);
 		} 
-		return null;
+		
 	}
 
 	public void remove(Session session, Node parentNode,	BeanDescriptor descriptor)
 	          throws PersistenceException,	RepositoryException, JcrMappingException {
-        try {
-			log.debug("Reference Converter - path : " +parentNode.getPath());
-			log.debug("Reference Converter - descriptor : " + descriptor.getFieldName() + "-" + descriptor.getJcrName());
-			
-		} catch (javax.jcr.RepositoryException e) {
-			throw new RepositoryException(e);
-		} 
-
 
 	}
 

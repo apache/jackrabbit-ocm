@@ -83,7 +83,7 @@ public class ProxyTest extends TestBase {
 			//---------------------------------------------------------------------------------------------------------
 			// Retrieve the main object
 			//---------------------------------------------------------------------------------------------------------						
-			main = (Main) persistenceManager.getObject(Main.class, "/test");
+			main = (Main) persistenceManager.getObject( "/test");
 			assertNotNull("detail is null", main.getDetail());
 			assertTrue("Invalid detail bean", main.getDetail().getField().equals("FieldValue"));
 
@@ -115,7 +115,7 @@ public class ProxyTest extends TestBase {
 			// Retrieve the main object
 			//---------------------------------------------------------------------------------------------------------						
 
-			main = (Main) persistenceManager.getObject(Main.class, "/test");
+			main = (Main) persistenceManager.getObject( "/test");
 			assertNotNull("detail is null", main.getDetail());
 			assertTrue("Invalid detail bean", main.getDetail().getField().equals("AnotherFieldValue"));
 
@@ -158,7 +158,7 @@ public class ProxyTest extends TestBase {
 			//---------------------------------------------------------------------------------------------------------
 			// Retrieve the main object
 			//---------------------------------------------------------------------------------------------------------						
-			main = (Main) persistenceManager.getObject(Main.class, "/test");
+			main = (Main) persistenceManager.getObject( "/test");
 			assertNotNull("main is null", main);
 
             Collection result = main.getProxyCollection();
@@ -179,7 +179,7 @@ public class ProxyTest extends TestBase {
 			//---------------------------------------------------------------------------------------------------------
 			// Retrieve the main object
 			//---------------------------------------------------------------------------------------------------------						
-			main = (Main) persistenceManager.getObject(Main.class, "/test");
+			main = (Main) persistenceManager.getObject("/test");
 			assertNotNull("main  is null", main);
             assertEquals("Invalide size",main.getProxyCollection().size(), 101);
             assertNull("nullcollectionproxy  is not null", main.getNullProxyCollection());

@@ -30,5 +30,8 @@ public interface PersistenceConstant
 	public static final String DISCRIMINATOR_NODE_TYPE = "graffito:discriminator";
 	public static final String DISCRIMINATOR_PROPERTY_NAME = "graffito:classname"; 
 	
+	
+	public static final String FROZEN_NODE_TYPE = "nt:frozenNode";
+	public static final String FROZEN_PRIMARY_TYPE_PROPERTY = "jcr:frozenPrimaryType";
         
 }

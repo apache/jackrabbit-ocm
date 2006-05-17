@@ -105,7 +105,7 @@ public class DefaultCollectionConverterImplTest extends TestBase
             // --------------------------------------------------------------------------------
             // Get the object
             // --------------------------------------------------------------------------------           
-            a = (A) persistenceManager.getObject(A.class, "/test");
+            a = (A) persistenceManager.getObject( "/test");
             assertNotNull("a.collection is null", a.getCollection());
             assertEquals("Incorrect a.collection size", 3, a.getCollection().size());
             assertTrue("Incorrect a.collection", ((C) a.getCollection().iterator().next()).getId().equals("first"));
@@ -132,7 +132,7 @@ public class DefaultCollectionConverterImplTest extends TestBase
             // --------------------------------------------------------------------------------
             // Get the object
             // --------------------------------------------------------------------------------           
-            a = (A) persistenceManager.getObject(A.class, "/test");
+            a = (A) persistenceManager.getObject( "/test");
             assertNotNull("a is null", a);
             assertNotNull("a.collection is null", a.getCollection());
             assertTrue("Incorrect collection size", a.getCollection().size() == 2);
@@ -189,7 +189,7 @@ public class DefaultCollectionConverterImplTest extends TestBase
             // --------------------------------------------------------------------------------
             // Get the object
             // --------------------------------------------------------------------------------           
-            a = (A) persistenceManager.getObject(A.class, "/test");
+            a = (A) persistenceManager.getObject( "/test");
             assertNotNull("a.collection is null", a.getCollection());
             assertEquals("Incorrect a.collection size", 3, a.getCollection().size());
             assertEquals("Incorrect a.collection", "first", ((C) a.getCollection().iterator().next()).getId());
@@ -214,7 +214,7 @@ public class DefaultCollectionConverterImplTest extends TestBase
             // --------------------------------------------------------------------------------
             // Get the object
             // --------------------------------------------------------------------------------           
-            a = (A) persistenceManager.getObject(A.class, "/test");
+            a = (A) persistenceManager.getObject( "/test");
             assertNotNull("a is null", a);
             assertNotNull("a.collection is null", a.getCollection());
             assertEquals("Incorrect collection size", 4, a.getCollection().size());

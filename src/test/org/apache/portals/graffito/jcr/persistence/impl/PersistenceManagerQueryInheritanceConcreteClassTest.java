@@ -41,14 +41,14 @@ import org.apache.portals.graffito.jcr.testmodel.inheritance.impl.FolderImpl;
  *
  * @author <a href="mailto:christophe.lombart@gmail.com">Christophe Lombart</a>
  */
-public class PersistenceManagerInheritanceConcreteClassTest extends TestBase {
-	private final static Log log = LogFactory.getLog(PersistenceManagerInheritanceConcreteClassTest.class);
+public class PersistenceManagerQueryInheritanceConcreteClassTest extends TestBase {
+	private final static Log log = LogFactory.getLog(PersistenceManagerQueryInheritanceConcreteClassTest.class);
 
 	/**
 	 * <p>Defines the test case name for junit.</p>
 	 * @param testName The test case name.
 	 */
-	public PersistenceManagerInheritanceConcreteClassTest(String testName) throws Exception {
+	public PersistenceManagerQueryInheritanceConcreteClassTest(String testName) throws Exception {
 		super(testName);
 
 	}
@@ -56,7 +56,7 @@ public class PersistenceManagerInheritanceConcreteClassTest extends TestBase {
 	public static Test suite() {
 		// All methods starting with "test" will be executed in the test suite.
 		return new RepositoryLifecycleTestSetup(new TestSuite(
-				PersistenceManagerInheritanceConcreteClassTest.class));
+				PersistenceManagerQueryInheritanceConcreteClassTest.class));
 	}
 
 	public void tearDown() throws Exception {
@@ -64,68 +64,6 @@ public class PersistenceManagerInheritanceConcreteClassTest extends TestBase {
 		cleanUpRepisotory();
 		super.tearDown();
 		
-	}
-
-
-	public void testRetrieveSingleton() {
-
-		try {
-			PersistenceManager persistenceManager = this.getPersistenceManager();
-
-			//---------------------------------------------------------------------------------------------------------
-			// Insert a  Document 
-			//---------------------------------------------------------------------------------------------------------			
-            DocumentImpl document = new DocumentImpl();
-            document.setPath("/document1");
-            document.setName("document name");
-            document.setContentType("plain/text"); 
-            DocumentStream documentStream = new DocumentStream();
-            documentStream.setEncoding("utf-8");
-            documentStream.setContent("Test Content".getBytes());
-            document.setDocumentStream(documentStream);
-            
-            persistenceManager.insert(document);
-			persistenceManager.save();
-			
-			
-			//---------------------------------------------------------------------------------------------------------
-			// Retrieve a document object
-			//---------------------------------------------------------------------------------------------------------						
-
-			document = (DocumentImpl) persistenceManager.getObject( "/document1");
-			assertEquals("Document path is invalid", document.getPath(), "/document1");
-			assertEquals("Content type  is invalid", document.getContentType(), "plain/text");
-			assertNotNull("document stream is null", document.getDocumentStream());
-			assertTrue("Invalid document stream ", document.getDocumentStream().getEncoding().equals("utf-8"));
-			
-			
-			//---------------------------------------------------------------------------------------------------------
-			// Update  a descendant object
-			//---------------------------------------------------------------------------------------------------------						
-			document.setName("anotherName");
-			persistenceManager.update(document);
-			persistenceManager.save();
-
-			//---------------------------------------------------------------------------------------------------------
-			// Retrieve the updated descendant object
-			//---------------------------------------------------------------------------------------------------------						
-			document = (DocumentImpl) persistenceManager.getObject( "/document1");
-			assertEquals("document name is incorrect", document.getName(), "anotherName");
-			assertEquals("Document path is invalid", document.getPath(), "/document1");
-			assertEquals("Content type  is invalid", document.getContentType(), "plain/text");
-			assertNotNull("document stream is null", document.getDocumentStream());
-			assertTrue("Invalid document stream", document.getDocumentStream().getEncoding().equals("utf-8"));
-
-			CmsObjectImpl cmsObject = (CmsObjectImpl) persistenceManager.getObject( "/document1");
-			assertEquals("cmsObject name is incorrect", cmsObject.getName(), "anotherName");
-			assertEquals("cmsObject path is invalid", cmsObject.getPath(), "/document1");
-           			
-	
-		} catch (Exception e) {
-			e.printStackTrace();
-			fail();
-		}
-
 	}
 
 	

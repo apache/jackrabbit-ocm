@@ -30,6 +30,7 @@ import org.apache.portals.graffito.jcr.mapper.model.CollectionDescriptor;
 import org.apache.portals.graffito.jcr.mapper.model.FieldDescriptor;
 import org.apache.portals.graffito.jcr.testmodel.A;
 import org.apache.portals.graffito.jcr.testmodel.B;
+import org.apache.portals.graffito.jcr.testmodel.C;
 import org.apache.portals.graffito.jcr.testmodel.inheritance.Ancestor;
 import org.apache.portals.graffito.jcr.testmodel.inheritance.AnotherDescendant;
 import org.apache.portals.graffito.jcr.testmodel.inheritance.Descendant;
@@ -72,7 +73,7 @@ public class DigesterMapperImplTest extends TestCase {
 					.buildMapper();
 			assertNotNull("Mapper is null", mapper);
 
-			ClassDescriptor classDescriptor = mapper.getClassDescriptor(A.class);
+			ClassDescriptor classDescriptor = mapper.getClassDescriptorByClass(A.class);
 			assertNotNull("ClassDescriptor is null", classDescriptor);
 			assertTrue("Invalid classname", classDescriptor.getClassName().equals(A.class.getName()));
 			assertTrue("Invalid path field", classDescriptor.getPathFieldDescriptor().getFieldName().equals("path"));
@@ -87,11 +88,31 @@ public class DigesterMapperImplTest extends TestCase {
 			assertTrue("Invalid jcrName for field b", beanDescriptor	.getJcrName().equals("b"));
 			assertEquals("Invalid bean-descriptor inline", true, beanDescriptor.isInline());
 			assertNull("Invalid bean default converter", beanDescriptor.getConverter());
-			assertNull("Invalid bean converter", beanDescriptor	.getBeanConverter());
+			
 
 			CollectionDescriptor collectionDescriptor = classDescriptor.getCollectionDescriptor("collection");
 			assertNotNull("CollectionDescriptor is null", collectionDescriptor);
 			assertTrue("Invalid jcrName for field collection",collectionDescriptor.getJcrName().equals("collection"));
+		} catch (JcrMappingException e) {
+			e.printStackTrace();
+			fail("Impossible to retrieve the converter " + e);
+		}
+	}
+
+	/**
+	 * Simple test mapper
+	 *
+	 */
+	public void testDiscriminatorSetting() {
+		try {
+
+			Mapper mapper = new DigesterMapperImpl("./src/test-config/jcrmapping-testmappings.xml").buildMapper();
+			assertNotNull("Mapper is null", mapper);
+
+			ClassDescriptor classDescriptor = mapper.getClassDescriptorByNodeType("graffito:C");
+			//ClassDescriptor classDescriptor = mapper.getClassDescriptorByClass(C.class);
+			assertNotNull("ClassDescriptor is null", classDescriptor);
+			assertTrue("Invalid classname", classDescriptor.getClassName().equals(C.class.getName()));			
 		} catch (JcrMappingException e) {
 			e.printStackTrace();
 			fail("Impossible to retrieve the converter " + e);
@@ -109,7 +130,7 @@ public class DigesterMapperImplTest extends TestCase {
 			assertNotNull("Mapper is null", mapper);
 
 			ClassDescriptor classDescriptor = mapper
-					.getClassDescriptor(B.class);
+					.getClassDescriptorByClass(B.class);
 			assertNotNull("ClassDescriptor is null", classDescriptor);
 			assertTrue("Invalid classname", classDescriptor.getClassName()
 					.equals(B.class.getName()));
@@ -136,7 +157,7 @@ public class DigesterMapperImplTest extends TestCase {
 			assertEquals(b2Field.getJcrOnParentVersion(), "IGNORE");
 
 			ClassDescriptor classDescriptor2 = mapper
-					.getClassDescriptor(A.class);
+					.getClassDescriptorByClass(A.class);
 			assertNotNull("ClassDescriptor is null", classDescriptor2);
 			assertTrue("Invalid classname", classDescriptor2.getClassName()
 					.equals(A.class.getName()));
@@ -183,7 +204,7 @@ public class DigesterMapperImplTest extends TestCase {
 			assertNotNull("Mapper is null", mapper);
 
 			ClassDescriptor classDescriptor = mapper
-					.getClassDescriptor(Ancestor.class);
+					.getClassDescriptorByClass(Ancestor.class);
 			assertNotNull("Classdescriptor is null", classDescriptor);
 			assertEquals("Incorrect path field", classDescriptor
 					.getPathFieldDescriptor().getFieldName(), "path");
@@ -205,7 +226,7 @@ public class DigesterMapperImplTest extends TestCase {
 			assertEquals("Invalid number of descendants", descendandDescriptors
 					.size(), 2);
 
-			classDescriptor = mapper.getClassDescriptor(Descendant.class);
+			classDescriptor = mapper.getClassDescriptorByClass(Descendant.class);
 			assertNotNull("Classdescriptor is null", classDescriptor);
 			assertEquals("Incorrect path field", classDescriptor
 					.getPathFieldDescriptor().getFieldName(), "path");
@@ -231,7 +252,7 @@ public class DigesterMapperImplTest extends TestCase {
 					"Descendant class  have a node type per hierarchy strategy",
 					classDescriptor.usesNodeTypePerConcreteClassStrategy());
 
-			classDescriptor = mapper.getClassDescriptor(SubDescendant.class);
+			classDescriptor = mapper.getClassDescriptorByClass(SubDescendant.class);
 			assertNotNull("Classdescriptor is null", classDescriptor);
 			assertEquals("Incorrect path field", classDescriptor
 					.getPathFieldDescriptor().getFieldName(), "path");
@@ -279,7 +300,7 @@ public class DigesterMapperImplTest extends TestCase {
 
 			assertNotNull("Mapper is null", mapper);
 
-			ClassDescriptor classDescriptor = mapper.getClassDescriptor(CmsObjectImpl.class);
+			ClassDescriptor classDescriptor = mapper.getClassDescriptorByClass(CmsObjectImpl.class);
 			assertNotNull("Classdescriptor is null", classDescriptor);
 			assertEquals("Incorrect path field", classDescriptor
 					.getPathFieldDescriptor().getFieldName(), "path");
@@ -300,7 +321,7 @@ public class DigesterMapperImplTest extends TestCase {
 			assertEquals("Invalid number of descendants", classDescriptor
 					.getDescendantClassDescriptors().size(), 2);
 
-			classDescriptor = mapper.getClassDescriptor(DocumentImpl.class);
+			classDescriptor = mapper.getClassDescriptorByClass(DocumentImpl.class);
 			assertNotNull("Classdescriptor is null", classDescriptor);
 			assertEquals("Incorrect path field", classDescriptor
 					.getPathFieldDescriptor().getFieldName(), "path");
@@ -339,7 +360,7 @@ public class DigesterMapperImplTest extends TestCase {
 			Mapper mapper = new DigesterMapperImpl(files).buildMapper();
 
 			assertNotNull("Mapper is null", mapper);
-			ClassDescriptor classDescriptor = mapper.getClassDescriptor(Interface.class);
+			ClassDescriptor classDescriptor = mapper.getClassDescriptorByClass(Interface.class);
 			assertNotNull("Classdescriptor is null", classDescriptor);
 			assertTrue("Interface is not an interface", classDescriptor.isInterface());
 			assertTrue("Interface  has not a discriminator", classDescriptor.hasDiscriminator());
@@ -353,7 +374,7 @@ public class DigesterMapperImplTest extends TestCase {
 			assertTrue("Invalid extend strategy", classDescriptor.usesNodeTypePerHierarchyStrategy());
 			assertFalse("Incalid extend strategy", classDescriptor.usesNodeTypePerConcreteClassStrategy());
 			
-			classDescriptor = mapper.getClassDescriptor(AnotherDescendant.class);
+			classDescriptor = mapper.getClassDescriptorByClass(AnotherDescendant.class);
 			assertNotNull("Classdescriptor is null", classDescriptor);
 			assertFalse("Interface is  an interface", classDescriptor.isInterface());
 			assertTrue("AnotherDescendant  has not a discriminator", classDescriptor.hasDiscriminator());
@@ -379,7 +400,7 @@ public class DigesterMapperImplTest extends TestCase {
 			Mapper mapper = new DigesterMapperImpl(files).buildMapper();
 
 			assertNotNull("Mapper is null", mapper);
-			ClassDescriptor classDescriptor = mapper.getClassDescriptor(CmsObject.class);
+			ClassDescriptor classDescriptor = mapper.getClassDescriptorByClass(CmsObject.class);
 			assertNotNull("Classdescriptor is null", classDescriptor);
 			assertTrue("CmsObject is not an interface", classDescriptor.isInterface());
 			assertFalse("Interface  has a discriminator", classDescriptor.hasDiscriminator());
@@ -393,7 +414,7 @@ public class DigesterMapperImplTest extends TestCase {
 			assertTrue("Invalid extend strategy", classDescriptor.usesNodeTypePerConcreteClassStrategy());
 			
 			
-			classDescriptor = mapper.getClassDescriptor(Document.class);
+			classDescriptor = mapper.getClassDescriptorByClass(Document.class);
 			assertNotNull("Classdescriptor is null", classDescriptor);
 			assertTrue("Document is not  an interface", classDescriptor.isInterface());
 			assertFalse("Document  has a discriminator", classDescriptor.hasDiscriminator());
@@ -404,7 +425,7 @@ public class DigesterMapperImplTest extends TestCase {
 			assertEquals("Invalid number of implementation/descendants", descendants.size(),1);
 		
 
-			classDescriptor = mapper.getClassDescriptor(DocumentImpl.class);
+			classDescriptor = mapper.getClassDescriptorByClass(DocumentImpl.class);
 			assertNotNull("Classdescriptor is null", classDescriptor);
 			assertFalse("DocumentImpl is  an interface", classDescriptor.isInterface());
 			assertFalse("DocumentImpl  has a discriminator", classDescriptor.hasDiscriminator());
@@ -432,7 +453,7 @@ public class DigesterMapperImplTest extends TestCase {
 
 			assertNotNull("Mapper is null", mapper);
 
-			ClassDescriptor classDescriptor = mapper.getClassDescriptor(Main.class);
+			ClassDescriptor classDescriptor = mapper.getClassDescriptorByClass(Main.class);
 			assertNotNull("ClassDescriptor is null", classDescriptor);
 			assertTrue("Invalid proxy setting for bean field proxyDetail ", classDescriptor.getBeanDescriptor("proxyDetail").isProxy());
 			assertFalse("Invalid proxy setting for bean field detail  ", classDescriptor.getBeanDescriptor("detail").isProxy());

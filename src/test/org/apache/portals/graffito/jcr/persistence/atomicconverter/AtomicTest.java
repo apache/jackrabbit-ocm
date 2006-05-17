@@ -108,7 +108,7 @@ public class AtomicTest extends TestBase
             // Get the object
             // --------------------------------------------------------------------------------
             a = null;
-            a = (Atomic) persistenceManager.getObject(Atomic.class, "/test");
+            a = (Atomic) persistenceManager.getObject( "/test");
             assertNotNull("a is null", a);
             assertNotNull("Boolean object is null", a.getBooleanObject());
             assertTrue("Incorrect boolean object", a.getBooleanObject().booleanValue());

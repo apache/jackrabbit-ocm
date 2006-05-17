@@ -99,7 +99,7 @@ public class NTCollectionConverterImplTest extends TestBase
             // --------------------------------------------------------------------------------
             // Get the object
             // --------------------------------------------------------------------------------           
-            page = (Page) persistenceManager.getObject(Page.class, "/test");
+            page = (Page) persistenceManager.getObject( "/test");
             assertNotNull("page.getParagraphs is null", page.getParagraphs());
             assertTrue("Incorrect page title", page.getTitle().equals("Page Title"));
             assertTrue("Incorrect page.getParagraphs size", page.getParagraphs().size() == 3);
@@ -123,7 +123,7 @@ public class NTCollectionConverterImplTest extends TestBase
             // Get the object
             // --------------------------------------------------------------------------------           
 
-            page = (Page) persistenceManager.getObject(Page.class, "/test");
+            page = (Page) persistenceManager.getObject( "/test");
             assertNotNull("page.getParagraphs is null", page.getParagraphs());
             assertTrue("Incorrect page title", page.getTitle().equals("Page Title"));
             assertTrue("Incorrect page.getParagraphs size", page.getParagraphs().size() == 4);

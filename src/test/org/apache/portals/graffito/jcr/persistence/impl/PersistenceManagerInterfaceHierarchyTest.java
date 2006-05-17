@@ -86,7 +86,7 @@ public class PersistenceManagerInterfaceHierarchyTest extends TestBase {
 			//---------------------------------------------------------------------------------------------------------
 			// Retrieve 
 			//---------------------------------------------------------------------------------------------------------						
-			Interface result =  (Interface) persistenceManager.getObject(Interface.class, "/test");
+			Interface result =  (Interface) persistenceManager.getObject("/test");
 			assertNotNull("Object is null", result);
 			anotherDescendant = (AnotherDescendant) result; 
 			
