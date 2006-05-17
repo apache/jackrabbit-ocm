@@ -30,5 +30,12 @@ public interface Mapper
      * @param clazz The java bean class
      * @return The mapping class found for the desired java bean class 
      */
-    public abstract ClassDescriptor getClassDescriptor(Class clazz);
+    public abstract ClassDescriptor getClassDescriptorByClass(Class clazz);
+    
+    /**
+     * Get the mapping defition to be used for a specific JCR node type
+     * @param jcrNodeType the jcr node type
+     * @return The mapping class found for the desired java bean class 
+     */
+    public abstract ClassDescriptor getClassDescriptorByNodeType(String jcrNodeType);    
 }

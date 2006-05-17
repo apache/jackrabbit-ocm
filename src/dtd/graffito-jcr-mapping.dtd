@@ -44,6 +44,10 @@
 	discriminator (true|false) "true"
 >
 
+<!--
+   Implement descriptor - This descriptor matches to one java  interface implemented by the class descriptor
+   interfaceName : the full interface name
+-->
 <!ELEMENT implement-descriptor EMPTY>
 
 <!ATTLIST implement-descriptor

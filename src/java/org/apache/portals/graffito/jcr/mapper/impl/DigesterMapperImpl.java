@@ -134,7 +134,9 @@ public class DigesterMapperImpl implements Mapper {
             for (int i = 1; i < this.mappingFiles.length; i++) {
                 log.info("Read the xml mapping file : " +  this.mappingFiles[i]);
                 MappingDescriptor anotherMappingDescriptor = this.descriptorReader.loadClassDescriptors(this.mappingFiles[i]);
-                this.mappingDescriptor.getClassDescriptors().putAll(anotherMappingDescriptor.getClassDescriptors());
+                this.mappingDescriptor.getClassDescriptorsByClassName().putAll(anotherMappingDescriptor.getClassDescriptorsByClassName());
+                this.mappingDescriptor.getClassDescriptorsByNodeType().putAll(anotherMappingDescriptor.getClassDescriptorsByNodeType());
+                
             }
         }
         else if (this.mappingStreams != null && this.mappingStreams.length > 0) {
@@ -145,7 +147,8 @@ public class DigesterMapperImpl implements Mapper {
             for (int i = 1; i < this.mappingStreams.length; i++) {
                 log.info("Read the stream mapping file : " +  this.mappingStreams[i].toString());
                 MappingDescriptor anotherMappingDescriptor = this.descriptorReader.loadClassDescriptors(this.mappingStreams[i]);
-                this.mappingDescriptor.getClassDescriptors().putAll(anotherMappingDescriptor.getClassDescriptors());
+                this.mappingDescriptor.getClassDescriptorsByClassName().putAll(anotherMappingDescriptor.getClassDescriptorsByClassName());
+                this.mappingDescriptor.getClassDescriptorsByNodeType().putAll(anotherMappingDescriptor.getClassDescriptorsByNodeType());
             }
         }
         if (null != this.mappingDescriptor) {
@@ -166,13 +169,13 @@ public class DigesterMapperImpl implements Mapper {
     }
 
     private List solveReferences(List errors) {
-        for(Iterator it = this.mappingDescriptor.getClassDescriptors().entrySet().iterator(); it.hasNext(); ) {
+        for(Iterator it = this.mappingDescriptor.getClassDescriptorsByClassName().entrySet().iterator(); it.hasNext(); ) {
             Map.Entry entry = (Map.Entry) it.next();
             ClassDescriptor cd = (ClassDescriptor) entry.getValue();
 
             if (null != cd.getExtend() && !"".equals(cd.getExtend())) 
             {
-                ClassDescriptor superClassDescriptor = this.mappingDescriptor.getClassDescriptor(cd.getExtend());
+                ClassDescriptor superClassDescriptor = this.mappingDescriptor.getClassDescriptorByName(cd.getExtend());
 
                 if (null == superClassDescriptor) 
                 {
@@ -198,7 +201,7 @@ public class DigesterMapperImpl implements Mapper {
             	      for (Iterator iterator = interfaces.iterator(); iterator.hasNext();)
             	      {
             	    	          String interfaceName= (String) iterator.next();
-                          ClassDescriptor interfaceClassDescriptor = this.mappingDescriptor.getClassDescriptor(interfaceName);
+                          ClassDescriptor interfaceClassDescriptor = this.mappingDescriptor.getClassDescriptorByName(interfaceName);
 
                           if (null == interfaceClassDescriptor) 
                           {
@@ -259,9 +262,17 @@ public class DigesterMapperImpl implements Mapper {
     
     /**
     *
-    * @see org.apache.portals.graffito.jcr.mapper.Mapper#getClassDescriptor(java.lang.Class)
+    * @see org.apache.portals.graffito.jcr.mapper.Mapper#getClassDescriptorByClass(java.lang.Class)
     */
-   public ClassDescriptor getClassDescriptor(Class clazz) {
-       return mappingDescriptor.getClassDescriptor(clazz.getName());
-   }      
+   public ClassDescriptor getClassDescriptorByClass(Class clazz) {
+       return mappingDescriptor.getClassDescriptorByName(clazz.getName());
+   }
+   
+   /**
+   * @see org.apache.portals.graffito.jcr.mapper.Mapper#getClassDescriptorByNodeType(String)
+   */
+  public ClassDescriptor getClassDescriptorByNodeType(String jcrNodeType) {
+      return mappingDescriptor.getClassDescriptorByNodeType(jcrNodeType);
+  }
+   
 }
