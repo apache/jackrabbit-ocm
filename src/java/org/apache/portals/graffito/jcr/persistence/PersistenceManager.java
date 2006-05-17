@@ -75,6 +75,25 @@ public interface PersistenceManager
 
     /**
      * Get an object from the JCR repository 
+     * @param path the object path
+     * @return the object found or null
+     * 
+     * @throws PersistenceException when it is not possible to retrieve the object 
+     */
+    public Object getObject( String path) throws PersistenceException;
+
+    /**
+     * Get an object from the JCR repository 
+     * @param path the object path
+     * @param versionNumber The desired object version number
+     * @return the object found or null
+     * 
+     * @throws PersistenceException when it is not possible to retrieve the object 
+     */
+    public Object getObject(String path, String versionNumber) throws PersistenceException;
+    
+    /**
+     * Get an object from the JCR repository 
      * @param objectClass the object class
      * @param path the object path
      * @return the object found or null

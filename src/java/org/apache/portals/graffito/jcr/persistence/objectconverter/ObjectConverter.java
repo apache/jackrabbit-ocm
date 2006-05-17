@@ -58,8 +58,19 @@ public interface ObjectConverter
      * 
      * @throws PersistenceException when it is not possible to retrieve the object
      */
-    public Object getObject(Session session, Class clazz, String path) throws PersistenceException;
+    public Object getObject(Session session, String path) throws PersistenceException;
     
+    /**
+     * Retrieve an object from the JCR repo
+     * 
+     * @param session The JCR session 
+     * @param clazz The class assigned to the object to retrieve
+     * @param path the JCR path
+     * @return The object found or null
+     * 
+     * @throws PersistenceException when it is not possible to retrieve the object
+     */
+    public Object getObject(Session session, Class clazz, String path) throws PersistenceException;
     
 	/**
 	 * Insert the object 

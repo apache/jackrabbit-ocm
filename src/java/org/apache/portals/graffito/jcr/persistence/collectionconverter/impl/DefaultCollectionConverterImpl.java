@@ -105,7 +105,7 @@ public class DefaultCollectionConverterImpl extends AbstractCollectionConverterI
 
         Node collectionNode = parentNode.addNode(jcrName);
         
-        ClassDescriptor elementClassDescriptor = mapper.getClassDescriptor( ReflectionUtils.forName(collectionDescriptor.getElementClassName())); 
+        ClassDescriptor elementClassDescriptor = mapper.getClassDescriptorByClass( ReflectionUtils.forName(collectionDescriptor.getElementClassName())); 
 
         Iterator collectionIterator = collection.getIterator();
         int elementCollectionCount = 0;
@@ -148,7 +148,7 @@ public class DefaultCollectionConverterImpl extends AbstractCollectionConverterI
         }
 
         
-        ClassDescriptor elementClassDescriptor = mapper.getClassDescriptor( ReflectionUtils.forName(collectionDescriptor.getElementClassName()));         
+        ClassDescriptor elementClassDescriptor = mapper.getClassDescriptorByClass( ReflectionUtils.forName(collectionDescriptor.getElementClassName()));         
         Node collectionNode = parentNode.getNode(jcrName);
         //  If the collection elements have not an id, it is not possible to find the matching JCR nodes => delete the complete collection
         if (!elementClassDescriptor.hasIdField()) {
@@ -225,7 +225,7 @@ public class DefaultCollectionConverterImpl extends AbstractCollectionConverterI
         
         while (children.hasNext()) {
             Node itemNode = children.nextNode();
-            Object item = objectConverter.getObject(session, elementClass, itemNode.getPath());
+            Object item = objectConverter.getObject(session, itemNode.getPath());
             collection.addObject(item);
         }
 

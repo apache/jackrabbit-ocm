@@ -98,7 +98,7 @@ public class MultiValueCollectionConverterImplTest extends TestBase
             // --------------------------------------------------------------------------------
             // Get the object
             // --------------------------------------------------------------------------------           
-            multiValue = (MultiValue) persistenceManager.getObject(MultiValue.class, "/test");
+            multiValue = (MultiValue) persistenceManager.getObject( "/test");
             assertNotNull("Object is null", multiValue);
             assertNull("nullMultiValues field is not null", multiValue.getNullMultiValues());
             assertTrue("Incorrect number of values", multiValue.getMultiValues().size() == 4);            
@@ -122,7 +122,7 @@ public class MultiValueCollectionConverterImplTest extends TestBase
             // Get the object
             // --------------------------------------------------------------------------------           
 
-            multiValue = (MultiValue) persistenceManager.getObject(MultiValue.class, "/test");
+            multiValue = (MultiValue) persistenceManager.getObject( "/test");
             assertNotNull("Object is null", multiValue);
             assertNull("nullMultiValues field is not null", multiValue.getNullMultiValues());
             assertTrue("Incorrect number of values", multiValue.getMultiValues().size() == 5);            

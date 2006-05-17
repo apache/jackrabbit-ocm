@@ -179,6 +179,51 @@ public class PersistenceManagerImpl implements PersistenceManager {
      * @throws JcrMappingException if the mapping for the class is not correct
      * @throws PersistenceException if the object cannot be retrieved from the path
      */
+    public Object getObject( String path) {
+        try {
+            if (!session.itemExists(path)) {
+                return null;
+            }
+        }         
+        catch(RepositoryException e) {
+            throw new org.apache.portals.graffito.jcr.exception.RepositoryException(
+                    "Impossible to get the object at " + path, e);
+        }
+
+        return objectConverter.getObject(session,  path);
+
+    }
+
+    /**
+     * @see org.apache.portals.graffito.jcr.persistence.PersistenceManager#getObject(java.lang.Class, java.lang.String, java.lang.String)
+     */
+    public Object getObject( String path, String versionName) {
+        String pathVersion = null;
+        try {
+            if (!session.itemExists(path)) {
+                return null;
+            }
+
+            Version version = this.getVersion(path, versionName);
+            pathVersion = version.getPath() + "/jcr:frozenNode";
+
+        } 
+        catch(RepositoryException e) {
+            throw new org.apache.portals.graffito.jcr.exception.RepositoryException(
+                    "Impossible to get the object at " + path + " - version :" + versionName,
+                    e);
+        }
+
+        return objectConverter.getObject(session,  pathVersion);
+    }
+
+    /**
+     * @see org.apache.portals.graffito.jcr.persistence.PersistenceManager#getObject(java.lang.Class, java.lang.String)
+     * @throws org.apache.portals.graffito.jcr.exception.RepositoryException if the underlying repository
+     *  has thrown a javax.jcr.RepositoryException
+     * @throws JcrMappingException if the mapping for the class is not correct
+     * @throws PersistenceException if the object cannot be retrieved from the path
+     */
     public Object getObject(Class objectClass, String path) {
         try {
             if (!session.itemExists(path)) {
@@ -215,8 +260,8 @@ public class PersistenceManagerImpl implements PersistenceManager {
         }
 
         return objectConverter.getObject(session, objectClass, pathVersion);
-    }
-
+    }    
+    
     /**
      * @see org.apache.portals.graffito.jcr.persistence.PersistenceManager#insert(java.lang.Object)
      */
@@ -367,7 +412,7 @@ public class PersistenceManagerImpl implements PersistenceManager {
      */
     public boolean isPersistent(final Class clazz) {
         boolean isPersistent = false;
-        ClassDescriptor classDescriptor = mapper.getClassDescriptor(clazz);
+        ClassDescriptor classDescriptor = mapper.getClassDescriptorByClass(clazz);
         if (classDescriptor != null) {
             isPersistent = true;
         }
@@ -396,9 +441,7 @@ public class PersistenceManagerImpl implements PersistenceManager {
             Object object = null;
             if (nodeIterator.hasNext()) {
                 Node node = nodeIterator.nextNode();
-                object = objectConverter.getObject(session,
-                                                   query.getFilter().getFilterClass(),
-                                                   node.getPath());
+                object = objectConverter.getObject(session, node.getPath());
             }
 
             return object;
@@ -430,9 +473,7 @@ public class PersistenceManagerImpl implements PersistenceManager {
             while (nodeIterator.hasNext()) {
                 Node node = nodeIterator.nextNode();
                 log.debug("Node found : " + node.getPath());
-                result.add(objectConverter.getObject(session,
-                                                     query.getFilter().getFilterClass(),
-                                                     node.getPath()));
+                result.add(objectConverter.getObject(session,  node.getPath()));
             }
 
             return result;

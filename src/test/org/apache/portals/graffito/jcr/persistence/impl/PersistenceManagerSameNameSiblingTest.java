@@ -83,10 +83,10 @@ public class PersistenceManagerSameNameSiblingTest extends TestBase
             assertEquals("Incorrect number of objects found", 10, result.size());
                          
             // Get objects
-            Atomic atomic = (Atomic) persistenceManager.getObject(Atomic.class, "/test[2]");
+            Atomic atomic = (Atomic) persistenceManager.getObject( "/test[2]");
             assertNotNull("Object /test[2] not found", atomic);
             
-            atomic = (Atomic) persistenceManager.getObject(Atomic.class, "/test[10]");
+            atomic = (Atomic) persistenceManager.getObject( "/test[10]");
             assertNotNull("Object /test[2] not found", atomic);            
             
             // Update the object 

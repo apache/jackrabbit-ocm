@@ -3,7 +3,7 @@
 <!DOCTYPE graffito-jcr PUBLIC "-//The Apache Software Foundation//DTD Repository//EN" "./src/dtd/graffito-jcr-mapping.dtd">
 <graffito-jcr>
     <class-descriptor
-		className="org.apache.portals.graffito.jcr.testmodel.Atomic" jcrNodeType="nt:unstructured" discriminator="false" >
+		className="org.apache.portals.graffito.jcr.testmodel.Atomic" jcrNodeType="nt:unstructured" discriminator="true" >
 		<field-descriptor fieldName="path" path="true" />
 		<field-descriptor fieldName="string" jcrName="string" />
 		<field-descriptor fieldName="booleanObject" jcrName="booleanObject" />
@@ -20,7 +20,7 @@
 	</class-descriptor>
 
     <class-descriptor
-		className="org.apache.portals.graffito.jcr.testmodel.MultiValue" jcrNodeType="nt:unstructured" discriminator="false" >
+		className="org.apache.portals.graffito.jcr.testmodel.MultiValue" jcrNodeType="nt:unstructured" discriminator="true" >
 		<field-descriptor fieldName="path" path="true" />
 		<field-descriptor fieldName="name" jcrName="name" />
 		<collection-descriptor fieldName="multiValues" jcrName="multiValue" proxy="false" 

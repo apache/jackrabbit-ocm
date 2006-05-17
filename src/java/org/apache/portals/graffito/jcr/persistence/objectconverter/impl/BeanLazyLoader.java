@@ -45,6 +45,6 @@ public class BeanLazyLoader implements LazyLoader
 
 	public Object loadObject() 
 	{				
-		return objectConverter.getObject(session, beanClass, path);		
+		return objectConverter.getObject(session, path);		
 	}
 }

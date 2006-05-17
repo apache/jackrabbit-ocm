@@ -101,7 +101,7 @@ public class HashMapTest extends TestBase
             // --------------------------------------------------------------------------------
             // Get the object
             // --------------------------------------------------------------------------------           
-            main = (Main) persistenceManager.getObject(Main.class, "/test");
+            main = (Main) persistenceManager.getObject( "/test");
             assertNotNull("main.getElements() is null", main.getElements());
             assertTrue("Incorrect text", main.getText().equals("Main text"));           
             assertTrue("Incorrect para element", ((Element) main.getElements().get("e1")).getText().equals("Element 1"));

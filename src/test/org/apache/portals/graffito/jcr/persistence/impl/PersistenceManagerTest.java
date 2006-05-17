@@ -115,7 +115,7 @@ public class PersistenceManagerTest extends TestBase
             // --------------------------------------------------------------------------------
             // Get the object
             // --------------------------------------------------------------------------------           
-            a = (A) persistenceManager.getObject(A.class, "/test");
+            a = (A) persistenceManager.getObject( "/test");
             assertNotNull("a is null", a);
             assertTrue("Incorrect a1", a.getA1().equals("a1"));
             assertNotNull("a.b is null", a.getB());
@@ -139,7 +139,7 @@ public class PersistenceManagerTest extends TestBase
             // --------------------------------------------------------------------------------
             // Get the object
             // --------------------------------------------------------------------------------           
-            a = (A) persistenceManager.getObject(A.class, "/test");
+            a = (A) persistenceManager.getObject("/test");
             assertNotNull("a is null", a);
             assertTrue("Incorrect a1", a.getA1().equals("new value"));
             assertNotNull("a.b is null", a.getB());

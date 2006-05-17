@@ -79,7 +79,7 @@ public class ObjectIterator implements Iterator
 		try
 		{
 			Node node = nodeIterator.nextNode();
-			return objectConverter.getObject(session, objectClass, node.getPath());
+			return objectConverter.getObject(session, node.getPath());
 		}
 		catch (Exception e)
 		{

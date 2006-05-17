@@ -49,7 +49,7 @@ public class QueryImpl implements Query
 	public QueryImpl(Filter filter, Mapper mapper) 
 	{				
 		this.filter = filter;
-		classDescriptor = mapper.getClassDescriptor(filter.getFilterClass());
+		classDescriptor = mapper.getClassDescriptorByClass(filter.getFilterClass());
 	}
 
 	/**

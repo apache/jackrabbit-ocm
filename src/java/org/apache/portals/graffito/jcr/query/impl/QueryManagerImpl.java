@@ -39,7 +39,7 @@ public class QueryManagerImpl implements QueryManager {
     }
 
     public Filter createFilter(Class classQuery) {
-        return new FilterImpl(mapper.getClassDescriptor(classQuery),
+        return new FilterImpl(mapper.getClassDescriptorByClass(classQuery),
                               atomicTypeConverters,
                               classQuery);
     }
@@ -53,7 +53,7 @@ public class QueryManagerImpl implements QueryManager {
         Filter filter = query.getFilter();
 
         // Check if the class has  an inheritance discriminator field
-        ClassDescriptor classDescriptor = mapper.getClassDescriptor(filter.getFilterClass());
+        ClassDescriptor classDescriptor = mapper.getClassDescriptorByClass(filter.getFilterClass());
         if (classDescriptor.hasDiscriminator()) {
             Filter discrininatorFilter = buildDiscriminatorFilter(query, classDescriptor);
             filter = filter.addAndFilter(discrininatorFilter);
@@ -110,7 +110,7 @@ public class QueryManagerImpl implements QueryManager {
     }
 
     private String getNodeType(Filter filter) {
-        ClassDescriptor classDescriptor = mapper.getClassDescriptor(filter.getFilterClass());
+        ClassDescriptor classDescriptor = mapper.getClassDescriptorByClass(filter.getFilterClass());
 
         String jcrNodeType = classDescriptor.getJcrNodeType();
         if (jcrNodeType == null || jcrNodeType.equals(""))
