@@ -122,13 +122,6 @@ public class BeanDescriptor {
         this.converter = converterClass;
     }
 
-    public BeanConverter getBeanConverter() {
-        if(null == this.beanConverter && null != this.converter) {
-            this.beanConverter = (BeanConverter) ReflectionUtils.newInstance(this.converter);
-        }
-        
-        return this.beanConverter;
-    }
     
     /** Getter for property jcrNodeType.
      *

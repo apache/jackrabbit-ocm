@@ -23,6 +23,7 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.portals.graffito.jcr.mapper.Mapper;
 import org.apache.portals.graffito.jcr.mapper.impl.DigesterMapperImpl;
+import org.apache.portals.graffito.jcr.persistence.PersistenceConstant;
 
 /**
  * This class match to the complete xml mapping files.
@@ -34,7 +35,8 @@ import org.apache.portals.graffito.jcr.mapper.impl.DigesterMapperImpl;
 public class MappingDescriptor {
 	
 	private static final Log log = LogFactory.getLog(MappingDescriptor.class);
-    private HashMap classDescriptors = new HashMap();
+    private HashMap classDescriptorsByClassName = new HashMap();
+    private HashMap classDescriptorsByNodeType = new HashMap();
 
     private Mapper mapper;
 
@@ -60,7 +62,13 @@ public class MappingDescriptor {
             }
         }
 
-        classDescriptors.put(classDescriptor.getClassName(), classDescriptor);
+        classDescriptorsByClassName.put(classDescriptor.getClassName(), classDescriptor);
+        
+        if (null != classDescriptor.getJcrNodeType() && !  "".equals(classDescriptor.getJcrNodeType()) && 
+        		 ! PersistenceConstant.NT_UNSTRUCTURED.equals(classDescriptor.getJcrNodeType()))
+        	 {
+             classDescriptorsByNodeType.put(classDescriptor.getJcrNodeType(), classDescriptor);	
+        	 }
         classDescriptor.setMappingDescriptor(this);
     }
 
@@ -69,18 +77,29 @@ public class MappingDescriptor {
      * @param className the class name
      * @return the class descriptor found or null
      */
-    public ClassDescriptor getClassDescriptor(String className) {
-        return (ClassDescriptor) classDescriptors.get(className);
+    public ClassDescriptor getClassDescriptorByName(String className) {
+        return (ClassDescriptor) classDescriptorsByClassName.get(className);
+    }
+    
+    public ClassDescriptor getClassDescriptorByNodeType(String nodeType)
+    {
+        return (ClassDescriptor) classDescriptorsByNodeType.get(nodeType);	
     }
 
     /**
-     * Get all class descriptors
+     * Get all class descriptors by class name
      * @return all class descriptors found
      */
-    public Map getClassDescriptors() {
-        return classDescriptors;
+    public Map getClassDescriptorsByClassName() {
+        return classDescriptorsByClassName;
     }
-
+    /**
+     * Get all class descriptors by class name
+     * @return all class descriptors found
+     */
+    public Map getClassDescriptorsByNodeType() {
+        return classDescriptorsByNodeType;
+    }
     public Mapper getMapper() {
         return this.mapper;
     }
