@@ -350,5 +350,96 @@ public void testBeanCollection() {
      }
 }
 
+public void testAdvancedQuery() {
+
+	try {
+		PersistenceManager persistenceManager = this.getPersistenceManager();
+
+		//---------------------------------------------------------------------------------------------------------
+		// Insert cmsobjects
+		//---------------------------------------------------------------------------------------------------------			
+	    DocumentImpl document = new DocumentImpl();
+	    document.setPath("/document1");
+	    document.setName("document name 1");
+	    document.setContentType("plain/text"); 
+	    DocumentStream documentStream = new DocumentStream();
+	    documentStream.setEncoding("utf-8");
+	    documentStream.setContent("Test Content".getBytes());
+	    document.setDocumentStream(documentStream);        
+	    persistenceManager.insert(document);
+	    
+	    document = new DocumentImpl();
+	    document.setPath("/document2");        
+	    document.setName("document name 2");
+	    document.setContentType("plain/text"); 
+	    documentStream = new DocumentStream();
+	    documentStream.setEncoding("utf-8");
+	    documentStream.setContent("Test Content".getBytes());
+	    document.setDocumentStream(documentStream);       
+	    persistenceManager.insert(document);
+
+	    document = new DocumentImpl();
+	    document.setPath("/document3");        
+	    document.setName("document 3");
+	    document.setContentType("plain/text"); 
+	    documentStream = new DocumentStream();
+	    documentStream.setEncoding("utf-8");
+	    documentStream.setContent("Test Content 3".getBytes());
+	    document.setDocumentStream(documentStream);       
+	    persistenceManager.insert(document);
+	    
+	    FolderImpl folder = new FolderImpl();
+	    folder.setPath("/folder1");
+	    folder.setName("folder1");
+	    persistenceManager.insert(folder);
+
+
+	    document = new DocumentImpl();        
+	    document.setName("document4");
+	    document.setContentType("plain/text"); 
+	    documentStream = new DocumentStream();
+	    documentStream.setEncoding("utf-8");
+	    documentStream.setContent("Test Content 4".getBytes());
+	    document.setDocumentStream(documentStream);       
+
+	    FolderImpl subFolder = new FolderImpl();
+	    subFolder.setName("subfolder");
+	    
+	    folder = new FolderImpl();
+	    folder.setPath("/folder2");
+	    folder.setName("folder2");        
+	    folder.addChild(document);
+	    folder.addChild(subFolder);
+	    persistenceManager.insert(folder);               		
+
+	    
+		Atomic a = new Atomic();
+		a.setPath("/atomic");
+		a.setBooleanPrimitive(true);
+		persistenceManager.insert(a);
+
+		persistenceManager.save();
+
+		//---------------------------------------------------------------------------------------------------------	
+		// Retrieve Folders found on the root level
+		//---------------------------------------------------------------------------------------------------------			
+		QueryManager queryManager = persistenceManager.getQueryManager();
+		Filter filter = queryManager.createFilter(Folder.class);
+		//filter.addJCRExpression("")
+		Query query = queryManager.createQuery(filter);
+		filter.setScope("/");
+		Collection result = persistenceManager.getObjects(query);
+		assertEquals("Invalid number of folders found", result.size(), 2);
+		assertTrue("Invalid item in the collection", this.contains(result, "/folder1",FolderImpl.class));
+		assertTrue("Invalid item in the collection", this.contains(result, "/folder2", FolderImpl.class));		
+		
+		
+	} catch (Exception e) {
+		e.printStackTrace();
+		fail();
+	}
+
+}
+
 	
 }

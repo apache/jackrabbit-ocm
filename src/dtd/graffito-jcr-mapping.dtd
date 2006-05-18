@@ -89,6 +89,9 @@
     * fieldName : the field/attribute name
     * jcrName : the jcr node name (optional). If it is not defined, fieldname is used to specify the jcr node name
     * proxy : Use lazy loading or not. if true, this attributes is not loaded when the main object is retrieved. it will be loaded when the get method is called.
+    * autoRetrieve : If false, the bean associated to this descriptor is not retrieved when the main ojbect is retrieved
+    * autoUpdate : If false, the bean associated to this descriptor is not updated when the main ojbect is updated
+    * autoInsert : If false, the bean associated to this descriptor is not inserted  when the main ojbect is inserted    
     * inline: persist/retrieve bean properties from the current node (if true).
     * converter: fully qualified name of the converter class to be used (default is ObjectConverterImpl)
     * jcrNodeType: defines the child node type, optional
@@ -103,6 +106,9 @@
 	fieldName CDATA #REQUIRED
 	jcrName CDATA #IMPLIED 
 	proxy (true | false) "false" 
+	autoRetrieve (true|false) "true"
+	autoUpdate (true|false) "true"
+	autoInsert (true|false) "true"	
 	inline (true | false) "false"
 	converter CDATA #IMPLIED
 	jcrNodeType CDATA #IMPLIED
@@ -118,12 +124,15 @@
     * fieldName : the field/attribute name (matching to the collection attribute)
     * jcrName : the jcr property name (optional). If it is not defined, fieldname is used to specify the jcr node name
     * proxy : Use lazy loading or not. if true, this attributes is not loaded when the main object is retrieve. it will be loaded when the get method is called.
+    * autoRetrieve : If false, the collection associated to this descriptor is not retrieved when the main ojbect is retrieved
+    * autoUpdate : If false, the collection associated to this descriptor is not updated when the main ojbect is updated
+    * autoInsert : If false, the collection associated to this descriptor is not inserted  when the main ojbect is inserted    
     * elementClassName : contains a fully qualified class name.	This class is the Object type of the persistent collection elements.
     * collectionClassName : contains a fully qualified class name. This class must be the Java type of the Collection attribute. 	
                             This attribute must only specified if the attribute type is not a java.util.Collection (or subclass). 
                             The declared class must implement ManageableCollection to let the persistence engine handles this type of collection.
     * collectionConverter : The class name converter. This is the collection mapping strategy to used. 
-                            If this attribute is not specify, the default collection mapping strategy is used (DefaultCollectionConverterImpl)
+                            If this attribute is not specify, the default collection mapping strategy is used (DefaultCollectionConverterImpl)                            
     * jcrNodeType: defines the child node type, optional
     * jcrAutoCreated (boolean) default is "false"
     * jcrMandatory (boolean) default is "false"
@@ -137,6 +146,9 @@
 	fieldName CDATA #REQUIRED
 	jcrName CDATA #IMPLIED 
 	proxy (true | false) "false"
+	autoRetrieve (true|false) "true"
+	autoUpdate (true|false) "true"
+	autoInsert (true|false) "true"	
 	elementClassName CDATA #REQUIRED
 	collectionClassName CDATA #IMPLIED
 	collectionConverter CDATA #IMPLIED

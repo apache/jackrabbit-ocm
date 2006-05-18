@@ -31,6 +31,9 @@ public class CollectionDescriptor
      private String collectionConverterClassName;
      private String collectionClassName;
      private boolean proxy;
+     private boolean autoRetrieve = true;
+     private boolean autoUpdate = true;
+     private boolean autoInsert = true;     
      private String jcrNodeType;
      private boolean jcrAutoCreated;
      private boolean jcrMandatory;
@@ -101,7 +104,27 @@ public class CollectionDescriptor
         this.proxy = proxy;
     }
     
-    /**
+    
+    
+    public boolean isAutoInsert() {
+		return autoInsert;
+	}
+	public void setAutoInsert(boolean autoInsert) {
+		this.autoInsert = autoInsert;
+	}
+	public boolean isAutoRetrieve() {
+		return autoRetrieve;
+	}
+	public void setAutoRetrieve(boolean autoRetrieve) {
+		this.autoRetrieve = autoRetrieve;
+	}
+	public boolean isAutoUpdate() {
+		return autoUpdate;
+	}
+	public void setAutoUpdate(boolean autoUpdate) {
+		this.autoUpdate = autoUpdate;
+	}
+	/**
      * 
      * @return The collection converter class name 
      */

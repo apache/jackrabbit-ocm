@@ -40,8 +40,7 @@ public class AllTests {
         suite.addTestSuite(PersistenceManagerBasicVersionningTest.class);
         suite.addTestSuite(PersistenceManagerInheritanceConcreteClassTest.class);
         suite.addTestSuite(PersistenceManagerInheritanceHierarchyTest.class);
-        suite.addTestSuite(PersistenceManagerInterfaceConcreteClassTest.class);
-        suite.addTestSuite(PersistenceManagerQueryInheritanceConcreteClassTest.class);
+        suite.addTestSuite(PersistenceManagerInterfaceConcreteClassTest.class);        
         suite.addTestSuite(PersistenceManagerInterfaceHierarchyTest.class);        
         suite.addTestSuite(PersistenceManagerIteratorQueryTest.class);
         suite.addTestSuite(PersistenceManagerMultiValueQueryTest.class);       

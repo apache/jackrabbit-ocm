@@ -32,6 +32,9 @@ public class BeanDescriptor {
     private String fieldName;
     private String jcrName;
     private boolean proxy;
+    private boolean autoRetrieve = true;
+    private boolean autoUpdate = true;
+    private boolean autoInsert = true;
     private boolean inline;
     private String converter;
     private BeanConverter beanConverter;
@@ -83,8 +86,33 @@ public class BeanDescriptor {
     public void setProxy(boolean proxy) {
         this.proxy = proxy;
     }
+       
+    
+    public boolean isAutoInsert() {
+		return autoInsert;
+	}
 
-    /**
+	public void setAutoInsert(boolean autoInsert) {
+		this.autoInsert = autoInsert;
+	}
+
+	public boolean isAutoRetrieve() {
+		return autoRetrieve;
+	}
+
+	public void setAutoRetrieve(boolean autoRetrieve) {
+		this.autoRetrieve = autoRetrieve;
+	}
+
+	public boolean isAutoUpdate() {
+		return autoUpdate;
+	}
+
+	public void setAutoUpdate(boolean autoUpdate) {
+		this.autoUpdate = autoUpdate;
+	}
+
+	/**
      * Are the current bean properties inlined in the parent
      * 
      * @return <tt>true</tt> if bean's properties are inlined in the parent node
