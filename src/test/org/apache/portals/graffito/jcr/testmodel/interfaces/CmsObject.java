@@ -15,10 +15,6 @@
  */
 package org.apache.portals.graffito.jcr.testmodel.interfaces;
 
-import org.apache.portals.graffito.jcr.testmodel.inheritance.impl.FolderImpl;
-
-
-
 public interface CmsObject {
 
 	public String getName();
