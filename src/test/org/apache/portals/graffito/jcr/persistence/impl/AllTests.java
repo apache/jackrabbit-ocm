@@ -37,6 +37,7 @@ public class AllTests {
         TestSuite suite= new TestSuite("Test for org.apache.portals.graffito.jcr.persistence.impl");
         //$JUnit-BEGIN$
         suite.addTestSuite(PersistenceManagerAtomicQueryTest.class);
+        suite.addTestSuite(PersistenceManagerAutoUpdateTest.class);
         suite.addTestSuite(PersistenceManagerBasicVersionningTest.class);
         suite.addTestSuite(PersistenceManagerInheritanceConcreteClassTest.class);
         suite.addTestSuite(PersistenceManagerInheritanceHierarchyTest.class);

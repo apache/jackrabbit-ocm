@@ -9,7 +9,9 @@
 	
 	<class-descriptor className="org.apache.portals.graffito.jcr.testmodel.interfaces.AnotherInterface"  interface="true" />
 
+     
      <!--MAPPING USED TO TEST INTERFACES WITH NODE TYPE   -->	
+     
 	<class-descriptor className="org.apache.portals.graffito.jcr.testmodel.interfaces.CmsObject"  interface="true" discriminator="false"
 	                                   jcrNodeType="graffito:cmsobject" />
 
@@ -57,7 +59,7 @@
 		
 		<field-descriptor fieldName="path" path="true" />
 		<field-descriptor fieldName="name" jcrName="graffito:name"  id="true" />
-		<bean-descriptor  fieldName="parentFolder" 						 
+		<bean-descriptor  fieldName="parentFolder"  					 
 						  converter="org.apache.portals.graffito.jcr.persistence.objectconverter.impl.ParentBeanConverterImpl" />
 
 	</class-descriptor>     
@@ -65,7 +67,7 @@
 	<class-descriptor className="org.apache.portals.graffito.jcr.testmodel.inheritance.impl.FolderImpl" jcrNodeType="graffito:folderimpl" 
 	                                    extend="org.apache.portals.graffito.jcr.testmodel.inheritance.impl.CmsObjectImpl" discriminator="false"  >
 		<implement-descriptor interfaceName="org.apache.portals.graffito.jcr.testmodel.interfaces.Folder" />	  		                                    
-		<collection-descriptor fieldName="children" proxy="true" 
+		<collection-descriptor fieldName="children" proxy="true" autoUpdate="false" 
 		                       elementClassName="org.apache.portals.graffito.jcr.testmodel.inheritance.impl.CmsObjectImpl" 
 		                       collectionConverter="org.apache.portals.graffito.jcr.persistence.collectionconverter.impl.NTCollectionConverterImpl" />
 	</class-descriptor >	
