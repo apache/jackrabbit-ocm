@@ -50,10 +50,10 @@ import org.apache.portals.graffito.jcr.reflection.ReflectionUtils;
  * Example - without an id attribute:
  *   /test (Main object containing the collection field )
  *     /mycollection (extra node used to store the entire collection)
- *          /collection-element1 (node used to store the first collection element)
+ *          /collection-element (node used to store the first collection element)
  *                /item-prop
  *                ....
- *          /collection-element2 (node used to store the second collection element)
+ *          /collection-element (node used to store the second collection element)
  *          ...
  *
  * Example - with an id attribute:
@@ -107,8 +107,7 @@ public class DefaultCollectionConverterImpl extends AbstractCollectionConverterI
         
         ClassDescriptor elementClassDescriptor = mapper.getClassDescriptorByClass( ReflectionUtils.forName(collectionDescriptor.getElementClassName())); 
 
-        Iterator collectionIterator = collection.getIterator();
-        int elementCollectionCount = 0;
+        Iterator collectionIterator = collection.getIterator();        
         while (collectionIterator.hasNext()) {
             Object item = collectionIterator.next();
             String elementJcrName = null;
@@ -119,9 +118,8 @@ public class DefaultCollectionConverterImpl extends AbstractCollectionConverterI
                                                            .getFieldName();
                 elementJcrName = ReflectionUtils.getNestedProperty(item, idFieldName).toString();
             }
-            else {
-                elementCollectionCount++;
-                elementJcrName = COLLECTION_ELEMENT_NAME + elementCollectionCount;
+            else {                
+                elementJcrName = COLLECTION_ELEMENT_NAME;
             }
 
             objectConverter.insert(session, collectionNode, elementJcrName, item);
@@ -157,13 +155,11 @@ public class DefaultCollectionConverterImpl extends AbstractCollectionConverterI
         }
 
         Iterator collectionIterator = collection.getIterator();
-        int elementCollectionCount = 0;
 
         Map updatedItems = new HashMap();
         while (collectionIterator.hasNext()) {
             Object item = collectionIterator.next();
 
-            elementCollectionCount++;
             String elementJcrName = null;
 
             if (elementClassDescriptor.hasIdField()) {
@@ -183,8 +179,7 @@ public class DefaultCollectionConverterImpl extends AbstractCollectionConverterI
                 updatedItems.put(elementJcrName, item);
             }
             else {
-                elementCollectionCount++;
-                elementJcrName = COLLECTION_ELEMENT_NAME + elementCollectionCount;
+                elementJcrName = COLLECTION_ELEMENT_NAME ;
                 objectConverter.insert(session, collectionNode, elementJcrName, item);
             }
         }

@@ -127,34 +127,34 @@ public class PersistenceManagerSameNameSiblingTest extends TestBase
 
 	}
 
-	public void testUnsupportedSameNameSiblings()
-	{
-		     PersistenceManager persistenceManager = getPersistenceManager();
-             try
-             {
-            	 
-            	 Page page = new Page();
-            	 page.setPath("/page");
-            	 page.setTitle("Page Title");            	 
-            	 persistenceManager.insert(page);
-            	 persistenceManager.save();
-            	 
-            	 Paragraph p1 = new Paragraph("para1");
-            	 p1.setPath("/page/paragraph");
-            	 persistenceManager.insert(p1);
-            	 
-            	 Paragraph p2 = new Paragraph("para1");
-            	 p2.setPath("/page/paragraph");
-            	 persistenceManager.insert(p2);
-                 fail();            	 
-            	 
-             }
-             catch(Exception e)
-             {
-    		            	 persistenceManager.remove("/page");
-            	 persistenceManager.save();
-             }
-	}
+//	public void testUnsupportedSameNameSiblings()
+//	{
+//		     PersistenceManager persistenceManager = getPersistenceManager();
+//             try
+//             {
+//            	 
+//            	 Page page = new Page();
+//            	 page.setPath("/page");
+//            	 page.setTitle("Page Title");            	 
+//            	 persistenceManager.insert(page);
+//            	 persistenceManager.save();
+//            	 
+//            	 Paragraph p1 = new Paragraph("para1");
+//            	 p1.setPath("/page/paragraph");
+//            	 persistenceManager.insert(p1);
+//            	 
+//            	 Paragraph p2 = new Paragraph("para1");
+//            	 p2.setPath("/page/paragraph");
+//            	 persistenceManager.insert(p2);
+//             fail();            	 
+//            	 
+//             }
+//             catch(Exception e)
+//             {
+//    		            	 persistenceManager.remove("/page");
+//            	 persistenceManager.save();
+//             }
+//	}
 	
 	
 	private void importData(Date date)

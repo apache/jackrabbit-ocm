@@ -49,7 +49,7 @@
     </supertypes>
     <propertyDefinition name="*" requiredType="undefined" autoCreated="false" mandatory="false" onParentVersion="COPY" protected="false" multiple="false" />
     <propertyDefinition name="graffito:title" requiredType="String" autoCreated="false" mandatory="true" onParentVersion="COPY" protected="false" multiple="false" />
-    <childNodeDefinition name="*" defaultPrimaryType="graffito:paragraph" autoCreated="false" mandatory="false" onParentVersion="COPY" protected="false" sameNameSiblings="false">
+    <childNodeDefinition name="*" defaultPrimaryType="graffito:paragraph" autoCreated="false" mandatory="false" onParentVersion="COPY" protected="false" sameNameSiblings="true">
       <requiredPrimaryTypes>
         <requiredPrimaryType>graffito:paragraph</requiredPrimaryType>
       </requiredPrimaryTypes>

@@ -563,6 +563,11 @@ public class ObjectConverterImpl implements ObjectConverter {
 		Iterator beanDescriptorIterator = classDescriptor.getBeanDescriptors().iterator();
 		while (beanDescriptorIterator.hasNext()) {
 			BeanDescriptor beanDescriptor = (BeanDescriptor) beanDescriptorIterator.next();
+			if  (! beanDescriptor.isAutoRetrieve())
+			{
+				continue;
+			}
+			
 			String beanName = beanDescriptor.getFieldName();
 			Class beanClass = ReflectionUtils.getPropertyType(object, beanName);
 			Object bean = null;
@@ -592,6 +597,11 @@ public class ObjectConverterImpl implements ObjectConverter {
 		Iterator collectionDescriptorIterator = classDescriptor.getCollectionDescriptors().iterator();
 		while (collectionDescriptorIterator.hasNext()) {
 			CollectionDescriptor collectionDescriptor = (CollectionDescriptor) collectionDescriptorIterator.next();
+			if  (! collectionDescriptor.isAutoRetrieve())
+			{
+				continue;
+			}
+			
 			CollectionConverter collectionConverter = this.getCollectionConverter(session, collectionDescriptor);
 			Class collectionFieldClass = ReflectionUtils.getPropertyType(object, collectionDescriptor.getFieldName());
 			ManageableCollection collection = null;
@@ -615,6 +625,12 @@ public class ObjectConverterImpl implements ObjectConverter {
 		Iterator beanDescriptorIterator = classDescriptor.getBeanDescriptors().iterator();
 		while (beanDescriptorIterator.hasNext()) {
 			BeanDescriptor beanDescriptor = (BeanDescriptor) beanDescriptorIterator.next();
+			
+			if  (! beanDescriptor.isAutoInsert())
+			{
+				continue;
+			}
+			
 			String jcrName = beanDescriptor.getJcrName();
 			Object bean = ReflectionUtils.getNestedProperty(object, beanDescriptor.getFieldName());
 			if (bean != null) {
@@ -641,6 +657,11 @@ public class ObjectConverterImpl implements ObjectConverter {
 			Iterator beanDescriptorIterator = classDescriptor.getBeanDescriptors().iterator();
 			while (beanDescriptorIterator.hasNext()) {
 				BeanDescriptor beanDescriptor = (BeanDescriptor) beanDescriptorIterator.next();
+				if  (! beanDescriptor.isAutoUpdate())
+				{
+					continue;
+				}
+				
 				jcrName = beanDescriptor.getJcrName();
 				Object bean = ReflectionUtils.getNestedProperty(object, beanDescriptor.getFieldName());
 
@@ -688,6 +709,12 @@ public class ObjectConverterImpl implements ObjectConverter {
 
 		while (collectionDescriptorIterator.hasNext()) {
 			CollectionDescriptor collectionDescriptor = (CollectionDescriptor) collectionDescriptorIterator.next();
+			
+			if  (! collectionDescriptor.isAutoInsert())
+			{
+				continue;
+			}
+			
 			CollectionConverter collectionConverter = this.getCollectionConverter(session, collectionDescriptor);
 			Object collection = ReflectionUtils.getNestedProperty(object, collectionDescriptor.getFieldName());
 			ManageableCollection manageableCollection = ManageableCollectionUtil.getManageableCollection(collection);
@@ -701,6 +728,11 @@ public class ObjectConverterImpl implements ObjectConverter {
 
 		while (collectionDescriptorIterator.hasNext()) {
 			CollectionDescriptor collectionDescriptor = (CollectionDescriptor) collectionDescriptorIterator.next();
+			if  (! collectionDescriptor.isAutoUpdate())
+			{
+				continue;
+			}
+			
 			CollectionConverter collectionConverter = this.getCollectionConverter(session, collectionDescriptor);
 			Object collection = ReflectionUtils.getNestedProperty(object, collectionDescriptor.getFieldName());
 			ManageableCollection manageableCollection = ManageableCollectionUtil.getManageableCollection(collection);
