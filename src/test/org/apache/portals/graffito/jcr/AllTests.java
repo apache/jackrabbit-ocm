@@ -20,7 +20,7 @@ import junit.framework.Test;
 import junit.framework.TestSuite;
 
 import org.apache.portals.graffito.jcr.mapper.DigesterMapperImplTest;
-import org.apache.portals.graffito.jcr.query.impl.QueryManagerTest;
+import org.apache.portals.graffito.jcr.querymanager.QueryManagerTest;
 import org.apache.portals.graffito.jcr.repository.RepositoryUtilTest;
 
 
@@ -37,18 +37,20 @@ public class AllTests {
 
     public static Test buildSuite() throws Exception {
         TestSuite suite= new TestSuite("Graffito OCM Tests");
-        // individual tests
-        suite.addTestSuite(DigesterMapperImplTest.class);
-        suite.addTestSuite(RepositoryUtilTest.class);
-        suite.addTestSuite(QueryManagerTest.class);
-        
-        
-        // package level tests
-        suite.addTest(org.apache.portals.graffito.jcr.persistence.objectconverter.impl.AllTests.buildSuite());
-        suite.addTest(org.apache.portals.graffito.jcr.persistence.atomicconverter.AllTests.buildSuite());
-        suite.addTest(org.apache.portals.graffito.jcr.persistence.collectionconverter.impl.AllTests.buildSuite());
-        suite.addTest(org.apache.portals.graffito.jcr.persistence.impl.AllTests.buildSuite());
-
+        suite.addTest(org.apache.portals.graffito.jcr.mapper.AllTests.buildSuite());     
+        suite.addTest(org.apache.portals.graffito.jcr.persistence.atomic.AllTests.buildSuite());
+        suite.addTest(org.apache.portals.graffito.jcr.persistence.auto.AllTests.buildSuite());
+        suite.addTest(org.apache.portals.graffito.jcr.persistence.basic.AllTests.buildSuite());
+        suite.addTest(org.apache.portals.graffito.jcr.persistence.beanconverter.AllTests.buildSuite());
+        suite.addTest(org.apache.portals.graffito.jcr.persistence.collectionconverter.AllTests.buildSuite());
+        suite.addTest(org.apache.portals.graffito.jcr.persistence.inheritance.AllTests.buildSuite());
+        suite.addTest(org.apache.portals.graffito.jcr.persistence.interfaces.AllTests.buildSuite());
+        suite.addTest(org.apache.portals.graffito.jcr.persistence.proxy.AllTests.buildSuite());
+        suite.addTest(org.apache.portals.graffito.jcr.persistence.query.AllTests.buildSuite());
+        suite.addTest(org.apache.portals.graffito.jcr.persistence.version.AllTests.buildSuite());
+        suite.addTest(org.apache.portals.graffito.jcr.querymanager.AllTests.buildSuite());
+        suite.addTest(org.apache.portals.graffito.jcr.repository.AllTests.buildSuite());
         return suite;
     }
 }
+
