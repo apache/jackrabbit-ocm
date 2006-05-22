@@ -263,6 +263,22 @@ public class PersistenceManagerImpl implements PersistenceManager {
     }    
     
     /**
+     * @see org.apache.portals.graffito.jcr.persistence.PersistenceManager#retrieveAllMappedAttributes(Object)
+     */
+    public void retrieveAllMappedAttributes(Object object) {
+		objectConverter.retrieveAllMappedAttributes(session, object);
+      
+	}
+
+    /**
+     * @see org.apache.portals.graffito.jcr.persistence.PersistenceManager#retrieveMappedAttribute(Object, String)
+     */    
+	public void retrieveMappedAttribute(Object object, String attributeName) {
+		objectConverter.retrieveMappedAttribute(session, object, attributeName);
+		
+	}
+
+	/**
      * @see org.apache.portals.graffito.jcr.persistence.PersistenceManager#insert(java.lang.Object)
      */
     public void insert(Object object) {

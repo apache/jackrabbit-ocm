@@ -72,6 +72,26 @@ public interface ObjectConverter
      */
     public Object getObject(Session session, Class clazz, String path) throws PersistenceException;
     
+    
+    /**
+     * Retrieve the specified attribute  for the given persistent object.
+     * this attribute is either a bean or a collection. This method is usefull if the corresponding descriptor has an autoRetrieve="false"
+     * 
+     * @param session The JCR session
+     * @param object The persistent object
+     * @param attributeName The name of the attribute to retrieve
+     */
+    public void retrieveMappedAttribute(Session session, Object object, String attributeName);
+
+    
+    /**
+     * Retrieve all mapped  attributes for the given persistent object.
+     * 
+     * @param session The JCR session     
+     * @param object The persistent object
+     */
+    public void retrieveAllMappedAttributes(Session session, Object object);
+    
 	/**
 	 * Insert the object 
 	 * 

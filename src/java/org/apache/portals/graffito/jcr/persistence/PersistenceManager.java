@@ -115,6 +115,23 @@ public interface PersistenceManager
     
     
     /**
+     * Retrieve the specified attribute  for the given persistent object.
+     * this attribute is either a bean or a collection. This method is usefull if the corresponding descriptor has an autoRetrieve="false"
+     * 
+     * @param object The persistent object
+     * @param attributeName The name of the attribute to retrieve
+     */
+    public void retrieveMappedAttribute(Object object, String attributeName);
+
+    
+    /**
+     * Retrieve all mapped  attributes for the given persistent object.
+     * @param object The persistent object
+     */
+    public void retrieveAllMappedAttributes(Object object);
+    
+    
+    /**
      * Remove an object from a JCR repository
      * @param path the object path
      * @throws PersistenceException when it is not possible to remove the object 
