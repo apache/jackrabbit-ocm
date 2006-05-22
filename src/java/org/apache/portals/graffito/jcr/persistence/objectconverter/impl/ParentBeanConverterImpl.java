@@ -46,8 +46,7 @@ public class ParentBeanConverterImpl extends AbstractBeanConverterImpl  implemen
 
 	public Object getObject(Session session, Node parentNode,BeanDescriptor descriptor, Class beanClass)
 			throws PersistenceException, RepositoryException,JcrMappingException {
-        try {
-			log.debug("ParentBeanConverter  - path : " +parentNode.getPath());
+        try {			
 			Node grandParentNode = parentNode.getParent();
 			if (grandParentNode.getPath().equals("/"))
 			{
