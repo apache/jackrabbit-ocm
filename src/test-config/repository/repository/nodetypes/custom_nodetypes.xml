@@ -55,6 +55,20 @@
       </requiredPrimaryTypes>
     </childNodeDefinition>    
   </nodeType>
+  
+    <nodeType name="graffito:pagewithoutsibling" isMixin="false" hasOrderableChildNodes="false" primaryItemName="">
+    <supertypes>
+      <supertype>mix:versionable</supertype>
+      <supertype>nt:base</supertype>
+    </supertypes>
+    <propertyDefinition name="*" requiredType="undefined" autoCreated="false" mandatory="false" onParentVersion="COPY" protected="false" multiple="false" />
+    <propertyDefinition name="graffito:title" requiredType="String" autoCreated="false" mandatory="true" onParentVersion="COPY" protected="false" multiple="false" />
+    <childNodeDefinition name="*" defaultPrimaryType="graffito:paragraph" autoCreated="false" mandatory="false" onParentVersion="COPY" protected="false" sameNameSiblings="false">
+      <requiredPrimaryTypes>
+        <requiredPrimaryType>graffito:paragraph</requiredPrimaryType>
+      </requiredPrimaryTypes>
+    </childNodeDefinition>    
+  </nodeType>
 
   <nodeType name="graffito:element" isMixin="false" hasOrderableChildNodes="false" primaryItemName="">
     <supertypes>
@@ -115,6 +129,17 @@
     <propertyDefinition name="graffito:encoding" requiredType="String" autoCreated="false" mandatory="true" onParentVersion="COPY" protected="false" multiple="false" />
     <propertyDefinition name="graffito:binarycontent" requiredType="Binary" autoCreated="false" mandatory="true" onParentVersion="COPY" protected="false" multiple="false" />    
   </nodeType>
+  
+                                                        
+    <nodeType name="graffito:discriminatorobject" isMixin="false" hasOrderableChildNodes="false" primaryItemName="">
+    <supertypes>
+      <supertype>mix:versionable</supertype>
+      <supertype>nt:base</supertype>
+    </supertypes>
+    <propertyDefinition name="*" requiredType="undefined" autoCreated="false" mandatory="false" onParentVersion="COPY" protected="false" multiple="false" />
+    <propertyDefinition name="graffito:content" requiredType="String" autoCreated="false" mandatory="true" onParentVersion="COPY" protected="false" multiple="false" />
+  </nodeType>
+  
 
    <nodeType name="graffito:discriminator" isMixin="true">
     <supertypes>
