@@ -66,7 +66,7 @@ import org.apache.portals.graffito.jcr.persistence.atomictypeconverter.impl.Stri
 import org.apache.portals.graffito.jcr.persistence.atomictypeconverter.impl.TimestampTypeConverterImpl;
 import org.apache.portals.graffito.jcr.persistence.atomictypeconverter.impl.UtilDateTypeConverterImpl;
 import org.apache.portals.graffito.jcr.persistence.impl.PersistenceManagerImpl;
-import org.apache.portals.graffito.jcr.persistence.impl.PersistenceManagerInheritanceHierarchyTest;
+import org.apache.portals.graffito.jcr.persistence.inheritance.PersistenceManagerInheritanceHierarchyTest;
 import org.apache.portals.graffito.jcr.persistence.objectconverter.ObjectConverter;
 import org.apache.portals.graffito.jcr.persistence.objectconverter.impl.ObjectConverterImpl;
 import org.apache.portals.graffito.jcr.query.QueryManager;
@@ -91,15 +91,15 @@ public abstract class TestBase extends TestCase
 	
 	protected Session session;
 
-	private PersistenceManager persistenceManager;
+	protected PersistenceManager persistenceManager;
 
-	private QueryManager queryManager;
+	protected QueryManager queryManager;
 
 	protected Mapper mapper;
 
     protected AtomicTypeConverterProvider converterProvider;
     
-	private boolean isInit = false;
+    protected boolean isInit = false;
 
 	/**
 	 * <p>
