@@ -24,7 +24,7 @@
 		
 		<bean-descriptor  fieldName="b1" 
 						  jcrName="b1"
-						  converter="org.apache.portals.graffito.jcr.persistence.objectconverter.impl.BeanDescriptorTest$FakeBeanConverter" />
+						  converter="org.apache.portals.graffito.jcr.persistence.beanconverter.FakeBeanConverter" />
 
 	</class-descriptor>
 	

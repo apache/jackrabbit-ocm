@@ -88,5 +88,11 @@
 		<field-descriptor fieldName="id" jcrName="graffito:id"  />
 		<field-descriptor fieldName="text" jcrName="graffito:text" />
 	</class-descriptor>
+	
+	
+	<class-descriptor 	className="org.apache.portals.graffito.jcr.testmodel.Discriminator" 	jcrNodeType="graffito:discriminatorobject" discriminator="true" >
+		<field-descriptor fieldName="path" path="true" />
+		<field-descriptor fieldName="content" jcrName="graffito:content" />
+	</class-descriptor>		
 </graffito-jcr>
  
