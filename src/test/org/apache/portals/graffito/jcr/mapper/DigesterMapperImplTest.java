@@ -69,8 +69,8 @@ public class DigesterMapperImplTest extends TestCase {
 		try {
 
 			Mapper mapper = new DigesterMapperImpl(
-					"./src/test-config/jcrmapping-testmappings.xml")
-					.buildMapper();
+					"./src/test-config/jcrmapping-testmappings.xml");
+					
 			assertNotNull("Mapper is null", mapper);
 
 			ClassDescriptor classDescriptor = mapper.getClassDescriptorByClass(A.class);
@@ -106,7 +106,7 @@ public class DigesterMapperImplTest extends TestCase {
 	public void testDiscriminatorSetting() {
 		try {
 
-			Mapper mapper = new DigesterMapperImpl("./src/test-config/jcrmapping-testmappings.xml").buildMapper();
+			Mapper mapper = new DigesterMapperImpl("./src/test-config/jcrmapping-testmappings.xml");
 			assertNotNull("Mapper is null", mapper);
 
 			ClassDescriptor classDescriptor = mapper.getClassDescriptorByNodeType("graffito:C");
@@ -126,7 +126,7 @@ public class DigesterMapperImplTest extends TestCase {
 	public void testMapperOptionalProperties() {
 		try {
 			Mapper mapper = new DigesterMapperImpl(
-					"./src/test-config/jcrmapping.xml").buildMapper();
+					"./src/test-config/jcrmapping.xml");
 			assertNotNull("Mapper is null", mapper);
 
 			ClassDescriptor classDescriptor = mapper
@@ -199,7 +199,7 @@ public class DigesterMapperImplTest extends TestCase {
 					"./src/test-config/jcrmapping-beandescriptor.xml",
 					"./src/test-config/jcrmapping-inheritance.xml" };			
 			
-			Mapper mapper = new DigesterMapperImpl(files).buildMapper();
+			Mapper mapper = new DigesterMapperImpl(files);
 
 			assertNotNull("Mapper is null", mapper);
 
@@ -296,7 +296,7 @@ public class DigesterMapperImplTest extends TestCase {
 					"./src/test-config/jcrmapping-inheritance.xml" };
 			//      		String[] files = {  "./src/test-config/jcrmapping-inheritance.xml"};
 
-			Mapper mapper = new DigesterMapperImpl(files).buildMapper();
+			Mapper mapper = new DigesterMapperImpl(files);
 
 			assertNotNull("Mapper is null", mapper);
 
@@ -357,7 +357,7 @@ public class DigesterMapperImplTest extends TestCase {
 	public void testInterfaceWithDiscriminator() {
 		try {
 			String[] files = {"./src/test-config/jcrmapping-inheritance.xml"};
-			Mapper mapper = new DigesterMapperImpl(files).buildMapper();
+			Mapper mapper = new DigesterMapperImpl(files);
 
 			assertNotNull("Mapper is null", mapper);
 			ClassDescriptor classDescriptor = mapper.getClassDescriptorByClass(Interface.class);
@@ -397,7 +397,7 @@ public class DigesterMapperImplTest extends TestCase {
 	{
 		try {
 			String[] files = {"./src/test-config/jcrmapping-inheritance.xml"};
-			Mapper mapper = new DigesterMapperImpl(files).buildMapper();
+			Mapper mapper = new DigesterMapperImpl(files);
 
 			assertNotNull("Mapper is null", mapper);
 			ClassDescriptor classDescriptor = mapper.getClassDescriptorByClass(CmsObject.class);
@@ -449,8 +449,7 @@ public class DigesterMapperImplTest extends TestCase {
 		try {
 			String[] files = { "./src/test-config/jcrmapping-proxy.xml" };
 
-			Mapper mapper = new DigesterMapperImpl(files).buildMapper();
-
+			Mapper mapper = new DigesterMapperImpl(files);
 			assertNotNull("Mapper is null", mapper);
 
 			ClassDescriptor classDescriptor = mapper.getClassDescriptorByClass(Main.class);

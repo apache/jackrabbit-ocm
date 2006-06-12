@@ -62,6 +62,7 @@ public class DigesterMapperImpl implements Mapper {
      */
     public DigesterMapperImpl(String xmlFile) {
         this.mappingFiles = new String[] { xmlFile };
+        this.buildMapper();
     }
 
     /**
@@ -72,6 +73,7 @@ public class DigesterMapperImpl implements Mapper {
      */
     public DigesterMapperImpl(String[] files) {
         this.mappingFiles = files;
+        this.buildMapper();
     }
 
     /**
@@ -81,6 +83,7 @@ public class DigesterMapperImpl implements Mapper {
      */
     public DigesterMapperImpl(InputStream stream) {
         this.mappingStreams = new InputStream[] { stream };
+        this.buildMapper();
     }
 
     /**
@@ -91,6 +94,7 @@ public class DigesterMapperImpl implements Mapper {
      */
     public DigesterMapperImpl(InputStream[] streams) {
         this.mappingStreams = streams;
+        this.buildMapper();
     }
 
     /**
@@ -100,6 +104,7 @@ public class DigesterMapperImpl implements Mapper {
      */
     public void setMappingFile(String file) {
         setMappingFiles(new String[] { file });
+        this.buildMapper();
     }
 
     /**
@@ -122,7 +127,7 @@ public class DigesterMapperImpl implements Mapper {
         this.descriptorReader = reader;
     }
 
-    public Mapper buildMapper() {
+    private Mapper buildMapper() {
         if (this.descriptorReader == null) {
             this.descriptorReader = new DigesterDescriptorReader();
         }
