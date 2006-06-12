@@ -144,6 +144,16 @@ public class PersistenceManagerScopeQueryTest extends TestBase
     	      result = persistenceManager.getObjects(query);
     	      assertTrue("Invalid number of objects - should be = 4", result.size() == 4);
     	      
+    	      queryManager = this.getQueryManager();
+    	      filter = queryManager.createFilter(Page.class);    
+    	      filter.setScope("/test/node1/");    	      
+    	      query = queryManager.createQuery(filter);    	      
+    	      persistenceManager = this.getPersistenceManager();
+    	      result = persistenceManager.getObjects(query);
+    	      assertTrue("Invalid number of objects - should be = 2", result.size() == 2);
+    	      assertTrue ("Invalid object in the collection" , this.contains(result, "/test/node1/page1", Page.class));
+    	      assertTrue ("Invalid object in the collection" , this.contains(result, "/test/node1/page2", Page.class));
+    	      
         }
         catch (Exception e)
         {
