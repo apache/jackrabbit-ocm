@@ -44,11 +44,11 @@ public class RepositoryUtil
     
     /** Graffito namespace prefix constant.
      */
-    private static final String GRAFFITO_NAMESPACE_PREFIX   = "graffito";
+    public static final String GRAFFITO_NAMESPACE_PREFIX   = "graffito";
 
     /** Graffito namespace constant.
      */
-    private static final String GRAFFITO_NAMESPACE          = "http://incubator.apache.org/graffito";    
+    public static final String GRAFFITO_NAMESPACE          = "http://incubator.apache.org/graffito";    
     /** Item path separator */
     public static final String PATH_SEPARATOR = "/";
     

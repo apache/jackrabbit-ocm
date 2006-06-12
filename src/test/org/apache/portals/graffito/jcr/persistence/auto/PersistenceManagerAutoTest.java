@@ -159,7 +159,7 @@ public class PersistenceManagerAutoTest extends TestBase {
 		session = RepositoryUtil.login(repository, "superuser", "superuser");
 
 		
-		mapper = new DigesterMapperImpl(files).buildMapper();
+		mapper = new DigesterMapperImpl(files);
         converterProvider = new DefaultAtomicTypeConverterProvider();
         Map atomicTypeConverters = converterProvider.getAtomicTypeConverters();
 		queryManager = new QueryManagerImpl(mapper, atomicTypeConverters);

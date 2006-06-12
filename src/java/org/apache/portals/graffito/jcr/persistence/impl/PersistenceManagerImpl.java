@@ -117,7 +117,7 @@ public class PersistenceManagerImpl implements PersistenceManager {
     public PersistenceManagerImpl(Session session,String[] xmlMappingFiles ) 
     {
         this.session = session;
-		this.mapper = new DigesterMapperImpl(xmlMappingFiles).buildMapper();
+		this.mapper = new DigesterMapperImpl(xmlMappingFiles);
 		DefaultAtomicTypeConverterProvider converterProvider = new DefaultAtomicTypeConverterProvider();
         Map atomicTypeConverters = converterProvider.getAtomicTypeConverters();
 		this.queryManager = new QueryManagerImpl(mapper, atomicTypeConverters);
