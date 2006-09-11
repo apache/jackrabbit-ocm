@@ -95,6 +95,16 @@
     </supertypes>
   </nodeType>
 
+   <nodeType name="graffito:documentstream" isMixin="false" hasOrderableChildNodes="false" primaryItemName="">
+    <supertypes>
+      <supertype>mix:versionable</supertype>
+      <supertype>nt:base</supertype>
+    </supertypes>
+    <propertyDefinition name="*" requiredType="undefined" autoCreated="false" mandatory="true" onParentVersion="COPY" protected="false" multiple="false" />
+    <propertyDefinition name="graffito:encoding" requiredType="String" autoCreated="false" mandatory="true" onParentVersion="COPY" protected="false" multiple="false" />
+    <propertyDefinition name="graffito:binarycontent" requiredType="Binary" autoCreated="false" mandatory="true" onParentVersion="COPY" protected="false" multiple="false" />    
+  </nodeType>
+
 
    <nodeType name="graffito:documentimpl" isMixin="false" hasOrderableChildNodes="false" primaryItemName="">
     <supertypes>
@@ -119,18 +129,7 @@
       </requiredPrimaryTypes>
     </childNodeDefinition>        
   </nodeType>
-
-   <nodeType name="graffito:documentstream" isMixin="false" hasOrderableChildNodes="false" primaryItemName="">
-    <supertypes>
-      <supertype>mix:versionable</supertype>
-      <supertype>nt:base</supertype>
-    </supertypes>
-    <propertyDefinition name="*" requiredType="undefined" autoCreated="false" mandatory="true" onParentVersion="COPY" protected="false" multiple="false" />
-    <propertyDefinition name="graffito:encoding" requiredType="String" autoCreated="false" mandatory="true" onParentVersion="COPY" protected="false" multiple="false" />
-    <propertyDefinition name="graffito:binarycontent" requiredType="Binary" autoCreated="false" mandatory="true" onParentVersion="COPY" protected="false" multiple="false" />    
-  </nodeType>
-  
-                                                        
+                                                         
     <nodeType name="graffito:discriminatorobject" isMixin="false" hasOrderableChildNodes="false" primaryItemName="">
     <supertypes>
       <supertype>mix:versionable</supertype>
