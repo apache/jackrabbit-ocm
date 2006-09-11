@@ -28,6 +28,7 @@ import org.apache.portals.graffito.jcr.exception.JcrMappingException;
 import org.apache.portals.graffito.jcr.persistence.collectionconverter.impl.ManageableArrayList;
 import org.apache.portals.graffito.jcr.persistence.collectionconverter.impl.ManageableSet;
 import org.apache.portals.graffito.jcr.persistence.collectionconverter.impl.ManageableVector;
+import org.apache.portals.graffito.jcr.reflection.ReflectionUtils;
 
 /**
  * Utility class used to instantiate {@link ManageableCollection}
@@ -44,9 +45,7 @@ public class ManageableCollectionUtil {
      */
     public static ManageableCollection getManageableCollection(String manageableCollectionClassName) {
         try {
-            Class collectionClass = Class.forName(manageableCollectionClassName);
-
-            return (ManageableCollection) collectionClass.newInstance();
+            return (ManageableCollection) ReflectionUtils.newInstance(manageableCollectionClassName);
         }
         catch (Exception e) {
             throw new JcrMappingException("Cannot create manageable collection : "

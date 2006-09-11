@@ -164,7 +164,7 @@ public abstract class TestBase extends TestCase
     protected void registerNodeTypes(Session session) 
     throws InvalidNodeTypeDefException, javax.jcr.RepositoryException, IOException {
         InputStream xml = new FileInputStream(
-                "./src/test-config/repository/repository/nodetypes/custom_nodetypes.xml");
+                "./src/test-config/nodetypes/custom_nodetypes.xml");
 
         // HINT: throws InvalidNodeTypeDefException, IOException
         NodeTypeDef[] types = NodeTypeReader.read(xml);
