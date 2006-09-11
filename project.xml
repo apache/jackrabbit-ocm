@@ -40,10 +40,20 @@
 
 	<dependencies>
 		<dependency>
-			<groupId>org.apache.jackrabbit</groupId>
-			<artifactId>jackrabbit</artifactId>
-			<version>1.0-20060108-SNAPSHOT</version>
+			<groupId>org.apache.jackrabbit</groupId>	
++			<artifactId>jackrabbit-core</artifactId>
++			<version>1.0</version>
 		</dependency>
+		<dependency>
+			<!-- slf4j-log4j12 -->
+			<groupId>org.slf4j</groupId>
+			<artifactId>slf4j-log4j12</artifactId>
+			<version>1.0</version>
+			<url>http://www.slf4j.org/download.html</url>
+			<!--
+			    SLF4J adapter for log4j.
+			    -->
+                </dependency>		
 		<dependency>
 			<groupId>concurrent</groupId>
 			<artifactId>concurrent</artifactId>

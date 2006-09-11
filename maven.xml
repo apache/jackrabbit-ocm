@@ -18,19 +18,6 @@
   	     xmlns:maven="jelly:maven"
         >
 		
-		
-  <!-- ================================================================ -->
-  <!-- TEST                                                             -->
-  <!-- ================================================================ -->	 
-  <preGoal name="test:test">
-       <attainGoal name="testSetup"/>  
-  </preGoal> 
-   
-  <goal name="testSetup">
-  	<copy todir="target/repository" overwrite="true" >   
-  		<fileset dir="src/test-config/repository" includes="**/*"/>
-  	</copy>
-  </goal>       		
 </project>
 
 
