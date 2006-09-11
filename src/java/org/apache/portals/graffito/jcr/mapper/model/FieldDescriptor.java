@@ -15,6 +15,9 @@
  */
 package org.apache.portals.graffito.jcr.mapper.model;
 
+import org.apache.portals.graffito.jcr.exception.JcrMappingException;
+import org.apache.portals.graffito.jcr.reflection.ReflectionUtils;
+
 
 /**
  *
@@ -278,9 +281,9 @@ public class FieldDescriptor {
         }
         else {
             try {
-                return Class.forName(this.fieldType);
+                return ReflectionUtils.forName(this.fieldType);
             }
-            catch (ClassNotFoundException cnfe) {
+            catch (JcrMappingException jme) {
                 ; // nothing to do; it will be dynamically determined
             }
         }

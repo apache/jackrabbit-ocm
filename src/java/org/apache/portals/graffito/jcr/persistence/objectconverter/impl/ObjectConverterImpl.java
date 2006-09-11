@@ -258,7 +258,7 @@ public class ObjectConverterImpl implements ObjectConverter {
 			Node node = (Node) session.getItem(path);
 			if (node.hasProperty(PersistenceConstant.DISCRIMINATOR_PROPERTY_NAME)) {
 				String className = node.getProperty(PersistenceConstant.DISCRIMINATOR_PROPERTY_NAME).getValue().getString();
-				classDescriptor = mapper.getClassDescriptorByClass(Class.forName(className));
+				classDescriptor = mapper.getClassDescriptorByClass(ReflectionUtils.forName(className));
 			} else {
 				String nodeType = node.getPrimaryNodeType().getName();
 				if (nodeType.equals(PersistenceConstant.FROZEN_NODE_TYPE)) {
@@ -279,8 +279,8 @@ public class ObjectConverterImpl implements ObjectConverter {
 			retrieveCollectionFields(session, classDescriptor, node, object, false);
 
 			return object;
-		} catch (ClassNotFoundException clnf) {
-			throw new PersistenceException("Impossible to instantiate the object at " + path, clnf);
+//		} catch (ClassNotFoundException clnf) {
+//			throw new PersistenceException("Impossible to instantiate the object at " + path, clnf);
 		} catch (PathNotFoundException pnfe) {
 			// HINT should never get here
 			throw new PersistenceException("Impossible to get the object at " + path, pnfe);
@@ -316,7 +316,7 @@ public class ObjectConverterImpl implements ObjectConverter {
 				}
 
 				String className = node.getProperty(PersistenceConstant.DISCRIMINATOR_PROPERTY_NAME).getValue().getString();
-				classDescriptor = getClassDescriptor(Class.forName(className));
+				classDescriptor = getClassDescriptor(ReflectionUtils.forName(className));
 				object = ReflectionUtils.newInstance(className);
 			} else {
 				if (classDescriptor.usesNodeTypePerConcreteClassStrategy()) {
@@ -334,8 +334,8 @@ public class ObjectConverterImpl implements ObjectConverter {
 			retrieveCollectionFields(session, classDescriptor, node, object, false);
 
 			return object;
-		} catch (ClassNotFoundException clnf) {
-			throw new PersistenceException("Impossible to instantiate the object at " + path, clnf);
+//		} catch (ClassNotFoundException clnf) {
+//			throw new PersistenceException("Impossible to instantiate the object at " + path, clnf);
 		} catch (PathNotFoundException pnfe) {
 			// HINT should never get here
 			throw new PersistenceException("Impossible to get the object at " + path, pnfe);

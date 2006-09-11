@@ -30,6 +30,36 @@ import org.apache.portals.graffito.jcr.exception.JcrMappingException;
  * @author <a href='mailto:the_mindstorm[at]evolva[dot]ro'>Alexandru Popescu</a>
  */
 abstract public class ReflectionUtils {
+    
+    // default the class loader to the load of this class
+    private static ClassLoader classLoader = ReflectionUtils.class.getClassLoader();
+    
+    /**
+     * Sets the class loader to use in the {@link #forName(String)} method to
+     * load classes.
+     * <p>
+     * Care must be taken when using this method as when setting an improperly
+     * set up classloader, the mapper will not work again throwing tons of
+     * exceptions.
+     * 
+     * @param newClassLoader The new class loader to use. This may be
+     *      <code>null</code> in which case the system class loader will be used.
+     */
+    public static void setClassLoader(ClassLoader newClassLoader) {
+        classLoader = newClassLoader;
+    }
+    
+    /**
+     * Returns the class loader which is used by the {@link #forName(String)}
+     * method to load classes.
+     * 
+     * @return The class loader used by {@link #forName(String)} or
+     *      <code>null</code> if the system class loader is used.
+     */
+    public static ClassLoader getClassLoader() {
+        return classLoader;
+    }
+    
     public static Object getNestedProperty(Object object, String fieldName) {
         if (null == object) {
             return null;
@@ -84,7 +114,7 @@ abstract public class ReflectionUtils {
      */
     public static Object  invokeConstructor(String className,  Object[] params) {
         try {
-            Class converterClass= Class.forName(className);
+            Class converterClass= forName(className);
     
             return  ConstructorUtils.invokeConstructor(converterClass, params);
         }
@@ -114,7 +144,7 @@ abstract public class ReflectionUtils {
      */
     public static Object newInstance(String clazz) {
         try {
-            return Class.forName(clazz).newInstance();
+            return forName(clazz).newInstance();
         }
         catch(Exception ex) {
             throw new JcrMappingException("Cannot create instance for class "  + clazz, ex);
@@ -127,7 +157,7 @@ abstract public class ReflectionUtils {
      */
     public static Class forName(String clazz) {
         try {
-            return Class.forName(clazz);
+            return Class.forName(clazz, true, getClassLoader());
         }
         catch(Exception ex) {
             throw new JcrMappingException("Cannot load class " + clazz, ex);
