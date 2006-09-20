@@ -204,7 +204,8 @@
 		<report>maven-javadoc-plugin</report>
 		<report>maven-changelog-plugin</report>
 		<report>maven-file-activity-plugin</report>
-		<report>maven-jcoverage-plugin</report>
+		<!-- Remove jcoverage : it causes a build failure with jdk 1.5 - need more investigation -->
+		<!-- report>maven-jcoverage-plugin</report -->
 		<report>maven-changelog-plugin</report>
 		<report>maven-changes-plugin</report>
 		<!-- <report>maven-checkstyle-plugin</report> -->
