@@ -41,8 +41,8 @@
 	<dependencies>
 		<dependency>
 			<groupId>org.apache.jackrabbit</groupId>	
-+			<artifactId>jackrabbit-core</artifactId>
-+			<version>1.0</version>
+			<artifactId>jackrabbit-core</artifactId>
+			<version>1.0</version>
 		</dependency>
 		<dependency>
 			<!-- slf4j-log4j12 -->
