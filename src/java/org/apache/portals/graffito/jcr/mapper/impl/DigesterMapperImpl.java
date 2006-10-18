@@ -25,6 +25,7 @@ import java.util.List;
 import java.util.Map;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.apache.portals.graffito.jcr.exception.IncorrectPersistentClassException;
 import org.apache.portals.graffito.jcr.exception.InitMapperException;
 import org.apache.portals.graffito.jcr.exception.JcrMappingException;
 import org.apache.portals.graffito.jcr.mapper.Mapper;
@@ -270,14 +271,22 @@ public class DigesterMapperImpl implements Mapper {
     * @see org.apache.portals.graffito.jcr.mapper.Mapper#getClassDescriptorByClass(java.lang.Class)
     */
    public ClassDescriptor getClassDescriptorByClass(Class clazz) {
-       return mappingDescriptor.getClassDescriptorByName(clazz.getName());
+	   ClassDescriptor descriptor = mappingDescriptor.getClassDescriptorByName(clazz.getName());
+	   if (descriptor==null) {
+			throw new IncorrectPersistentClassException("Class of type: " + clazz.getName() + " has no descriptor.");
+	   }
+       return descriptor ; 
    }
    
    /**
    * @see org.apache.portals.graffito.jcr.mapper.Mapper#getClassDescriptorByNodeType(String)
    */
   public ClassDescriptor getClassDescriptorByNodeType(String jcrNodeType) {
-      return mappingDescriptor.getClassDescriptorByNodeType(jcrNodeType);
+	  ClassDescriptor descriptor = mappingDescriptor.getClassDescriptorByNodeType(jcrNodeType);
+	   if (descriptor==null) {
+			throw new IncorrectPersistentClassException("Node type: " + jcrNodeType + " has no descriptor.");
+	   }
+      return descriptor ;      
   }
    
 }
