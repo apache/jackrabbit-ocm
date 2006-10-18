@@ -22,7 +22,7 @@ package org.apache.portals.graffito.jcr.mapper.model;
  * @author <a href="mailto:christophe.lombart@sword-technologies.com">Lombart Christophe </a>
  * 
  */
-public class CollectionDescriptor
+public class CollectionDescriptor implements ChildNodeDefDescriptor, PropertyDefDescriptor
 {
 
      private String fieldName;
@@ -35,11 +35,13 @@ public class CollectionDescriptor
      private boolean autoUpdate = true;
      private boolean autoInsert = true;     
      private String jcrNodeType;
+     private String jcrType;
      private boolean jcrAutoCreated;
      private boolean jcrMandatory;
      private String jcrOnParentVersion;
      private boolean jcrProtected;
      private boolean jcrSameNameSiblings;     
+     private boolean jcrMultiple;
      
      private ClassDescriptor classDescriptor;
     
@@ -197,6 +199,24 @@ public class CollectionDescriptor
         this.jcrNodeType = value;
     }
 
+    /**
+     * Getter for property jcrType.
+     * 
+     * @return jcrType
+     */
+    public String getJcrType() {
+        return jcrType;
+    }
+
+    /**
+     * Setter for property jcrType.
+     * 
+     * @param value jcrType
+     */
+    public void setJcrType(String value) {
+        this.jcrType = value;
+    }
+
     /** Getter for property jcrAutoCreated.
      * 
      * @return jcrAutoCreated
@@ -287,6 +307,24 @@ public class CollectionDescriptor
         this.jcrSameNameSiblings = value;
     }
     
+    /**
+     * Getter for property jcrMultiple.
+     * 
+     * @return jcrMultiple
+     */
+    public boolean isJcrMultiple() {
+        return jcrMultiple;
+    }
+
+    /**
+     * Setter for property jcrMultiple.
+     * 
+     * @param value jcrMultiple
+     */
+    public void setJcrMultiple(boolean value) {
+        this.jcrMultiple = value;
+    }
+
 	public String toString() {
 		
 		return "Collection Descriptor : " +  this.getFieldName();

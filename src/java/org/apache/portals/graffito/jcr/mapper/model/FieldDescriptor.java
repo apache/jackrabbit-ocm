@@ -27,7 +27,7 @@ import org.apache.portals.graffito.jcr.reflection.ReflectionUtils;
  * @author <a href="mailto:christophe.lombart@sword-technologies.com">Lombart Christophe </a>
  *
  */
-public class FieldDescriptor {
+public class FieldDescriptor implements PropertyDefDescriptor {
     private String fieldName;
     private String fieldType;
     private Class fieldTypeClass;
