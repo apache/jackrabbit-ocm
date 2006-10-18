@@ -40,6 +40,7 @@ import javax.jcr.version.VersionHistory;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.portals.graffito.jcr.exception.IllegalUnlockException;
+import org.apache.portals.graffito.jcr.exception.IncorrectPersistentClassException;
 import org.apache.portals.graffito.jcr.exception.JcrMappingException;
 import org.apache.portals.graffito.jcr.exception.LockedException;
 import org.apache.portals.graffito.jcr.exception.PersistenceException;
@@ -427,13 +428,17 @@ public class PersistenceManagerImpl implements PersistenceManager {
      * @see org.apache.portals.graffito.jcr.persistence.PersistenceManager#isPersistent(java.lang.Class)
      */
     public boolean isPersistent(final Class clazz) {
-        boolean isPersistent = false;
-        ClassDescriptor classDescriptor = mapper.getClassDescriptorByClass(clazz);
-        if (classDescriptor != null) {
-            isPersistent = true;
+        
+        try 
+        {
+    	    ClassDescriptor classDescriptor = mapper.getClassDescriptorByClass(clazz);
+    	    return true;
+        }
+        catch(IncorrectPersistentClassException e)
+        {
+        	return false;
         }
 
-        return isPersistent;
     }
 
     /**
