@@ -77,6 +77,7 @@ public class PersistenceManagerInheritanceHierarchyTest extends TestBase {
 			Descendant descendant = new Descendant();
 			descendant.setDescendantField("descendantValue");
 			descendant.setAncestorField("ancestorValue");
+			descendant.setIntField(200);
 			descendant.setPath("/test");
 			persistenceManager.insert(descendant);
 			persistenceManager.save();
@@ -88,12 +89,14 @@ public class PersistenceManagerInheritanceHierarchyTest extends TestBase {
 			descendant = (Descendant) persistenceManager.getObject(	 "/test");
 			assertEquals("Descendant path is invalid", descendant.getPath(), "/test");
 			assertEquals("Descendant ancestorField is invalid", descendant.getAncestorField(), "ancestorValue");
-			assertEquals("Descendant descendantField is invalid", descendant	.getDescendantField(), "descendantValue");
+			assertEquals("Descendant descendantField is invalid", descendant.getDescendantField(), "descendantValue");
+			assertEquals("Descendant intField is invalid", descendant.getIntField(), 200);
 
 			//---------------------------------------------------------------------------------------------------------
 			// Update  a descendant object
 			//---------------------------------------------------------------------------------------------------------						
 			descendant.setAncestorField("anotherAncestorValue");
+			descendant.setIntField(123);
 			persistenceManager.update(descendant);
 			persistenceManager.save();
 
@@ -105,6 +108,7 @@ public class PersistenceManagerInheritanceHierarchyTest extends TestBase {
 			assertEquals("Descendant path is invalid", descendant.getPath(), "/test");
 			assertEquals("Descendant ancestorField is invalid", descendant.getAncestorField(), "anotherAncestorValue");
 			assertEquals("Descendant descendantField is invalid", descendant	.getDescendantField(), "descendantValue");
+			assertEquals("Descendant intField is invalid", descendant.getIntField(), 123);
 
 			Ancestor ancestor = (Ancestor) persistenceManager.getObject("/test");
 			assertTrue("Invalid object instance", ancestor instanceof Descendant );

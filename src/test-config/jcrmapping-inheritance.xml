@@ -35,7 +35,9 @@
 	<class-descriptor className="org.apache.portals.graffito.jcr.testmodel.inheritance.Descendant" 
 	                                   extend="org.apache.portals.graffito.jcr.testmodel.inheritance.Ancestor">
 	    <implement-descriptor interfaceName="org.apache.portals.graffito.jcr.testmodel.interfaces.AnotherInterface" />
+	    	    
 		<field-descriptor fieldName="descendantField" jcrName="descendantField" />  
+		<field-descriptor fieldName="intField" jcrName="intField" />  
 	</class-descriptor >
 
 	<class-descriptor className="org.apache.portals.graffito.jcr.testmodel.inheritance.AnotherDescendant" 
