@@ -536,55 +536,89 @@ public class ObjectConverterImpl implements ObjectConverter {
 	 * @throws JcrMappingException
 	 * @throws org.apache.portals.graffito.jcr.exception.RepositoryException
 	 */
-	private Object retrieveSimpleFields(Session session, ClassDescriptor classDescriptor, Node node, Object object) {
+	private Object retrieveSimpleFields(Session session, ClassDescriptor classDescriptor, Node node, Object object) 
+	{
 		Object initializedBean = object;
-		try {
+		try 
+		{
 			Iterator fieldDescriptorIterator = classDescriptor.getFieldDescriptors().iterator();
 
-			while (fieldDescriptorIterator.hasNext()) {
+			while (fieldDescriptorIterator.hasNext()) 
+			{
 				FieldDescriptor fieldDescriptor = (FieldDescriptor) fieldDescriptorIterator.next();
 
 				String fieldName = fieldDescriptor.getFieldName();
 				String propertyName = fieldDescriptor.getJcrName();
 
-				if (fieldDescriptor.isPath()) {
-					// HINT: lazy initialize target bean - The bean can be null
-					// when it is inline
-					if (null == initializedBean) {
+				if (fieldDescriptor.isPath()) 
+				{
+					// HINT: lazy initialize target bean - The bean can be null when it is inline
+					if (null == initializedBean) 
+					{
 						initializedBean = ReflectionUtils.newInstance(classDescriptor.getClassName());
 					}
 
 					ReflectionUtils.setNestedProperty(initializedBean, fieldName, node.getPath());
-
-				} else if (classDescriptor.usesNodeTypePerHierarchyStrategy() && classDescriptor.hasDiscriminator()) {
-
-					if (node.hasProperty(PersistenceConstant.DISCRIMINATOR_PROPERTY_NAME)) {
-						if (null == initializedBean) {
-							initializedBean = ReflectionUtils.newInstance(classDescriptor.getClassName());
-						}
-						String value = node.getProperty(propertyName).getValue().getString();
-						ReflectionUtils.setNestedProperty(initializedBean, fieldName, value);
-					} else {
-						throw new PersistenceException("Class '" + classDescriptor.getClassName()
-								+ "' have not a discriminator property.");
+					
+				} 
+				else
+				{
+					if (classDescriptor.usesNodeTypePerHierarchyStrategy() && classDescriptor.hasDiscriminator()) 
+					{
+						if ( ! node.hasProperty(PersistenceConstant.DISCRIMINATOR_PROPERTY_NAME)) 
+						{
+							throw new PersistenceException("Class '" + classDescriptor.getClassName() + "' has not a discriminator property.");
+						}					
 					}
-				} else {
-					if (node.hasProperty(propertyName)) {
+					if (node.hasProperty(propertyName)) 
+					{
 						Value propValue = node.getProperty(propertyName).getValue();
-						// HINT: lazy initialize target bean - The bean can be
-						// null when it is inline
+						// HINT: lazy initialize target bean - The bean can be null when it is inline
 						if (null != propValue && null == initializedBean) {
 							initializedBean = ReflectionUtils.newInstance(classDescriptor.getClassName());
 						}
 
 						AtomicTypeConverter converter = getAtomicTypeConverter(fieldDescriptor, initializedBean, fieldName);
-
 						Object fieldValue = converter.getObject(propValue);
 						ReflectionUtils.setNestedProperty(initializedBean, fieldName, fieldValue);
-					} else {
+					} 
+					else 
+					{
 						log.warn("Class '" + classDescriptor.getClassName() + "' has an unmapped property : " + propertyName);
 					}
 				}
+				
+//				} else if (classDescriptor.usesNodeTypePerHierarchyStrategy() && classDescriptor.hasDiscriminator()) {
+//
+//					if (node.hasProperty(PersistenceConstant.DISCRIMINATOR_PROPERTY_NAME)) {
+//						if (null == initializedBean) {
+//							initializedBean = ReflectionUtils.newInstance(classDescriptor.getClassName());
+//						}
+//						Value propValue = node.getProperty(propertyName).getValue();
+//						AtomicTypeConverter converter = getAtomicTypeConverter(fieldDescriptor, initializedBean, fieldName);
+//						Object fieldValue = converter.getObject(propValue);
+//						ReflectionUtils.setNestedProperty(initializedBean, fieldName, fieldValue);
+//						
+//					} else {
+//						throw new PersistenceException("Class '" + classDescriptor.getClassName()
+//								+ "' have not a discriminator property.");
+//					}
+//				} else {
+//					if (node.hasProperty(propertyName)) {
+//						Value propValue = node.getProperty(propertyName).getValue();
+//						// HINT: lazy initialize target bean - The bean can be
+//						// null when it is inline
+//						if (null != propValue && null == initializedBean) {
+//							initializedBean = ReflectionUtils.newInstance(classDescriptor.getClassName());
+//						}
+//
+//						AtomicTypeConverter converter = getAtomicTypeConverter(fieldDescriptor, initializedBean, fieldName);
+//						Object fieldValue = converter.getObject(propValue);
+//						ReflectionUtils.setNestedProperty(initializedBean, fieldName, fieldValue);
+//					} else {
+//						log.warn("Class '" + classDescriptor.getClassName() + "' has an unmapped property : " + propertyName);
+//					}
+//				}
 			}
 		} catch (ValueFormatException vfe) {
 			throw new PersistenceException("Cannot retrieve properties of object " + object + " from node " + node, vfe);

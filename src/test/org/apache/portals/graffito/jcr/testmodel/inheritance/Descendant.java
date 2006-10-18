@@ -20,7 +20,7 @@ import org.apache.portals.graffito.jcr.testmodel.interfaces.AnotherInterface;
 public class Descendant extends Ancestor implements AnotherInterface {
 
 	protected String descendantField;
-
+	protected int intField;
 	
 
 	public String getDescendantField() {
@@ -29,6 +29,14 @@ public class Descendant extends Ancestor implements AnotherInterface {
 
 	public void setDescendantField(String descendantField) {
 		this.descendantField = descendantField;
+	}
+
+	public int getIntField() {
+		return intField;
+	}
+
+	public void setIntField(int intField) {
+		this.intField = intField;
 	}
 
 
