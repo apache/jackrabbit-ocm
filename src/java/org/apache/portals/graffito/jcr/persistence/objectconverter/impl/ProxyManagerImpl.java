@@ -30,12 +30,17 @@ import org.apache.portals.graffito.jcr.persistence.collectionconverter.Collectio
 import org.apache.portals.graffito.jcr.persistence.collectionconverter.ManageableCollection;
 import org.apache.portals.graffito.jcr.persistence.collectionconverter.ManageableCollectionUtil;
 import org.apache.portals.graffito.jcr.persistence.objectconverter.ObjectConverter;
+import org.apache.portals.graffito.jcr.persistence.objectconverter.ProxyManager;
 
-public class ProxyManager {
+public class ProxyManagerImpl implements ProxyManager 
+{
 
-	 private final static Log log = LogFactory.getLog(ProxyManager.class);
+	private final static Log log = LogFactory.getLog(ProxyManagerImpl.class);
 	
 	 
+	/* (non-Javadoc)
+	 * @see org.apache.portals.graffito.jcr.persistence.objectconverter.impl.ProxyManager#createBeanProxy(javax.jcr.Session, org.apache.portals.graffito.jcr.persistence.objectconverter.ObjectConverter, java.lang.Class, java.lang.String)
+	 */
 	public  Object createBeanProxy(Session session, ObjectConverter objectConverter,  Class beanClass, String path) 
 	{
 		
@@ -52,6 +57,9 @@ public class ProxyManager {
 	}
 
 	
+	/* (non-Javadoc)
+	 * @see org.apache.portals.graffito.jcr.persistence.objectconverter.impl.ProxyManager#createCollectionProxy(javax.jcr.Session, org.apache.portals.graffito.jcr.persistence.collectionconverter.CollectionConverter, javax.jcr.Node, org.apache.portals.graffito.jcr.mapper.model.CollectionDescriptor, java.lang.Class)
+	 */
 	public  Object createCollectionProxy(Session session, CollectionConverter collectionConverter, Node parentNode,  CollectionDescriptor collectionDescriptor, Class collectionFieldClass) 
 	{	
 		

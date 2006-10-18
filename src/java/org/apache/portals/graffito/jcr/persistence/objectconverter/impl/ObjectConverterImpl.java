@@ -52,6 +52,7 @@ import org.apache.portals.graffito.jcr.persistence.collectionconverter.Manageabl
 import org.apache.portals.graffito.jcr.persistence.collectionconverter.impl.DefaultCollectionConverterImpl;
 import org.apache.portals.graffito.jcr.persistence.objectconverter.BeanConverter;
 import org.apache.portals.graffito.jcr.persistence.objectconverter.ObjectConverter;
+import org.apache.portals.graffito.jcr.persistence.objectconverter.ProxyManager;
 import org.apache.portals.graffito.jcr.reflection.ReflectionUtils;
 import org.apache.portals.graffito.jcr.repository.RepositoryUtil;
 
@@ -91,9 +92,23 @@ public class ObjectConverterImpl implements ObjectConverter {
 	public ObjectConverterImpl(Mapper mapper, AtomicTypeConverterProvider converterProvider) {
 		this.mapper = mapper;
 		this.atomicTypeConverterProvider = converterProvider;
-		this.proxyManager = new ProxyManager();
+		this.proxyManager = new ProxyManagerImpl();
 	}
 
+	/**
+	 * Constructor
+	 * 
+	 * @param mapper
+	 *            The mapper to used
+	 * @param converterProvider
+	 *            The atomic type converter provider
+	 * 
+	 */
+	public ObjectConverterImpl(Mapper mapper, AtomicTypeConverterProvider converterProvider, ProxyManager proxyManager) {
+		this.mapper = mapper;
+		this.atomicTypeConverterProvider = converterProvider;
+		this.proxyManager = proxyManager;
+	}	
 	/**
 	 * Set the <code>Mapper</code> used to solve mappings.
 	 * 
