@@ -28,6 +28,7 @@ import org.apache.portals.graffito.jcr.mapper.model.CollectionDescriptor;
 import org.apache.portals.graffito.jcr.mapper.model.FieldDescriptor;
 import org.apache.portals.graffito.jcr.mapper.model.ImplementDescriptor;
 import org.apache.portals.graffito.jcr.mapper.model.MappingDescriptor;
+import org.apache.portals.graffito.jcr.reflection.ReflectionUtils;
 import org.xml.sax.SAXParseException;
 
 /**
@@ -70,6 +71,7 @@ public class DigesterDescriptorReader
                 digester.register("-//The Apache Software Foundation//DTD Repository//EN",
                                   this.dtdResolver.toString());
             }
+	        digester.setClassLoader(getClass().getClassLoader());
 			
 	        MappingDescriptor mappingDescriptor = new MappingDescriptor();
 	        digester.push(mappingDescriptor);
