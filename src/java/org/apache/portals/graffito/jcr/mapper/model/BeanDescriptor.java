@@ -26,7 +26,7 @@ import org.apache.portals.graffito.jcr.reflection.ReflectionUtils;
  * @author <a href="mailto:christophe.lombart@sword-technologies.com">Lombart Christophe </a>
  * @author <a href='mailto:the_mindstorm[at]evolva[dot]ro'>Alexandru Popescu</a>
  */
-public class BeanDescriptor {
+public class BeanDescriptor implements ChildNodeDefDescriptor, PropertyDefDescriptor {
     private ClassDescriptor classDescriptor;
     
     private String fieldName;
@@ -39,11 +39,13 @@ public class BeanDescriptor {
     private String converter;
     private BeanConverter beanConverter;
     private String jcrNodeType;
+    private String jcrType;
     private boolean jcrAutoCreated;
     private boolean jcrMandatory;
     private String jcrOnParentVersion;
     private boolean jcrProtected;
     private boolean jcrSameNameSiblings;
+    private boolean jcrMultiple;
 
     /**
      * @return Returns the fieldName.
@@ -167,6 +169,24 @@ public class BeanDescriptor {
         this.jcrNodeType = value;
     }
 
+    /**
+     * Getter for property jcrType.
+     * 
+     * @return jcrType
+     */
+    public String getJcrType() {
+        return jcrType;
+    }
+
+    /**
+     * Setter for property jcrType.
+     * 
+     * @param value jcrType
+     */
+    public void setJcrType(String value) {
+        this.jcrType = value;
+    }
+
     /** Getter for property jcrAutoCreated.
      *
      * @return jcrAutoCreated
@@ -245,6 +265,24 @@ public class BeanDescriptor {
      */
     public void setJcrSameNameSiblings(boolean value) {
         this.jcrSameNameSiblings = value;
+    }
+
+    /**
+     * Getter for property jcrMultiple.
+     * 
+     * @return jcrMultiple
+     */
+    public boolean isJcrMultiple() {
+        return jcrMultiple;
+    }
+
+    /**
+     * Setter for property jcrMultiple.
+     * 
+     * @param value jcrMultiple
+     */
+    public void setJcrMultiple(boolean value) {
+        this.jcrMultiple = value;
     }
 
     /**
