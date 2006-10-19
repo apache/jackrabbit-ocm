@@ -43,7 +43,7 @@ limitations under the License.
 			<item name="Overview" href = "api/api-intro.html" collapse="true" />
 			<item name="Basic operations" href="api/basic-operations.html" collapse="true"/>
 			<item name="Search" href="api/search.html" collapse="true"/>
-			<item name="Managing Version" href="api/versionning.html" collapse="true"/>
+			<item name="Managing Versions" href="api/versionning.html" collapse="true"/>
 			<item name="Locking" href="api/locking.html" collapse="true"/>
 		</menu>
 		
