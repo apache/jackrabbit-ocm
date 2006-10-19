@@ -94,5 +94,26 @@
 		<field-descriptor fieldName="path" path="true" />
 		<field-descriptor fieldName="content" jcrName="graffito:content" />
 	</class-descriptor>		
+
+
+    <class-descriptor className="org.apache.portals.graffito.jcr.testmodel.Residual$ResidualProperties" jcrNodeType="nt:unstructured">
+        <field-descriptor fieldName="path" path="true" />
+        <collection-descriptor fieldName="elements" proxy="false" 
+                               jcrName="value*"
+                               elementClassName="java.lang.String"
+                               collectionConverter="org.apache.portals.graffito.jcr.persistence.collectionconverter.impl.ResidualPropertiesCollectionConverterImpl" 
+                               collectionClassName="org.apache.portals.graffito.jcr.persistence.collectionconverter.impl.ManagedHashMap" />
+                               
+    </class-descriptor>
+
+    <class-descriptor className="org.apache.portals.graffito.jcr.testmodel.Residual$ResidualNodes" jcrNodeType="nt:unstructured">
+        <field-descriptor fieldName="path" path="true" />
+        <collection-descriptor fieldName="elements" proxy="false" 
+                               jcrName="value*"
+                               elementClassName="java.lang.Object"
+                               collectionConverter="org.apache.portals.graffito.jcr.persistence.collectionconverter.impl.ResidualNodesCollectionConverterImpl" 
+                               collectionClassName="org.apache.portals.graffito.jcr.persistence.collectionconverter.impl.ManagedHashMap" />
+                               
+    </class-descriptor>
 </graffito-jcr>
  

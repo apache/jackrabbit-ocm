@@ -156,16 +156,16 @@ public class ResidualPropertiesCollectionConverterImpl extends
 
         String jcrName = getCollectionJcrName(collectionDescriptor);
 
+        // can only persist maps, not general collections
+        if (!(collection instanceof Map)) {
+            return;
+        }
+
         // Delete existing values - before checking for collection !
         if (removeExisting) {
             for (PropertyIterator pi = parentNode.getProperties(jcrName); pi.hasNext();) {
                 pi.nextProperty().remove();
             }
-        }
-
-        // can only persist maps, not general collections
-        if (!(collection instanceof Map)) {
-            return;
         }
 
         try {
@@ -182,14 +182,14 @@ public class ResidualPropertiesCollectionConverterImpl extends
                     int i = 0;
                     for (Iterator vi = valueList.iterator(); vi.hasNext();) {
                         value = vi.next();
-                        AtomicTypeConverter atomicTypeConverter = (AtomicTypeConverter) atomicTypeConverters.get(value);
+                        AtomicTypeConverter atomicTypeConverter = (AtomicTypeConverter) atomicTypeConverters.get(value.getClass());
                         jcrValues[i++] = atomicTypeConverter.getValue(
                             valueFactory, value);
                     }
                     parentNode.setProperty(name, jcrValues);
                 } else {
                     // single value
-                    AtomicTypeConverter atomicTypeConverter = (AtomicTypeConverter) atomicTypeConverters.get(value);
+                    AtomicTypeConverter atomicTypeConverter = (AtomicTypeConverter) atomicTypeConverters.get(value.getClass());
                     Value jcrValue = atomicTypeConverter.getValue(valueFactory,
                         value);
                     parentNode.setProperty(name, jcrValue);
