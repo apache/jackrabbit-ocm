@@ -40,6 +40,8 @@ public class AllTests {
         suite.addTestSuite(HashMapTest.class);
         suite.addTestSuite(MultiValueCollectionConverterImplTest.class);
         suite.addTestSuite(NTCollectionConverterImplTest.class);
+        suite.addTestSuite(ResidualPropertiesCollectionConverterImplTest.class);
+        suite.addTestSuite(ResidualNodesCollectionConverterImplTest.class);
         //$JUnit-END$
 
         return suite;
