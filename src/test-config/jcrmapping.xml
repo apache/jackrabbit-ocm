@@ -13,7 +13,7 @@
 	-->
 	<class-descriptor
 		className="org.apache.portals.graffito.jcr.testmodel.A"
-		jcrNodeType="nt:unstructured">
+		jcrNodeType="nt:unstructured" jcrMixinTypes="mix:lockable" >
 		<!-- Field-descriptor is used to map simple attributes to jcr property -->
 		<field-descriptor fieldName="path" path="true" />
 		<field-descriptor fieldName="a1" jcrName="a1" />
