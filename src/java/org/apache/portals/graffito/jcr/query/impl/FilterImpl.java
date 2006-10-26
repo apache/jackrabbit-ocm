@@ -210,6 +210,9 @@ public class FilterImpl implements Filter {
      * @see org.apache.portals.graffito.jcr.query.Filter#addOrFilter(org.apache.portals.graffito.jcr.query.Filter)
      */
     public Filter addOrFilter(Filter filter) {
+        FilterImpl theFilter = (FilterImpl) filter;
+        if (theFilter.getJcrExpression() != null && theFilter.getJcrExpression().length() > 0)
+        {
     	   if ( null == jcrExpression || "".equals(jcrExpression) )
     	   {
     		   jcrExpression =    ((FilterImpl) filter).getJcrExpression() ;    		   
@@ -218,6 +221,7 @@ public class FilterImpl implements Filter {
     	   {
     	         jcrExpression =   "(" + jcrExpression + ")  or ( "  +  ((FilterImpl) filter).getJcrExpression() + ")";
     	   }
+        }
         return this;
     }
 
@@ -225,16 +229,19 @@ public class FilterImpl implements Filter {
      * @see org.apache.portals.graffito.jcr.query.Filter#addAndFilter(Filter)
      */
     public Filter addAndFilter(Filter filter) {
- 	   if ( null == jcrExpression || "".equals(jcrExpression) )
-	   {
-		   jcrExpression =    ((FilterImpl) filter).getJcrExpression() ;    		   
-	   }
-	   else
-	   {
-	         jcrExpression =   "(" + jcrExpression + ") and  ( "  +  ((FilterImpl) filter).getJcrExpression() + ")";
-	   }
-       return this;
-
+        FilterImpl theFilter = (FilterImpl) filter;
+        if (theFilter.getJcrExpression() != null && theFilter.getJcrExpression().length() > 0)
+        {
+     	   if ( null == jcrExpression || "".equals(jcrExpression) )
+    	   {
+    		   jcrExpression =    ((FilterImpl) filter).getJcrExpression() ;    		   
+    	   }
+    	   else
+    	   {
+    	         jcrExpression =   "(" + jcrExpression + ") and  ( "  +  ((FilterImpl) filter).getJcrExpression() + ")";
+    	   }
+        }
+        return this;
     }
     
 
