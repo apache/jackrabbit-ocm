@@ -30,7 +30,7 @@
 					Following the Jcr specification, it is possible to lock nodes and their children (see section 8.4).
 					You can see on this page the OCM API used to lock on the object level. 
 					In order to lock an object, its matching node has to implement the jcr mixin type "mix:lockable".
-					You can be specify this node type in the class descriptor like the following example : 
+					It is possible to specify this node type in the class descriptor : 
 				</p>	
 				<source><![CDATA[ 					
 <class-descriptor className="org.apache.portals.graffito.jcr.testmodel.A"

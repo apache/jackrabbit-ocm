@@ -48,7 +48,7 @@
 			<item name="Locking" href="api/locking.html" collapse="true"/>
 		</menu>
 		
-		<menu name="Mapping Stategies">			
+		<menu name="Basic Mapping Stategies">			
 			<item name="Introduction" href="simple-strategies/introduction-strategies.html"/>
 			<item name="Mapping Atomic Fields" href="simple-strategies/atomic-strategy.html"/>			
 			<item name="Mapping Bean Fields" href="simple-strategies/bean-strategy.html"/>			

@@ -23,7 +23,7 @@
 	<body>
 		<section name="The Basic Operations">
 			<p>
-				When you have <a href="../engine-setup.html">create a new Persistence Manager</a> in you application, you can use this component to insert, update, delete and retrieve objects. The class 'Folder' used in the following sections should be associated to a class-descriptor defined in the  mapping descriptor.
+				When you have <a href="../engine-setup.html">create a new Persistence Manager</a> in your application, you can use this component to insert, update, delete and retrieve objects. The class 'Folder' used in the following sections should be associated to a class-descriptor defined in the  mapping descriptor.
 			</p> 
 			<p>
 				This page describes only the main Persistence Manager methods. You can see the javadoc to get more information on the API.

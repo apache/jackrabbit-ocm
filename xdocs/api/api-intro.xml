@@ -28,7 +28,7 @@
 				 <ul>
 					 <li>Manage the object life cycle (insert, update, delete, retrieve).</li>
 					<li>Search single object or collections with criteria.</li>
-					<li>Manage version (check int, check out, create a new version, show history).</li>	
+					<li>Manage versions (check int, check out, create a new version, show history).</li>	
 					<li>Lock objects.</li>
 				</ul>
 				</p>

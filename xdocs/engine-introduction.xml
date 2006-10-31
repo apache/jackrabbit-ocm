@@ -38,7 +38,10 @@
 						<li>Simple fields : primitive data types and simple objects (String, Long, Double, ...) . Those fields are mapped into JCR properties. </li>
 						<li>Bean fields : One class can contain an 1..1 association to another bean. In this case, the attribute is a custom object. Those fields are mapped into JCR nodes. </li>
 						<li>Collection fields : One class can contain an 1..n association to a collection of beans (or Map). Those fields are mapped into a collection of JCR nodes. </li>
-						<li>Reference field : One good example to understand the "reference" type is the Folder concept. A folder "B" can have an attribute called "parentFolder" which is a simple field pointing to the parent folder "A" . Of course, in a JCR repository, it is a nonsense for persist this "parentFolder" attribute into a "B" subnode. Another interesting example are links made between cms objects (folders, documents, ...).</li>
+						<li>Reference field : One good example to understand the "reference" type is the Folder concept. 
+						A folder "B" can have an attribute called "parentFolder" which is a simple field pointing to the parent folder "A" . 
+						Of course, in a JCR repository, it is a nonsense for persist this "parentFolder" attribute into a "B" subnode. 
+						Another interesting example are references between cms objects (folders, documents, ...).</li>
 					</ol>
 				</p>
 				<p>
