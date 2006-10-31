@@ -34,8 +34,8 @@
 				<p>A couple of month ago, we have decided to create a new object mapping framework for different reasons : </p>
 				<ul>
 					<li>Sometimes it is very convenient to be able to just access the JCR nodes and properties directly from your presentation-layer for very simple things (mostly generic display). When a lot of "business logic" are involved, the JCR API can be too low level and real business objects (pojo) are more appreciate in a such case.</li>				
-				
-					<li>ORM tools like OBJ or Hibernate are not appropriate for content oriented application.</li>
+					<li>The OCM framework provides more abstraction on the technologies used to persist your content. The different application layers are less dependent on the JCR API.</li>				
+					<li>ORM tools like OJB or Hibernate are not appropriate for content oriented application.</li>
 				</ul>	
 				
 			</subsection>
