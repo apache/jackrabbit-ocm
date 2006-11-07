@@ -47,9 +47,9 @@
 								
 			</subsection>
 							
-			<subsection name ="Result in the JCR repository">
+			<subsection name ="The JCR Structure">
 				<p>
-					Following our example, the resulting JCR structure can be : 		
+					Following our example, the resulting JCR structure is : 		
 				</p>
 				<p>
 				<source><![CDATA[ 
@@ -62,14 +62,29 @@
 	... other subnodes for page1 ... 
 				]]></source>		  
 				</p>						
-				<p>Creating subnodes like this example (mysite/page1/paragraphs) is the default behavior. See the section <a href="../advanced-strategies/advanced-collections-strategy.html">Reviewing the collection-descriptor</a> to get other collection-field mapping strategies.</p>
+				<p>
+				
+				    By default, the persistence manager will create a subnode  (/mysite/page1/paragraphs). 
+				    This one will contains the different paragraphs.
+				    See the section <a href="../advanced-strategies/advanced-collections-strategy.html">Reviewing the collection-descriptor</a> to get other collection-field mapping strategies.
+				</p>
 								
 								
 			</subsection>
 			<subsection name="Supported Collection Types">
-				<p>Current supported collection types are Collection, List, ArrayList and Vector. It is also possible other Collection or Map types with the ManageableCollection interface. See the section <a href="../advanced-strategies/advanced-collections-strategy.html">Reviewing the collection-descriptor</a> to get more information on the ManageableCollection.</p>
+				<p>The current supported collection types are Collection, List, ArrayList and Vector. It is also possible other Collection or Map types with the ManageableCollection interface. See the section <a href="../advanced-strategies/advanced-collections-strategy.html">Reviewing the collection-descriptor</a> to get more information on the ManageableCollection.</p>
 				<p></p>
 			</subsection>	
+			<subsection name ="Using Collection Converter">
+			   <p>
+			     TO DO    
+			   </p>
+			</subsection>	
+			<subsection name ="Existing Collection Converters">
+			   <p>
+			     TO DO    
+			   </p>
+			</subsection>								
 			
 		</section>
 	</body>

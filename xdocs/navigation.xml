@@ -57,10 +57,8 @@
 		</menu>			
 		
 		<menu name="Advanced Mapping Stategies">			
-			<item name="Introduction" href="advanced-strategies/introduction-strategies.html"/>
 			<item name="Inheritance and Interface" href="advanced-strategies/inheritance-interface-strategies.html"/>
-			<item name="Reviewing the bean-descriptor" href="advanced-strategies/advanced-beans-strategy.html"/>	
-			<item name="Reviewing the collection-descriptor" href="advanced-strategies/advanced-collections-strategy.html"/>		
+			<item name="Performance" href="advanced-strategies/inheritance-interface-strategies.html"/>
 
 			
 			

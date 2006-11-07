@@ -22,30 +22,45 @@
 	</properties>
 	<body>
 		<section name="The Persistence Manager">
-			<p>The main component in our framework is the Persistence manager. It converts an object graph into JCR nodes and properties and vice versa.</p>	
+			<p>
+			   The main component in this OCM framework is the Persistence Manager. 
+			   It converts an object graph into JCR nodes and properties and vice versa.
+			   The persistence manager is associated to a JCR Session. 
+			   Depending on your needs, you can use one or more persistence managers in your application.
+			   Usually, there is one persistence manager per user session.
+			   
+			</p>	
+			<p>
+			   See the page <a href="engine-setup.html">Sectup</a> and <a href="engine-spring.html">Spring integration</a> to get more information on how to initialize correctly the Persistence Manager in your java application.
+			</p>
 			
 			<subsection name="How the Persistence Manager is working ?">
 				
 				<p>
-					Thanks to its Mapping Descriptor file, the Persistence Manager can use the more appropriate mapping strategy for each object. This Mapping Descriptor file contains one class descriptor for each mapped class. Each class descriptor contains mapping information for the corresponding class attributes. The descriptor file contains also information on object associations, inheritance mapping strategy, lazy loading, cache strategy, ... 
-				</p>
-				<p>
+					Thanks to its Mapping Descriptor file, the Persistence Manager is able to use the more appropriate mapping strategy for each object. 
+					This Mapping Descriptor file contains one class descriptor per persistent class. 
+					Each class descriptor contains mapping information for the corresponding class attributes. 
 					
 				</p>
 				<p>
-					There are 4 attributes/fields "types" : 
+				    In all cases, the desired persistent class is mapped to a JCR node and its fields are mapped to subnodes or properties depending on their type (see below).
+				</p>
+
+				<p>
+					There are 4 "field types" : 
 					<ol>
-						<li>Simple fields : primitive data types and simple objects (String, Long, Double, ...) . Those fields are mapped into JCR properties. </li>
-						<li>Bean fields : One class can contain an 1..1 association to another bean. In this case, the attribute is a custom object. Those fields are mapped into JCR nodes. </li>
-						<li>Collection fields : One class can contain an 1..n association to a collection of beans (or Map). Those fields are mapped into a collection of JCR nodes. </li>
+						<li>Atomic fields : primitive data types and simple objects (String, Long, Double, ...) . Those fields are mapped into JCR properties. </li>
+						<li>Bean fields : One class can contain an 1..1 association to another bean. In this case, the attribute is a custom object. Those fields are mapped into JCR subnodes. </li>
+						<li>Collection fields : One class can contain an 1..n association to a collection of beans (or Map). Those fields are mapped into a collection of JCR subnodes. </li>
 						<li>Reference field : One good example to understand the "reference" type is the Folder concept. 
 						A folder "B" can have an attribute called "parentFolder" which is a simple field pointing to the parent folder "A" . 
 						Of course, in a JCR repository, it is a nonsense for persist this "parentFolder" attribute into a "B" subnode. 
-						Another interesting example are references between cms objects (folders, documents, ...).</li>
+						Another interesting example are references between cms objects (folders, documents, ...). This type is not yet implemented.</li>
 					</ol>
+					Of course, all those "field types" imply different mapping algorithms.
 				</p>
-				<p>
-					Of course, all those "mapping types" imply different mapping algorithms.
+				<p>					
+					The descriptor file contains also information on inheritance/interface mapping strategy, lazy loading, custom converter, cache strategy, ... 
 				</p>				
 			</subsection>
 			<subsection name="The Mapping Descriptor File">

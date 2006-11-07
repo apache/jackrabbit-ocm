@@ -24,7 +24,7 @@
 				
 		<section name="Mapping Bean Fields">
 			<subsection name="Introduction">
-				<p>The bean-descriptor maps a bean attribute into one JCR node. Generally, this bean attribute is a also a bean.</p>
+				<p>The bean-descriptor maps a bean attribute into one JCR node. Generally, this attribute is an object based on a custom class.</p>
 				<p>Based on our model defined <a href="introduction-strategies.html">here</a>, the following bean-descriptor is used to map the bean field "pageInfo" (PageInfo class) into the JCR node called "pageInfo".</p>
 
 				<source><![CDATA[ 				
@@ -47,9 +47,9 @@
 
 			</subsection>
 			
-			<subsection name ="Result in the JCR repository">
+			<subsection name ="The JCR Structure">
 				<p>
-					Following our example, the resulting JCR structure can be : 		
+					Following our example, the resulting JCR structure is: 		
 				</p>
 				<p>
 					<source><![CDATA[ 
@@ -60,10 +60,21 @@
   ... other subnodes for page1 ... 
 							  ]]></source>		  
 				</p>						
-				<p>Creating a subnode like this example (mysite/page1/pageInfo) is the default behavior. See the section <a href="../advanced-strategies/advanced-beans-strategy.html">Reviewing the bean-descriptor</a> to get other bean-field mapping strategies.</p>
+				<p>By default, the persistence manager will create a subnode (/mysite/page1/pageInfo) for the bean field pageInfo. 
+				See the section <a href="../advanced-strategies/advanced-beans-strategy.html">Reviewing the bean-descriptor</a> to get other bean-field mapping strategies.</p>
 				
 			
 			</subsection>
+			<subsection name ="Using Bean Converter">
+			   <p>
+			     TO DO    
+			   </p>
+			</subsection>	
+			<subsection name ="Existing Bean Converters">
+			   <p>
+			     TO DO    
+			   </p>
+			</subsection>						
 		</section>
 	</body>
 </document>
