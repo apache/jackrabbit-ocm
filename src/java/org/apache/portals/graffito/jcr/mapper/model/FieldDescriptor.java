@@ -42,6 +42,7 @@ public class FieldDescriptor implements PropertyDefDescriptor {
     private ClassDescriptor classDescriptor;
     private boolean id;
     private boolean path;
+    private String converter;
    
 
     /**
@@ -106,7 +107,24 @@ public class FieldDescriptor implements PropertyDefDescriptor {
         this.jcrName = jcrName;
     }
 
+    
     /**
+     * 
+     * @return The atomic type converter to use, can be null
+     */
+    public String getConverter() {
+		return converter;
+	}
+
+    /**
+     * Set the atomic converter 
+     * @param converter the atomic converter to use
+     */
+	public void setConverter(String converter) {
+		this.converter = converter;
+	}
+
+	/**
      *
      * @return the associated class descriptor
      */

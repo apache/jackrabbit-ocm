@@ -51,7 +51,8 @@ public interface AtomicTypeConverter
 	public Object getObject(Value value);
 	
 	/**
-	 * Get the string converted value
+	 * Get the string converted value. This is mainly used to build xpath expressions 
+	 * 
 	 * @param object The object value
 	 * @return The string converted value	 
 	 */

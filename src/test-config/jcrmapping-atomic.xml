@@ -17,6 +17,7 @@
 		<field-descriptor fieldName="doublePrimitive" jcrName="doublePrimitive" />
 		<field-descriptor fieldName="inputStream" jcrName="inputStream" />
 		<field-descriptor fieldName="timestamp" jcrName="timestamp" />
+		<field-descriptor fieldName="int2boolean" jcrName="int2boolean" converter="org.apache.portals.graffito.jcr.persistence.atomic.Int2BooleanTypeConverterImpl" />
 	</class-descriptor>
 
     <class-descriptor

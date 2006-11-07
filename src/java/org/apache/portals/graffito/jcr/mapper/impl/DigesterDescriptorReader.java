@@ -29,8 +29,6 @@ import org.apache.portals.graffito.jcr.mapper.model.CollectionDescriptor;
 import org.apache.portals.graffito.jcr.mapper.model.FieldDescriptor;
 import org.apache.portals.graffito.jcr.mapper.model.ImplementDescriptor;
 import org.apache.portals.graffito.jcr.mapper.model.MappingDescriptor;
-import org.apache.portals.graffito.jcr.reflection.ReflectionUtils;
-import org.xml.sax.SAXParseException;
 
 /**
  * Helper class that reads the xml mapping file and load all class descriptors into memory (object graph)
@@ -88,7 +86,7 @@ public class DigesterDescriptorReader
 			digester.addSetNext("graffito-jcr/class-descriptor", "addClassDescriptor");		
 
 			// --------------------------------------------------------------------------------
-			// Rules used for the field-descriptor element
+			// Rules used for the implement-descriptor element
 			// --------------------------------------------------------------------------------
 			digester.addObjectCreate("graffito-jcr/class-descriptor/implement-descriptor", ImplementDescriptor.class);
 			digester.addSetProperties("graffito-jcr/class-descriptor/implement-descriptor");
