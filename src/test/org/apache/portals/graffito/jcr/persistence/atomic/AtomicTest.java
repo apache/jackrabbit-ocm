@@ -88,6 +88,7 @@ public class AtomicTest extends TestBase
             a.setIntPrimitive(200);
             a.setString("Test String");
             a.setDate(date);
+            a.setInt2boolean(true);
             
             byte[] content = "Test Byte".getBytes();
             a.setByteArray(content);
@@ -135,6 +136,7 @@ public class AtomicTest extends TestBase
             assertNotNull("Incorrect input stream primitive", a.getInputStream());
             assertNotNull("Incorrect timestamp", a.getTimestamp());
             assertTrue("Invalid timestamp value ", a.getTimestamp().getTime() == now);            
+            assertTrue("Invalid int2boolean value ", a.isInt2boolean());
             
         }
         catch (Exception e)

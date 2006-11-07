@@ -893,16 +893,27 @@ public class ObjectConverterImpl implements ObjectConverter {
 
 	private AtomicTypeConverter getAtomicTypeConverter(FieldDescriptor fd, Object object, String fieldName) {
 		Class fieldTypeClass = null;
-		if (null != fd.getFieldTypeClass()) {
-			fieldTypeClass = fd.getFieldTypeClass();
-		} else if (null != object) {
-			fieldTypeClass = ReflectionUtils.getPropertyType(object, fieldName);
+		// Check if an atomic converter is assigned to the field converter
+		String atomicTypeConverterClass = fd.getConverter();
+		if (null != atomicTypeConverterClass)
+		{
+			return (AtomicTypeConverter) ReflectionUtils.newInstance(atomicTypeConverterClass);
 		}
+		else
+		{
+			// Get the default atomic converter in function of the classname
+			if (null != fd.getFieldTypeClass()) {
+				fieldTypeClass = fd.getFieldTypeClass();
+			} else if (null != object) {
+				fieldTypeClass = ReflectionUtils.getPropertyType(object, fieldName);
+			}
 
-		if (null != fieldTypeClass) {
-			return this.atomicTypeConverterProvider.getAtomicTypeConverter(fieldTypeClass);
-		} else {
-			return NULL_CONVERTER;
+			if (null != fieldTypeClass) {
+				return this.atomicTypeConverterProvider.getAtomicTypeConverter(fieldTypeClass);
+			} else {
+				return NULL_CONVERTER;
+			}
+			
 		}
 	}
 

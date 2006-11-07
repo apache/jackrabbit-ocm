@@ -44,6 +44,7 @@ public class Atomic
     private double doublePrimitive;
     private InputStream inputStream;
     private Timestamp timestamp;
+    private boolean int2boolean;
     private Collection multiValue;
     
     
@@ -150,7 +151,18 @@ public class Atomic
     {
         this.timestamp = timestamp;
     }
+        
     
+	public boolean isInt2boolean() 
+	{
+		return int2boolean;
+	}
+	
+	public void setInt2boolean(boolean int2boolean) 
+	{
+		this.int2boolean = int2boolean;
+	}
+	
 	public Collection getMultiValue()
 	{
 		return multiValue;
