@@ -24,17 +24,19 @@ import javax.jcr.RepositoryException;
 import javax.jcr.Session;
 
 import org.apache.portals.graffito.jcr.exception.PersistenceException;
-import org.apache.portals.graffito.jcr.mapper.model.BeanDescriptor;
+import org.apache.portals.graffito.jcr.mapper.Mapper;
+import org.apache.portals.graffito.jcr.mapper.model.ClassDescriptor;
+import org.apache.portals.graffito.jcr.persistence.atomictypeconverter.AtomicTypeConverterProvider;
+import org.apache.portals.graffito.jcr.persistence.beanconverter.impl.AbstractBeanConverterImpl;
 import org.apache.portals.graffito.jcr.persistence.objectconverter.ObjectConverter;
-import org.apache.portals.graffito.jcr.persistence.objectconverter.impl.AbstractBeanConverterImpl;
 import org.apache.portals.graffito.jcr.testmodel.B;
 
 public class FakeBeanConverter extends AbstractBeanConverterImpl {
 
     private static  List log = new ArrayList();
     
-    public FakeBeanConverter(ObjectConverter objectConverter) {
-		super(objectConverter);
+    public FakeBeanConverter(Mapper mapper, ObjectConverter objectConverter, AtomicTypeConverterProvider atomicTypeConverterProvider) {
+		super(mapper, objectConverter, atomicTypeConverterProvider);
 		 
 		 
 	}
@@ -44,9 +46,9 @@ public class FakeBeanConverter extends AbstractBeanConverterImpl {
     }
         
     /**
-     * @see org.apache.portals.graffito.jcr.persistence.objectconverter.BeanConverter#insert(javax.jcr.Session, javax.jcr.Node, org.apache.portals.graffito.jcr.mapper.Mapper, java.lang.String, java.lang.Object)
+     * @see org.apache.portals.graffito.jcr.persistence.beanconverter.BeanConverter#insert(javax.jcr.Session, javax.jcr.Node, org.apache.portals.graffito.jcr.mapper.Mapper, java.lang.String, java.lang.Object)
      */
-    public void insert(Session session, Node parentNode, BeanDescriptor descriptor, Object object) throws PersistenceException {
+    public void insert(Session session, Node parentNode, ClassDescriptor beanClassDescriptor, Object object, ClassDescriptor parentClassDescriptor, Object parent) throws PersistenceException {
         try {
             log.add("insert at path " + parentNode.getPath());
             
@@ -57,9 +59,9 @@ public class FakeBeanConverter extends AbstractBeanConverterImpl {
     } 
 
     /**
-     * @see org.apache.portals.graffito.jcr.persistence.objectconverter.BeanConverter#update(javax.jcr.Session, javax.jcr.Node, org.apache.portals.graffito.jcr.mapper.Mapper, java.lang.String, java.lang.Object)
+     * @see org.apache.portals.graffito.jcr.persistence.beanconverter.BeanConverter#update(javax.jcr.Session, javax.jcr.Node, org.apache.portals.graffito.jcr.mapper.Mapper, java.lang.String, java.lang.Object)
      */
-    public void update(Session session, Node parentNode, BeanDescriptor descriptor, Object object) throws PersistenceException {
+    public void update(Session session, Node parentNode, ClassDescriptor beanClassDescriptor, Object object, ClassDescriptor parentClassDescriptor, Object parent) throws PersistenceException {
         try {
             log.add("update at path " + parentNode.getPath());
         }
@@ -69,9 +71,9 @@ public class FakeBeanConverter extends AbstractBeanConverterImpl {
     }
 
     /**
-     * @see org.apache.portals.graffito.jcr.persistence.objectconverter.BeanConverter#getObject(javax.jcr.Session, javax.jcr.Node, org.apache.portals.graffito.jcr.mapper.Mapper, java.lang.String, java.lang.Class)
+     * @see org.apache.portals.graffito.jcr.persistence.beanconverter.BeanConverter#getObject(javax.jcr.Session, javax.jcr.Node, org.apache.portals.graffito.jcr.mapper.Mapper, java.lang.String, java.lang.Class)
      */
-    public Object getObject(Session session, Node parentNode, BeanDescriptor descriptor, Class beanClass) throws PersistenceException {
+    public Object getObject(Session session, Node parentNode, ClassDescriptor beanClassDescriptor, Class beanClass, Object parent) throws PersistenceException {
         try {
             log.add("get from path " + parentNode.getPath());
         }
@@ -84,9 +86,9 @@ public class FakeBeanConverter extends AbstractBeanConverterImpl {
     }
 
     /**
-     * @see org.apache.portals.graffito.jcr.persistence.objectconverter.BeanConverter#remove(javax.jcr.Session, javax.jcr.Node, org.apache.portals.graffito.jcr.mapper.Mapper, java.lang.String)
+     * @see org.apache.portals.graffito.jcr.persistence.beanconverter.BeanConverter#remove(javax.jcr.Session, javax.jcr.Node, org.apache.portals.graffito.jcr.mapper.Mapper, java.lang.String)
      */
-    public void remove(Session session, Node parentNode, BeanDescriptor descriptor) throws PersistenceException {
+    public void remove(Session session, Node parentNode, ClassDescriptor beanClassDescriptor, Object object, ClassDescriptor parentClassDescriptor, Object parent) throws PersistenceException {
         try {
             log.add("remove from path " + parentNode.getPath());
         }

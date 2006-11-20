@@ -14,39 +14,42 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.apache.portals.graffito.jcr.persistence.objectconverter.impl;
+package org.apache.portals.graffito.jcr.persistence.beanconverter.impl;
 
 import javax.jcr.Node;
 import javax.jcr.Session;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.apache.portals.graffito.jcr.exception.JcrMappingException;
 import org.apache.portals.graffito.jcr.exception.PersistenceException;
 import org.apache.portals.graffito.jcr.exception.RepositoryException;
-import org.apache.portals.graffito.jcr.mapper.model.BeanDescriptor;
-import org.apache.portals.graffito.jcr.persistence.objectconverter.BeanConverter;
+import org.apache.portals.graffito.jcr.mapper.Mapper;
+import org.apache.portals.graffito.jcr.mapper.model.ClassDescriptor;
+import org.apache.portals.graffito.jcr.persistence.atomictypeconverter.AtomicTypeConverterProvider;
+import org.apache.portals.graffito.jcr.persistence.beanconverter.BeanConverter;
 import org.apache.portals.graffito.jcr.persistence.objectconverter.ObjectConverter;
 
 public abstract class AbstractBeanConverterImpl implements BeanConverter {
 
-	protected  ObjectConverter objectConverter;
+	protected ObjectConverter objectConverter;
+	protected Mapper mapper;
+	protected AtomicTypeConverterProvider atomicTypeConverterProvider;
 	
-	public AbstractBeanConverterImpl(ObjectConverter objectConverter)
+	public AbstractBeanConverterImpl(Mapper mapper, ObjectConverter objectConverter, AtomicTypeConverterProvider atomicTypeConverterProvider)
 	{
+		this.mapper = mapper;
 		this.objectConverter = objectConverter;
+		this.atomicTypeConverterProvider = atomicTypeConverterProvider;
 	}
-	private final static Log log = LogFactory.getLog(AbstractBeanConverterImpl.class);
 	
-    public abstract void insert(Session session, Node parentNode, BeanDescriptor descriptor, Object object)
+    public abstract void insert(Session session, Node parentNode, ClassDescriptor beanClassDescriptor, Object object, ClassDescriptor parentClassDescriptor, Object parent)
 			throws PersistenceException, RepositoryException, 	JcrMappingException;
 
-	public abstract  void update(Session session, Node parentNode, 	BeanDescriptor descriptor, Object object)
+	public abstract  void update(Session session, Node parentNode, ClassDescriptor beanClassDescriptor, Object object, ClassDescriptor parentClassDescriptor, Object parent)
 			throws PersistenceException, RepositoryException,	JcrMappingException;
 	
-	public abstract Object getObject(Session session, Node parentNode,BeanDescriptor descriptor, Class beanClass)
+	public abstract Object getObject(Session session, Node parentNode, ClassDescriptor beanClassDescriptor, Class beanClass, Object parent)
 			throws PersistenceException, RepositoryException,JcrMappingException ;
 
-	public abstract void remove(Session session, Node parentNode,	BeanDescriptor descriptor)
+	public abstract void remove(Session session, Node parentNode, ClassDescriptor beanClassDescriptor,  Object object, ClassDescriptor parentClassDescriptor, Object parent)
 	          throws PersistenceException,	RepositoryException, JcrMappingException ;
 }

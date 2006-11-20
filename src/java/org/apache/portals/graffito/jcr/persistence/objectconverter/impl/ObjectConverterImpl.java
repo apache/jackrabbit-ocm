@@ -23,15 +23,11 @@ import javax.jcr.Node;
 import javax.jcr.PathNotFoundException;
 import javax.jcr.RepositoryException;
 import javax.jcr.Session;
-import javax.jcr.Value;
-import javax.jcr.ValueFactory;
-import javax.jcr.ValueFormatException;
 import javax.jcr.lock.LockException;
 import javax.jcr.nodetype.ConstraintViolationException;
 import javax.jcr.nodetype.NoSuchNodeTypeException;
 import javax.jcr.nodetype.NodeType;
 import javax.jcr.nodetype.NodeTypeManager;
-import javax.jcr.nodetype.PropertyDefinition;
 import javax.jcr.version.VersionException;
 
 import org.apache.commons.logging.Log;
@@ -44,14 +40,12 @@ import org.apache.portals.graffito.jcr.mapper.model.ClassDescriptor;
 import org.apache.portals.graffito.jcr.mapper.model.CollectionDescriptor;
 import org.apache.portals.graffito.jcr.mapper.model.FieldDescriptor;
 import org.apache.portals.graffito.jcr.persistence.PersistenceConstant;
-import org.apache.portals.graffito.jcr.persistence.atomictypeconverter.AtomicTypeConverter;
 import org.apache.portals.graffito.jcr.persistence.atomictypeconverter.AtomicTypeConverterProvider;
-import org.apache.portals.graffito.jcr.persistence.atomictypeconverter.impl.NullTypeConverterImpl;
+import org.apache.portals.graffito.jcr.persistence.beanconverter.BeanConverter;
 import org.apache.portals.graffito.jcr.persistence.collectionconverter.CollectionConverter;
 import org.apache.portals.graffito.jcr.persistence.collectionconverter.ManageableCollection;
 import org.apache.portals.graffito.jcr.persistence.collectionconverter.ManageableCollectionUtil;
 import org.apache.portals.graffito.jcr.persistence.collectionconverter.impl.DefaultCollectionConverterImpl;
-import org.apache.portals.graffito.jcr.persistence.objectconverter.BeanConverter;
 import org.apache.portals.graffito.jcr.persistence.objectconverter.ObjectConverter;
 import org.apache.portals.graffito.jcr.persistence.objectconverter.ProxyManager;
 import org.apache.portals.graffito.jcr.reflection.ReflectionUtils;
@@ -67,13 +61,13 @@ public class ObjectConverterImpl implements ObjectConverter {
 
 	private final static Log log = LogFactory.getLog(ObjectConverterImpl.class);
 
-	private static final AtomicTypeConverter NULL_CONVERTER = new NullTypeConverterImpl();
-
 	private Mapper mapper;
 
 	private AtomicTypeConverterProvider atomicTypeConverterProvider;
 
 	private ProxyManager proxyManager;
+	
+	private SimpleFieldsHelper simpleFieldsHelp;
 
 	/**
 	 * No-arg constructor.
@@ -94,6 +88,7 @@ public class ObjectConverterImpl implements ObjectConverter {
 		this.mapper = mapper;
 		this.atomicTypeConverterProvider = converterProvider;
 		this.proxyManager = new ProxyManagerImpl();
+		this.simpleFieldsHelp = new SimpleFieldsHelper(atomicTypeConverterProvider);
 	}
 
 	/**
@@ -109,6 +104,7 @@ public class ObjectConverterImpl implements ObjectConverter {
 		this.mapper = mapper;
 		this.atomicTypeConverterProvider = converterProvider;
 		this.proxyManager = proxyManager;
+		this.simpleFieldsHelp = new SimpleFieldsHelper(atomicTypeConverterProvider);
 	}	
 	/**
 	 * Set the <code>Mapper</code> used to solve mappings.
@@ -211,7 +207,7 @@ public class ObjectConverterImpl implements ObjectConverter {
 					+ object.getClass(), re);
 		}
 
-		storeSimpleFields(session, object, classDescriptor, objectNode);
+		simpleFieldsHelp.storeSimpleFields(session, object, classDescriptor, objectNode);
 		insertBeanFields(session, object, classDescriptor, objectNode);
 		insertCollectionFields(session, object, classDescriptor, objectNode);
 	}
@@ -249,7 +245,7 @@ public class ObjectConverterImpl implements ObjectConverter {
 
 			checkCompatiblePrimaryNodeTypes(session, objectNode, classDescriptor, false);
 
-			storeSimpleFields(session, object, classDescriptor, objectNode);
+			simpleFieldsHelp.storeSimpleFields(session, object, classDescriptor, objectNode);
 			updateBeanFields(session, object, classDescriptor, objectNode);
 			updateCollectionFields(session, object, classDescriptor, objectNode);
 		} catch (PathNotFoundException pnfe) {
@@ -289,8 +285,7 @@ public class ObjectConverterImpl implements ObjectConverter {
 			}
 
 			Object object = ReflectionUtils.newInstance(classDescriptor.getClassName());
-
-			retrieveSimpleFields(session, classDescriptor, node, object);
+			simpleFieldsHelp.retrieveSimpleFields(session, classDescriptor, node, object);			
 			retrieveBeanFields(session, classDescriptor, node, path, object, false);
 			retrieveCollectionFields(session, classDescriptor, node, object, false);
 
@@ -345,7 +340,7 @@ public class ObjectConverterImpl implements ObjectConverter {
 
 			}
 
-			retrieveSimpleFields(session, classDescriptor, node, object);
+			simpleFieldsHelp.retrieveSimpleFields(session, classDescriptor, node, object);			
 			retrieveBeanFields(session, classDescriptor, node, path, object, false);
 			retrieveCollectionFields(session, classDescriptor, node, object, false);
 
@@ -547,75 +542,6 @@ public class ObjectConverterImpl implements ObjectConverter {
 	}
 
 	/**
-	 * Retrieve simple fields (atomic fields)
-	 * 
-	 * @throws JcrMappingException
-	 * @throws org.apache.portals.graffito.jcr.exception.RepositoryException
-	 */
-	private Object retrieveSimpleFields(Session session, ClassDescriptor classDescriptor, Node node, Object object) 
-	{
-		Object initializedBean = object;
-		try 
-		{
-			Iterator fieldDescriptorIterator = classDescriptor.getFieldDescriptors().iterator();
-
-			while (fieldDescriptorIterator.hasNext()) 
-			{
-				FieldDescriptor fieldDescriptor = (FieldDescriptor) fieldDescriptorIterator.next();
-
-				String fieldName = fieldDescriptor.getFieldName();
-				String propertyName = fieldDescriptor.getJcrName();
-
-				if (fieldDescriptor.isPath()) 
-				{
-					// HINT: lazy initialize target bean - The bean can be null when it is inline
-					if (null == initializedBean) 
-					{
-						initializedBean = ReflectionUtils.newInstance(classDescriptor.getClassName());
-					}
-
-					ReflectionUtils.setNestedProperty(initializedBean, fieldName, node.getPath());
-					
-				} 
-				else
-				{
-					if (classDescriptor.usesNodeTypePerHierarchyStrategy() && classDescriptor.hasDiscriminator()) 
-					{
-						if ( ! node.hasProperty(PersistenceConstant.DISCRIMINATOR_PROPERTY_NAME)) 
-						{
-							throw new PersistenceException("Class '" + classDescriptor.getClassName() + "' has not a discriminator property.");
-						}					
-					}
-					if (node.hasProperty(propertyName)) 
-					{
-						Value propValue = node.getProperty(propertyName).getValue();
-						// HINT: lazy initialize target bean - The bean can be null when it is inline
-						if (null != propValue && null == initializedBean) {
-							initializedBean = ReflectionUtils.newInstance(classDescriptor.getClassName());
-						}
-
-						AtomicTypeConverter converter = getAtomicTypeConverter(fieldDescriptor, initializedBean, fieldName);
-						Object fieldValue = converter.getObject(propValue);
-						ReflectionUtils.setNestedProperty(initializedBean, fieldName, fieldValue);
-					} 
-					else 
-					{
-						log.warn("Class '" + classDescriptor.getClassName() + "' has an unmapped property : " + propertyName);
-					}
-				}
-				
-			}
-		} catch (ValueFormatException vfe) {
-			throw new PersistenceException("Cannot retrieve properties of object " + object + " from node " + node, vfe);
-		} catch (RepositoryException re) {
-			throw new org.apache.portals.graffito.jcr.exception.RepositoryException("Cannot retrieve properties of object "
-					+ object + " from node " + node, re);
-		}
-
-		return initializedBean;
-	}
-
-	/**
 	 * Retrieve bean fields
 	 */
 	private void retrieveBeanFields(Session session, ClassDescriptor classDescriptor, Node node, String path, Object object,
@@ -641,13 +567,12 @@ public class ObjectConverterImpl implements ObjectConverter {
 			bean = proxyManager.createBeanProxy(session, this, beanClass, path + "/" + beanDescriptor.getJcrName());
 
 		} else {
-			if (beanDescriptor.isInline()) {
-				bean = this.retrieveSimpleFields(session, mapper.getClassDescriptorByClass(beanClass), node, bean);
-			} else if (null != beanDescriptor.getConverter() && !"".equals(beanDescriptor.getConverter())) {
+			if (null != beanDescriptor.getConverter() && !"".equals(beanDescriptor.getConverter())) {
 				String converterClassName = beanDescriptor.getConverter();
-				Object[] param = {this};
+				Object[] param = {this.mapper, this, this.atomicTypeConverterProvider};
+				
 				BeanConverter beanConverter = (BeanConverter) ReflectionUtils.invokeConstructor(converterClassName, param);
-				bean = beanConverter.getObject(session, node, beanDescriptor, beanClass);
+				bean = beanConverter.getObject(session, node, mapper.getClassDescriptorByClass(beanClass), beanClass, bean);
 			} else {
 				bean = this.getObject(session, path + "/" + beanDescriptor.getJcrName());
 			}
@@ -704,13 +629,12 @@ public class ObjectConverterImpl implements ObjectConverter {
 			String jcrName = beanDescriptor.getJcrName();
 			Object bean = ReflectionUtils.getNestedProperty(object, beanDescriptor.getFieldName());
 			if (bean != null) {
-				if (beanDescriptor.isInline()) {
-					this.storeSimpleFields(session, bean, mapper.getClassDescriptorByClass(bean.getClass()), objectNode);
-				} else if (null != beanDescriptor.getConverter() && !"".equals(beanDescriptor.getConverter())) {
+                if (null != beanDescriptor.getConverter() && !"".equals(beanDescriptor.getConverter())) {
 					String converterClassName = beanDescriptor.getConverter();
-					Object[] param = {this};
+					Object[] param = {this.mapper, this, this.atomicTypeConverterProvider};
 					BeanConverter beanConverter = (BeanConverter) ReflectionUtils.invokeConstructor(converterClassName, param);
-					beanConverter.insert(session, objectNode, beanDescriptor, object);
+					beanConverter.insert(session, objectNode, mapper.getClassDescriptorByClass(bean.getClass()), bean, classDescriptor, object);
+					
 				} else {
 					this.insert(session, objectNode, jcrName, bean);
 				}
@@ -736,29 +660,26 @@ public class ObjectConverterImpl implements ObjectConverter {
 
 				// if the bean is null, remove existing node
 				if ((bean == null)) {
-					if (beanDescriptor.isInline()) {
-						Class beanClass = ReflectionUtils.getPropertyType(object, beanDescriptor.getFieldName());
-						this.storeSimpleFields(session, bean, mapper.getClassDescriptorByClass(beanClass), objectNode);
-					} else if (null != beanDescriptor.getConverter() && !"".equals(beanDescriptor.getConverter())) {
+					if (null != beanDescriptor.getConverter() && !"".equals(beanDescriptor.getConverter())) 
+					{
 						String converterClassName = beanDescriptor.getConverter();
-						Object[] param = {this};
+						Object[] param = {this.mapper, this, this.atomicTypeConverterProvider};
 						BeanConverter beanConverter = (BeanConverter) ReflectionUtils
 								.invokeConstructor(converterClassName, param);
-						beanConverter.remove(session, objectNode, beanDescriptor);
+						Class beanClass = ReflectionUtils.getPropertyType(object, beanDescriptor.getFieldName());
+						beanConverter.remove(session, objectNode, mapper.getClassDescriptorByClass(beanClass), bean, classDescriptor, object);
 					} else {
 						if (objectNode.hasNode(jcrName)) {
 							objectNode.getNode(jcrName).remove();
 						}
 					}
 				} else {
-					if (beanDescriptor.isInline()) {
-						this.storeSimpleFields(session, bean, mapper.getClassDescriptorByClass(bean.getClass()), objectNode);
-					} else if (null != beanDescriptor.getConverter() && !"".equals(beanDescriptor.getConverter())) {
+                    if (null != beanDescriptor.getConverter() && !"".equals(beanDescriptor.getConverter())) {
 						String converterClassName = beanDescriptor.getConverter();
-						Object[] param = {this};
+						Object[] param = {this.mapper, this, this.atomicTypeConverterProvider};
 						BeanConverter beanConverter = (BeanConverter) ReflectionUtils
 								.invokeConstructor(converterClassName, param);
-						beanConverter.update(session, objectNode, beanDescriptor, bean);
+						beanConverter.update(session, objectNode, mapper.getClassDescriptorByClass(bean.getClass()), bean, classDescriptor, object);
 					} else {
 						this.update(session, objectNode, jcrName, bean);
 					}
@@ -810,61 +731,6 @@ public class ObjectConverterImpl implements ObjectConverter {
 		}
 	}
 
-	private void storeSimpleFields(Session session, Object object, ClassDescriptor classDescriptor, Node objectNode) {
-		try {
-			ValueFactory valueFactory = session.getValueFactory();
-
-			Iterator fieldDescriptorIterator = classDescriptor.getFieldDescriptors().iterator();
-			while (fieldDescriptorIterator.hasNext()) {
-				FieldDescriptor fieldDescriptor = (FieldDescriptor) fieldDescriptorIterator.next();
-
-				String fieldName = fieldDescriptor.getFieldName();
-				String jcrName = fieldDescriptor.getJcrName();
-
-				// Of course, Path field is not stored as property
-				if (fieldDescriptor.isPath()) {
-					continue;
-				}
-
-				boolean protectedProperty = fieldDescriptor.isJcrProtected();
-
-				if (objectNode.hasProperty(jcrName)) {
-					protectedProperty = objectNode.getProperty(jcrName).getDefinition().isProtected();
-				}
-
-				if (!protectedProperty) { // DO NOT TRY TO WRITE PROTECTED  PROPERTIES
-					Object fieldValue = ReflectionUtils.getNestedProperty(object, fieldName);
-					AtomicTypeConverter converter = getAtomicTypeConverter(fieldDescriptor, object, fieldName);
-					Value value = converter.getValue(valueFactory, fieldValue);
-
-					// Check if the node property is "autocreated"
-					boolean autoCreated = fieldDescriptor.isJcrAutoCreated();
-
-					if (objectNode.hasProperty(jcrName)) {
-						autoCreated = objectNode.getProperty(jcrName).getDefinition().isAutoCreated();
-					}
-
-					if (!autoCreated) {
-						// Check if mandatory property are not null
-						checkMandatoryProperty(objectNode, fieldDescriptor, value);
-					}
-
-					objectNode.setProperty(jcrName, value);
-				}
-			}
-		} catch (ValueFormatException vfe) {
-			throw new PersistenceException("Cannot persist properties of object " + object + ". Value format exception.", vfe);
-		} catch (VersionException ve) {
-			throw new PersistenceException("Cannot persist properties of object " + object + ". Versioning exception.", ve);
-		} catch (LockException le) {
-			throw new PersistenceException("Cannot persist properties of object " + object + " on locked node.", le);
-		} catch (ConstraintViolationException cve) {
-			throw new PersistenceException("Cannot persist properties of object " + object + ". Constraint violation.", cve);
-		} catch (RepositoryException re) {
-			throw new org.apache.portals.graffito.jcr.exception.RepositoryException("Cannot persist properties of object "
-					+ object, re);
-		}
-	}
 
 	private CollectionConverter getCollectionConverter(Session session, CollectionDescriptor collectionDescriptor) {
 		String className = collectionDescriptor.getCollectionConverter();
@@ -876,45 +742,6 @@ public class ObjectConverterImpl implements ObjectConverter {
 					this.mapper});
 		}
 
-	}
-
-	private void checkMandatoryProperty(Node objectNode, FieldDescriptor fieldDescriptor, Value value) throws RepositoryException {
-		PropertyDefinition[] propertyDefinitions = objectNode.getPrimaryNodeType().getDeclaredPropertyDefinitions();
-		for (int i = 0; i < propertyDefinitions.length; i++) {
-			PropertyDefinition definition = propertyDefinitions[i];
-			if (definition.getName().equals(fieldDescriptor.getJcrName()) && definition.isMandatory()
-					&& (definition.isAutoCreated() == false) && (value == null)) {
-				throw new PersistenceException("Class of type:" + fieldDescriptor.getClassDescriptor().getClassName()
-						+ " has property: " + fieldDescriptor.getFieldName() + " declared as JCR property: "
-						+ fieldDescriptor.getJcrName() + " This property is mandatory but property in bean has value null");
-			}
-		}
-	}
-
-	private AtomicTypeConverter getAtomicTypeConverter(FieldDescriptor fd, Object object, String fieldName) {
-		Class fieldTypeClass = null;
-		// Check if an atomic converter is assigned to the field converter
-		String atomicTypeConverterClass = fd.getConverter();
-		if (null != atomicTypeConverterClass)
-		{
-			return (AtomicTypeConverter) ReflectionUtils.newInstance(atomicTypeConverterClass);
-		}
-		else
-		{
-			// Get the default atomic converter in function of the classname
-			if (null != fd.getFieldTypeClass()) {
-				fieldTypeClass = fd.getFieldTypeClass();
-			} else if (null != object) {
-				fieldTypeClass = ReflectionUtils.getPropertyType(object, fieldName);
-			}
-
-			if (null != fieldTypeClass) {
-				return this.atomicTypeConverterProvider.getAtomicTypeConverter(fieldTypeClass);
-			} else {
-				return NULL_CONVERTER;
-			}
-			
-		}
 	}
 
 	private ClassDescriptor getClassDescriptor(Class beanClass) {

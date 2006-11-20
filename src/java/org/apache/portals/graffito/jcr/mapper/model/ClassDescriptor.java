@@ -354,10 +354,9 @@ public class ClassDescriptor {
      */
     public void afterPropertiesSet() {
         validateClassName();   
-        validateBeanFields();
         lookupSuperDescriptor();
         lookupInheritanceSettings();
-//        validateInheritanceSettings();
+
     }
 
 	private void validateClassName() {
@@ -368,19 +367,6 @@ public class ClassDescriptor {
 		}
 	}
 
-	private void validateBeanFields()
-	{
-	         Iterator beanDescriptorIterator  =  beanDescriptors.values().iterator();
-	         while (beanDescriptorIterator.hasNext()) {
-              	        BeanDescriptor beanDescriptor = (BeanDescriptor) beanDescriptorIterator.next();
-              	        if (beanDescriptor.isProxy() && beanDescriptor.isInline())
-              	        {
-              	        	     throw new JcrMappingException("Bean field can not be proxy and inline - class : " + this.className + " - bean field :" + beanDescriptor.getFieldName());	
-              	        }
-				       
-			}
-
-	}
 	
 	private void lookupSuperDescriptor() {
         if (null != superClassDescriptor) {

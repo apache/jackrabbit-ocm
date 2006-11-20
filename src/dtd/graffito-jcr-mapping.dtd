@@ -94,7 +94,6 @@
     * autoRetrieve : If false, the bean associated to this descriptor is not retrieved when the main ojbect is retrieved
     * autoUpdate : If false, the bean associated to this descriptor is not updated when the main ojbect is updated
     * autoInsert : If false, the bean associated to this descriptor is not inserted  when the main ojbect is inserted    
-    * inline: persist/retrieve bean properties from the current node (if true).
     * converter: fully qualified name of the converter class to be used (default is ObjectConverterImpl)
     * jcrNodeType: defines the child node type, optional
     * jcrAutoCreated (boolean) default is "false"
@@ -111,7 +110,6 @@
 	autoRetrieve (true|false) "true"
 	autoUpdate (true|false) "true"
 	autoInsert (true|false) "true"	
-	inline (true | false) "false"
 	converter CDATA #IMPLIED
 	jcrNodeType CDATA #IMPLIED
     jcrAutoCreated (true | false) "false"   

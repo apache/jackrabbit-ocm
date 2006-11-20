@@ -80,7 +80,6 @@ public class BeanDescriptorTest extends TestBase {
     }
     
     public void testInlined() throws Exception {
-        System.out.println("inlined");
         
         B expB = new B();
         expB.setB1("b1value");
