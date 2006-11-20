@@ -28,7 +28,7 @@
 		<field-descriptor fieldName="path" path="true" />
 		<field-descriptor fieldName="name" jcrName="graffito:name"  id="true" />
 		<bean-descriptor  fieldName="parentFolder"  					 
-						  converter="org.apache.portals.graffito.jcr.persistence.objectconverter.impl.ParentBeanConverterImpl" />
+						  converter="org.apache.portals.graffito.jcr.persistence.beanconverter.impl.ParentBeanConverterImpl" />
 
 	</class-descriptor>     
 

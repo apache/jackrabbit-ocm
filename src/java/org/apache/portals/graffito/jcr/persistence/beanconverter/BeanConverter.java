@@ -14,7 +14,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.apache.portals.graffito.jcr.persistence.objectconverter;
+package org.apache.portals.graffito.jcr.persistence.beanconverter;
 
 
 import javax.jcr.Node;
@@ -24,6 +24,7 @@ import org.apache.portals.graffito.jcr.exception.JcrMappingException;
 import org.apache.portals.graffito.jcr.exception.PersistenceException;
 import org.apache.portals.graffito.jcr.exception.RepositoryException;
 import org.apache.portals.graffito.jcr.mapper.model.BeanDescriptor;
+import org.apache.portals.graffito.jcr.mapper.model.ClassDescriptor;
 
 /**
  * Interface describing a custom bean converter. 
@@ -35,10 +36,11 @@ public interface BeanConverter {
      * Insert the object.
      *
      * @param session the JCR session
-     * @param parentNode The parent node
-     * @param mapper available mappings
-     * @param beanName bean name to be inserter
-     * @param object bean
+     * @param parentNode The node which will contain the converter bean
+     * @param beanClassDescriptor the Class Descriptor associated to the bean to insert
+     * @param bean the bean to convert( insert into the JCR structure)
+     * @param parentClassDescriptor The Class Descriptor associated to the parent object 
+     * @param parent the object which will contain the bean to convert 
      * 
      * @throws PersistenceException thrown in case the insert fails; marks a failure due to logic of
      *  the insert (parent node cannot be accessed, the insert fails, etc.)
@@ -47,17 +49,18 @@ public interface BeanConverter {
      *  wrapped in PersistenceException; marks a repository failure
      * @throws JcrMappingException throws in case the mapping of the bean is not correct
      */
-    void insert(Session session, Node parentNode, BeanDescriptor descriptor, Object object)
+    void insert(Session session, Node parentNode, ClassDescriptor beanClassDescriptor, Object bean, ClassDescriptor parentClassDescriptor, Object parent)
     throws PersistenceException, RepositoryException, JcrMappingException;
 
     /**
      * Update repository from bean values.
      *
      * @param session the JCR session
-     * @param parentNode The parent node
-     * @param mapper available mappings
-     * @param beanName bean name to be updated
-     * @param object bean
+     * @param parentNode The node which will contain the converter bean
+     * @param beanClassDescriptor the Class Descriptor associated to the bean to update
+     * @param bean the bean to convert( insert into the JCR structure)
+     * @param parentClassDescriptor The Class Descriptor associated to the parent object
+     * @param parent the object which will contain the bean to convert 
      * 
      * @throws PersistenceException thrown in case the update fails; marks a failure due to logic
      *  of update (parent node cannot be accessed, the update fails, etc.)
@@ -66,7 +69,7 @@ public interface BeanConverter {
      *  wrapped in PersistenceException; marks a repository failure
      * @throws JcrMappingException throws in case the mapping of the bean is not correct
      */
-    void update(Session session, Node parentNode, BeanDescriptor descriptor, Object object)
+    void update(Session session, Node parentNode, ClassDescriptor beanClassDescriptor, Object bean, ClassDescriptor parentClassDescriptor, Object parent)
     throws PersistenceException, RepositoryException, JcrMappingException;
     
     /**
@@ -74,9 +77,9 @@ public interface BeanConverter {
      * 
      * @param session the JCR session
      * @param parentNode The parent node
-     * @param mapper available mappings
-     * @param beanName bean name to be retrieved
-     * @param beanClass class of the bean to be retrieved
+     * @param beanClassDescriptor the Class Descriptor associated to the bean to insert
+     * @param beanClass The bean Class
+     * @param parent The parent which contain the bean to retrieve
      * 
      * @throws PersistenceException thrown in case the bean cannot be retrieved or initialized; 
      *  marks a failure due to logic of retrieval
@@ -85,7 +88,7 @@ public interface BeanConverter {
      *  wrapped in PersistenceException; marks a repository failure
      * @throws JcrMappingException throws in case the mapping of the bean is not correct
      */
-    Object getObject(Session session, Node parentNode, BeanDescriptor descriptor, Class beanClass) 
+    Object getObject(Session session, Node parentNode, ClassDescriptor beanClassDescriptor, Class beanClass, Object parent) 
     throws PersistenceException, RepositoryException, JcrMappingException;
 
 
@@ -93,9 +96,11 @@ public interface BeanConverter {
      * Remove the bean from the repository.
      * 
      * @param session the JCR session
-     * @param parentNode The parent node
-     * @param mapper available mappings
-     * @param beanName bean name to be retrieved
+     * @param parentNode The node which will contain the converter bean
+     * @param beanClassDescriptor the Class Descriptor associated to the bean to update
+     * @param bean the bean to convert( insert into the JCR structure)
+     * @param parentClassDescriptor The Class Descriptor associated to the parent object 
+     * @param parent the object which contains the bean to convert 
      * 
      * @throws PersistenceException thrown in case the bean cannot be removed; 
      *  marks a failure due to logic of removal
@@ -104,6 +109,6 @@ public interface BeanConverter {
      *  wrapped in PersistenceException; marks a repository failure
      * @throws JcrMappingException throws in case the mapping of the bean is not correct
      */
-    void remove(Session session, Node parentNode, BeanDescriptor descriptor)
+    void remove(Session session, Node parentNode, ClassDescriptor beanClassDescriptor, Object bean, ClassDescriptor parentClassDescriptor, Object parent)
     throws PersistenceException, RepositoryException, JcrMappingException;
 }

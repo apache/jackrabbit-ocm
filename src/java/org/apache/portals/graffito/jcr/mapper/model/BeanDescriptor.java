@@ -17,7 +17,7 @@
 package org.apache.portals.graffito.jcr.mapper.model;
 
 
-import org.apache.portals.graffito.jcr.persistence.objectconverter.BeanConverter;
+import org.apache.portals.graffito.jcr.persistence.beanconverter.BeanConverter;
 import org.apache.portals.graffito.jcr.persistence.objectconverter.impl.ObjectConverterImpl;
 import org.apache.portals.graffito.jcr.reflection.ReflectionUtils;
 
@@ -35,8 +35,7 @@ public class BeanDescriptor implements ChildNodeDefDescriptor, PropertyDefDescri
     private boolean proxy;
     private boolean autoRetrieve = true;
     private boolean autoUpdate = true;
-    private boolean autoInsert = true;
-    private boolean inline;
+    private boolean autoInsert = true;    
     private String converter;
     private BeanConverter beanConverter;
     private String jcrNodeType;
@@ -115,24 +114,6 @@ public class BeanDescriptor implements ChildNodeDefDescriptor, PropertyDefDescri
 		this.autoUpdate = autoUpdate;
 	}
 
-	/**
-     * Are the current bean properties inlined in the parent
-     * 
-     * @return <tt>true</tt> if bean's properties are inlined in the parent node
-     */
-    public boolean isInline() {
-        return this.inline;
-    }
-
-    /**
-     * Sets if the bean's properties should be inlined in the parent
-     * instead of being persisted on a subnode
-     * 
-     * @param flag <tt>true</tt> if the bean properties should be inlined
-     */
-    public void setInline(boolean flag) {
-        this.inline = flag;
-    }
 
     /**
      * Get the <code>BeanConverter</code> fully qualified name or <tt>null</tt>

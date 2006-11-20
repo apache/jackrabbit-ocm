@@ -27,7 +27,7 @@
 		<bean-descriptor fieldName="b" 
 						 jcrName="b" 
 						 proxy="false" 
-						 inline="true"
+						 converter="org.apache.portals.graffito.jcr.persistence.beanconverter.impl.InlineBeanConverterImpl"
 						 jcrNodeType="nt:unstructured"
         				 jcrAutoCreated="false" 
         				 jcrMandatory="false" 
