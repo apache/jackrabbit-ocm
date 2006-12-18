@@ -23,11 +23,18 @@ import org.apache.portals.graffito.jcr.exception.JcrMappingException;
 import org.apache.portals.graffito.jcr.exception.PersistenceException;
 import org.apache.portals.graffito.jcr.exception.RepositoryException;
 import org.apache.portals.graffito.jcr.mapper.Mapper;
+import org.apache.portals.graffito.jcr.mapper.model.BeanDescriptor;
 import org.apache.portals.graffito.jcr.mapper.model.ClassDescriptor;
 import org.apache.portals.graffito.jcr.persistence.atomictypeconverter.AtomicTypeConverterProvider;
 import org.apache.portals.graffito.jcr.persistence.beanconverter.BeanConverter;
 import org.apache.portals.graffito.jcr.persistence.objectconverter.ObjectConverter;
-
+/**
+ * 
+ * Abstract Bean Converter Class
+ * 
+ * @author <a href="mailto:christophe.lombart@gmail.com">Lombart Christophe </a>
+ *
+ */
 public abstract class AbstractBeanConverterImpl implements BeanConverter {
 
 	protected ObjectConverter objectConverter;
@@ -40,16 +47,42 @@ public abstract class AbstractBeanConverterImpl implements BeanConverter {
 		this.objectConverter = objectConverter;
 		this.atomicTypeConverterProvider = atomicTypeConverterProvider;
 	}
-	
-    public abstract void insert(Session session, Node parentNode, ClassDescriptor beanClassDescriptor, Object object, ClassDescriptor parentClassDescriptor, Object parent)
+
+	/**
+	 * 
+	 * Default implementation for many BeanConverter. This method can be overridden in specific BeanConverter
+	 * 
+	 */
+    public String getPath(Session session, BeanDescriptor beanDescriptor, Node parentNode)
+           throws PersistenceException
+    {		
+		 try 
+		 {
+			String path = "";
+			if (parentNode != null)
+		    {				
+				 path +=  parentNode.getPath();
+			}
+		    return path + "/"  + beanDescriptor.getJcrName();
+
+		} 
+		catch (javax.jcr.RepositoryException e) 
+		{
+			throw new RepositoryException(e);
+		}
+	}
+
+
+
+	public abstract void insert(Session session, Node parentNode, BeanDescriptor beanDescriptor, ClassDescriptor beanClassDescriptor, Object object, ClassDescriptor parentClassDescriptor, Object parent)
 			throws PersistenceException, RepositoryException, 	JcrMappingException;
 
-	public abstract  void update(Session session, Node parentNode, ClassDescriptor beanClassDescriptor, Object object, ClassDescriptor parentClassDescriptor, Object parent)
+	public abstract  void update(Session session, Node parentNode, BeanDescriptor beanDescriptor, ClassDescriptor beanClassDescriptor, Object object, ClassDescriptor parentClassDescriptor, Object parent)
 			throws PersistenceException, RepositoryException,	JcrMappingException;
 	
-	public abstract Object getObject(Session session, Node parentNode, ClassDescriptor beanClassDescriptor, Class beanClass, Object parent)
+	public abstract Object getObject(Session session, Node parentNode, BeanDescriptor beanDescriptor, ClassDescriptor beanClassDescriptor, Class beanClass, Object parent)
 			throws PersistenceException, RepositoryException,JcrMappingException ;
 
-	public abstract void remove(Session session, Node parentNode, ClassDescriptor beanClassDescriptor,  Object object, ClassDescriptor parentClassDescriptor, Object parent)
+	public abstract void remove(Session session, Node parentNode, BeanDescriptor beanDescriptor, ClassDescriptor beanClassDescriptor,  Object object, ClassDescriptor parentClassDescriptor, Object parent)
 	          throws PersistenceException,	RepositoryException, JcrMappingException ;
 }

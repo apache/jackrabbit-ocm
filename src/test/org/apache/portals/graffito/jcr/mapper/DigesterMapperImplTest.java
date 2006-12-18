@@ -69,7 +69,7 @@ public class DigesterMapperImplTest extends TestCase {
 		try {
 
 			Mapper mapper = new DigesterMapperImpl(
-					"./src/test-config/jcrmapping-testmappings.xml");
+					"./src/test-config/jcrmapping-testdigester.xml");
 					
 			assertNotNull("Mapper is null", mapper);
 
@@ -105,7 +105,8 @@ public class DigesterMapperImplTest extends TestCase {
 	public void testDiscriminatorSetting() {
 		try {
 
-			Mapper mapper = new DigesterMapperImpl("./src/test-config/jcrmapping-testmappings.xml");
+			Mapper mapper = new DigesterMapperImpl("./src/test-config/jcrmapping-testdigester.xml");
+
 			assertNotNull("Mapper is null", mapper);
 
 			ClassDescriptor classDescriptor = mapper.getClassDescriptorByNodeType("graffito:C");
@@ -124,8 +125,7 @@ public class DigesterMapperImplTest extends TestCase {
 	 */
 	public void testMapperOptionalProperties() {
 		try {
-			Mapper mapper = new DigesterMapperImpl(
-					"./src/test-config/jcrmapping.xml");
+			Mapper mapper = new DigesterMapperImpl("./src/test-config/jcrmapping.xml");
 			assertNotNull("Mapper is null", mapper);
 
 			ClassDescriptor classDescriptor = mapper

@@ -23,12 +23,20 @@ import org.apache.portals.graffito.jcr.exception.JcrMappingException;
 import org.apache.portals.graffito.jcr.exception.PersistenceException;
 import org.apache.portals.graffito.jcr.exception.RepositoryException;
 import org.apache.portals.graffito.jcr.mapper.Mapper;
+import org.apache.portals.graffito.jcr.mapper.model.BeanDescriptor;
 import org.apache.portals.graffito.jcr.mapper.model.ClassDescriptor;
 import org.apache.portals.graffito.jcr.persistence.atomictypeconverter.AtomicTypeConverterProvider;
 import org.apache.portals.graffito.jcr.persistence.beanconverter.BeanConverter;
 import org.apache.portals.graffito.jcr.persistence.objectconverter.ObjectConverter;
 import org.apache.portals.graffito.jcr.persistence.objectconverter.impl.SimpleFieldsHelper;
-
+/**
+ * 
+ * Bean converter used to map some node properties into one nested bean field.
+ * The corresponding bean field is not associated to a subnode.
+ * 
+ * @author <a href="mailto:christophe.lombart@gmail.com">Lombart Christophe </a>
+ *
+ */
 public class InlineBeanConverterImpl extends AbstractBeanConverterImpl  implements BeanConverter {
 
 	SimpleFieldsHelper simpleFieldsHelper; 
@@ -39,25 +47,25 @@ public class InlineBeanConverterImpl extends AbstractBeanConverterImpl  implemen
 		this.simpleFieldsHelper = new SimpleFieldsHelper(atomicTypeConverterProvider);
 	}
 
-	public void insert(Session session, Node parentNode, ClassDescriptor beanClassDescriptor, Object object, ClassDescriptor parentClassDescriptor, Object parent)
+	public void insert(Session session, Node parentNode,  BeanDescriptor beanDescriptor, ClassDescriptor beanClassDescriptor, Object object, ClassDescriptor parentClassDescriptor, Object parent)
 			throws PersistenceException, RepositoryException, 	JcrMappingException {
 		
 		simpleFieldsHelper.storeSimpleFields(session, object, beanClassDescriptor, parentNode);
 	}
 
-	public void update(Session session, Node parentNode, ClassDescriptor beanClassDescriptor, Object object, ClassDescriptor parentClassDescriptor, Object parent)
+	public void update(Session session, Node parentNode,  BeanDescriptor beanDescriptor, ClassDescriptor beanClassDescriptor, Object object, ClassDescriptor parentClassDescriptor, Object parent)
 			throws PersistenceException, RepositoryException, JcrMappingException {
 		simpleFieldsHelper.storeSimpleFields(session, object, beanClassDescriptor, parentNode);
 	}
 
-	public Object getObject(Session session, Node parentNode, ClassDescriptor beanClassDescriptor, Class beanClass, Object bean)
+	public Object getObject(Session session, Node parentNode,  BeanDescriptor beanDescriptor, ClassDescriptor beanClassDescriptor, Class beanClass, Object bean)
 			throws PersistenceException, RepositoryException,JcrMappingException {
 		
 		return simpleFieldsHelper.retrieveSimpleFields(session, beanClassDescriptor, parentNode, bean);
  
 	}
 
-	public void remove(Session session, Node parentNode, ClassDescriptor beanClassDescriptor, Object object, ClassDescriptor parentClassDescriptor, Object parent)
+	public void remove(Session session, Node parentNode, BeanDescriptor beanDescriptor, ClassDescriptor beanClassDescriptor, Object object, ClassDescriptor parentClassDescriptor, Object parent)
 	          throws PersistenceException,	RepositoryException, JcrMappingException {
 				
 		simpleFieldsHelper.storeSimpleFields(session, object, beanClassDescriptor, parentNode);

@@ -17,7 +17,11 @@
 package org.apache.portals.graffito.jcr.persistence.beanconverter.impl;
 
 import javax.jcr.Node;
+import javax.jcr.PathNotFoundException;
 import javax.jcr.Session;
+import javax.jcr.lock.LockException;
+import javax.jcr.nodetype.ConstraintViolationException;
+import javax.jcr.version.VersionException;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -32,77 +36,55 @@ import org.apache.portals.graffito.jcr.persistence.beanconverter.BeanConverter;
 import org.apache.portals.graffito.jcr.persistence.objectconverter.ObjectConverter;
 /**
  * 
- * Bean converter used to access to the parent object.
+ * Default Bean Converter
  * 
  * 
  * @author <a href="mailto:christophe.lombart@gmail.com">Lombart Christophe </a>
  *
  */
-public class ParentBeanConverterImpl extends AbstractBeanConverterImpl  implements BeanConverter {
+public class DefaultBeanConverterImpl extends AbstractBeanConverterImpl  implements BeanConverter {
 
-	private final static Log log = LogFactory.getLog(ParentBeanConverterImpl.class);
+	private final static Log log = LogFactory.getLog(DefaultBeanConverterImpl.class);
 	
-	public ParentBeanConverterImpl(Mapper mapper, ObjectConverter objectConverter, AtomicTypeConverterProvider atomicTypeConverterProvider) 
+	public DefaultBeanConverterImpl(Mapper mapper, ObjectConverter objectConverter, AtomicTypeConverterProvider atomicTypeConverterProvider) 
 	{
 		super(mapper, objectConverter, atomicTypeConverterProvider);	
 	}
 
 	public void insert(Session session, Node parentNode, BeanDescriptor beanDescriptor, ClassDescriptor beanClassDescriptor, Object object, ClassDescriptor parentClassDescriptor, Object parent)
-			throws PersistenceException, RepositoryException, 	JcrMappingException {
+			throws PersistenceException, RepositoryException, 	JcrMappingException 
+	{
+		objectConverter.insert(session, parentNode, beanDescriptor.getJcrName(), object);
 	}
 
 	public void update(Session session, Node parentNode, BeanDescriptor beanDescriptor, ClassDescriptor beanClassDescriptor, Object object, ClassDescriptor parentClassDescriptor, Object parent)
-			throws PersistenceException, RepositoryException,	JcrMappingException {
+			throws PersistenceException, RepositoryException,	JcrMappingException 
+	{
+		objectConverter.update(session, parentNode, beanDescriptor.getJcrName(), object);
 	}
 
 	public Object getObject(Session session, Node parentNode, BeanDescriptor beanDescriptor, ClassDescriptor beanClassDescriptor, Class beanClass, Object parent)
-			throws PersistenceException, RepositoryException,JcrMappingException {
-        try 
-        {			
-			Node grandParentNode = parentNode.getParent();
-			if (grandParentNode.getPath().equals("/"))
-			{
-				return null;
-			}
-			return objectConverter.getObject(session, grandParentNode.getPath());
-			
-		} 
-        catch (javax.jcr.RepositoryException e) 
-		{
-			throw new RepositoryException(e);
-		} 
+			throws PersistenceException, RepositoryException,JcrMappingException 
+	{
+        return objectConverter.getObject(session, beanClass, this.getPath(session, beanDescriptor, parentNode));
 		
 	}
 
 	public void remove(Session session, Node parentNode, BeanDescriptor beanDescriptor, ClassDescriptor beanClassDescriptor, Object object, ClassDescriptor parentClassDescriptor, Object parent)
-	          throws PersistenceException,	RepositoryException, JcrMappingException {
-
-	}
-	
-	/**
-	 * 
-	 * Default implementation for many BeanConverter. This method can be overridden in specific BeanConverter
-	 * 
-	 */
-    public String getPath(Session session, BeanDescriptor beanDescriptor, Node parentNode)
-                throws PersistenceException
-    {		
-		 try 
-		 {
-			if (parentNode != null)
-		    {
-				
-				 return parentNode.getParent().getPath();
-			}
-			else
+	          throws PersistenceException,	RepositoryException, JcrMappingException 
+	{
+		try {
+			if (parentNode.hasNode(beanDescriptor.getJcrName())) 
 			{
-			    return null; 
+				parentNode.getNode(beanDescriptor.getJcrName()).remove();
 			}
-		} 
-		catch (javax.jcr.RepositoryException e) 
-		{
+
+		} catch (javax.jcr.RepositoryException e) {
+			
 			throw new RepositoryException(e);
 		}
-	}	
+		
+	}
+	
 
 }
