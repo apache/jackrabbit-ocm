@@ -100,7 +100,8 @@ public class Paragraph
 			]]></source>		  
 			</p>	
 			
-			<p>It is possible to have another kind of jcr structure by using other mapping strategies. See the section <a href="advanced-strategies/introduction-strategies.html">Advanced Mapping strategies</a> to get more information on that.</p>
+			<p>It is possible to have another kind of jcr structure by using other mapping strategies. 
+			See the sections <a href="atomic-strategy.html">Mapping Atomic Fields</a>, <a href="bean-strategy.html">Mapping Bean Fields</a>, <a href="collection-strategy.html">Mapping Collection Fields</a> to get more information on that.</p>
 			
 			</subsection>
 			<subsection name="The Class Descriptors">
@@ -117,16 +118,16 @@ public class Paragraph
 				]]></source>
 
 				<p>
-				    This class descriptor maps the class "org.apache.portals.graffito.jcr.testmodel.Paragraph" to the JCR type "nt:unstructured". 
+				    This class descriptor maps the class "org.apache.portals.graffito.jcr.testmodel.Paragraph" into the JCR type "nt:unstructured". 
 				    Each field-descriptor maps one bean field into a JCR property. For example, the first field descriptor maps the java bean field "text" into the jcr property called "myjcrtext".
-				    The second field-descriptor is specific case because is map the jcr node path into a bean field called "path" (see below the section "The Path Field"). 
+				    The second field-descriptor is a specific case because it maps the jcr node path into a bean field called "path" (see below the section "The Path Field"). 
 				    
 				    
 				    You can find more information on the field-descriptors in the page <a href="atomic-strategy.html">Mapping Atomic fields</a>. 
 				</p>	
 				<p>
 					It is also possible to map a bean class to a particular JCR node type by specifying the desired type in the attribute jcrNodeType. 
-					The following class-descriptor map the class "org.apache.portals.graffito.jcr.testmodel.Paragraph" to the node type "graffito:paragraph".
+					The following class-descriptor map the class "org.apache.portals.graffito.jcr.testmodel.Paragraph" into the node type "graffito:paragraph".
 						
 				</p>				   
 				   

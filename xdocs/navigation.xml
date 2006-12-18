@@ -34,9 +34,9 @@
 		</menu -->	
 		
 		<menu name="Persistence Manager">			
-			<item name="What is the Persistence Manager ?" href="engine-introduction.html"/>
+			<item name="Overview" href="engine-introduction.html"/>
 			<item name="Mapping Descriptor DTD" href="graffito-jcr-mapping.dtd.txt"/>
-			<item name="Setpup" href="engine-setup.html"/>
+			<item name="Setup" href="engine-setup.html"/>
 			<item name="Spring Integration" href="engine-spring.html"/>
 		</menu>			
 		
