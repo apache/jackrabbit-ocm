@@ -18,6 +18,9 @@ package org.apache.portals.graffito.jcr.persistence.beanconverter;
 
 
 
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Iterator;
 import java.util.List;
 
 import junit.framework.Test;
@@ -25,13 +28,15 @@ import junit.framework.TestSuite;
 
 import org.apache.portals.graffito.jcr.RepositoryLifecycleTestSetup;
 import org.apache.portals.graffito.jcr.TestBase;
-import org.apache.portals.graffito.jcr.mapper.model.BeanDescriptor;
+import org.apache.portals.graffito.jcr.persistence.PersistenceManager;
 import org.apache.portals.graffito.jcr.persistence.objectconverter.ObjectConverter;
 import org.apache.portals.graffito.jcr.persistence.objectconverter.impl.ObjectConverterImpl;
 import org.apache.portals.graffito.jcr.testmodel.B;
 import org.apache.portals.graffito.jcr.testmodel.D;
 import org.apache.portals.graffito.jcr.testmodel.DFull;
 import org.apache.portals.graffito.jcr.testmodel.E;
+import org.apache.portals.graffito.jcr.testmodel.Page;
+import org.apache.portals.graffito.jcr.testmodel.Paragraph;
 
 /**
  * ObjectConverter test for bean-descriptor with inner bean inlined and inner bean with
@@ -73,10 +78,12 @@ public class BeanDescriptorTest extends TestBase {
     }
 
     private void clean() throws Exception {
-        if(getSession().itemExists("/someD")) {
+        if(getSession().itemExists("/someD")) 
+        {
             getSession().getItem("/someD").remove();
             getSession().save();
         }
+
     }
     
     public void testInlined() throws Exception {
@@ -187,6 +194,59 @@ public class BeanDescriptorTest extends TestBase {
         assertEquals("remove from path /someD", messages.get(4));
         assertEquals("get from path /someD", messages.get(5));
 
+    }
+    
+    public void testParentBeanConverter() throws Exception
+    {
+        try
+        {
+        	PersistenceManager persistenceManager = getPersistenceManager();
+
+            // --------------------------------------------------------------------------------
+            // Create and store an object graph in the repository
+            // --------------------------------------------------------------------------------
+
+            Page page = new Page();
+            page.setPath("/test");
+            page.setTitle("Page Title");
+            
+            Collection paragraphs = new ArrayList();
+            
+            paragraphs.add(new Paragraph("Para 1"));
+            paragraphs.add(new Paragraph("Para 2"));
+            paragraphs.add(new Paragraph("Para 3"));
+            page.setParagraphs(paragraphs);
+            
+            persistenceManager.insert(page);
+            persistenceManager.save();
+            
+            // --------------------------------------------------------------------------------
+            // Get the object
+            // --------------------------------------------------------------------------------           
+            page = (Page) persistenceManager.getObject("/test");
+            paragraphs = page.getParagraphs();
+            for (Iterator iter = paragraphs.iterator(); iter.hasNext();) {
+				Paragraph paragraph = (Paragraph) iter.next();
+				System.out.println("Paragraph path : " + paragraph.getPath());				
+			}
+            Paragraph p1 = (Paragraph) persistenceManager.getObject(Paragraph.class, "/test/collection-element[2]");
+            Page paraPage = p1.getPage();
+            assertNotNull("Parent page is null", paraPage);
+            assertTrue("Invalid parent page", paraPage.getPath().equals("/test"));
+            
+            // --------------------------------------------------------------------------------
+            // Remove the object
+            // --------------------------------------------------------------------------------           
+            persistenceManager.remove("/test");
+            persistenceManager.save();
+            
+        }
+        catch (Exception e)
+        {
+            e.printStackTrace();
+            fail("Exception occurs during the unit test : " + e);
+        }
+    	
     }
     
 }

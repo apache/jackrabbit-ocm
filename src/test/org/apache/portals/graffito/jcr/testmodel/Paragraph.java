@@ -25,8 +25,8 @@ public class Paragraph
 {
     private String path;
 	private String text;
-
-
+    // Simple reference to the page containing this pararaph - cannot be updated
+	private Page page; 
 	
     public String getPath() 
     {
@@ -63,5 +63,17 @@ public class Paragraph
     {
         this.text = text;
     }
+
+	public Page getPage() 
+	{
+		return page;
+	}
+
+	public void setPage(Page page) {
+		this.page = page;
+	}
+
+	
+    
     
 }

@@ -25,6 +25,7 @@ import org.apache.portals.graffito.jcr.exception.PersistenceException;
 import org.apache.portals.graffito.jcr.exception.RepositoryException;
 import org.apache.portals.graffito.jcr.mapper.model.BeanDescriptor;
 import org.apache.portals.graffito.jcr.mapper.model.ClassDescriptor;
+import org.apache.portals.graffito.jcr.persistence.beanconverter.impl.ParentBeanConverterImpl;
 
 /**
  * Interface describing a custom bean converter. 
@@ -32,11 +33,14 @@ import org.apache.portals.graffito.jcr.mapper.model.ClassDescriptor;
  * @author <a href='mailto:the_mindstorm[at]evolva[dot]ro'>Alexandru Popescu</a>
  */
 public interface BeanConverter {
+	
+	
     /**
      * Insert the object.
      *
      * @param session the JCR session
      * @param parentNode The node which will contain the converter bean
+     * @param beanDescriptor The bean descriptor
      * @param beanClassDescriptor the Class Descriptor associated to the bean to insert
      * @param bean the bean to convert( insert into the JCR structure)
      * @param parentClassDescriptor The Class Descriptor associated to the parent object 
@@ -49,7 +53,7 @@ public interface BeanConverter {
      *  wrapped in PersistenceException; marks a repository failure
      * @throws JcrMappingException throws in case the mapping of the bean is not correct
      */
-    void insert(Session session, Node parentNode, ClassDescriptor beanClassDescriptor, Object bean, ClassDescriptor parentClassDescriptor, Object parent)
+    void insert(Session session, Node parentNode, BeanDescriptor beanDescriptor, ClassDescriptor beanClassDescriptor, Object bean, ClassDescriptor parentClassDescriptor, Object parent)
     throws PersistenceException, RepositoryException, JcrMappingException;
 
     /**
@@ -57,6 +61,7 @@ public interface BeanConverter {
      *
      * @param session the JCR session
      * @param parentNode The node which will contain the converter bean
+     * @param beanDescriptor The bean descriptor
      * @param beanClassDescriptor the Class Descriptor associated to the bean to update
      * @param bean the bean to convert( insert into the JCR structure)
      * @param parentClassDescriptor The Class Descriptor associated to the parent object
@@ -69,7 +74,7 @@ public interface BeanConverter {
      *  wrapped in PersistenceException; marks a repository failure
      * @throws JcrMappingException throws in case the mapping of the bean is not correct
      */
-    void update(Session session, Node parentNode, ClassDescriptor beanClassDescriptor, Object bean, ClassDescriptor parentClassDescriptor, Object parent)
+    void update(Session session, Node parentNode, BeanDescriptor beanDescriptor, ClassDescriptor beanClassDescriptor, Object bean, ClassDescriptor parentClassDescriptor, Object parent)
     throws PersistenceException, RepositoryException, JcrMappingException;
     
     /**
@@ -77,6 +82,7 @@ public interface BeanConverter {
      * 
      * @param session the JCR session
      * @param parentNode The parent node
+     * @param beanDescriptor The bean descriptor
      * @param beanClassDescriptor the Class Descriptor associated to the bean to insert
      * @param beanClass The bean Class
      * @param parent The parent which contain the bean to retrieve
@@ -88,7 +94,7 @@ public interface BeanConverter {
      *  wrapped in PersistenceException; marks a repository failure
      * @throws JcrMappingException throws in case the mapping of the bean is not correct
      */
-    Object getObject(Session session, Node parentNode, ClassDescriptor beanClassDescriptor, Class beanClass, Object parent) 
+    Object getObject(Session session, Node parentNode, BeanDescriptor beanDescriptor, ClassDescriptor beanClassDescriptor, Class beanClass, Object parent) 
     throws PersistenceException, RepositoryException, JcrMappingException;
 
 
@@ -97,6 +103,7 @@ public interface BeanConverter {
      * 
      * @param session the JCR session
      * @param parentNode The node which will contain the converter bean
+     * @param beanDescriptor The bean descriptor    
      * @param beanClassDescriptor the Class Descriptor associated to the bean to update
      * @param bean the bean to convert( insert into the JCR structure)
      * @param parentClassDescriptor The Class Descriptor associated to the parent object 
@@ -109,6 +116,28 @@ public interface BeanConverter {
      *  wrapped in PersistenceException; marks a repository failure
      * @throws JcrMappingException throws in case the mapping of the bean is not correct
      */
-    void remove(Session session, Node parentNode, ClassDescriptor beanClassDescriptor, Object bean, ClassDescriptor parentClassDescriptor, Object parent)
+    void remove(Session session, Node parentNode,  BeanDescriptor beanDescriptor, ClassDescriptor beanClassDescriptor, Object bean, ClassDescriptor parentClassDescriptor, Object parent)
     throws PersistenceException, RepositoryException, JcrMappingException;
+    
+    /**
+     * Get the bean path. 
+     * 
+     * When the bean is mapped to a subnode, the bean path is the parent node path + the jcrname of the current bean.
+     * Sometime a BeanConverter can be used to access to a bean which is not mapped to a subnode. In this case, 
+     * another implementation can be provided in this method getPath. {@link  ParentBeanConverterImpl} is a good example.
+     * 
+     * @param session the JCR session 
+     * @param beanDescriptor The descriptor of the bean to convert
+     * @param parentNode the node which contain this bean (its corresponfing subnode)
+     * @return the bean path
+     * 
+     * @throws RepositoryException thrown in case the underlying repository has thrown a
+     *  <code>javax.jcr.RepositoryException</code> that is not possible to be handled or
+     *  wrapped in PersistenceException; marks a repository failure
+     * 
+     */
+    String getPath(Session session, BeanDescriptor beanDescriptor, Node parentNode)
+    throws PersistenceException;
+    
+
 }

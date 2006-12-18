@@ -71,6 +71,7 @@
 	<class-descriptor className="org.apache.portals.graffito.jcr.testmodel.Paragraph" jcrNodeType="graffito:paragraph" discriminator="false" >
 		<field-descriptor fieldName="path" path="true" />
 		<field-descriptor fieldName="text" jcrName="graffito:text"/>
+    	<bean-descriptor fieldName="page" jcrName="page" proxy="true" converter="org.apache.portals.graffito.jcr.persistence.beanconverter.impl.ParentBeanConverterImpl" />		
 	</class-descriptor>
 
 
