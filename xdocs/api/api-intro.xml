@@ -24,7 +24,7 @@
 				
 		<section name="API Overview">
 			
-				<p>With the current Persistence Manager API, you can : 
+				<p>With the current Persistence Manager API, it is possible to  : 
 				 <ul>
 					 <li>Manage the object life cycle (insert, update, delete, retrieve).</li>
 					<li>Search single object or collections with criteria.</li>
