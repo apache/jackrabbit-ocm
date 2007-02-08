@@ -16,37 +16,25 @@
  */
 package org.apache.portals.graffito.jcr.testmodel;
 
+import java.util.Calendar;
+
 /**
- * Java class used to map the jcr node type nt:file
+ * Java class used to map the jcr node type nt:hierarchyNode
  * @author <a href="mailto:christophe.lombart@gmail.com">Lombart Christophe </a>
  *
  */
-public class File  extends HierarchyNode
-{
-
-    private Resource resource;
-    private String path;
-
-	public Resource getResource() 
-	{
-		return resource;
-	}
-
-	public void setResource(Resource resource) 
-	{
-		this.resource = resource;
-	}
-
-	public String getPath() 
-	{
-		return path;
-	}
-
-	public void setPath(String path) 
-	{
-		this.path = path;
-	}
-
+public class HierarchyNode
+{	
+	private Calendar creationDate;
 	
-    
+	public Calendar getCreationDate() 
+	{
+		return creationDate;
+	}
+
+	public void setCreationDate(Calendar creationDate) 
+	{
+		this.creationDate = creationDate;
+	}
+	
 }

@@ -16,37 +16,53 @@
  */
 package org.apache.portals.graffito.jcr.testmodel;
 
+import java.io.InputStream;
+import java.util.Calendar;
 /**
- * Java class used to map the jcr node type nt:file
+ * Java class used to map the jcr node type nt:resource
  * @author <a href="mailto:christophe.lombart@gmail.com">Lombart Christophe </a>
  *
  */
-public class File  extends HierarchyNode
+public class Resource
 {
 
-    private Resource resource;
-    private String path;
-
-	public Resource getResource() 
-	{
-		return resource;
-	}
-
-	public void setResource(Resource resource) 
-	{
-		this.resource = resource;
-	}
-
-	public String getPath() 
-	{
-		return path;
-	}
-
-	public void setPath(String path) 
-	{
-		this.path = path;
-	}
-
-	
+    private String mimeType;
+    private String encoding;
+    private InputStream data;
+    private Calendar lastModified;
+    
+    public InputStream getData()
+    {
+        return data;
+    }
+    public void setData(InputStream data)
+    {
+        this.data = data;
+    }
+    public String getEncoding()
+    {
+        return encoding;
+    }
+    public void setEncoding(String encoding)
+    {
+        this.encoding = encoding;
+    }
+    public Calendar getLastModified()
+    {
+        return lastModified;
+    }
+    public void setLastModified(Calendar lastModified)
+    {
+        this.lastModified = lastModified;
+    }
+    public String getMimeType()
+    {
+        return mimeType;
+    }
+    public void setMimeType(String mimeType)
+    {
+        this.mimeType = mimeType;
+    }
+    
     
 }

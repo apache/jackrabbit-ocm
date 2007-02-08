@@ -16,27 +16,20 @@
  */
 package org.apache.portals.graffito.jcr.testmodel;
 
+import java.util.ArrayList;
+import java.util.Collection;
 /**
- * Java class used to map the jcr node type nt:file
+ * Java class used to map the jcr node type nt:folder
  * @author <a href="mailto:christophe.lombart@gmail.com">Lombart Christophe </a>
  *
  */
-public class File  extends HierarchyNode
+public class Folder extends HierarchyNode
 {
-
-    private Resource resource;
     private String path;
+    
+    private Collection children;   // = a collection of HierarchyNodes 
 
-	public Resource getResource() 
-	{
-		return resource;
-	}
-
-	public void setResource(Resource resource) 
-	{
-		this.resource = resource;
-	}
-
+    
 	public String getPath() 
 	{
 		return path;
@@ -47,6 +40,24 @@ public class File  extends HierarchyNode
 		this.path = path;
 	}
 
-	
+
+	public Collection getChildren() 
+	{
+		return children;
+	}
+
+	public void setChildren(Collection children) 
+	{
+		this.children = children;
+	}
+
+	public void addChildren(HierarchyNode node)
+	{
+		if (children == null)
+		{
+			children = new ArrayList();			
+		}
+		children.add(node);
+	}
     
 }
