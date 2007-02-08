@@ -28,13 +28,7 @@
 				By default, the persistence manager uses the correct mapping in function of the attribute type (see below the section "Supported Types").</p> 
 				<p>Based on our model defined <a href="introduction-strategies.html">here</a>, 
 				the following field-descriptor maps the bean field "title" (String type) into the JCR property "graffito:title".</p>
-				<source><![CDATA[ 
-<class-descriptor className="org.apache.portals.graffito.jcr.testmodel.PageInfo" jcrNodeType="graffito:PageInfo">
-	<field-descriptor fieldName="title" jcrName="graffito:title" />	
-	.... other descriptors ....
-</class-descriptor>	
-				]]></source>
-				
+                <p align="center"><img src="../images/atomic-fields-def.jpg" ></img></p>				
 				
 			</subsection>
 			<subsection name ="Supported Types">

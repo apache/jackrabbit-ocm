@@ -27,19 +27,7 @@
 				<p>The bean-descriptor maps a bean attribute into one JCR node (or a set of properties). Generally, this attribute is an object based on a custom class.</p>
 				<p>Based on our model defined <a href="introduction-strategies.html">here</a>, the following bean-descriptor is used to map the bean field "pageInfo" (PageInfo class) into the JCR node called "pageInfo".</p>
 
-				<source><![CDATA[ 				
-<class-descriptor className="org.apache.portals.graffito.jcr.testmodel.Page" jcrNodeType="graffito:page">
-	<bean-descriptor fieldName="pageInfo" jcrName="pageInfo" />
-	<!-- other field, bean and collection mapping here !-->
-</class-descriptor>
-									
-<class-descriptor className="org.apache.portals.graffito.jcr.testmodel.PageInfo" jcrNodeType="graffito:PageInfo">
-	<field-descriptor fieldName="path" path="true" />
-	<field-descriptor fieldName="title" jcrName="graffito:title"/>
-	<field-descriptor fieldName="description" jcrName="graffito:description"/>
-</class-descriptor>
-									
-				]]></source>
+				<p align="center"> <img src="../images/bean-fields-def.jpg" ></img></p>
 				
 				<p>The PageInfo class has a corresponding class-descriptor in the mapping file. 
 				   By this way, the Persistence Manager can map each PageInfo attributes.

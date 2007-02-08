@@ -103,7 +103,7 @@ public class PersistenceManagerJcrNodeTypeTest extends TestBase {
             
             Folder folder = new Folder();
             folder.setPath("/folder1");
-            folder.addChildren(file);
+            folder.addChild(file);
             
             persistenceManager.insert(folder);            
 			persistenceManager.save();

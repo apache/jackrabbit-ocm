@@ -66,21 +66,7 @@
 			<subsection name="The Mapping Descriptor File">
 				<p>The mapping descriptor is an xml file with the following structure : </p>
 				<p>
-				<source><![CDATA[ 				
-<?xml version="1.0" encoding="UTF-8"?>
-										
-<graffito-jcr>
-										
-	<class-descriptor className="[Reference to a class to map]" ...">
-								
-		... Contains the references to the class attributes ...
-										
-	</class-descriptor>
-									
-	... other class descritptors ....
-	
-</graffito-jcr>										
-				]]></source>				
+					<p align="center"> <img src="./images/xml-file-descriptor.jpg" ></img></p>			
 				</p>	
 				<p>The root element is "graffito-jcr" and it contains one or more "class-descriptor". As you can see in the sections "Mapping Strategies" and "Advanced Mapping Strategies", each class-descriptor contains the mapping information used for each class attributes.</p>
 				<p>It is possible to have severals xml files. See the <a href="engine-setup.html">Sectup section</a> to get more information on how to initialize the Persistence Manager. </p>

@@ -24,7 +24,7 @@
 		
 		<section name="Mapping Collection Fields">
 			<subsection name="Introduction">
-				<p>The collection-descriptor maps a collection attribute into JCR nodes.</p>
+				<p>The collection-descriptor maps a collection attribute into JCR nodes or in a multivalue property.</p>
 				<p>Based on our model defined <a href="introduction-strategies.html">here</a>, the following collection-descriptor is used to map the "paragraphs" field into the JCR node called "paragraphs".</p>
 				
 				<source><![CDATA[ 				
@@ -42,6 +42,7 @@
 								
 				<p>
 					The collection-descriptor contains the elementClassName attribute which specify the collection element class. 
+					A class descriptor for the element class has also to be defined.
 					
 				</p>
 								
@@ -55,36 +56,60 @@
 				<source><![CDATA[ 
 /mysite/page1	
 	/mysite/page1/paragraphs
-		/mysite/page1/paragraphs/paragraph1
+		/mysite/page1/paragraphs/collection-element1
 			graffito:text = "This is the content of para1"
-		/mysite/page1/paragraphs/paragraph2
-			graffito:text = ""This is the content of para2"
+		/mysite/page1/paragraphs/collection-element2
+			graffito:text = "This is the content of para2"
 	... other subnodes for page1 ... 
 				]]></source>		  
 				</p>						
 				<p>
 				
 				    By default, the persistence manager will create a subnode  (/mysite/page1/paragraphs). 
-				    This one will contains the different paragraphs.
-				    See the section <a href="../advanced-strategies/advanced-collections-strategy.html">Reviewing the collection-descriptor</a> to get other collection-field mapping strategies.
+				    This one will contains the different paragraphs.				    
+				</p>
+				<p>
+				As explained in the following sections, it is possible to map to another JCR structure.
+				It is also possible to use another name for the jcr node names (see above).
 				</p>
 								
-								
 			</subsection>
-			<subsection name="Supported Collection Types">
-				<p>The current supported collection types are Collection, List, ArrayList and Vector. It is also possible other Collection or Map types with the ManageableCollection interface. See the section <a href="../advanced-strategies/advanced-collections-strategy.html">Reviewing the collection-descriptor</a> to get more information on the ManageableCollection.</p>
-				<p></p>
+			
+			
+			<subsection name="Supported Collection and Map Types">			
+				<p>
+				The OCM framework is supporting the following java types : 
+				
+				<ol>
+				  <li>Collections :  Collection, List, Set,  ArrayList, Vector, HashSet.</li> 
+				  <li>Maps : Map, HashMap</li>
+				</ol>
+				</p>
+		
 			</subsection>	
-			<subsection name ="Using Collection Converter">
+
+			<subsection name ="Using Another Collection or Map">
+			   <p>
+               It is possible to support other Collection or Map types with the ManageableCollection interface. 
+			   </p>
+			</subsection>	
+			
+			<subsection name ="Using Another Collection Converter">
 			   <p>
 			     TO DO    
 			   </p>
 			</subsection>	
-			<subsection name ="Existing Collection Converters">
+			<subsection name ="Predefined Collection Converters">
 			   <p>
 			     TO DO    
 			   </p>
-			</subsection>								
+			</subsection>
+			<subsection name ="Building your own Collection Converters">
+			   <p>
+			     TO DO    
+			   </p>
+			</subsection>											
+			
 			
 		</section>
 	</body>

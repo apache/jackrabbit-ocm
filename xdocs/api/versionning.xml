@@ -41,16 +41,7 @@
 					Each versionned object has to be mapped to a mix:versionable JCR node. 
 					It is possible to specify this node type in the class descriptor : 
 				</p>	
-				<source><![CDATA[ 					
-<class-descriptor className="org.apache.portals.graffito.jcr.testmodel.A"
-		          jcrNodeType="nt:unstructured" jcrMixinTypes="mix:versionable" >
-		          
-		          
-		          <!-- Add here field, bean and collection desctipors -->
-		          
-		          
-</class-descriptor>							
-				]]></source>
+				<p align="center"> <img src="../images/versionable-def.jpg" ></img></p>
 			</subsection>
 			<subsection name="Check in - Check out">
 				<source>

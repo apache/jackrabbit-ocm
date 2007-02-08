@@ -51,7 +51,7 @@ public class Folder extends HierarchyNode
 		this.children = children;
 	}
 
-	public void addChildren(HierarchyNode node)
+	public void addChild(HierarchyNode node)
 	{
 		if (children == null)
 		{
