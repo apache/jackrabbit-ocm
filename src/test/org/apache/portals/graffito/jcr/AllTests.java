@@ -51,6 +51,7 @@ public class AllTests {
         suite.addTest(org.apache.portals.graffito.jcr.persistence.lock.AllTests.buildSuite());
         suite.addTest(org.apache.portals.graffito.jcr.querymanager.AllTests.buildSuite());
         suite.addTest(org.apache.portals.graffito.jcr.repository.AllTests.buildSuite());
+        suite.addTest(org.apache.portals.graffito.jcr.persistence.jcrnodetype.AllTests.buildSuite());
         return suite;
     }
 }

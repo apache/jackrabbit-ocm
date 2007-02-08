@@ -194,7 +194,8 @@ public abstract class TestBase extends TestCase
 						   "./src/test-config/jcrmapping-proxy.xml",
                            "./src/test-config/jcrmapping-atomic.xml",
                            "./src/test-config/jcrmapping-beandescriptor.xml",
-                           "./src/test-config/jcrmapping-inheritance.xml"};
+                           "./src/test-config/jcrmapping-inheritance.xml",
+                           "./src/test-config/jcrmapping-jcrnodetypes.xml"};
 		session = RepositoryUtil.login(repository, "superuser", "superuser");
 
 		

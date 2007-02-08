@@ -14,39 +14,31 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.apache.portals.graffito.jcr.testmodel;
+package org.apache.portals.graffito.jcr.persistence.jcrnodetype;
+
+import org.apache.portals.graffito.jcr.RepositoryLifecycleTestSetup;
+
+import junit.framework.Test;
+import junit.framework.TestSuite;
+
 
 /**
- * Java class used to map the jcr node type nt:file
- * @author <a href="mailto:christophe.lombart@gmail.com">Lombart Christophe </a>
- *
+ * Package level tests.
+ * 
+ * @author <a href='mailto:the_mindstorm[at]evolva[dot]ro'>Alexandru Popescu</a>
  */
-public class File  extends HierarchyNode
-{
+public class AllTests {
 
-    private Resource resource;
-    private String path;
+    public static Test suite() {
+        return new RepositoryLifecycleTestSetup(buildSuite());
+    }
 
-	public Resource getResource() 
-	{
-		return resource;
-	}
+    public static Test buildSuite() {
+        TestSuite suite= new TestSuite("Test for org.apache.portals.graffito.jcr.persistence.jcrnodetype");
+        //$JUnit-BEGIN$
+        suite.addTestSuite(PersistenceManagerJcrNodeTypeTest.class);                
+        //$JUnit-END$
 
-	public void setResource(Resource resource) 
-	{
-		this.resource = resource;
-	}
-
-	public String getPath() 
-	{
-		return path;
-	}
-
-	public void setPath(String path) 
-	{
-		this.path = path;
-	}
-
-	
-    
+        return suite;
+    }
 }
