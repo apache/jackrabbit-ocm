@@ -100,6 +100,8 @@ public class AtomicTest extends TestBase
             
             ByteArrayInputStream byteArrayInputStream = new ByteArrayInputStream("Test Stream".getBytes());
             a.setInputStream(byteArrayInputStream);
+            a.setNamedProperty("graffito:test");
+            a.setPathProperty("/node1/node2");
             
             persistenceManager.insert(a);
             persistenceManager.save();
@@ -137,6 +139,44 @@ public class AtomicTest extends TestBase
             assertNotNull("Incorrect timestamp", a.getTimestamp());
             assertTrue("Invalid timestamp value ", a.getTimestamp().getTime() == now);            
             assertTrue("Invalid int2boolean value ", a.isInt2boolean());
+            
+            assertTrue("Invalid namedProperty value ", a.getNamedProperty().equals("graffito:test"));
+            assertTrue("Invalid pathProperty value ", a.getPathProperty().equals("/node1/node2"));
+            
+            // --------------------------------------------------------------------------------
+            // Update the property "namedProperty" with an invalid value
+            // --------------------------------------------------------------------------------            
+            try 
+            {
+               // update with an incorrect namespace - Should throws an exception
+               a.setNamedProperty("unknown:test");               
+               persistenceManager.update(a);
+               fail("Exception was not triggered with an invalid namespace");
+               persistenceManager.save();
+            }
+            catch (Exception e)
+            {
+               
+                
+            }
+
+            // --------------------------------------------------------------------------------
+            // Update the property "pathProperty" with an invalid value
+            // --------------------------------------------------------------------------------            
+            try 
+            {
+               // update with an incorrect namespace - Should throws an exception
+               a.setPathProperty("//node1");               
+               persistenceManager.update(a);
+               fail("Exception was not triggered with an invalid path");
+               persistenceManager.save();
+            }
+            catch (Exception e)
+            {
+               
+                
+            }
+            
             
         }
         catch (Exception e)

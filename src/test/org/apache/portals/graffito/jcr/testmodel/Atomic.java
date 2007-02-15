@@ -47,6 +47,9 @@ public class Atomic
     private boolean int2boolean;
     private Collection multiValue;
     
+    private String namedProperty;
+    private String pathProperty; // used to refer another node
+    
     
     
     public String getPath() {
@@ -171,6 +174,25 @@ public class Atomic
 	{
 		this.multiValue = multiValue;
 	}
+	
+	public String getNamedProperty() {
+		return namedProperty;
+	}
+	public void setNamedProperty(String namedProperty) 
+	{
+		this.namedProperty = namedProperty;
+	}
+	
+	public String getPathProperty() 
+	{
+		return pathProperty;
+	}
+	
+	public void setPathProperty(String pathProperty) 
+	{
+		this.pathProperty = pathProperty;
+	}
     
     
+	
 }
