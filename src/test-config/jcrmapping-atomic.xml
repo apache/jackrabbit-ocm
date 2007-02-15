@@ -18,6 +18,8 @@
 		<field-descriptor fieldName="inputStream" jcrName="inputStream" />
 		<field-descriptor fieldName="timestamp" jcrName="timestamp" />
 		<field-descriptor fieldName="int2boolean" jcrName="int2boolean" converter="org.apache.portals.graffito.jcr.persistence.atomic.Int2BooleanTypeConverterImpl" />
+		<field-descriptor fieldName="namedProperty" jcrName="namedProperty" converter="org.apache.portals.graffito.jcr.persistence.atomictypeconverter.impl.NameTypeConverterImpl" />
+		<field-descriptor fieldName="pathProperty" jcrName="pathProperty" converter="org.apache.portals.graffito.jcr.persistence.atomictypeconverter.impl.PathTypeConverterImpl" />
 	</class-descriptor>
 
     <class-descriptor
