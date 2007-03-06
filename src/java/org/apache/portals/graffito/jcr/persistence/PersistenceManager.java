@@ -112,7 +112,7 @@ public interface PersistenceManager
      * 
      * @throws PersistenceException when it is not possible to retrieve the object 
      */
-    public Object getObject(Class objectClass, String path, String versionNumber) throws PersistenceException;
+     public Object getObject(Class objectClass, String path, String versionNumber) throws PersistenceException;
     
     
     /**

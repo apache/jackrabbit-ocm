@@ -27,12 +27,13 @@ import org.apache.portals.graffito.jcr.persistence.atomictypeconverter.AtomicTyp
 
 /**
  * 
- *  Name Type Converter 
+ *  Reference Type Converter(java string attribute into a JCR property based on the REFERENCE type) 
+ * 
  * 
  * @author <a href="mailto:christophe.lombart@gmail.com">Christophe Lombart</a>
  * 
  */
-public class PathTypeConverterImpl implements AtomicTypeConverter
+public class ReferenceTypeConverterImpl implements AtomicTypeConverter
 {
 	/**
 	 * 
@@ -46,11 +47,11 @@ public class PathTypeConverterImpl implements AtomicTypeConverter
 			{
 				return null;
 			}
-			return valueFactory.createValue((String) propValue, PropertyType.PATH);
+			return valueFactory.createValue((String) propValue, PropertyType.REFERENCE);
 		} 
 		catch (RepositoryException e) 
 		{
-			throw new IncorrectAtomicTypeException("Impossible to convert the value into a path property : " + propValue.toString() + ". Check if it is a valid path.", e);
+			throw new IncorrectAtomicTypeException("Impossible to convert the value into a reference property :  " + propValue.toString() + ". Check if it is a correct uuid", e);
 		}
 		
 	}
@@ -67,7 +68,7 @@ public class PathTypeConverterImpl implements AtomicTypeConverter
 		}
 		catch (RepositoryException e)
 		{
-			throw new IncorrectAtomicTypeException("Impossible to convert the path into a string", e);
+			throw new IncorrectAtomicTypeException("Impossible to convert the uuid into a string ", e);
 		}
 
 	}

@@ -102,6 +102,28 @@ public class DigesterMapperImplTest extends TestCase {
 	 * Simple test mapper
 	 *
 	 */
+	public void testUuid() {
+		try {
+
+			Mapper mapper = new DigesterMapperImpl(
+					"./src/test-config/jcrmapping-testdigester.xml");
+					
+			assertNotNull("Mapper is null", mapper);
+
+			ClassDescriptor classDescriptor = mapper.getClassDescriptorByClass(org.apache.portals.graffito.jcr.testmodel.uuid.A.class);
+			assertNotNull("ClassDescriptor is null", classDescriptor);
+			assertTrue("Invalid uuid field", classDescriptor.getUuidFieldDescriptor().getFieldName().equals("uuid"));
+
+		} catch (JcrMappingException e) {
+			e.printStackTrace();
+			fail("Impossible to retrieve the converter " + e);
+		}
+	}
+
+	/**
+	 * Simple test mapper
+	 *
+	 */
 	public void testDiscriminatorSetting() {
 		try {
 
