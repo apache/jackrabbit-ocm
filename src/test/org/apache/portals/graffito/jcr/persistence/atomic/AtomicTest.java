@@ -102,6 +102,7 @@ public class AtomicTest extends TestBase
             a.setInputStream(byteArrayInputStream);
             a.setNamedProperty("graffito:test");
             a.setPathProperty("/node1/node2");
+            a.setUndefinedProperty("aStringData");
             
             persistenceManager.insert(a);
             persistenceManager.save();
@@ -142,7 +143,7 @@ public class AtomicTest extends TestBase
             
             assertTrue("Invalid namedProperty value ", a.getNamedProperty().equals("graffito:test"));
             assertTrue("Invalid pathProperty value ", a.getPathProperty().equals("/node1/node2"));
-            
+            assertTrue("Invalid undefinedProperty value ", ((String) a.getUndefinedProperty()).equals("aStringData"));
             // --------------------------------------------------------------------------------
             // Update the property "namedProperty" with an invalid value
             // --------------------------------------------------------------------------------            
@@ -159,7 +160,7 @@ public class AtomicTest extends TestBase
                
                 
             }
-
+            
             // --------------------------------------------------------------------------------
             // Update the property "pathProperty" with an invalid value
             // --------------------------------------------------------------------------------            
@@ -177,6 +178,23 @@ public class AtomicTest extends TestBase
                 
             }
             
+            // --------------------------------------------------------------------------------
+            // Update the property "undefinedProperty" with an invalid value
+            // --------------------------------------------------------------------------------            
+            a = null;
+            a = (Atomic) persistenceManager.getObject( "/test");
+
+            a.setUndefinedProperty(1.2);
+            persistenceManager.update(a);
+            persistenceManager.save();
+            
+            // --------------------------------------------------------------------------------
+            // Get the object
+            // --------------------------------------------------------------------------------
+            a = null;
+            a = (Atomic) persistenceManager.getObject( "/test");
+            assertNotNull("a is null", a);
+            assertTrue("Invalid undefinedProperty value ", ((Double) a.getUndefinedProperty()).doubleValue() == 1.2);
             
         }
         catch (Exception e)

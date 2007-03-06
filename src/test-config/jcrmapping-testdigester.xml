@@ -90,4 +90,12 @@
 		<field-descriptor fieldName="id" jcrName="graffito:id" />
 		<field-descriptor fieldName="text" jcrName="graffito:text" />
 	</class-descriptor>
+	
+	
+	<class-descriptor
+		className="org.apache.portals.graffito.jcr.testmodel.uuid.A" jcrNodeType="nt:unstructured" >
+		<field-descriptor fieldName="path" path="true" />
+		<field-descriptor fieldName="uuid" uuid="true" />
+        <field-descriptor fieldName="stringData" jcrName="stringData" />
+	</class-descriptor>
 </graffito-jcr>

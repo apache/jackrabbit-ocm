@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!DOCTYPE graffito-jcr PUBLIC "-//The Apache Software Foundation//DTD Repository//EN" "./src/dtd/graffito-jcr-mapping.dtd">
+<graffito-jcr>
+    <class-descriptor
+		className="org.apache.portals.graffito.jcr.testmodel.uuid.A" jcrNodeType="nt:unstructured" jcrMixinTypes="mix:referenceable" >
+		<field-descriptor fieldName="path" path="true" />
+		<field-descriptor fieldName="uuid" uuid="true" />
+        <field-descriptor fieldName="stringData" jcrName="stringData" />
+	</class-descriptor>
+	
+	<class-descriptor
+		className="org.apache.portals.graffito.jcr.testmodel.uuid.B" jcrNodeType="nt:unstructured"  >
+		<field-descriptor fieldName="path" path="true" />
+		<field-descriptor fieldName="reference2A" jcrName="reference2A" converter="org.apache.portals.graffito.jcr.persistence.atomictypeconverter.impl.ReferenceTypeConverterImpl" /> 
+
+	</class-descriptor>
+</graffito-jcr>
+ 

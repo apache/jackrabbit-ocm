@@ -42,6 +42,7 @@ public class FieldDescriptor implements PropertyDefDescriptor {
     private ClassDescriptor classDescriptor;
     private boolean id;
     private boolean path;
+    private boolean uuid;
     private String converter;
    
 
@@ -169,6 +170,20 @@ public class FieldDescriptor implements PropertyDefDescriptor {
         this.path = path;
     }
 
+    /**
+     * @return Returns true if the field is the UUID.
+     */
+    public boolean isUuid() {
+        return uuid;
+    }
+
+    /**
+     * @param path The path to set.
+     */
+    public void setUuid(boolean uuid) {
+        this.uuid = uuid;
+    }    
+    
     /** Getter for property jcrType.
      *
      * @return jcrType

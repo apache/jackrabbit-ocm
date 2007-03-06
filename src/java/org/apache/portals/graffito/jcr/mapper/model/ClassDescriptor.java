@@ -53,6 +53,7 @@ public class ClassDescriptor {
     private String[] jcrMixinTypes = new String[0];
     private FieldDescriptor idFieldDescriptor;
     private FieldDescriptor pathFieldDescriptor;
+    private FieldDescriptor uuidFieldDescriptor;
 
     private Map fieldDescriptors = new HashMap();    
     private Map beanDescriptors = new HashMap();        
@@ -146,6 +147,9 @@ public class ClassDescriptor {
         }
         if (fieldDescriptor.isPath()) {
             this.pathFieldDescriptor = fieldDescriptor;
+        }
+        if (fieldDescriptor.isUuid()) {
+            this.uuidFieldDescriptor = fieldDescriptor;
         }
 
         fieldDescriptors.put(fieldDescriptor.getFieldName(), fieldDescriptor);
@@ -253,6 +257,20 @@ public class ClassDescriptor {
         return null;
     }
 
+    /**
+     * @return the fieldDescriptor path
+     */
+    public FieldDescriptor getUuidFieldDescriptor() {
+        if (null != this.uuidFieldDescriptor) {
+            return this.uuidFieldDescriptor;
+        }
+
+        if (null != this.superClassDescriptor) {
+            return this.superClassDescriptor.getUuidFieldDescriptor();
+        }
+
+        return null;
+    }    
 
     /**
      * Check if this class has an ID

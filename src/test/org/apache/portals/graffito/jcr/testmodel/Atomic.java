@@ -18,7 +18,6 @@ package org.apache.portals.graffito.jcr.testmodel;
 
 import java.io.InputStream;
 import java.sql.Timestamp;
-import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Collection;
 import java.util.Date;
@@ -49,6 +48,7 @@ public class Atomic
     
     private String namedProperty;
     private String pathProperty; // used to refer another node
+    private Object undefinedProperty;
     
     
     
@@ -192,7 +192,16 @@ public class Atomic
 	{
 		this.pathProperty = pathProperty;
 	}
-    
-    
 	
+	public Object getUndefinedProperty() 
+	{
+		return undefinedProperty;
+	}
+	
+	public void setUndefinedProperty(Object undefinedProperty) 
+	{
+		this.undefinedProperty = undefinedProperty;
+	}
+    
+    	
 }

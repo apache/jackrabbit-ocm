@@ -139,7 +139,6 @@ public class BeanDescriptorTest extends TestBase {
         assertNull("b1 was not  removed", actD.getB1());
         
         actDFull = (DFull) persistenceManager.getObject( DFull.class,  "/someD");
-        
         assertEquals(expD.getD1(), actDFull.getD1());
         assertNull("b1 was not  removed", actDFull.getB1());
         assertNull("b2 wan not remove", actDFull.getB2());
@@ -228,8 +227,8 @@ public class BeanDescriptorTest extends TestBase {
             for (Iterator iter = paragraphs.iterator(); iter.hasNext();) {
 				Paragraph paragraph = (Paragraph) iter.next();
 				System.out.println("Paragraph path : " + paragraph.getPath());				
-			}
-            Paragraph p1 = (Paragraph) persistenceManager.getObject(Paragraph.class, "/test/collection-element[2]");
+			}            
+            Paragraph p1 = (Paragraph) persistenceManager.getObject("/test/collection-element[2]");
             Page paraPage = p1.getPage();
             assertNotNull("Parent page is null", paraPage);
             assertTrue("Invalid parent page", paraPage.getPath().equals("/test"));

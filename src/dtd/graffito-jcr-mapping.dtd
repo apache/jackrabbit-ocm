@@ -60,7 +60,8 @@
     * fieldType: the primitive type or fully qualified class name of the field (optional)
     * jcrName : the jcr property name (optional). If it is not defined, fieldname is used to specify the jcr property name
     * id : specifies if the field is an id. Id is optional. If the class contains an id field, some process can run faster
-    * path : specified if the fiels is the object path
+    * path : specified if the field is the object path
+    * uuid : specified if the field is the object uuid
     * converter : AtomicTypeConverter class name to used for this field descriptor. If not defined, a default one is provided by default in function of the field type
     * jcrType: specifies the JCR property type (supported jcr property types: STRING, DATE, LONG, DOUBLE, BOOLEAN), optional
     * jcrAutoCreated: specifies if this JCR property will be autocreated (true/false / default is false), optional
@@ -77,6 +78,7 @@
 	jcrName CDATA #IMPLIED 
 	id (true | false) "false"
 	path (true | false) "false"
+	uuid (true | false) "false"
 	converter CDATA #IMPLIED
     jcrType (String | Date | Long | Double | Boolean | Binary) #IMPLIED
     jcrAutoCreated (true | false) "false"

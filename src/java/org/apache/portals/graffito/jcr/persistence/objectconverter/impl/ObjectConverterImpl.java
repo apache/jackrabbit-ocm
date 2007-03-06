@@ -202,6 +202,8 @@ public class ObjectConverterImpl implements ObjectConverter {
 				objectNode.setProperty(PersistenceConstant.DISCRIMINATOR_PROPERTY_NAME, ReflectionUtils.getBeanClass(object)
 						.getName());
 			}
+					
+			
 		} catch (NoSuchNodeTypeException nsnte) {
 			throw new JcrMappingException("Unknown mixin type " + mixinTypeName + " for mapped class " + object.getClass(), nsnte);
 		} catch (RepositoryException re) {

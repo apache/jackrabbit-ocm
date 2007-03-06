@@ -19,6 +19,7 @@ package org.apache.portals.graffito.jcr.persistence.objectconverter.impl;
 import java.util.Iterator;
 
 import javax.jcr.Node;
+import javax.jcr.PathNotFoundException;
 import javax.jcr.RepositoryException;
 import javax.jcr.Session;
 import javax.jcr.Value;
@@ -77,63 +78,80 @@ public class SimpleFieldsHelper
 	public Object retrieveSimpleFields(Session session, ClassDescriptor classDescriptor, Node node, Object object) 
 	{
 		Object initializedBean = object;
-		try 
-		{
+		try {
 			Iterator fieldDescriptorIterator = classDescriptor.getFieldDescriptors().iterator();
 
-			while (fieldDescriptorIterator.hasNext()) 
-			{
+			while (fieldDescriptorIterator.hasNext()) {
 				FieldDescriptor fieldDescriptor = (FieldDescriptor) fieldDescriptorIterator.next();
 
 				String fieldName = fieldDescriptor.getFieldName();
 				String propertyName = fieldDescriptor.getJcrName();
 
-				if (fieldDescriptor.isPath()) 
-				{
-					// HINT: lazy initialize target bean - The bean can be null when it is inline
-					if (null == initializedBean) 
-					{
+				if (fieldDescriptor.isPath()) {
+					// HINT: lazy initialize target bean - The bean can be null
+					// when it is inline
+					if (null == initializedBean) {
 						initializedBean = ReflectionUtils.newInstance(classDescriptor.getClassName());
 					}
 
 					ReflectionUtils.setNestedProperty(initializedBean, fieldName, node.getPath());
-					
-				} 
-				else
-				{
-					if (classDescriptor.usesNodeTypePerHierarchyStrategy() && classDescriptor.hasDiscriminator()) 
-					{
-						if ( ! node.hasProperty(PersistenceConstant.DISCRIMINATOR_PROPERTY_NAME)) 
-						{
-							throw new PersistenceException("Class '" + classDescriptor.getClassName() + "' has not a discriminator property.");
-						}					
-					}
-					if (node.hasProperty(propertyName)) 
-					{
-						Value propValue = node.getProperty(propertyName).getValue();
-						// HINT: lazy initialize target bean - The bean can be null when it is inline
-						if (null != propValue && null == initializedBean) {
+
+				} else {
+					if (fieldDescriptor.isUuid()) {
+						// HINT: lazy initialize target bean - The bean can be
+						// null when it is inline
+						if (null == initializedBean) {
 							initializedBean = ReflectionUtils.newInstance(classDescriptor.getClassName());
 						}
 
-						AtomicTypeConverter converter = getAtomicTypeConverter(fieldDescriptor, initializedBean, fieldName);
-						Object fieldValue = converter.getObject(propValue);
-						ReflectionUtils.setNestedProperty(initializedBean, fieldName, fieldValue);
-					} 
-					else 
-					{
-						log.warn("Class '" + classDescriptor.getClassName() + "' has an unmapped property : " + propertyName);
+						ReflectionUtils.setNestedProperty(initializedBean, fieldName, node.getUUID());
+
+					} else {
+						initializedBean = retrieveSimpleField(classDescriptor, node, initializedBean, fieldDescriptor, fieldName, propertyName);
 					}
 				}
-				
+
 			}
 		} catch (ValueFormatException vfe) {
-			throw new PersistenceException("Cannot retrieve properties of object " + object + " from node " + node, vfe);
+			throw new PersistenceException(
+					"Cannot retrieve properties of object " + object + " from node " + node, vfe);
 		} catch (RepositoryException re) {
-			throw new org.apache.portals.graffito.jcr.exception.RepositoryException("Cannot retrieve properties of object "
-					+ object + " from node " + node, re);
+			throw new org.apache.portals.graffito.jcr.exception.RepositoryException( "Cannot retrieve properties of object " + object
+							+ " from node " + node, re);
 		}
 
+		return initializedBean;
+	}
+
+
+	private Object retrieveSimpleField(ClassDescriptor classDescriptor, Node node, Object initializedBean, FieldDescriptor fieldDescriptor, String fieldName, String propertyName) throws RepositoryException, ValueFormatException, PathNotFoundException {
+		if (classDescriptor.usesNodeTypePerHierarchyStrategy() && classDescriptor.hasDiscriminator()) 
+		{
+			if (!node.hasProperty(PersistenceConstant.DISCRIMINATOR_PROPERTY_NAME)) 
+			{
+				throw new PersistenceException("Class '"
+						+ classDescriptor.getClassName()
+						+ "' has not a discriminator property.");
+			}
+		}
+		if (node.hasProperty(propertyName)) 
+		{
+			Value propValue = node.getProperty(propertyName).getValue();
+			// HINT: lazy initialize target bean - The bean can be null when it is inline
+			if (null != propValue && null == initializedBean) 
+			{
+				initializedBean = ReflectionUtils.newInstance(classDescriptor.getClassName());
+			}
+
+			AtomicTypeConverter converter = getAtomicTypeConverter(fieldDescriptor, initializedBean, fieldName);
+			Object fieldValue = converter.getObject(propValue);
+			ReflectionUtils.setNestedProperty(initializedBean, fieldName, fieldValue);
+			
+		} 
+		else 
+		{
+			log.warn("Class '" + classDescriptor.getClassName() + "' has an unmapped property : " 	+ propertyName);
+		}
 		return initializedBean;
 	}
 	
@@ -148,36 +166,12 @@ public class SimpleFieldsHelper
 				String fieldName = fieldDescriptor.getFieldName();
 				String jcrName = fieldDescriptor.getJcrName();
 
-				// Of course, Path field is not stored as property
-				if (fieldDescriptor.isPath()) {
+				// Of course, Path && UUID fields are not stored as property
+				if (fieldDescriptor.isPath() || fieldDescriptor.isUuid()) {
 					continue;
 				}
 
-				boolean protectedProperty = fieldDescriptor.isJcrProtected();
-
-				if (objectNode.hasProperty(jcrName)) {
-					protectedProperty = objectNode.getProperty(jcrName).getDefinition().isProtected();
-				}
-
-				if (!protectedProperty) { // DO NOT TRY TO WRITE PROTECTED  PROPERTIES
-					Object fieldValue = ReflectionUtils.getNestedProperty(object, fieldName);
-					AtomicTypeConverter converter = getAtomicTypeConverter(fieldDescriptor, object, fieldName);
-					Value value = converter.getValue(valueFactory, fieldValue);
-
-					// Check if the node property is "autocreated"
-					boolean autoCreated = fieldDescriptor.isJcrAutoCreated();
-
-					if (objectNode.hasProperty(jcrName)) {
-						autoCreated = objectNode.getProperty(jcrName).getDefinition().isAutoCreated();
-					}
-
-					if (!autoCreated) {
-						// Check if mandatory property are not null
-						checkMandatoryProperty(objectNode, fieldDescriptor, value);
-					}
-
-					objectNode.setProperty(jcrName, value);
-				}
+				storeSimpleField(object, objectNode, valueFactory, fieldDescriptor, fieldName, jcrName);
 			}
 		} catch (ValueFormatException vfe) {
 			throw new PersistenceException("Cannot persist properties of object " + object + ". Value format exception.", vfe);
@@ -191,6 +185,35 @@ public class SimpleFieldsHelper
 			throw new org.apache.portals.graffito.jcr.exception.RepositoryException("Cannot persist properties of object "
 					+ object, re);
 		}
+	}
+
+
+	private void storeSimpleField(Object object, Node objectNode, ValueFactory valueFactory, FieldDescriptor fieldDescriptor, String fieldName, String jcrName) throws RepositoryException, PathNotFoundException, ValueFormatException, VersionException, LockException, ConstraintViolationException {
+		boolean protectedProperty = fieldDescriptor.isJcrProtected();
+
+		if (objectNode.hasProperty(jcrName)) {
+			protectedProperty = objectNode.getProperty(jcrName).getDefinition().isProtected();
+		}
+
+		if (!protectedProperty) { // DO NOT TRY TO WRITE PROTECTED  PROPERTIES
+			Object fieldValue = ReflectionUtils.getNestedProperty(object, fieldName);
+			AtomicTypeConverter converter = getAtomicTypeConverter(fieldDescriptor, object, fieldName);
+			Value value = converter.getValue(valueFactory, fieldValue);
+
+			// Check if the node property is "autocreated"
+			boolean autoCreated = fieldDescriptor.isJcrAutoCreated();
+
+			if (objectNode.hasProperty(jcrName)) {
+				autoCreated = objectNode.getProperty(jcrName).getDefinition().isAutoCreated();
+			}
+
+			if (!autoCreated) {
+				// Check if mandatory property are not null
+				checkMandatoryProperty(objectNode, fieldDescriptor, value);
+			}
+
+			objectNode.setProperty(jcrName, value);
+		}		
 	}
 	
 	private void checkMandatoryProperty(Node objectNode, FieldDescriptor fieldDescriptor, Value value) throws RepositoryException {
