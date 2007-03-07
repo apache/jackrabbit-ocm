@@ -85,6 +85,15 @@ public interface PersistenceManager
 
     /**
      * Get an object from the JCR repository 
+     * @param the object uuid
+     * @return the object found or null
+     * 
+     * @throws PersistenceException when it is not possible to retrieve the object 
+     */
+    public Object getObjectByUuid( String uuid) throws PersistenceException;
+
+    /**
+     * Get an object from the JCR repository 
      * @param path the object path
      * @param versionNumber The desired object version number
      * @return the object found or null

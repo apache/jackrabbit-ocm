@@ -13,7 +13,23 @@
 		className="org.apache.portals.graffito.jcr.testmodel.uuid.B" jcrNodeType="nt:unstructured"  >
 		<field-descriptor fieldName="path" path="true" />
 		<field-descriptor fieldName="reference2A" jcrName="reference2A" converter="org.apache.portals.graffito.jcr.persistence.atomictypeconverter.impl.ReferenceTypeConverterImpl" /> 
-
 	</class-descriptor>
+
+	<class-descriptor
+		className="org.apache.portals.graffito.jcr.testmodel.uuid.B2" jcrNodeType="nt:unstructured"  >
+		<field-descriptor fieldName="path" path="true" />
+		<bean-descriptor fieldName="a" jcrName="a" converter="org.apache.portals.graffito.jcr.persistence.beanconverter.impl.ReferenceBeanConverterImpl" />
+	</class-descriptor>	
+			
+	
+	<class-descriptor className="org.apache.portals.graffito.jcr.testmodel.uuid.Ancestor"  abstract="true" jcrMixinTypes="mix:referenceable">
+		<field-descriptor fieldName="path" path="true" />
+		<field-descriptor fieldName="uuid" uuid="true" />
+	</class-descriptor>
+
+	<class-descriptor className="org.apache.portals.graffito.jcr.testmodel.uuid.Descendant" jcrMixinTypes="mix:referenceable"
+	                  extend="org.apache.portals.graffito.jcr.testmodel.uuid.Ancestor">
+        <field-descriptor fieldName="stringData" jcrName="stringData" />
+	</class-descriptor >	
 </graffito-jcr>
  

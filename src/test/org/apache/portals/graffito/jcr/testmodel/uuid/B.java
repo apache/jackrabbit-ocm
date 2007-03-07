@@ -19,7 +19,7 @@ package org.apache.portals.graffito.jcr.testmodel.uuid;
 
 /**
  *
- * @author <a href="mailto:christophe.lombart@sword-technologies.com">Lombart Christophe </a>
+ * @author <a href="mailto:christophe.lombart@gmail.com">Lombart Christophe </a>
  * @version $Id: Exp $
  */
 public class B

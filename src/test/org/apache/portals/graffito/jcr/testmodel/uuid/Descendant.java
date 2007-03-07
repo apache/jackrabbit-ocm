@@ -22,30 +22,12 @@ package org.apache.portals.graffito.jcr.testmodel.uuid;
  * @author <a href="mailto:christophe.lombart@gmail.com">Lombart Christophe </a>
  * @version $Id: Exp $
  */
-public class A
+public class Descendant extends Ancestor
 {
-	private String path; 
-	private String uuid;
+
     private String stringData;
 
     
-    public String getPath() 
-    {
-		return path;
-	}
-	
-    public void setPath(String path) 
-	{
-		this.path = path;
-	}
-	
-    public String getUuid() {
-		return uuid;
-	}
-
-	public void setUuid(String uuid) {
-		this.uuid = uuid;
-	}
 	public String getStringData() {
 		return stringData;
 	}
