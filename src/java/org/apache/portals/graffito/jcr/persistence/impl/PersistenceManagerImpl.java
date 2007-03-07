@@ -196,6 +196,30 @@ public class PersistenceManagerImpl implements PersistenceManager {
 
     }
 
+    
+    /**
+     * @see org.apache.portals.graffito.jcr.persistence.PersistenceManager#getObject(java.lang.Class, java.lang.String)
+     * @throws org.apache.portals.graffito.jcr.exception.RepositoryException if the underlying repository
+     *  has thrown a javax.jcr.RepositoryException
+     * @throws JcrMappingException if the mapping for the class is not correct
+     * @throws PersistenceException if the object cannot be retrieved from the path
+     */
+    public Object getObjectByUuid( String uuid) {
+        
+    	try 
+        {
+             Node node = session.getNodeByUUID(uuid);
+             return objectConverter.getObject(session,  node.getPath());
+
+        }         
+        catch(RepositoryException e) {
+            throw new org.apache.portals.graffito.jcr.exception.RepositoryException(
+                    "Impossible to get the object with uuid : " + uuid, e);
+        }
+
+        
+
+    }    
     /**
      * @see org.apache.portals.graffito.jcr.persistence.PersistenceManager#getObject(java.lang.Class, java.lang.String, java.lang.String)
      */

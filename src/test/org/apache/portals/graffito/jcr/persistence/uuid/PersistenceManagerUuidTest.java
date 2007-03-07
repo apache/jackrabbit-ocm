@@ -26,10 +26,12 @@ import org.apache.portals.graffito.jcr.TestBase;
 import org.apache.portals.graffito.jcr.persistence.PersistenceManager;
 import org.apache.portals.graffito.jcr.testmodel.uuid.A;
 import org.apache.portals.graffito.jcr.testmodel.uuid.B;
+import org.apache.portals.graffito.jcr.testmodel.uuid.B2;
+import org.apache.portals.graffito.jcr.testmodel.uuid.Descendant;
 
 
 /**
- * Test JcrSession
+ * Test on UUID & references
  *
  * @author <a href="mailto:christophe.lombart@sword-technologies.com">Christophe Lombart</a>
  */
@@ -65,16 +67,28 @@ public class PersistenceManagerUuidTest extends TestBase
     	   getPersistenceManager().save();
     	}
     	
+    	if (getPersistenceManager().objectExists("/testB2"))
+    	{
+    	   getPersistenceManager().remove("/testB2");
+    	   getPersistenceManager().save();
+    	}
+    	
     	if (getPersistenceManager().objectExists("/test"))
     	{
     	   getPersistenceManager().remove("/test");
     	   getPersistenceManager().save();
     	}
     	
+    	if (getPersistenceManager().objectExists("/descendant"))
+    	{
+    	   getPersistenceManager().remove("/descendant");
+    	   getPersistenceManager().save();
+    	}
+    	
         super.tearDown();
     }
     
-    public void testClassA()
+    public void testUuid()
     {
         try
         {
@@ -114,7 +128,63 @@ public class PersistenceManagerUuidTest extends TestBase
             assertTrue("The uuid has been modified", uuidA.equals(a.getUuid()));
             
             // --------------------------------------------------------------------------------
-            // Create and store an object B in the repository which has a reference on A
+            // Get the object with the uuid
+            // --------------------------------------------------------------------------------           
+            a = (A) persistenceManager.getObjectByUuid(uuidA);
+            assertNotNull("a is null", a);
+            assertTrue("Invalid object found with the uuid ", "testdata2".equals(a.getStringData()));
+            
+            // --------------------------------------------------------------------------------
+            // Get the object with an invalid uuid
+            // --------------------------------------------------------------------------------           
+            try 
+            {
+                a = (A) persistenceManager.getObjectByUuid("1234");
+                fail("Exception not throw");
+            }
+            catch(Exception e)
+            {
+            	//Throws an exception due to an invalid uuid
+            	System.out.println(e);
+
+            }
+            
+            
+        }
+        catch (Exception e)
+        {
+            e.printStackTrace();
+            fail("Exception occurs during the unit test : " + e);
+        }
+        
+    }
+    
+    public void testFieldReference()
+    {
+        try
+        {
+        	PersistenceManager persistenceManager = getPersistenceManager();
+
+            // --------------------------------------------------------------------------------
+            // Create and store an object A in the repository
+            // --------------------------------------------------------------------------------
+            A a = new A();
+            a.setPath("/test");
+            a.setStringData("testdata");
+            persistenceManager.insert(a);
+            persistenceManager.save();           
+
+            // --------------------------------------------------------------------------------
+            // Get the object
+            // --------------------------------------------------------------------------------           
+            a = (A) persistenceManager.getObject( "/test");
+            assertNotNull("a is null", a);
+            String uuidA = a.getUuid();
+            assertNotNull("uuid is null", uuidA);
+            System.out.println("UUID : " + uuidA);
+                        
+            // --------------------------------------------------------------------------------
+            // Create and store an object B in the repository which has a reference to A
             // --------------------------------------------------------------------------------
             B b = new B();
             b.setReference2A(uuidA);
@@ -123,9 +193,15 @@ public class PersistenceManagerUuidTest extends TestBase
             persistenceManager.save();
             
             // --------------------------------------------------------------------------------
+            // Retrieve the object B with an invalid reference 
+            // --------------------------------------------------------------------------------            
+            b = (B) persistenceManager.getObject("/testB");
+            assertNotNull("b is null", b);
+            assertTrue("Invalid uuid property", b.getReference2A().equals(uuidA));
+            
+            // --------------------------------------------------------------------------------
             // Update the object B with an invalid reference 
             // --------------------------------------------------------------------------------
-            b = (B) persistenceManager.getObject("/testB");
             b.setReference2A("1245");
             try
             {
@@ -134,7 +210,7 @@ public class PersistenceManagerUuidTest extends TestBase
             }
             catch(Exception e)
             {
-            	//Exception has to triggered due to an invalid uuid
+            	//Throws an exception due to an invalid uuid
             	System.out.println("Invalid uuid : " + e);
             	
             }
@@ -148,7 +224,132 @@ public class PersistenceManagerUuidTest extends TestBase
         }
         
     }
-    
+
+    public void testBeanReference()
+    {
+        try
+        {
+        	PersistenceManager persistenceManager = getPersistenceManager();
+
+            // --------------------------------------------------------------------------------
+            // Create and store an object A in the repository
+            // --------------------------------------------------------------------------------
+            A a = new A();
+            a.setPath("/test");
+            a.setStringData("testdata");
+            persistenceManager.insert(a);
+            persistenceManager.save();           
+
+            // --------------------------------------------------------------------------------
+            // Get the object a
+            // --------------------------------------------------------------------------------           
+            a = (A) persistenceManager.getObject( "/test");
+            assertNotNull("a is null", a);
+            String uuidA = a.getUuid();
+            assertNotNull("uuid is null", uuidA);
+            System.out.println("UUID : " + uuidA);
+            
+            // --------------------------------------------------------------------------------
+            // Create and store an object B in the repository which has a reference to A
+            // --------------------------------------------------------------------------------
+            B2 b = new B2();
+            b.setA(a);
+            b.setPath("/testB2");
+            persistenceManager.insert(b);
+            persistenceManager.save();
+            
+            // --------------------------------------------------------------------------------
+            // Retrieve object B
+            // --------------------------------------------------------------------------------
+            b = (B2) persistenceManager.getObject("/testB2");
+            a = b.getA();
+            assertNotNull("a is null", a);
+            assertTrue("Invalid object a", a.getStringData().equals("testdata"));
+            assertTrue("Invalid uuid property", a.getUuid().equals(uuidA));
+
+            // --------------------------------------------------------------------------------
+            // Update object B with an null value
+            // --------------------------------------------------------------------------------
+            b.setA(null);
+            persistenceManager.update(b);
+            persistenceManager.save();
+            
+            // --------------------------------------------------------------------------------
+            // Retrieve object B
+            // --------------------------------------------------------------------------------
+            b = (B2) persistenceManager.getObject("/testB2");
+            a = b.getA();
+            assertNull("a is not null", a);
+            
+            
+        }
+        catch (Exception e)
+        {
+            e.printStackTrace();
+            fail("Exception occurs during the unit test : " + e);
+        }
         
+    }
+    
+    
+    /**
+     * Test on uuid field defined in an ancestor class
+     *
+     */
+    public void testDescendantAncestor()
+    {
+        try
+        {
+        	PersistenceManager persistenceManager = getPersistenceManager();
+
+
+            // --------------------------------------------------------------------------------
+            // Create and store an object A in the repository
+            // --------------------------------------------------------------------------------
+            Descendant a = new Descendant();
+            a.setPath("/descendant");
+            a.setStringData("testdata");
+            persistenceManager.insert(a);
+            persistenceManager.save();           
+
+            // --------------------------------------------------------------------------------
+            // Get the object
+            // --------------------------------------------------------------------------------           
+            a = (Descendant) persistenceManager.getObject( "/descendant");
+            assertNotNull("a is null", a);
+            String uuidA = a.getUuid();
+            assertNotNull("uuid is null", uuidA);
+            System.out.println("UUID : " + uuidA);
+            
+            // --------------------------------------------------------------------------------
+            // Update the object
+            // --------------------------------------------------------------------------------
+            a.setStringData("testdata2");
+            persistenceManager.update(a);
+            persistenceManager.save();
+
+            // --------------------------------------------------------------------------------
+            // Get the object
+            // --------------------------------------------------------------------------------           
+            a = (Descendant) persistenceManager.getObject("/descendant");
+            assertNotNull("a is null", a);
+            assertTrue("The uuid has been modified", uuidA.equals(a.getUuid()));
+            
+            // --------------------------------------------------------------------------------
+            // Get the object with the uuid
+            // --------------------------------------------------------------------------------           
+            a = (Descendant) persistenceManager.getObjectByUuid(uuidA);
+            assertNotNull("a is null", a);
+            assertTrue("Invalid object found with the uuid ", "testdata2".equals(a.getStringData()));
+            
+            
+        }
+        catch (Exception e)
+        {
+            e.printStackTrace();
+            fail("Exception occurs during the unit test : " + e);
+        }
+        
+    }
 
 }

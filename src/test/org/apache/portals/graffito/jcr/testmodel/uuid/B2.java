@@ -22,11 +22,10 @@ package org.apache.portals.graffito.jcr.testmodel.uuid;
  * @author <a href="mailto:christophe.lombart@gmail.com">Lombart Christophe </a>
  * @version $Id: Exp $
  */
-public class A
+public class B2
 {
 	private String path; 
-	private String uuid;
-    private String stringData;
+    private A a; // This attribute is mapped to a reference jcr property
 
     
     public String getPath() 
@@ -38,23 +37,15 @@ public class A
 	{
 		this.path = path;
 	}
+
+	public A getA() {
+		return a;
+	}
+
+	public void setA(A a) {
+		this.a = a;
+	}
+
 	
-    public String getUuid() {
-		return uuid;
-	}
-
-	public void setUuid(String uuid) {
-		this.uuid = uuid;
-	}
-	public String getStringData() {
-		return stringData;
-	}
-
-	public void setStringData(String stringData) {
-		this.stringData = stringData;
-	}
-
-
-    
     
 }
