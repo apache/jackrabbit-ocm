@@ -16,6 +16,8 @@
  */
 package org.apache.portals.graffito.jcr.testmodel.uuid;
 
+import java.util.Collection;
+
 
 /**
  *
@@ -26,7 +28,7 @@ public class B2
 {
 	private String path; 
     private A a; // This attribute is mapped to a reference jcr property
-
+    private Collection multiReferences; // a collection of bean (with an uuid) mapped into a list of jcr properties (reference type)
     
     public String getPath() 
     {
@@ -45,7 +47,12 @@ public class B2
 	public void setA(A a) {
 		this.a = a;
 	}
+	public Collection getMultiReferences() {
+		return multiReferences;
+	}
 
-	
+	public void setMultiReferences(Collection multiReferences) {
+		this.multiReferences = multiReferences;
+	}
     
 }

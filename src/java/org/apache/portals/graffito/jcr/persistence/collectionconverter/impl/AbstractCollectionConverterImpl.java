@@ -34,7 +34,6 @@ import org.apache.portals.graffito.jcr.mapper.model.CollectionDescriptor;
 import org.apache.portals.graffito.jcr.persistence.collectionconverter.CollectionConverter;
 import org.apache.portals.graffito.jcr.persistence.collectionconverter.ManageableCollection;
 import org.apache.portals.graffito.jcr.persistence.objectconverter.ObjectConverter;
-import org.apache.portals.graffito.jcr.reflection.ReflectionUtils;
 
 /** 
  * Abstract class used for all CollectionConverter
@@ -45,7 +44,6 @@ import org.apache.portals.graffito.jcr.reflection.ReflectionUtils;
 public abstract class AbstractCollectionConverterImpl implements CollectionConverter {
 	protected Map atomicTypeConverters;
 	protected ObjectConverter objectConverter;
-	// NOT USED
 	protected Mapper mapper;
 
 	/**

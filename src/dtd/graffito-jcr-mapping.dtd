@@ -151,7 +151,7 @@
 	autoRetrieve (true|false) "true"
 	autoUpdate (true|false) "true"
 	autoInsert (true|false) "true"	
-	elementClassName CDATA #REQUIRED
+	elementClassName CDATA #IMPLIED
 	collectionClassName CDATA #IMPLIED
 	collectionConverter CDATA #IMPLIED
 	jcrNodeType CDATA #IMPLIED
