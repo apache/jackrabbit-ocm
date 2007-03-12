@@ -16,6 +16,9 @@
  */
 package org.apache.portals.graffito.jcr.persistence.uuid;
 
+import java.util.ArrayList;
+import java.util.Collection;
+
 import junit.framework.Test;
 import junit.framework.TestSuite;
 
@@ -88,6 +91,11 @@ public class PersistenceManagerUuidTest extends TestBase
         super.tearDown();
     }
     
+    /**
+     * 
+     *  Map the jcr uuid into a String attribute
+     *  
+     */
     public void testUuid()
     {
         try
@@ -158,7 +166,12 @@ public class PersistenceManagerUuidTest extends TestBase
         }
         
     }
-    
+    /**
+     * 
+     * Map a Reference into a String attribute. 
+     * Object B has an attribute containing the object A uuid. 
+     *
+     */
     public void testFieldReference()
     {
         try
@@ -225,6 +238,13 @@ public class PersistenceManagerUuidTest extends TestBase
         
     }
 
+    /**
+     * 
+     * Map a Reference into a bean attribute. 
+     * Object B has an attribute containing the object A. 
+     * The jcr node matching to the object B contains a reference (the jcr node matching to the object B).   
+     *
+     */
     public void testBeanReference()
     {
         try
@@ -280,6 +300,177 @@ public class PersistenceManagerUuidTest extends TestBase
             b = (B2) persistenceManager.getObject("/testB2");
             a = b.getA();
             assertNull("a is not null", a);
+            
+            
+        }
+        catch (Exception e)
+        {
+            e.printStackTrace();
+            fail("Exception occurs during the unit test : " + e);
+        }
+        
+    }
+
+    /**
+     * Map a list of uuid  into a collection of String 
+     * The list is defined in a jcr property (Referece type / multi values) 
+     *
+     */
+    public void testCollectionOfUuid()
+    {
+        try
+        {
+        	PersistenceManager persistenceManager = getPersistenceManager();
+
+            // --------------------------------------------------------------------------------
+            // Create and store an object A in the repository
+            // --------------------------------------------------------------------------------
+            A a1 = new A();
+            a1.setPath("/a1");
+            a1.setStringData("testdata1");
+            persistenceManager.insert(a1);
+            
+            A a2 = new A();
+            a2.setPath("/a2");
+            a2.setStringData("testdata2");
+            persistenceManager.insert(a2);            
+            persistenceManager.save();           
+
+            // --------------------------------------------------------------------------------
+            // Get the objects
+            // --------------------------------------------------------------------------------           
+            a1 = (A) persistenceManager.getObject( "/a1");
+            assertNotNull("a1 is null", a1);
+            a2 = (A) persistenceManager.getObject( "/a2");
+            assertNotNull("a2 is null", a2);
+            ArrayList references = new ArrayList();
+            references.add(a1.getUuid());
+            references.add(a2.getUuid());
+            
+            // --------------------------------------------------------------------------------
+            // Create and store an object B in the repository which has a collection of A
+            // --------------------------------------------------------------------------------
+            B b = new B();
+            b.setPath("/testB");
+            b.setMultiReferences(references);
+            persistenceManager.insert(b);
+            persistenceManager.save();
+            
+            // --------------------------------------------------------------------------------
+            // Retrieve object B
+            // --------------------------------------------------------------------------------
+            b = (B) persistenceManager.getObject("/testB");
+            Collection allref = b.getMultiReferences();
+            assertNotNull("collection is null", allref);
+            assertTrue("Invalid number of items in the collection", allref.size() == 2);
+
+            // --------------------------------------------------------------------------------
+            // Update object B with invalid uuid
+            // --------------------------------------------------------------------------------
+            allref.add("12345");
+            b.setMultiReferences(allref);
+            try
+            {
+            	persistenceManager.update(b);            	
+            	fail("Exception not throw");
+            }
+            catch(Exception e)
+            {
+            	//Throws an exception due to an invalid uuid
+            	System.out.println("Invalid uuid value in the collection : " + e);
+            	
+            }
+            
+            // --------------------------------------------------------------------------------
+            // Update object B with an null value
+            // --------------------------------------------------------------------------------
+            b.setMultiReferences(null);
+            persistenceManager.update(b);
+            persistenceManager.save();
+            
+            // --------------------------------------------------------------------------------
+            // Retrieve object B
+            // --------------------------------------------------------------------------------
+            b = (B) persistenceManager.getObject("/testB");            
+            assertNull("a is not null", b.getMultiReferences());
+            
+            
+        }
+        catch (Exception e)
+        {
+            e.printStackTrace();
+            fail("Exception occurs during the unit test : " + e);
+        }
+        
+    }
+
+    /**
+     * Map a list of uuid  into a collection
+     * The list is defined in a jcr property (multi values) 
+     *
+     */
+    public void testCollectionOfBeanWithUuid()
+    {
+        try
+        {
+        	PersistenceManager persistenceManager = getPersistenceManager();
+
+            // --------------------------------------------------------------------------------
+            // Create and store an object A in the repository
+            // --------------------------------------------------------------------------------
+            A a1 = new A();
+            a1.setPath("/a1");
+            a1.setStringData("testdata1");
+            persistenceManager.insert(a1);
+            
+            A a2 = new A();
+            a2.setPath("/a2");
+            a2.setStringData("testdata2");
+            persistenceManager.insert(a2);            
+            persistenceManager.save();           
+
+            // --------------------------------------------------------------------------------
+            // Get the objects
+            // --------------------------------------------------------------------------------           
+            a1 = (A) persistenceManager.getObject( "/a1");
+            assertNotNull("a1 is null", a1);
+            a2 = (A) persistenceManager.getObject( "/a2");
+            assertNotNull("a2 is null", a2);
+            ArrayList references = new ArrayList();
+            references.add(a1);
+            references.add(a2);
+            
+            // --------------------------------------------------------------------------------
+            // Create and store an object B in the repository which has a collection of A
+            // --------------------------------------------------------------------------------
+            B2 b = new B2();
+            b.setPath("/testB2");
+            b.setMultiReferences(references);
+            persistenceManager.insert(b);
+            persistenceManager.save();
+            
+            // --------------------------------------------------------------------------------
+            // Retrieve object B
+            // --------------------------------------------------------------------------------
+            b = (B2) persistenceManager.getObject("/testB2");
+            Collection allref = b.getMultiReferences();
+            assertNotNull("collection is null", allref);
+            assertTrue("Invalid number of items in the collection", allref.size() == 2);
+            this.contains(allref, "/a1" , A.class);
+            this.contains(allref, "/a2" , A.class);
+
+            // --------------------------------------------------------------------------------
+            // Update object B with an null value
+            // --------------------------------------------------------------------------------
+            b.setMultiReferences(null);
+            persistenceManager.update(b);
+            persistenceManager.save();
+            
+            // --------------------------------------------------------------------------------
+            // Retrieve object B
+            // --------------------------------------------------------------------------------
+            b = (B2) persistenceManager.getObject("/testB2");            
+            assertNull("a is not null", b.getMultiReferences());
             
             
         }
