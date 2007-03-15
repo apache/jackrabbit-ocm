@@ -55,19 +55,12 @@ public class NullAtomicTest extends TestBase
     }
     
 
-    /**
-     * @see junit.framework.TestCase#tearDown()
-     */
-    public void tearDown() throws Exception
-    {
-        if (getPersistenceManager().objectExists("/test"))
-        {
-            getPersistenceManager().remove("/test");
-            getPersistenceManager().save();
-        }        
-    	
-        super.tearDown();
-    }    
+	public void tearDown() throws Exception {
+
+		cleanUpRepisotory();
+		super.tearDown();
+		
+	}  
 
     public void testNullValueAtomicFields()
     {
