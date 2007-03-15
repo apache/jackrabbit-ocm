@@ -62,20 +62,12 @@ public class PersistenceManagerAtomicQueryTest extends TestBase
 	}
 	
     
-    public void tearDown() throws Exception
-    {
+	public void tearDown() throws Exception {
 
-		for (int i = 1; i <= 100; i++)
-		{
-			if (getPersistenceManager().objectExists("/test" + i))
-			{
-				getPersistenceManager().remove("/test" + i);
-			}
-
-		}
-        getPersistenceManager().save();
-        super.tearDown();
-    }	
+		cleanUpRepisotory();
+		super.tearDown();
+		
+	}	
 	
 
 	public void testQueryAtomicFields()

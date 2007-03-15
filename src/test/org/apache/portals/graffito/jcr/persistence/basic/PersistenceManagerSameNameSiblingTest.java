@@ -75,7 +75,13 @@ public class PersistenceManagerSameNameSiblingTest extends TestBase
                 new TestSuite(PersistenceManagerSameNameSiblingTest.class));
 	}
 
+	public void tearDown() throws Exception 
+	{
 
+		cleanUpRepisotory();
+		super.tearDown();
+		
+	}
 	public void testSameNameSiblings()
 	{
 

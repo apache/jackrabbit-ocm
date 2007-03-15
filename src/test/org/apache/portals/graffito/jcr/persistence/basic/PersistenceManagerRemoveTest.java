@@ -72,20 +72,11 @@ public class PersistenceManagerRemoveTest extends TestBase
         
     }
 	
-	public void tearDown() throws Exception
-	{
+	public void tearDown() throws Exception {
 
-		for (int i = 1; i <= 10; i++)
-		{
-			if (getPersistenceManager().objectExists("/test" + i))
-			{
-				getPersistenceManager().remove("/test" + i);
-			}
-
-		}
-		getPersistenceManager().save();
-
+		cleanUpRepisotory();
 		super.tearDown();
+		
 	}
 
 	public void testRemove()
