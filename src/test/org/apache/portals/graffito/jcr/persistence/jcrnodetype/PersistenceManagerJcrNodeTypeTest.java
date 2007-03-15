@@ -114,6 +114,7 @@ public class PersistenceManagerJcrNodeTypeTest extends TestBase {
 			//---------------------------------------------------------------------------------------------------------						
 			folder = (Folder) persistenceManager.getObject( "/folder1");
 			assertNotNull("folder is null", folder);
+			System.out.println("Folder creation date : " + folder.getCreationDate());
 			assertTrue("Invalid number of children", folder.getChildren().size() == 1);
 			file = (File) folder.getChildren().iterator().next();
 			assertNotNull("resource is null", file.getResource());	
