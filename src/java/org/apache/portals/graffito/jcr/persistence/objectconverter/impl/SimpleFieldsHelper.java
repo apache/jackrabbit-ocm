@@ -27,6 +27,7 @@ import javax.jcr.ValueFactory;
 import javax.jcr.ValueFormatException;
 import javax.jcr.lock.LockException;
 import javax.jcr.nodetype.ConstraintViolationException;
+import javax.jcr.nodetype.NodeType;
 import javax.jcr.nodetype.PropertyDefinition;
 import javax.jcr.version.VersionException;
 
@@ -81,6 +82,15 @@ public class SimpleFieldsHelper
 		try {
 			Iterator fieldDescriptorIterator = classDescriptor.getFieldDescriptors().iterator();
 
+			if (classDescriptor.usesNodeTypePerHierarchyStrategy() && classDescriptor.hasDiscriminator()) 
+			{
+				if (!node.hasProperty(PersistenceConstant.DISCRIMINATOR_PROPERTY_NAME)) 
+				{
+					throw new PersistenceException("Class '"
+							+ classDescriptor.getClassName()
+							+ "' has not a discriminator property.");
+				}
+			}			
 			while (fieldDescriptorIterator.hasNext()) {
 				FieldDescriptor fieldDescriptor = (FieldDescriptor) fieldDescriptorIterator.next();
 
@@ -98,8 +108,6 @@ public class SimpleFieldsHelper
 
 				} else {
 					if (fieldDescriptor.isUuid()) {
-						// HINT: lazy initialize target bean - The bean can be
-						// null when it is inline
 						if (null == initializedBean) {
 							initializedBean = ReflectionUtils.newInstance(classDescriptor.getClassName());
 						}
@@ -125,15 +133,7 @@ public class SimpleFieldsHelper
 
 
 	private Object retrieveSimpleField(ClassDescriptor classDescriptor, Node node, Object initializedBean, FieldDescriptor fieldDescriptor, String fieldName, String propertyName) throws RepositoryException, ValueFormatException, PathNotFoundException {
-		if (classDescriptor.usesNodeTypePerHierarchyStrategy() && classDescriptor.hasDiscriminator()) 
-		{
-			if (!node.hasProperty(PersistenceConstant.DISCRIMINATOR_PROPERTY_NAME)) 
-			{
-				throw new PersistenceException("Class '"
-						+ classDescriptor.getClassName()
-						+ "' has not a discriminator property.");
-			}
-		}
+
 		if (node.hasProperty(propertyName)) 
 		{
 			Value propValue = node.getProperty(propertyName).getValue();
@@ -189,39 +189,67 @@ public class SimpleFieldsHelper
 
 
 	private void storeSimpleField(Object object, Node objectNode, ValueFactory valueFactory, FieldDescriptor fieldDescriptor, String fieldName, String jcrName) throws RepositoryException, PathNotFoundException, ValueFormatException, VersionException, LockException, ConstraintViolationException {
-		boolean protectedProperty = fieldDescriptor.isJcrProtected();
+		
+		boolean protectedProperty = isProtectedProperty(objectNode, fieldDescriptor, jcrName);
 
-		if (objectNode.hasProperty(jcrName)) {
-			protectedProperty = objectNode.getProperty(jcrName).getDefinition().isProtected();
-		}
-
-		if (!protectedProperty) { // DO NOT TRY TO WRITE PROTECTED  PROPERTIES
+		if (!protectedProperty) 
+		{ // DO NOT TRY TO WRITE PROTECTED  PROPERTIES
+			
 			Object fieldValue = ReflectionUtils.getNestedProperty(object, fieldName);
 			AtomicTypeConverter converter = getAtomicTypeConverter(fieldDescriptor, object, fieldName);
 			Value value = converter.getValue(valueFactory, fieldValue);
-
-			// Check if the node property is "autocreated"
-			boolean autoCreated = fieldDescriptor.isJcrAutoCreated();
-
-			if (objectNode.hasProperty(jcrName)) {
-				autoCreated = objectNode.getProperty(jcrName).getDefinition().isAutoCreated();
-			}
-
-			if (!autoCreated) {
-				// Check if mandatory property are not null
-				checkMandatoryProperty(objectNode, fieldDescriptor, value);
-			}
-
-			objectNode.setProperty(jcrName, value);
-		}		
-	}
 	
-	private void checkMandatoryProperty(Node objectNode, FieldDescriptor fieldDescriptor, Value value) throws RepositoryException {
-		PropertyDefinition[] propertyDefinitions = objectNode.getPrimaryNodeType().getDeclaredPropertyDefinitions();
+			checkProperty(objectNode, fieldDescriptor, value);
+			objectNode.setProperty(jcrName, value);
+		}			
+
+	}
+
+
+	private boolean isProtectedProperty(Node objectNode, FieldDescriptor fieldDescriptor, String jcrName) throws RepositoryException, PathNotFoundException 
+	{
+		// Return true if the property is defined as protected in the mapping file
+		if (fieldDescriptor.isJcrProtected())
+		{
+			return true; 
+		}
+
+		// Check if the property is defined as protected in the JCR repo
+		
+		// 1. Check in the primary node type
+		PropertyDefinition[] propertyDefinitions = objectNode.getPrimaryNodeType().getPropertyDefinitions();
 		for (int i = 0; i < propertyDefinitions.length; i++) {
 			PropertyDefinition definition = propertyDefinitions[i];
-			if (definition.getName().equals(fieldDescriptor.getJcrName()) && definition.isMandatory()
-					&& (definition.isAutoCreated() == false) && (value == null)) {
+			if (definition.getName().equals(fieldDescriptor.getJcrName()))
+			{
+			    return definition.isProtected();
+			}
+		}
+		
+		// 2. Check in the secondary node types
+		NodeType[] nodeTypes =  objectNode.getMixinNodeTypes();
+		for(int nodeTypeIndex = 0; nodeTypeIndex < nodeTypes.length; nodeTypeIndex++)
+		{
+			propertyDefinitions = nodeTypes[nodeTypeIndex].getPropertyDefinitions();
+			for (int propDefIndex = 0; propDefIndex < propertyDefinitions.length; propDefIndex++) {
+				PropertyDefinition definition = propertyDefinitions[propDefIndex];
+				if (definition.getName().equals(fieldDescriptor.getJcrName()))
+				{
+				    return definition.isProtected();
+				}
+			}
+		}
+		
+        // This property is not defined in one of the node types
+		return false;
+		
+	}
+	
+	private void checkProperty(Node objectNode, FieldDescriptor fieldDescriptor, Value value) throws RepositoryException {
+		PropertyDefinition[] propertyDefinitions = objectNode.getPrimaryNodeType().getPropertyDefinitions();
+		for (int i = 0; i < propertyDefinitions.length; i++) {
+			PropertyDefinition definition = propertyDefinitions[i];
+			if (definition.getName().equals(fieldDescriptor.getJcrName()) && definition.isMandatory() && (value == null)) {
 				throw new PersistenceException("Class of type:" + fieldDescriptor.getClassDescriptor().getClassName()
 						+ " has property: " + fieldDescriptor.getFieldName() + " declared as JCR property: "
 						+ fieldDescriptor.getJcrName() + " This property is mandatory but property in bean has value null");
