@@ -170,5 +170,24 @@
     </supertypes>
   </nodeType>    
 
+
+   <nodeType name="graffito:propertytest" >
+    <supertypes>
+      <supertype>nt:base</supertype>
+    </supertypes>
+     <propertyDefinition name="graffito:requiredProp" requiredType="String" autoCreated="false" mandatory="false" onParentVersion="COPY" protected="false" multiple="false" />   
+     <propertyDefinition name="graffito:requiredWithConstraintsProp" requiredType="String" autoCreated="false" mandatory="false" onParentVersion="COPY" protected="false" multiple="false" >   
+     	<valueConstraints>
+        	<valueConstraint>abc</valueConstraint>
+	        <valueConstraint>def</valueConstraint>
+	        <valueConstraint>ghi</valueConstraint>
+	 	</valueConstraints>     
+     </propertyDefinition>
+     <propertyDefinition name="graffito:autoCreatedProp" requiredType="String" autoCreated="true" mandatory="false" onParentVersion="INITIALIZE" protected="false" multiple="false" >   
+            <defaultValues>
+                <defaultValue>autoCreatePropValue</defaultValue>
+            </defaultValues>
+     </propertyDefinition>
+   </nodeType> 
 </nodeTypes>
 
