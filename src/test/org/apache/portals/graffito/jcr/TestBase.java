@@ -121,13 +121,20 @@ public abstract class TestBase extends TestCase
 	 */
 	protected void setUp() throws Exception
 	{
-		super.setUp();
-        
-        if (!isInit) {
-            initPersistenceManager();
-            registerNodeTypes(getSession());
-            isInit = true;
-        }
+		try {
+			super.setUp();
+	        
+	        if (!isInit) {
+	            initPersistenceManager();
+	            registerNodeTypes(getSession());
+	            isInit = true;
+	        }
+			
+		}
+		catch (Exception e )
+		{
+			e.printStackTrace();
+		}
 	}
 
 	/**

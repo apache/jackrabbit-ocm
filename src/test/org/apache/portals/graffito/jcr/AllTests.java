@@ -45,13 +45,15 @@ public class AllTests {
         suite.addTest(org.apache.portals.graffito.jcr.persistence.collectionconverter.AllTests.buildSuite());
         suite.addTest(org.apache.portals.graffito.jcr.persistence.inheritance.AllTests.buildSuite());
         suite.addTest(org.apache.portals.graffito.jcr.persistence.interfaces.AllTests.buildSuite());
+        suite.addTest(org.apache.portals.graffito.jcr.persistence.jcrnodetype.AllTests.buildSuite());        
+        suite.addTest(org.apache.portals.graffito.jcr.persistence.lock.AllTests.buildSuite());        
         suite.addTest(org.apache.portals.graffito.jcr.persistence.proxy.AllTests.buildSuite());
         suite.addTest(org.apache.portals.graffito.jcr.persistence.query.AllTests.buildSuite());
-        suite.addTest(org.apache.portals.graffito.jcr.persistence.version.AllTests.buildSuite());
-        suite.addTest(org.apache.portals.graffito.jcr.persistence.lock.AllTests.buildSuite());
+        suite.addTest(org.apache.portals.graffito.jcr.persistence.uuid.AllTests.buildSuite());        
+        suite.addTest(org.apache.portals.graffito.jcr.persistence.version.AllTests.buildSuite());        
         suite.addTest(org.apache.portals.graffito.jcr.querymanager.AllTests.buildSuite());
         suite.addTest(org.apache.portals.graffito.jcr.repository.AllTests.buildSuite());
-        suite.addTest(org.apache.portals.graffito.jcr.persistence.jcrnodetype.AllTests.buildSuite());
+        
         return suite;
     }
 }

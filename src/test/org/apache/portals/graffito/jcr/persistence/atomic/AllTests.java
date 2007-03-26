@@ -37,7 +37,8 @@ public class AllTests {
         TestSuite suite= new TestSuite("Test for org.apache.portals.graffito.jcr.persistence.atomic");
         //$JUnit-BEGIN$
         suite.addTestSuite(AtomicTest.class);
-        suite.addTestSuite(NullAtomicTest.class);
+        suite.addTestSuite(NullAtomicTest.class);        
+        
         //$JUnit-END$
 
         return suite;
