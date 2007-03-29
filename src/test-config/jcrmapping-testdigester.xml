@@ -98,4 +98,5 @@
 		<field-descriptor fieldName="uuid" uuid="true" />
         <field-descriptor fieldName="stringData" jcrName="stringData" />
 	</class-descriptor>
+	
 </graffito-jcr>

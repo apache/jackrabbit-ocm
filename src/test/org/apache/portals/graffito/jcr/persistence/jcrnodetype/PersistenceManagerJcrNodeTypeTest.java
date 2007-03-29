@@ -71,26 +71,6 @@ public class PersistenceManagerJcrNodeTypeTest extends TestBase {
 			PersistenceManager persistenceManager = this.getPersistenceManager();
 
 			//---------------------------------------------------------------------------------------------------------
-			// Insert a  folder (class mapped to jcr:folder)
-			//---------------------------------------------------------------------------------------------------------			
-//            Folder folder = new Folder();
-//            folder.setPath("/folder1");            
-//                        
-//            persistenceManager.insert(folder); 
-//           
-//			persistenceManager.save();
-			
-			
-			//---------------------------------------------------------------------------------------------------------
-			// Retrieve a document object
-			//---------------------------------------------------------------------------------------------------------						
-//			folder = (Folder) persistenceManager.getObject( "/folder1");
-//			assertNotNull("folder is null", folder);			
-//			assertEquals("Document path is invalid", folder.getPath(), "/folder1");
-//			System.out.println("Folder calendar: " + folder.getCreationDate());	// The prop is autocreated 
-			
-
-			//---------------------------------------------------------------------------------------------------------
 			// Insert a  folder (class mapped to jcr:folder) with one file (class mapped to jcr:file)
 			//---------------------------------------------------------------------------------------------------------			
             Resource resource = new Resource();

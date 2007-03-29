@@ -106,6 +106,7 @@ public class PersistenceManagerImpl implements PersistenceManager {
                                   Session session) {
         this.mapper = mapper;
         this.session = session;
+        
         this.objectConverter = new ObjectConverterImpl(mapper, new DefaultAtomicTypeConverterProvider());
         this.queryManager = queryManager;
     }
@@ -1068,8 +1069,22 @@ public class PersistenceManagerImpl implements PersistenceManager {
     /**
      * @return The JCR Session
      */
-    public Session getSession() {
-        return this.session;
+    public Session getSession() {       
+    	return this.session;
     }
+
+	public void refresh(boolean keepChanges) {
+		try 
+		{
+		    session.refresh(keepChanges);
+		}
+        catch(RepositoryException e) {
+            throw new PersistenceException("Cannot refresh current session ", e);
+        }
+
+		
+	}
+    
+    
 
 }

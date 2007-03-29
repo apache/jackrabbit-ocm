@@ -196,6 +196,15 @@ public class SimpleFieldsHelper
 		{ // DO NOT TRY TO WRITE PROTECTED  PROPERTIES
 			
 			Object fieldValue = ReflectionUtils.getNestedProperty(object, fieldName);
+			// if the value and if there is a default value for this field => set this default value
+			String defaultValue = fieldDescriptor.getJcrDefaultValue();
+			if ((fieldValue == null) && (defaultValue != null))
+			{
+				//Not sure that we have the attribute with the default value in all use cases				
+				ReflectionUtils.setNestedProperty(object, fieldName, defaultValue);
+				fieldValue = ReflectionUtils.getNestedProperty(object, fieldName);
+				
+			}
 			AtomicTypeConverter converter = getAtomicTypeConverter(fieldDescriptor, object, fieldName);
 			Value value = converter.getValue(valueFactory, fieldValue);
 	

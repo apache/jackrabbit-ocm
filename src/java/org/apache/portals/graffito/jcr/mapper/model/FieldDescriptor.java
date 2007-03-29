@@ -44,6 +44,8 @@ public class FieldDescriptor implements PropertyDefDescriptor {
     private boolean path;
     private boolean uuid;
     private String converter;
+    private String jcrDefaultValue; 
+    private String[] jcrValueConstraints = new String[0];
    
 
     /**
@@ -279,8 +281,27 @@ public class FieldDescriptor implements PropertyDefDescriptor {
     public void setJcrMultiple(boolean value) {
         this.jcrMultiple = value;
     }
+    
+    public String getJcrDefaultValue() {
+		return jcrDefaultValue;
+	}
 
-    /**
+	public void setJcrDefaultValue(String defaultValue) {
+		this.jcrDefaultValue = defaultValue;
+	}
+
+	public String[] getJcrValueConstraints() {
+		return jcrValueConstraints;
+	}
+
+	public void setJcrValueConstraints(String[] jcrValueConstraints) {
+        if (null != jcrValueConstraints && jcrValueConstraints.length == 1) {
+        	this.jcrValueConstraints = jcrValueConstraints[0].split(" *, *");
+        }
+
+	}
+
+	/**
      * Initialize the fieldTypeClass.
      *
      * @return the primitive class or the class accordign to fieldType

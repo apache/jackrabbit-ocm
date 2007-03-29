@@ -183,11 +183,30 @@
 	        <valueConstraint>ghi</valueConstraint>
 	 	</valueConstraints>     
      </propertyDefinition>
-     <propertyDefinition name="graffito:autoCreatedProp" requiredType="String" autoCreated="true" mandatory="false" onParentVersion="INITIALIZE" protected="false" multiple="false" >   
+     <propertyDefinition name="graffito:autoCreatedProp" requiredType="String" autoCreated="true" mandatory="false" onParentVersion="COPY" protected="false" multiple="false" >   
             <defaultValues>
                 <defaultValue>autoCreatePropValue</defaultValue>
             </defaultValues>
      </propertyDefinition>
+     <propertyDefinition name="graffito:autoCreatedWithConstraintsProp" requiredType="String" autoCreated="true" mandatory="false" onParentVersion="COPY" protected="false" multiple="false" >   
+        <defaultValues>
+            <defaultValue>ccc</defaultValue>
+        </defaultValues>
+     	<valueConstraints>
+        	<valueConstraint>bbb</valueConstraint>
+	        <valueConstraint>ccc</valueConstraint>
+	        <valueConstraint>ddd</valueConstraint>
+	 	</valueConstraints>     
+            
+     </propertyDefinition>
+     <propertyDefinition name="graffito:mandatoryProp" requiredType="String" autoCreated="false" mandatory="true" onParentVersion="COPY" protected="false" multiple="false" />     
+     <propertyDefinition name="graffito:mandatoryWithConstaintsProp" requiredType="String" autoCreated="false" mandatory="true" onParentVersion="COPY" protected="false" multiple="false" >     
+     	<valueConstraints>
+        	<valueConstraint>xx</valueConstraint>
+	        <valueConstraint>yy</valueConstraint>
+	 	</valueConstraints>      
+     </propertyDefinition>
+     
    </nodeType> 
 </nodeTypes>
 

@@ -340,5 +340,11 @@ public interface PersistenceManager
      * @return The query manager reference
      */
     public QueryManager getQueryManager();
+    
+    /**
+     * Refrsh the underlying jcr session (see the jcr spec)
+     * @param keepChanges
+     */
+    public void refresh(boolean keepChanges);
         
 }
