@@ -63,15 +63,30 @@ public class PersistenceManagerJcrPropertyTest extends TestBase {
 		{
 			PersistenceManager persistenceManager = this.getPersistenceManager();
 			//---------------------------------------------------------------------------------------------------------
-			// Insert 
+			// Insert without the mandatory field
 			//---------------------------------------------------------------------------------------------------------			
 			
             PropertyTest propertyTest = new PropertyTest();
             propertyTest.setPath("/test");
             propertyTest.setRequiredProp("requiredPropValue");
             propertyTest.setRequiredWithConstraintsProp("abc");
-            propertyTest.setAutoCreatedProp("autoCreatePropValue");
             
+            try 
+            {
+                 persistenceManager.insert(propertyTest);
+                 fail("Incorrect insert operation - the mandatory fields have no value");
+            }
+            catch(Exception e)
+            {
+               // Normal behaviour 	
+            	persistenceManager.refresh(false);
+            }
+            
+			//---------------------------------------------------------------------------------------------------------
+			// Insert with the mandatory fields
+			//---------------------------------------------------------------------------------------------------------			
+            propertyTest.setMandatoryProp("mandatoryValue");
+            propertyTest.setMandatoryWithConstaintsProp("xx");
             persistenceManager.insert(propertyTest);
             persistenceManager.save();
             
@@ -81,29 +96,62 @@ public class PersistenceManagerJcrPropertyTest extends TestBase {
             propertyTest = (PropertyTest) persistenceManager.getObject("/test");
             assertTrue("Invalid required property", propertyTest.getRequiredProp().equals("requiredPropValue"));
             assertTrue("Invalid required property with constraints", propertyTest.getRequiredWithConstraintsProp().equals("abc"));            
-            assertTrue("Invalid autocreated property", propertyTest.getAutoCreatedProp().equals("autoCreatePropValue"));            
+            assertTrue("Invalid autocreated property", propertyTest.getAutoCreatedProp().equals("aaa")); 
+            assertTrue("Invalid autocreated property", propertyTest.getAutoCreatedWithConstraintsProp().equals("ccc"));
             
             //---------------------------------------------------------------------------------------------------------
 			// update the property requiredWithConstraintsProp with bad value
 			//---------------------------------------------------------------------------------------------------------			
+            propertyTest = (PropertyTest) persistenceManager.getObject("/test");
             propertyTest.setRequiredWithConstraintsProp("invalid value");
             try 
             {
             	persistenceManager.update(propertyTest);
             	persistenceManager.save();
-            	fail("Invalid value was accepted");
+            	fail("Invalid value was accepted for requiredWithConstraintsProp");
             }
             catch(Exception e)
-            {
-                e.printStackTrace();	
-               // Do nothing - normal behaviour, the value  	
+            {                	
+               // Do nothing - normal behaviour, the value               	
             }
             
+            //---------------------------------------------------------------------------------------------------------
+			// update the property AutoCreatedWithConstraintsProp with bad value
+			//---------------------------------------------------------------------------------------------------------			
+            propertyTest = (PropertyTest) persistenceManager.getObject("/test");
+            propertyTest.setAutoCreatedWithConstraintsProp("invalid value");
+            try 
+            {
+            	persistenceManager.update(propertyTest);
+            	persistenceManager.save();
+            	fail("Invalid value was accepted for autoCreatedWithConstraintsProp ");
+            }
+            catch(Exception e)
+            {             	
+               // Do nothing - normal behaviour, the value is not valid
+               	
+            }
+            
+            //---------------------------------------------------------------------------------------------------------
+			// update the property mandatoryWithConstaintsProp with bad value
+			//---------------------------------------------------------------------------------------------------------			
+            propertyTest = (PropertyTest) persistenceManager.getObject("/test");
+            propertyTest.setMandatoryWithConstaintsProp("yy");
+            try 
+            {
+            	persistenceManager.update(propertyTest);
+            	persistenceManager.save();
+            	fail("Invalid value was accepted for mandatoryWithConstaintsProp");
+            }
+            catch(Exception e)
+            {                	
+                e.printStackTrace();
+            }            
 			
 			
 		}
 		catch (Exception e)
-		{
+		{			
 			e.printStackTrace();
 			fail();
 		}

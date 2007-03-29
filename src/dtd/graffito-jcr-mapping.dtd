@@ -63,6 +63,8 @@
     * path : specified if the field is the object path
     * uuid : specified if the field is the object uuid
     * converter : AtomicTypeConverter class name to used for this field descriptor. If not defined, a default one is provided by default in function of the field type
+    * jcrDefaultValue : if the field is null, this default value will be used, optional
+    * jcrValueConstraints : a comma separated list of acceptable values, optional
     * jcrType: specifies the JCR property type (supported jcr property types: STRING, DATE, LONG, DOUBLE, BOOLEAN), optional
     * jcrAutoCreated: specifies if this JCR property will be autocreated (true/false / default is false), optional
     * jcrMandatory: specifies if this JCR property is mandatory (true/false / default is false), optional
@@ -80,6 +82,8 @@
 	path (true | false) "false"
 	uuid (true | false) "false"
 	converter CDATA #IMPLIED
+	jcrDefaultValue CDATA #IMPLIED
+	jcrValueConstraints CDATA #IMPLIED 
     jcrType (String | Date | Long | Double | Boolean | Binary) #IMPLIED
     jcrAutoCreated (true | false) "false"
     jcrMandatory (true | false) "false"

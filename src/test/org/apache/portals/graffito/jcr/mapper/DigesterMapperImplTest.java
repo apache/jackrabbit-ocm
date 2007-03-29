@@ -31,6 +31,7 @@ import org.apache.portals.graffito.jcr.mapper.model.FieldDescriptor;
 import org.apache.portals.graffito.jcr.testmodel.A;
 import org.apache.portals.graffito.jcr.testmodel.B;
 import org.apache.portals.graffito.jcr.testmodel.C;
+import org.apache.portals.graffito.jcr.testmodel.PropertyTest;
 import org.apache.portals.graffito.jcr.testmodel.inheritance.Ancestor;
 import org.apache.portals.graffito.jcr.testmodel.inheritance.AnotherDescendant;
 import org.apache.portals.graffito.jcr.testmodel.inheritance.Descendant;
@@ -147,11 +148,16 @@ public class DigesterMapperImplTest extends TestCase {
 	 */
 	public void testMapperOptionalProperties() {
 		try {
-			Mapper mapper = new DigesterMapperImpl("./src/test-config/jcrmapping.xml");
+
+			String[] files = { "./src/test-config/jcrmapping.xml",
+					           "./src/test-config/jcrmapping-jcrnodetypes.xml"};			
+
+			Mapper mapper = new DigesterMapperImpl(files);
+			
+			
 			assertNotNull("Mapper is null", mapper);
 
-			ClassDescriptor classDescriptor = mapper
-					.getClassDescriptorByClass(B.class);
+			ClassDescriptor classDescriptor = mapper.getClassDescriptorByClass(B.class);
 			assertNotNull("ClassDescriptor is null", classDescriptor);
 			assertTrue("Invalid classname", classDescriptor.getClassName()
 					.equals(B.class.getName()));
@@ -203,6 +209,19 @@ public class DigesterMapperImplTest extends TestCase {
 			assertFalse(collectionDescriptor.isJcrProtected());
 			assertFalse(collectionDescriptor.isJcrSameNameSiblings());
 			assertEquals(collectionDescriptor.getJcrOnParentVersion(), "IGNORE");
+			
+			classDescriptor = mapper.getClassDescriptorByClass(PropertyTest.class);
+			assertNotNull(classDescriptor);
+			FieldDescriptor fieldDescriptor = classDescriptor.getFieldDescriptor("requiredWithConstraintsProp");
+			assertNotNull(fieldDescriptor.getJcrValueConstraints());
+			assertTrue("Invalid constaint", fieldDescriptor.getJcrValueConstraints()[0].equals("abc") );
+			assertTrue("Invalid constaint", fieldDescriptor.getJcrValueConstraints()[1].equals("def") );
+			assertTrue("Invalid constaint", fieldDescriptor.getJcrValueConstraints()[2].equals("ghi") );
+			
+			fieldDescriptor = classDescriptor.getFieldDescriptor("autoCreatedProp");
+			assertNotNull(fieldDescriptor.getJcrDefaultValue());
+			assertTrue("Invalid default value", fieldDescriptor.getJcrDefaultValue().equals("aaa") );
+			
 		} catch (JcrMappingException e) {
 			e.printStackTrace();
 			fail("Impossible to retrieve the converter " + e);
