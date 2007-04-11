@@ -165,7 +165,10 @@ public class ResidualPropertiesCollectionConverterImpl extends
         // Delete existing values - before checking for collection !
         if (removeExisting) {
             for (PropertyIterator pi = parentNode.getProperties(jcrName); pi.hasNext();) {
-                pi.nextProperty().remove();
+                Property prop = pi.nextProperty();
+                if (!prop.getDefinition().isProtected()) {
+                    prop.remove();
+                }
             }
         }
 
@@ -175,6 +178,13 @@ public class ResidualPropertiesCollectionConverterImpl extends
             for (Iterator ei = map.entrySet().iterator(); ei.hasNext();) {
                 Map.Entry entry = (Map.Entry) ei.next();
                 String name = String.valueOf(entry.getKey());
+                
+                // verify the property is not an existing protected property
+                if (parentNode.hasProperty(name)
+                    && parentNode.getProperty(name).getDefinition().isProtected()) {
+                    continue;
+                }
+                
                 Object value = entry.getValue();
                 if (value instanceof List) {
                     // multi value
