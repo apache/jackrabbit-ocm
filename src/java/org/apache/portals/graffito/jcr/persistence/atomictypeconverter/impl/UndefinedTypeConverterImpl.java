@@ -64,17 +64,17 @@ public class UndefinedTypeConverterImpl implements AtomicTypeConverter
 	        
           if ((propValue.getClass() == Long.class) ||(propValue.getClass() == Integer.class))
           {
-        	  return valueFactory.createValue((Long) propValue);  
+        	  return valueFactory.createValue(((Number) propValue).longValue());  
           }
 
           if (propValue.getClass() == Double.class )
           {
-        	  return valueFactory.createValue((Double) propValue);  
+        	  return valueFactory.createValue(((Double) propValue).doubleValue());  
           }
 
           if (propValue.getClass() == Boolean.class )
           {
-        	  return valueFactory.createValue((Long) propValue);  
+        	  return valueFactory.createValue(((Boolean) propValue).booleanValue());  
           }
 
           if (propValue.getClass() == Calendar.class )
@@ -137,17 +137,17 @@ public class UndefinedTypeConverterImpl implements AtomicTypeConverter
 
 			if (value.getType() == PropertyType.DOUBLE)
 			{
-				return value.getDouble();	
+				return new Double(value.getDouble());	
 			}
 
 			if (value.getType() == PropertyType.LONG)
 			{
-				return value.getLong();	
+				return new Long(value.getLong());	
 			}
 
 			if (value.getType() == PropertyType.BOOLEAN)
 			{
-				return value.getBoolean();	
+				return new Boolean(value.getBoolean());	
 			}
 
 			if (value.getType() == PropertyType.NAME)

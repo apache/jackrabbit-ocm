@@ -177,7 +177,7 @@ public class AtomicTest extends TestBase
             a = null;
             a = (Atomic) persistenceManager.getObject( "/test");
 
-            a.setUndefinedProperty(1.2);
+            a.setUndefinedProperty(new Double(1.2));
             persistenceManager.update(a);
             persistenceManager.save();
             
