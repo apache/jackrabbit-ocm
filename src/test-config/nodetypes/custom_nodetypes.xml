@@ -205,8 +205,12 @@
         	<valueConstraint>xx</valueConstraint>
 	        <valueConstraint>yy</valueConstraint>
 	 	</valueConstraints>      
+     </propertyDefinition>     						  
+     <propertyDefinition name="graffito:protectedWithDefaultValueProp" requiredType="String" autoCreated="true" mandatory="false" onParentVersion="COPY" protected="true" multiple="false" >     
+            <defaultValues>
+                <defaultValue>protectedValue</defaultValue>
+            </defaultValues>     
      </propertyDefinition>
-     
    </nodeType> 
 </nodeTypes>
 

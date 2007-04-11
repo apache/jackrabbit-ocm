@@ -98,6 +98,7 @@ public class PersistenceManagerJcrPropertyTest extends TestBase {
             assertTrue("Invalid required property with constraints", propertyTest.getRequiredWithConstraintsProp().equals("abc"));            
             assertTrue("Invalid autocreated property", propertyTest.getAutoCreatedProp().equals("aaa")); 
             assertTrue("Invalid autocreated property", propertyTest.getAutoCreatedWithConstraintsProp().equals("ccc"));
+            assertTrue("Invalid protected property", propertyTest.getProtectedWithDefaultValueProp().equals("protectedValue"));
             
             //---------------------------------------------------------------------------------------------------------
 			// update the property requiredWithConstraintsProp with bad value

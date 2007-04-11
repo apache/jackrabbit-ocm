@@ -39,19 +39,7 @@
 		<field-descriptor fieldName="autoCreatedWithConstraintsProp" jcrName="graffito:autoCreatedWithConstraintsProp" jcrDefaultValue="ccc" jcrValueConstraints="bbb,ccc,ddd"/>
 		<field-descriptor fieldName="mandatoryProp" jcrName="graffito:mandatoryProp" jcrMandatory="true" />				
 		<field-descriptor fieldName="mandatoryWithConstaintsProp" jcrName="graffito:mandatoryWithConstaintsProp" jcrMandatory="true" jcrValueConstraints="xx,yy"/>						
-		
-	</class-descriptor>	
-	
-	<!-- class-descriptor className="org.apache.portals.graffito.jcr.testmodel.PropertyTest" jcrNodeType="graffito:propertytest" >
-		<field-descriptor fieldName="path" path="true" />
-		<field-descriptor fieldName="requiredProp" jcrName="graffito:requiredProp" />
-		<field-descriptor fieldName="requiredWithConstraintsProp" jcrName="graffito:requiredWithConstraintsProp" />
-		<field-descriptor fieldName="autoCreadedProp" jcrName="graffito:autoCreadedProp" />
-		<field-descriptor fieldName="autoCreatedWithConstraintsProp" jcrName="graffito:autoCreatedWithConstraintsProp" />
-		<field-descriptor fieldName="mandatoryProp" jcrName="graffito:mandatoryProp" />
-		<field-descriptor fieldName="mandatoryWithConstaintsProp" jcrName="graffito:mandatoryWithConstaintsProp" />
-		<field-descriptor fieldName="protectedWithDefaultValueProp" jcrName="graffito:protectedWithDefaultValueProp" />
-	</class-descriptor -->	
-	
+		<field-descriptor fieldName="protectedWithDefaultValueProp" jcrName="graffito:protectedWithDefaultValueProp" jcrProtected="true"/>
+	</class-descriptor>			
 </graffito-jcr>
  
