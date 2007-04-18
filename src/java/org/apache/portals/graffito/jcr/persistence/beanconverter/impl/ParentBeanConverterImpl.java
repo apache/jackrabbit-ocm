@@ -32,7 +32,8 @@ import org.apache.portals.graffito.jcr.persistence.beanconverter.BeanConverter;
 import org.apache.portals.graffito.jcr.persistence.objectconverter.ObjectConverter;
 /**
  * 
- * Bean converter used to access to the parent object.
+ * Bean converter used to access to the parent object. 
+ * the mixin type referenceable is not mandatory for the node matching to the parent object. 
  * 
  * 
  * @author <a href="mailto:christophe.lombart@gmail.com">Lombart Christophe </a>

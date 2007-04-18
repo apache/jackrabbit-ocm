@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!DOCTYPE graffito-jcr PUBLIC "-//The Apache Software Foundation//DTD Repository//EN" "./src/dtd/graffito-jcr-mapping.dtd">
+<graffito-jcr>
+
+	<class-descriptor
+		className="org.apache.portals.graffito.jcr.testmodel.A" jcrNodeType="nt:unstructured" >		
+		<field-descriptor fieldName="path" path="true" />
+		<field-descriptor fieldName="a1" jcrName="a1" />
+		<field-descriptor fieldName="a2" jcrName="a2" />
+		<bean-descriptor fieldName="b" jcrName="b" proxy="false" />		
+	</class-descriptor>
+
+	<class-descriptor className="org.apache.portals.graffito.jcr.testmodel.B"  jcrNodeType="nt:unstructured" >
+		<field-descriptor fieldName="b1" jcrName="b1"  />		
+        <field-descriptor fieldName="b2" jcrName="b2"  />
+        <bean-descriptor fieldName="a" jcrName="a" proxy="false" converter="org.apache.portals.graffito.jcr.persistence.beanconverter.impl.ParentBeanConverterImpl" />
+	</class-descriptor>
+
+</graffito-jcr>
+ 

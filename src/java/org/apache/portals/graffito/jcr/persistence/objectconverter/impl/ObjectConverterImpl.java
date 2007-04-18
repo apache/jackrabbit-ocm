@@ -16,6 +16,7 @@
  */
 package org.apache.portals.graffito.jcr.persistence.objectconverter.impl;
 
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 
@@ -23,12 +24,9 @@ import javax.jcr.Node;
 import javax.jcr.PathNotFoundException;
 import javax.jcr.RepositoryException;
 import javax.jcr.Session;
-import javax.jcr.lock.LockException;
-import javax.jcr.nodetype.ConstraintViolationException;
 import javax.jcr.nodetype.NoSuchNodeTypeException;
 import javax.jcr.nodetype.NodeType;
 import javax.jcr.nodetype.NodeTypeManager;
-import javax.jcr.version.VersionException;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -42,10 +40,13 @@ import org.apache.portals.graffito.jcr.mapper.model.FieldDescriptor;
 import org.apache.portals.graffito.jcr.persistence.PersistenceConstant;
 import org.apache.portals.graffito.jcr.persistence.atomictypeconverter.AtomicTypeConverterProvider;
 import org.apache.portals.graffito.jcr.persistence.beanconverter.BeanConverter;
+import org.apache.portals.graffito.jcr.persistence.cache.ObjectCache;
+import org.apache.portals.graffito.jcr.persistence.cache.impl.RequestObjectCacheImpl;
 import org.apache.portals.graffito.jcr.persistence.collectionconverter.CollectionConverter;
 import org.apache.portals.graffito.jcr.persistence.collectionconverter.ManageableCollection;
 import org.apache.portals.graffito.jcr.persistence.collectionconverter.ManageableCollectionUtil;
 import org.apache.portals.graffito.jcr.persistence.collectionconverter.impl.DefaultCollectionConverterImpl;
+import org.apache.portals.graffito.jcr.persistence.impl.PersistenceUtil;
 import org.apache.portals.graffito.jcr.persistence.objectconverter.ObjectConverter;
 import org.apache.portals.graffito.jcr.persistence.objectconverter.ProxyManager;
 import org.apache.portals.graffito.jcr.reflection.ReflectionUtils;
@@ -70,6 +71,8 @@ public class ObjectConverterImpl implements ObjectConverter {
 	private ProxyManager proxyManager;
 	
 	private SimpleFieldsHelper simpleFieldsHelp;
+	
+	private ObjectCache requestObjectCache; 
 
 	/**
 	 * No-arg constructor.
@@ -91,6 +94,7 @@ public class ObjectConverterImpl implements ObjectConverter {
 		this.atomicTypeConverterProvider = converterProvider;
 		this.proxyManager = new ProxyManagerImpl();
 		this.simpleFieldsHelp = new SimpleFieldsHelper(atomicTypeConverterProvider);
+		this.requestObjectCache = new RequestObjectCacheImpl();
 	}
 
 	/**
@@ -102,11 +106,12 @@ public class ObjectConverterImpl implements ObjectConverter {
 	 *            The atomic type converter provider
 	 * 
 	 */
-	public ObjectConverterImpl(Mapper mapper, AtomicTypeConverterProvider converterProvider, ProxyManager proxyManager) {
+	public ObjectConverterImpl(Mapper mapper, AtomicTypeConverterProvider converterProvider, ProxyManager proxyManager, ObjectCache requestObjectCache) {
 		this.mapper = mapper;
 		this.atomicTypeConverterProvider = converterProvider;
 		this.proxyManager = proxyManager;
 		this.simpleFieldsHelp = new SimpleFieldsHelper(atomicTypeConverterProvider);
+		this.requestObjectCache = requestObjectCache; 
 	}	
 	/**
 	 * Set the <code>Mapper</code> used to solve mappings.
@@ -270,6 +275,11 @@ public class ObjectConverterImpl implements ObjectConverter {
 				return null;
 			}
 
+			if (requestObjectCache.isCached(path))
+		    {
+		        return requestObjectCache.getObject(path);	  
+		    }			
+			
 			ClassDescriptor classDescriptor = null;
 			Node node = (Node) session.getItem(path);
 			if (node.hasProperty(PersistenceConstant.DISCRIMINATOR_PROPERTY_NAME)) {
@@ -289,10 +299,16 @@ public class ObjectConverterImpl implements ObjectConverter {
 			}
 
 			Object object = ReflectionUtils.newInstance(classDescriptor.getClassName());
-			simpleFieldsHelp.retrieveSimpleFields(session, classDescriptor, node, object);			
+			
+            if (! requestObjectCache.isCached(path))
+            {
+			  requestObjectCache.cache(path, object);
+            }
+
+			simpleFieldsHelp.retrieveSimpleFields(session, classDescriptor, node, object);				
 			retrieveBeanFields(session, classDescriptor, node, path, object, false);
 			retrieveCollectionFields(session, classDescriptor, node, object, false);
-
+			
 			return object;
 //		} catch (ClassNotFoundException clnf) {
 //			throw new PersistenceException("Impossible to instantiate the object at " + path, clnf);
@@ -304,15 +320,23 @@ public class ObjectConverterImpl implements ObjectConverter {
 		}
 	}
 
+
+
 	/**
 	 * @see org.apache.portals.graffito.jcr.persistence.objectconverter.ObjectConverter#getObject(javax.jcr.Session,
 	 *      java.lang.Class, java.lang.String)
 	 */
-	public Object getObject(Session session, Class clazz, String path) {
+	public Object getObject(Session session, Class clazz, String path) 
+	{
 		try {
 			if (!session.itemExists(path)) {
 				return null;
 			}
+			
+			if (requestObjectCache.isCached(path))
+		    {
+		        return requestObjectCache.getObject(path);	  
+		    }			
 
 			ClassDescriptor classDescriptor = getClassDescriptor(clazz);
 
@@ -343,11 +367,16 @@ public class ObjectConverterImpl implements ObjectConverter {
 				object = ReflectionUtils.newInstance(classDescriptor.getClassName());
 
 			}
-
-			simpleFieldsHelp.retrieveSimpleFields(session, classDescriptor, node, object);			
+			
+            if (! requestObjectCache.isCached(path))
+            {
+			  requestObjectCache.cache(path, object);
+            }
+			
+            simpleFieldsHelp.retrieveSimpleFields(session, classDescriptor, node, object);			
 			retrieveBeanFields(session, classDescriptor, node, path, object, false);
 			retrieveCollectionFields(session, classDescriptor, node, object, false);
-
+			
 			return object;
 //		} catch (ClassNotFoundException clnf) {
 //			throw new PersistenceException("Impossible to instantiate the object at " + path, clnf);
@@ -564,33 +593,45 @@ public class ObjectConverterImpl implements ObjectConverter {
 		{
 			return;
 		}
+		
 
 		String beanName = beanDescriptor.getFieldName();
-		Class beanClass = ReflectionUtils.getPropertyType(object, beanName);
+		String beanPath = PersistenceUtil.getPath(session, beanDescriptor, node);
+	    
 		Object bean = null;
-		
-		String converterClassName = null;		
-		if (null == beanDescriptor.getConverter() || "".equals(beanDescriptor.getConverter())) 
+		if (requestObjectCache.isCached(beanPath))
+	    {
+	        bean = requestObjectCache.getObject(beanPath);	
+	    	ReflectionUtils.setNestedProperty(object, beanName, bean);  	
+	    }
+		else 
 		{
-			converterClassName = DEFAULT_BEAN_CONVERTER;
-		}
-		else
-		{
-			converterClassName = beanDescriptor.getConverter();
-		}
-					
-		Object[] param = {this.mapper, this, this.atomicTypeConverterProvider};			
-		BeanConverter beanConverter = (BeanConverter) ReflectionUtils.invokeConstructor(converterClassName, param);
-		if (beanDescriptor.isProxy()) 
-		{
-			bean = proxyManager.createBeanProxy(session, this, beanClass, beanConverter.getPath(session, beanDescriptor, node));
-		} 
-		else
-		{
-			bean = beanConverter.getObject(session, node, beanDescriptor,  mapper.getClassDescriptorByClass(beanClass), beanClass, bean);
-		}			
+			Class beanClass = ReflectionUtils.getPropertyType(object, beanName);
 			
-		ReflectionUtils.setNestedProperty(object, beanName, bean);		
+			
+			String converterClassName = null;		
+			if (null == beanDescriptor.getConverter() || "".equals(beanDescriptor.getConverter())) 
+			{
+				converterClassName = DEFAULT_BEAN_CONVERTER;
+			}
+			else
+			{
+				converterClassName = beanDescriptor.getConverter();
+			}
+						
+			Object[] param = {this.mapper, this, this.atomicTypeConverterProvider};			
+			BeanConverter beanConverter = (BeanConverter) ReflectionUtils.invokeConstructor(converterClassName, param);
+			if (beanDescriptor.isProxy()) 
+			{
+				bean = proxyManager.createBeanProxy(session, this, beanClass, beanConverter.getPath(session, beanDescriptor, node));
+			} 
+			else
+			{
+				bean = beanConverter.getObject(session, node, beanDescriptor,  mapper.getClassDescriptorByClass(beanClass), beanClass, bean);
+			}			
+			requestObjectCache.cache(beanPath, bean);			
+			ReflectionUtils.setNestedProperty(object, beanName, bean);
+		}
 	}
 	
 	
