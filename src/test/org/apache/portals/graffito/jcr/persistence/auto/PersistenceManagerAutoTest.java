@@ -16,8 +16,6 @@
  */
 package org.apache.portals.graffito.jcr.persistence.auto;
 
-import java.util.Map;
-
 import javax.jcr.Repository;
 import javax.jcr.UnsupportedRepositoryOperationException;
 
@@ -28,15 +26,9 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.portals.graffito.jcr.RepositoryLifecycleTestSetup;
 import org.apache.portals.graffito.jcr.TestBase;
-import org.apache.portals.graffito.jcr.mapper.impl.DigesterMapperImpl;
 import org.apache.portals.graffito.jcr.persistence.PersistenceManager;
-import org.apache.portals.graffito.jcr.persistence.atomictypeconverter.impl.DefaultAtomicTypeConverterProvider;
 import org.apache.portals.graffito.jcr.persistence.impl.PersistenceManagerImpl;
-import org.apache.portals.graffito.jcr.persistence.objectconverter.ObjectConverter;
-import org.apache.portals.graffito.jcr.persistence.objectconverter.impl.ObjectConverterImpl;
-import org.apache.portals.graffito.jcr.query.impl.QueryManagerImpl;
 import org.apache.portals.graffito.jcr.repository.RepositoryUtil;
-import org.apache.portals.graffito.jcr.testmodel.Atomic;
 import org.apache.portals.graffito.jcr.testmodel.inheritance.impl.DocumentImpl;
 import org.apache.portals.graffito.jcr.testmodel.inheritance.impl.DocumentStream;
 import org.apache.portals.graffito.jcr.testmodel.inheritance.impl.FolderImpl;
@@ -158,13 +150,7 @@ public class PersistenceManagerAutoTest extends TestBase {
 		String[] files = { "./src/test-config/jcrmapping-auto.xml"};
 		session = RepositoryUtil.login(repository, "superuser", "superuser");
 
-		
-		mapper = new DigesterMapperImpl(files);
-        converterProvider = new DefaultAtomicTypeConverterProvider();
-        Map atomicTypeConverters = converterProvider.getAtomicTypeConverters();
-		queryManager = new QueryManagerImpl(mapper, atomicTypeConverters);
-        ObjectConverter objectConverter = new ObjectConverterImpl(mapper, converterProvider);
-		persistenceManager = new PersistenceManagerImpl(mapper, objectConverter, queryManager, session);
+		persistenceManager = new PersistenceManagerImpl(session, files);
 		
 	}	
 	

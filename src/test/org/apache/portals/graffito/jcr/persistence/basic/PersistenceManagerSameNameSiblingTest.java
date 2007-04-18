@@ -230,12 +230,7 @@ public class PersistenceManagerSameNameSiblingTest extends TestBase
 		session = RepositoryUtil.login(repository, "superuser", "superuser");
 
 		
-		mapper = new DigesterMapperImpl(files);
-        converterProvider = new DefaultAtomicTypeConverterProvider();
-        Map atomicTypeConverters = converterProvider.getAtomicTypeConverters();
-		queryManager = new QueryManagerImpl(mapper, atomicTypeConverters);
-        ObjectConverter objectConverter = new ObjectConverterImpl(mapper, converterProvider);
-		persistenceManager = new PersistenceManagerImpl(mapper, objectConverter, queryManager, session);
+		persistenceManager = new PersistenceManagerImpl(session, files);
 		
 	}	
 	

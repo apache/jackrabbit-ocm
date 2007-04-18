@@ -51,8 +51,11 @@ import org.apache.portals.graffito.jcr.mapper.impl.DigesterMapperImpl;
 import org.apache.portals.graffito.jcr.mapper.model.ClassDescriptor;
 import org.apache.portals.graffito.jcr.persistence.PersistenceManager;
 import org.apache.portals.graffito.jcr.persistence.atomictypeconverter.impl.DefaultAtomicTypeConverterProvider;
+import org.apache.portals.graffito.jcr.persistence.cache.ObjectCache;
+import org.apache.portals.graffito.jcr.persistence.cache.impl.RequestObjectCacheImpl;
 import org.apache.portals.graffito.jcr.persistence.objectconverter.ObjectConverter;
 import org.apache.portals.graffito.jcr.persistence.objectconverter.impl.ObjectConverterImpl;
+import org.apache.portals.graffito.jcr.persistence.objectconverter.impl.ProxyManagerImpl;
 import org.apache.portals.graffito.jcr.query.Query;
 import org.apache.portals.graffito.jcr.query.QueryManager;
 import org.apache.portals.graffito.jcr.query.impl.QueryManagerImpl;
@@ -90,8 +93,12 @@ public class PersistenceManagerImpl implements PersistenceManager {
      * Object Converter
      */
     protected ObjectConverter objectConverter;
-
     
+    /**
+     * Request Cache manager
+     */
+    protected ObjectCache requestObjectCache; 
+
     /**
      * Creates a new <code>PersistenceManager</code> that uses the passed in
      * <code>Mapper</code>, <code>QueryManager</code> and a default 
@@ -106,9 +113,10 @@ public class PersistenceManagerImpl implements PersistenceManager {
                                   Session session) {
         this.mapper = mapper;
         this.session = session;
-        
-        this.objectConverter = new ObjectConverterImpl(mapper, new DefaultAtomicTypeConverterProvider());
+        this.requestObjectCache = new RequestObjectCacheImpl();        
+        this.objectConverter = new ObjectConverterImpl(mapper, new DefaultAtomicTypeConverterProvider(), new ProxyManagerImpl(), requestObjectCache);
         this.queryManager = queryManager;
+
     }
 
     /**
@@ -124,8 +132,8 @@ public class PersistenceManagerImpl implements PersistenceManager {
 		DefaultAtomicTypeConverterProvider converterProvider = new DefaultAtomicTypeConverterProvider();
         Map atomicTypeConverters = converterProvider.getAtomicTypeConverters();
 		this.queryManager = new QueryManagerImpl(mapper, atomicTypeConverters);
-        this.objectConverter = new ObjectConverterImpl(mapper, converterProvider);
-		
+        this.requestObjectCache = new RequestObjectCacheImpl();        
+        this.objectConverter = new ObjectConverterImpl(mapper, converterProvider, new ProxyManagerImpl(), requestObjectCache);
         
     }
     
@@ -141,11 +149,13 @@ public class PersistenceManagerImpl implements PersistenceManager {
     public PersistenceManagerImpl(Mapper mapper,
                                   ObjectConverter converter,
                                   QueryManager queryManager,
+                                  ObjectCache requestObjectCache,
                                   Session session) {
         this.mapper = mapper;
         this.session = session;
         this.objectConverter = converter;
         this.queryManager = queryManager;
+        this.requestObjectCache = requestObjectCache;
     }
     
     /**
@@ -175,7 +185,13 @@ public class PersistenceManagerImpl implements PersistenceManager {
         this.queryManager= queryManager;
     }
     
-    /**
+    
+    
+    public void setRequestObjectCache(ObjectCache requestObjectCache) {
+		this.requestObjectCache = requestObjectCache;
+	}
+
+	/**
      * @see org.apache.portals.graffito.jcr.persistence.PersistenceManager#getObject(java.lang.Class, java.lang.String)
      * @throws org.apache.portals.graffito.jcr.exception.RepositoryException if the underlying repository
      *  has thrown a javax.jcr.RepositoryException
@@ -193,7 +209,9 @@ public class PersistenceManagerImpl implements PersistenceManager {
                     "Impossible to get the object at " + path, e);
         }
 
-        return objectConverter.getObject(session,  path);
+        Object object =  objectConverter.getObject(session,  path);
+        requestObjectCache.clear();
+        return object; 
 
     }
 
@@ -210,7 +228,9 @@ public class PersistenceManagerImpl implements PersistenceManager {
     	try 
         {
              Node node = session.getNodeByUUID(uuid);
-             return objectConverter.getObject(session,  node.getPath());
+             Object object = objectConverter.getObject(session,  node.getPath());
+             requestObjectCache.clear();
+             return object; 
 
         }         
         catch(RepositoryException e) {
@@ -241,7 +261,9 @@ public class PersistenceManagerImpl implements PersistenceManager {
                     e);
         }
 
-        return objectConverter.getObject(session,  pathVersion);
+        Object object = objectConverter.getObject(session,  pathVersion);
+        requestObjectCache.clear();
+        return object;
     }
 
     /**
@@ -262,7 +284,9 @@ public class PersistenceManagerImpl implements PersistenceManager {
                     "Impossible to get the object at " + path, e);
         }
 
-        return objectConverter.getObject(session, objectClass, path);
+        Object object = objectConverter.getObject(session, objectClass, path);
+        requestObjectCache.clear();
+        return object; 
 
     }
 
@@ -286,7 +310,9 @@ public class PersistenceManagerImpl implements PersistenceManager {
                     e);
         }
 
-        return objectConverter.getObject(session, objectClass, pathVersion);
+        Object object = objectConverter.getObject(session, objectClass, pathVersion);
+        requestObjectCache.clear();
+        return object;
     }    
     
     /**
@@ -490,7 +516,7 @@ public class PersistenceManagerImpl implements PersistenceManager {
                 Node node = nodeIterator.nextNode();
                 object = objectConverter.getObject(session, node.getPath());
             }
-
+            requestObjectCache.clear();
             return object;
         } 
         catch(InvalidQueryException iqe) {
@@ -522,7 +548,7 @@ public class PersistenceManagerImpl implements PersistenceManager {
                 log.debug("Node found : " + node.getPath());
                 result.add(objectConverter.getObject(session,  node.getPath()));
             }
-
+            requestObjectCache.clear();
             return result;
         } 
         catch(InvalidQueryException iqe) {
@@ -543,8 +569,7 @@ public class PersistenceManagerImpl implements PersistenceManager {
             String jcrExpression = this.queryManager.buildJCRExpression(query);
             log.debug("Get Object with expression : " + jcrExpression);
 
-            javax.jcr.query.Query jcrQuery = session.getWorkspace().getQueryManager()
-                .createQuery(jcrExpression, javax.jcr.query.Query.XPATH);
+            javax.jcr.query.Query jcrQuery = session.getWorkspace().getQueryManager().createQuery(jcrExpression, javax.jcr.query.Query.XPATH);
             QueryResult queryResult = jcrQuery.execute();
             NodeIterator nodeIterator = queryResult.getNodes();
 

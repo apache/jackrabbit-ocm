@@ -29,8 +29,6 @@ import junit.framework.TestSuite;
 import org.apache.portals.graffito.jcr.RepositoryLifecycleTestSetup;
 import org.apache.portals.graffito.jcr.TestBase;
 import org.apache.portals.graffito.jcr.persistence.PersistenceManager;
-import org.apache.portals.graffito.jcr.persistence.objectconverter.ObjectConverter;
-import org.apache.portals.graffito.jcr.persistence.objectconverter.impl.ObjectConverterImpl;
 import org.apache.portals.graffito.jcr.testmodel.B;
 import org.apache.portals.graffito.jcr.testmodel.D;
 import org.apache.portals.graffito.jcr.testmodel.DFull;
@@ -45,7 +43,7 @@ import org.apache.portals.graffito.jcr.testmodel.Paragraph;
  * @author <a href='mailto:the_mindstorm[at]evolva[dot]ro'>Alexandru Popescu</a>
  */
 public class BeanDescriptorTest extends TestBase {
-    private ObjectConverter objectConverter;
+
     
     public BeanDescriptorTest(String testname) {
         super(testname);
@@ -63,7 +61,6 @@ public class BeanDescriptorTest extends TestBase {
      */
     protected void setUp() throws Exception {
         super.setUp();
-        this.objectConverter = new ObjectConverterImpl(this.mapper, this.converterProvider);
 
         clean();
     }

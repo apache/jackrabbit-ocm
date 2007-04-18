@@ -93,11 +93,7 @@ public abstract class TestBase extends TestCase
 
 	protected PersistenceManager persistenceManager;
 
-	protected QueryManager queryManager;
-
 	protected Mapper mapper;
-
-    protected AtomicTypeConverterProvider converterProvider;
     
     protected boolean isInit = false;
 
@@ -205,14 +201,7 @@ public abstract class TestBase extends TestCase
                            "./src/test-config/jcrmapping-jcrnodetypes.xml", 
                            "./src/test-config/jcrmapping-uuid.xml"};
 		session = RepositoryUtil.login(repository, "superuser", "superuser");
-
-		
-		mapper = new DigesterMapperImpl(files);
-        converterProvider = new DefaultAtomicTypeConverterProvider();
-        Map atomicTypeConverters = converterProvider.getAtomicTypeConverters();
-		queryManager = new QueryManagerImpl(mapper, atomicTypeConverters);
-        ObjectConverter objectConverter = new ObjectConverterImpl(mapper, converterProvider);
-		persistenceManager = new PersistenceManagerImpl(mapper, objectConverter, queryManager, session);
+		persistenceManager = new PersistenceManagerImpl(session, files);
 		
 	}
 
@@ -268,7 +257,7 @@ public abstract class TestBase extends TestCase
 
 	public QueryManager getQueryManager()
 	{
-		return this.queryManager;
+		return persistenceManager.getQueryManager();
 	}
 	
     protected boolean contains(Collection result, String path, Class objectClass)

@@ -42,7 +42,7 @@ public class ProxyManagerImpl implements ProxyManager
 	/* (non-Javadoc)
 	 * @see org.apache.portals.graffito.jcr.persistence.objectconverter.impl.ProxyManager#createBeanProxy(javax.jcr.Session, org.apache.portals.graffito.jcr.persistence.objectconverter.ObjectConverter, java.lang.Class, java.lang.String)
 	 */
-	public  Object createBeanProxy(Session session, ObjectConverter objectConverter,  Class beanClass, String path) 
+	public  Object createBeanProxy(Session session, ObjectConverter objectConverter, Class beanClass, String path) 
 	{
 		
        try {
@@ -50,7 +50,7 @@ public class ProxyManagerImpl implements ProxyManager
 				return null;
 			}
 		} catch (RepositoryException e) {
-			throw new org.apache.portals.graffito.jcr.exception.RepositoryException(	"Impossible to check,if the object exits on " + path, e);
+			throw new org.apache.portals.graffito.jcr.exception.RepositoryException("Impossible to check,if the object exits on " + path, e);
 		}
 				
 		LazyLoader loader = new BeanLazyLoader(objectConverter, session, beanClass, path) ;		

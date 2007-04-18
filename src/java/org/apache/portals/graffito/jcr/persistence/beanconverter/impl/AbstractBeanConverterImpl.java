@@ -27,6 +27,7 @@ import org.apache.portals.graffito.jcr.mapper.model.BeanDescriptor;
 import org.apache.portals.graffito.jcr.mapper.model.ClassDescriptor;
 import org.apache.portals.graffito.jcr.persistence.atomictypeconverter.AtomicTypeConverterProvider;
 import org.apache.portals.graffito.jcr.persistence.beanconverter.BeanConverter;
+import org.apache.portals.graffito.jcr.persistence.impl.PersistenceUtil;
 import org.apache.portals.graffito.jcr.persistence.objectconverter.ObjectConverter;
 /**
  * 
@@ -56,23 +57,8 @@ public abstract class AbstractBeanConverterImpl implements BeanConverter {
     public String getPath(Session session, BeanDescriptor beanDescriptor, Node parentNode)
            throws PersistenceException
     {		
-		 try 
-		 {
-			String path = "";
-			if (parentNode != null)
-		    {				
-				 path +=  parentNode.getPath();
-			}
-		    return path + "/"  + beanDescriptor.getJcrName();
-
-		} 
-		catch (javax.jcr.RepositoryException e) 
-		{
-			throw new RepositoryException(e);
-		}
+		 return PersistenceUtil.getPath(session, beanDescriptor, parentNode);
 	}
-
-
 
 	public abstract void insert(Session session, Node parentNode, BeanDescriptor beanDescriptor, ClassDescriptor beanClassDescriptor, Object object, ClassDescriptor parentClassDescriptor, Object parent)
 			throws PersistenceException, RepositoryException, 	JcrMappingException;
