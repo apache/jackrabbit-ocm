@@ -16,6 +16,8 @@
  */
 package org.apache.portals.graffito.jcr.persistence.basic;
 
+import java.util.Collection;
+
 import javax.jcr.Repository;
 import javax.jcr.UnsupportedRepositoryOperationException;
 
@@ -29,11 +31,14 @@ import org.apache.portals.graffito.jcr.TestBase;
 import org.apache.portals.graffito.jcr.persistence.PersistenceManager;
 import org.apache.portals.graffito.jcr.persistence.impl.PersistenceManagerImpl;
 import org.apache.portals.graffito.jcr.repository.RepositoryUtil;
-import org.apache.portals.graffito.jcr.testmodel.A;
-import org.apache.portals.graffito.jcr.testmodel.B;
+import org.apache.portals.graffito.jcr.testmodel.crossreference.A;
+import org.apache.portals.graffito.jcr.testmodel.crossreference.B;
+
 
 /**
  * Basic test for PersistenceManager
+ * Test when objects are cross referenced 
+ * eg. object 'a' contains a reference to an object 'b' and object 'b' contains a reference to 'a'.
  *
  * @author <a href="mailto:christophe.lombart@gmail.com>Christophe Lombart</a>
  */
@@ -71,7 +76,7 @@ public class PersistenceManagerAvoidRecursiveLoopTest extends TestBase
         super.tearDown();
     }
     
-    public void testBean()
+    public void testCrossReferences()
     {
         try
         {
@@ -83,13 +88,27 @@ public class PersistenceManagerAvoidRecursiveLoopTest extends TestBase
             a.setPath("/test");
             a.setA1("a1");
             a.setA2("a2");
+            
+            
             B b = new B();
             b.setB1("b1");
             b.setB2("b2");
+            // Add crossreference between b and a 
             a.setB(b);
-            b.setA(a);
-            
-            
+            b.setA(a); 
+
+            B b1 = new B();
+            b1.setB1("b1.1");
+            b1.setB2("b1.2");            
+            b1.setA(a);
+            a.addB(b1);
+
+            B b2 = new B();
+            b2.setB1("b2.1");
+            b2.setB2("b2.2");            
+            b2.setA(a);
+            a.addB(b2);
+
             persistenceManager.insert(a);
             persistenceManager.save();
             
@@ -100,6 +119,12 @@ public class PersistenceManagerAvoidRecursiveLoopTest extends TestBase
             a = (A) persistenceManager.getObject( "/test");
             assertNotNull("a is null", a);
             assertTrue("Duplicate instance a", a == a.getB().getA());
+            
+//            Collection collection = a.getCollection();
+//            assertTrue("Invalid number of items in the collection", collection.size() == 2);
+//            B[] bs = (B[])collection.toArray();
+//            assertTrue("Duplicate instance a", a == bs[0].getA());
+//            assertTrue("Duplicate instance a", a == bs[1].getA());
             
         }
         catch (Exception e)
