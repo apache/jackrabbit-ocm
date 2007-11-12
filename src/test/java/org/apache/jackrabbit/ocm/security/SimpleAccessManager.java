@@ -28,15 +28,13 @@ import org.apache.jackrabbit.core.security.AMContext;
 import org.apache.jackrabbit.core.security.AccessManager;
 import org.apache.jackrabbit.core.security.AnonymousPrincipal;
 import org.apache.jackrabbit.core.security.SystemPrincipal;
-import org.apache.log4j.Logger;
+
 
 /**
  * <code>SimpleAccessManager</code> ...
  */
 public class SimpleAccessManager implements AccessManager
 {
-
-	private static Logger log = Logger.getLogger(SimpleAccessManager.class);
 
 	/**
 	 * Subject whose access rights this AccessManager should reflect
@@ -149,8 +147,8 @@ public class SimpleAccessManager implements AccessManager
 
 		// @todo check permission based on principals
 		return true;
-	
-		
+
+
 	}
 
 	/**

@@ -34,15 +34,12 @@ import org.apache.jackrabbit.core.security.AnonymousPrincipal;
 import org.apache.jackrabbit.core.security.CredentialsCallback;
 import org.apache.jackrabbit.core.security.SecurityConstants;
 import org.apache.jackrabbit.core.security.UserPrincipal;
-import org.apache.log4j.Logger;
 
 /**
  * A <code>SimpleLoginModule</code> ...
  */
 public class SimpleLoginModule implements LoginModule
 {
-
-	private static Logger log = Logger.getLogger(SimpleLoginModule.class);
 
 	/**
 	 * Name of the anonymous user id option in the LoginModule configuration
@@ -134,8 +131,6 @@ public class SimpleLoginModule implements LoginModule
 					Object attr = sc.getAttribute(SecurityConstants.IMPERSONATOR_ATTRIBUTE);
 					if (attr != null && attr instanceof Subject)
 					{
-						Subject impersonator = (Subject) attr;
-						// @todo check privileges to 'impersonate' the user represented by the supplied credentials
 					}
 					else
 					{
