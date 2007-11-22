@@ -16,7 +16,6 @@
  */
 package org.apache.jackrabbit.ocm.manager.impl;
 
-
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -48,6 +47,7 @@ import org.apache.jackrabbit.ocm.exception.LockedException;
 import org.apache.jackrabbit.ocm.exception.ObjectContentManagerException;
 import org.apache.jackrabbit.ocm.exception.VersionException;
 import org.apache.jackrabbit.ocm.lock.Lock;
+import org.apache.jackrabbit.ocm.manager.ManagerConstant;
 import org.apache.jackrabbit.ocm.manager.ObjectContentManager;
 import org.apache.jackrabbit.ocm.manager.atomictypeconverter.impl.DefaultAtomicTypeConverterProvider;
 import org.apache.jackrabbit.ocm.manager.cache.ObjectCache;
@@ -61,14 +61,18 @@ import org.apache.jackrabbit.ocm.mapper.model.ClassDescriptor;
 import org.apache.jackrabbit.ocm.query.Query;
 import org.apache.jackrabbit.ocm.query.QueryManager;
 import org.apache.jackrabbit.ocm.query.impl.QueryManagerImpl;
+import org.apache.jackrabbit.ocm.repository.NodeUtil;
 import org.apache.jackrabbit.ocm.version.Version;
 import org.apache.jackrabbit.ocm.version.VersionIterator;
+
 /**
- *
- * Default implementation for {@link org.apache.jackrabbit.ocm.manager.ObjectContentManager}
- *
+ * 
+ * Default implementation for
+ * {@link org.apache.jackrabbit.ocm.manager.ObjectContentManager}
+ * 
  * @author Sandro Boehme
- * @author <a href="mailto:christophe.lombart@sword-technologies.com">Lombart Christophe</a>
+ * @author <a href="mailto:christophe.lombart@sword-technologies.com">Lombart
+ *         Christophe</a>
  * @author Martin Koci
  * @author <a href='mailto:the_mindstorm[at]evolva[dot]ro'>Alexandru Popescu</a>
  */
@@ -94,205 +98,205 @@ public class ObjectContentManagerImpl implements ObjectContentManager {
      * Object Converter
      */
     protected ObjectConverter objectConverter;
-    
+
     /**
      * Request Cache manager
      */
-    protected ObjectCache requestObjectCache; 
+    protected ObjectCache requestObjectCache;
 
     /**
      * Creates a new <code>ObjectContentManager</code> that uses the passed in
      * <code>Mapper</code>, and a <code>Session</code>
-     *
-     * @param mapper the Mapper component
-     * @param session The JCR session
+     * 
+     * @param mapper
+     *            the Mapper component
+     * @param session
+     *            The JCR session
      */
     public ObjectContentManagerImpl(Session session, Mapper mapper) {
-        try 
-        {
-			this.session = session;
-			this.mapper = mapper;
-			// Use default setting for the following dependencies
-			DefaultAtomicTypeConverterProvider converterProvider = new DefaultAtomicTypeConverterProvider();
-			Map atomicTypeConverters = converterProvider.getAtomicTypeConverters();
-			this.queryManager = new QueryManagerImpl(mapper, atomicTypeConverters, session.getValueFactory());
-			this.requestObjectCache = new RequestObjectCacheImpl();        
-			this.objectConverter = new ObjectConverterImpl(mapper, converterProvider, new ProxyManagerImpl(), requestObjectCache);
-			
-		} 
-        catch (RepositoryException e) 
-        {
-            throw new org.apache.jackrabbit.ocm.exception.RepositoryException(
-                    "Impossible to instantiate the object content manager", e);
+        try {
+            this.session = session;
+            this.mapper = mapper;
+            // Use default setting for the following dependencies
+            DefaultAtomicTypeConverterProvider converterProvider = new DefaultAtomicTypeConverterProvider();
+            Map atomicTypeConverters = converterProvider.getAtomicTypeConverters();
+            this.queryManager = new QueryManagerImpl(mapper, atomicTypeConverters, session.getValueFactory());
+            this.requestObjectCache = new RequestObjectCacheImpl();
+            this.objectConverter = new ObjectConverterImpl(mapper, converterProvider, new ProxyManagerImpl(), requestObjectCache);
 
-		}
+        } catch (RepositoryException e) {
+            throw new org.apache.jackrabbit.ocm.exception.RepositoryException("Impossible to instantiate the object content manager", e);
+
+        }
 
     }
 
     /**
-     * Creates a new <code>ObjectContentManager</code> based on a JCR session and some xml mapping files. 
-     *
-     * @param session The JCR session
-     * @param xmlMappingFiles the JCR mapping files used mainly to create the <code>Mapper</code> component
+     * Creates a new <code>ObjectContentManager</code> based on a JCR session
+     * and some xml mapping files.
+     * 
+     * @param session
+     *            The JCR session
+     * @param xmlMappingFiles
+     *            the JCR mapping files used mainly to create the
+     *            <code>Mapper</code> component
      */
-    public ObjectContentManagerImpl(Session session,String[] xmlMappingFiles ) 
-    {
-        try 
-        {
-			this.session = session;
-			this.mapper = new DigesterMapperImpl(xmlMappingFiles);
-			DefaultAtomicTypeConverterProvider converterProvider = new DefaultAtomicTypeConverterProvider();
-			Map atomicTypeConverters = converterProvider.getAtomicTypeConverters();
-			this.queryManager = new QueryManagerImpl(mapper, atomicTypeConverters, session.getValueFactory());
-			this.requestObjectCache = new RequestObjectCacheImpl();        
-			this.objectConverter = new ObjectConverterImpl(mapper, converterProvider, new ProxyManagerImpl(), requestObjectCache);
-						
-		} 
-        catch (RepositoryException e) 
-        {
-            throw new org.apache.jackrabbit.ocm.exception.RepositoryException(
-                    "Impossible to instantiate the object content manager", e);
+    public ObjectContentManagerImpl(Session session, String[] xmlMappingFiles) {
+        try {
+            this.session = session;
+            this.mapper = new DigesterMapperImpl(xmlMappingFiles);
+            DefaultAtomicTypeConverterProvider converterProvider = new DefaultAtomicTypeConverterProvider();
+            Map atomicTypeConverters = converterProvider.getAtomicTypeConverters();
+            this.queryManager = new QueryManagerImpl(mapper, atomicTypeConverters, session.getValueFactory());
+            this.requestObjectCache = new RequestObjectCacheImpl();
+            this.objectConverter = new ObjectConverterImpl(mapper, converterProvider, new ProxyManagerImpl(), requestObjectCache);
 
-		}
-        
+        } catch (RepositoryException e) {
+            throw new org.apache.jackrabbit.ocm.exception.RepositoryException("Impossible to instantiate the object content manager", e);
+
+        }
+
     }
-    
+
     /**
-     * Creates a new <code>ObjectContentManager</code> based on a JCR session and some xml mapping files. 
-     *
-     * @param session The JCR session
-     * @param xmlMappingFiles the JCR mapping files used mainly to create the <code>Mapper</code> component
+     * Creates a new <code>ObjectContentManager</code> based on a JCR session
+     * and some xml mapping files.
+     * 
+     * @param session
+     *            The JCR session
+     * @param xmlMappingFiles
+     *            the JCR mapping files used mainly to create the
+     *            <code>Mapper</code> component
      */
-    public ObjectContentManagerImpl(Session session,InputStream[] xmlMappingFiles ) 
-    {
-        try 
-        {
-			this.session = session;
-			this.mapper = new DigesterMapperImpl(xmlMappingFiles);
-			DefaultAtomicTypeConverterProvider converterProvider = new DefaultAtomicTypeConverterProvider();
-			Map atomicTypeConverters = converterProvider.getAtomicTypeConverters();
-			this.queryManager = new QueryManagerImpl(mapper, atomicTypeConverters, session.getValueFactory());
-			this.requestObjectCache = new RequestObjectCacheImpl();        
-			this.objectConverter = new ObjectConverterImpl(mapper, converterProvider, new ProxyManagerImpl(), requestObjectCache);
-			
-		} 
-        catch (RepositoryException e) 
-        {
-            throw new org.apache.jackrabbit.ocm.exception.RepositoryException(
-                    "Impossible to instantiate the object content manager", e);
+    public ObjectContentManagerImpl(Session session, InputStream[] xmlMappingFiles) {
+        try {
+            this.session = session;
+            this.mapper = new DigesterMapperImpl(xmlMappingFiles);
+            DefaultAtomicTypeConverterProvider converterProvider = new DefaultAtomicTypeConverterProvider();
+            Map atomicTypeConverters = converterProvider.getAtomicTypeConverters();
+            this.queryManager = new QueryManagerImpl(mapper, atomicTypeConverters, session.getValueFactory());
+            this.requestObjectCache = new RequestObjectCacheImpl();
+            this.objectConverter = new ObjectConverterImpl(mapper, converterProvider, new ProxyManagerImpl(), requestObjectCache);
 
-		}
-        
+        } catch (RepositoryException e) {
+            throw new org.apache.jackrabbit.ocm.exception.RepositoryException("Impossible to instantiate the object content manager", e);
+
+        }
+
     }
-    
+
     /**
      * Full constructor.
      * 
-     * @param mapper the Mapper component
-     * @param converter the <code>ObjectConverter</code> to be used internally
-     * @param queryManager the query manager to used
-     * @param session The JCR session
+     * @param mapper
+     *            the Mapper component
+     * @param converter
+     *            the <code>ObjectConverter</code> to be used internally
+     * @param queryManager
+     *            the query manager to used
+     * @param session
+     *            The JCR session
      */
-    public ObjectContentManagerImpl(Mapper mapper,
-                                  ObjectConverter converter,
-                                  QueryManager queryManager,
-                                  ObjectCache requestObjectCache,
-                                  Session session) {
+    public ObjectContentManagerImpl(Mapper mapper, ObjectConverter converter, QueryManager queryManager, ObjectCache requestObjectCache, Session session) {
         this.mapper = mapper;
         this.session = session;
         this.objectConverter = converter;
         this.queryManager = queryManager;
         this.requestObjectCache = requestObjectCache;
-                
+
     }
-    
+
     /**
      * Sets the <code>Mapper</code> used by this object content manager.
      * 
-     * @param mapper mapping solver
+     * @param mapper
+     *            mapping solver
      */
     public void setMapper(Mapper mapper) {
         this.mapper = mapper;
     }
-    
+
     /**
-     * Sets the <code>ObjectConverter</code> that is used internally by this object content manager.
+     * Sets the <code>ObjectConverter</code> that is used internally by this
+     * object content manager.
      * 
-     * @param objectConverter the internal <code>ObjectConverter</code>
+     * @param objectConverter
+     *            the internal <code>ObjectConverter</code>
      */
     public void setObjectConverter(ObjectConverter objectConverter) {
         this.objectConverter = objectConverter;
     }
-    
+
     /**
      * Sets the <code>QueryManager</code> used by the object content manager.
      * 
-     * @param queryManager a <code>QueryManager</code>
+     * @param queryManager
+     *            a <code>QueryManager</code>
      */
     public void setQueryManager(QueryManager queryManager) {
-        this.queryManager= queryManager;
+        this.queryManager = queryManager;
     }
-    
-    
-    
-    public void setRequestObjectCache(ObjectCache requestObjectCache) {
-		this.requestObjectCache = requestObjectCache;
-	}
 
-	/**
-     * @see org.apache.jackrabbit.ocm.manager.ObjectContentManager#getObject(java.lang.Class, java.lang.String)
-     * @throws org.apache.jackrabbit.ocm.exception.RepositoryException if the underlying repository
-     *  has thrown a javax.jcr.RepositoryException
-     * @throws JcrMappingException if the mapping for the class is not correct
-     * @throws ObjectContentManagerException if the object cannot be retrieved from the path
+    public void setRequestObjectCache(ObjectCache requestObjectCache) {
+        this.requestObjectCache = requestObjectCache;
+    }
+
+    /**
+     * @see org.apache.jackrabbit.ocm.manager.ObjectContentManager#getObject(java.lang.Class,
+     *      java.lang.String)
+     * @throws org.apache.jackrabbit.ocm.exception.RepositoryException
+     *             if the underlying repository has thrown a
+     *             javax.jcr.RepositoryException
+     * @throws JcrMappingException
+     *             if the mapping for the class is not correct
+     * @throws ObjectContentManagerException
+     *             if the object cannot be retrieved from the path
      */
-    public Object getObject( String path) {
+    public Object getObject(String path) {
         try {
             if (!session.itemExists(path)) {
                 return null;
             }
-        }         
-        catch(RepositoryException e) {
-            throw new org.apache.jackrabbit.ocm.exception.RepositoryException(
-                    "Impossible to get the object at " + path, e);
+        } catch (RepositoryException e) {
+            throw new org.apache.jackrabbit.ocm.exception.RepositoryException("Impossible to get the object at " + path, e);
         }
 
-        Object object =  objectConverter.getObject(session,  path);
+        Object object = objectConverter.getObject(session, path);
         requestObjectCache.clear();
-        return object; 
+        return object;
 
     }
 
-    
     /**
-     * @see org.apache.jackrabbit.ocm.manager.ObjectContentManager#getObject(java.lang.Class, java.lang.String)
-     * @throws org.apache.jackrabbit.ocm.exception.RepositoryException if the underlying repository
-     *  has thrown a javax.jcr.RepositoryException
-     * @throws JcrMappingException if the mapping for the class is not correct
-     * @throws ObjectContentManagerException if the object cannot be retrieved from the path
+     * @see org.apache.jackrabbit.ocm.manager.ObjectContentManager#getObject(java.lang.Class,
+     *      java.lang.String)
+     * @throws org.apache.jackrabbit.ocm.exception.RepositoryException
+     *             if the underlying repository has thrown a
+     *             javax.jcr.RepositoryException
+     * @throws JcrMappingException
+     *             if the mapping for the class is not correct
+     * @throws ObjectContentManagerException
+     *             if the object cannot be retrieved from the path
      */
-    public Object getObjectByUuid( String uuid) {
-        
-    	try 
-        {
-             Node node = session.getNodeByUUID(uuid);
-             Object object = objectConverter.getObject(session,  node.getPath());
-             requestObjectCache.clear();
-             return object; 
+    public Object getObjectByUuid(String uuid) {
 
-        }         
-        catch(RepositoryException e) {
-            throw new org.apache.jackrabbit.ocm.exception.RepositoryException(
-                    "Impossible to get the object with uuid : " + uuid, e);
+        try {
+            Node node = session.getNodeByUUID(uuid);
+            Object object = objectConverter.getObject(session, node.getPath());
+            requestObjectCache.clear();
+            return object;
+
+        } catch (RepositoryException e) {
+            throw new org.apache.jackrabbit.ocm.exception.RepositoryException("Impossible to get the object with uuid : " + uuid, e);
         }
 
-        
+    }
 
-    }    
     /**
-     * @see org.apache.jackrabbit.ocm.manager.ObjectContentManager#getObject(java.lang.Class, java.lang.String, java.lang.String)
+     * @see org.apache.jackrabbit.ocm.manager.ObjectContentManager#getObject(java.lang.Class,
+     *      java.lang.String, java.lang.String)
      */
-    public Object getObject( String path, String versionName) {
+    public Object getObject(String path, String versionName) {
         String pathVersion = null;
         try {
             if (!session.itemExists(path)) {
@@ -302,44 +306,44 @@ public class ObjectContentManagerImpl implements ObjectContentManager {
             Version version = this.getVersion(path, versionName);
             pathVersion = version.getPath() + "/jcr:frozenNode";
 
-        } 
-        catch(RepositoryException e) {
-            throw new org.apache.jackrabbit.ocm.exception.RepositoryException(
-                    "Impossible to get the object at " + path + " - version :" + versionName,
-                    e);
+        } catch (RepositoryException e) {
+            throw new org.apache.jackrabbit.ocm.exception.RepositoryException("Impossible to get the object at " + path + " - version :" + versionName, e);
         }
 
-        Object object = objectConverter.getObject(session,  pathVersion);
+        Object object = objectConverter.getObject(session, pathVersion);
         requestObjectCache.clear();
         return object;
     }
 
     /**
-     * @see org.apache.jackrabbit.ocm.manager.ObjectContentManager#getObject(java.lang.Class, java.lang.String)
-     * @throws org.apache.jackrabbit.ocm.exception.RepositoryException if the underlying repository
-     *  has thrown a javax.jcr.RepositoryException
-     * @throws JcrMappingException if the mapping for the class is not correct
-     * @throws ObjectContentManagerException if the object cannot be retrieved from the path
+     * @see org.apache.jackrabbit.ocm.manager.ObjectContentManager#getObject(java.lang.Class,
+     *      java.lang.String)
+     * @throws org.apache.jackrabbit.ocm.exception.RepositoryException
+     *             if the underlying repository has thrown a
+     *             javax.jcr.RepositoryException
+     * @throws JcrMappingException
+     *             if the mapping for the class is not correct
+     * @throws ObjectContentManagerException
+     *             if the object cannot be retrieved from the path
      */
     public Object getObject(Class objectClass, String path) {
         try {
             if (!session.itemExists(path)) {
                 return null;
             }
-        }         
-        catch(RepositoryException e) {
-            throw new org.apache.jackrabbit.ocm.exception.RepositoryException(
-                    "Impossible to get the object at " + path, e);
+        } catch (RepositoryException e) {
+            throw new org.apache.jackrabbit.ocm.exception.RepositoryException("Impossible to get the object at " + path, e);
         }
 
         Object object = objectConverter.getObject(session, objectClass, path);
         requestObjectCache.clear();
-        return object; 
+        return object;
 
     }
 
     /**
-     * @see org.apache.jackrabbit.ocm.manager.ObjectContentManager#getObject(java.lang.Class, java.lang.String, java.lang.String)
+     * @see org.apache.jackrabbit.ocm.manager.ObjectContentManager#getObject(java.lang.Class,
+     *      java.lang.String, java.lang.String)
      */
     public Object getObject(Class objectClass, String path, String versionName) {
         String pathVersion = null;
@@ -351,35 +355,33 @@ public class ObjectContentManagerImpl implements ObjectContentManager {
             Version version = this.getVersion(path, versionName);
             pathVersion = version.getPath() + "/jcr:frozenNode";
 
-        } 
-        catch(RepositoryException e) {
-            throw new org.apache.jackrabbit.ocm.exception.RepositoryException(
-                    "Impossible to get the object at " + path + " - version :" + versionName,
-                    e);
+        } catch (RepositoryException e) {
+            throw new org.apache.jackrabbit.ocm.exception.RepositoryException("Impossible to get the object at " + path + " - version :" + versionName, e);
         }
 
         Object object = objectConverter.getObject(session, objectClass, pathVersion);
         requestObjectCache.clear();
         return object;
-    }    
-    
+    }
+
     /**
      * @see org.apache.jackrabbit.ocm.manager.ObjectContentManager#retrieveAllMappedAttributes(Object)
      */
     public void retrieveAllMappedAttributes(Object object) {
-		objectConverter.retrieveAllMappedAttributes(session, object);
-      
-	}
+        objectConverter.retrieveAllMappedAttributes(session, object);
+
+    }
 
     /**
-     * @see org.apache.jackrabbit.ocm.manager.ObjectContentManager#retrieveMappedAttribute(Object, String)
-     */    
-	public void retrieveMappedAttribute(Object object, String attributeName) {
-		objectConverter.retrieveMappedAttribute(session, object, attributeName);
-		
-	}
+     * @see org.apache.jackrabbit.ocm.manager.ObjectContentManager#retrieveMappedAttribute(Object,
+     *      String)
+     */
+    public void retrieveMappedAttribute(Object object, String attributeName) {
+        objectConverter.retrieveMappedAttribute(session, object, attributeName);
 
-	/**
+    }
+
+    /**
      * @see org.apache.jackrabbit.ocm.manager.ObjectContentManager#insert(java.lang.Object)
      */
     public void insert(Object object) {
@@ -390,20 +392,15 @@ public class ObjectContentManagerImpl implements ObjectContentManager {
                 Item item = session.getItem(path);
                 if (item.isNode()) {
                     if (!((Node) item).getDefinition().allowsSameNameSiblings()) {
-                        throw new ObjectContentManagerException("Path already exists and it is not supporting the same name sibling : "
-                                                       + path);
+                        throw new ObjectContentManagerException("Path already exists and it is not supporting the same name sibling : " + path);
                     }
-                } 
-                else {
-                    throw new ObjectContentManagerException("Path already exists and it is a property : "
-                                                   + path);
+                } else {
+                    throw new ObjectContentManagerException("Path already exists and it is a property : " + path);
                 }
 
             }
-        } 
-        catch(RepositoryException e) {
-            throw new org.apache.jackrabbit.ocm.exception.RepositoryException(
-                    "Impossible to insert the object at " + path, e);
+        } catch (RepositoryException e) {
+            throw new org.apache.jackrabbit.ocm.exception.RepositoryException("Impossible to insert the object at " + path, e);
         }
 
         objectConverter.insert(session, object);
@@ -417,12 +414,10 @@ public class ObjectContentManagerImpl implements ObjectContentManager {
         try {
             if (!session.itemExists(path)) {
                 throw new ObjectContentManagerException("Path is not existing : " + path);
-            } 
-            else {
+            } else {
                 checkIfNodeLocked(path);
             }
-        } 
-        catch(javax.jcr.RepositoryException e) {
+        } catch (javax.jcr.RepositoryException e) {
             throw new org.apache.jackrabbit.ocm.exception.RepositoryException("Impossible to update", e);
         }
 
@@ -430,30 +425,27 @@ public class ObjectContentManagerImpl implements ObjectContentManager {
     }
 
     /**
-     *
+     * 
      * @see org.apache.jackrabbit.ocm.manager.ObjectContentManager#remove(java.lang.String)
      */
     public void remove(String path) {
         try {
             if (!session.itemExists(path)) {
                 throw new ObjectContentManagerException("Path does not exist : " + path);
-            } 
-            else {
+            } else {
                 checkIfNodeLocked(path);
             }
 
             Item item = session.getItem(path);
             item.remove();
 
-        } 
-        catch(RepositoryException e) {
-            throw new org.apache.jackrabbit.ocm.exception.RepositoryException(
-                    "Impossible to remove the object at " + path);
+        } catch (RepositoryException e) {
+            throw new org.apache.jackrabbit.ocm.exception.RepositoryException("Impossible to remove the object at " + path);
         }
     }
 
     /**
-     *
+     * 
      * @see org.apache.jackrabbit.ocm.manager.ObjectContentManager#remove(java.lang.Object)
      */
     public void remove(Object object) {
@@ -461,7 +453,7 @@ public class ObjectContentManagerImpl implements ObjectContentManager {
     }
 
     /**
-     *
+     * 
      * @see org.apache.jackrabbit.ocm.manager.ObjectContentManager#remove(org.apache.jackrabbit.ocm.query.Query)
      */
     public void remove(Query query) {
@@ -469,11 +461,9 @@ public class ObjectContentManagerImpl implements ObjectContentManager {
             String jcrExpression = this.queryManager.buildJCRExpression(query);
             log.debug("Remove Objects with expression : " + jcrExpression);
 
-            javax.jcr.query.Query jcrQuery = session.getWorkspace().getQueryManager()
-                .createQuery(jcrExpression, javax.jcr.query.Query.XPATH);
-            
-            QueryResult queryResult = jcrQuery.execute();
-            NodeIterator nodeIterator = queryResult.getNodes();
+            // Since only nodes are sufficient for us to remove,
+            // getObjects(query, language) method is not called here.
+            NodeIterator nodeIterator = getNodeIterator(jcrExpression, javax.jcr.query.Query.XPATH);
             List nodes = new ArrayList();
 
             while (nodeIterator.hasNext()) {
@@ -481,7 +471,8 @@ public class ObjectContentManagerImpl implements ObjectContentManager {
                 log.debug("Remove node : " + node.getPath());
 
                 // it is not possible to remove nodes from an NodeIterator
-                // So, we add the node found in a collection to remove them after
+                // So, we add the node found in a collection to remove them
+                // after
                 nodes.add(node);
             }
 
@@ -491,175 +482,182 @@ public class ObjectContentManagerImpl implements ObjectContentManager {
                 checkIfNodeLocked(node.getPath());
                 try {
                     node.remove();
-                }
-                catch(javax.jcr.RepositoryException re) {
-                    throw new ObjectContentManagerException("Cannot remove node at path " 
-                            + node.getPath() + " returned from query "
-                            + jcrExpression,
-                            re);
+                } catch (javax.jcr.RepositoryException re) {
+                    throw new ObjectContentManagerException("Cannot remove node at path " + node.getPath() + " returned from query " + jcrExpression, re);
                 }
             }
 
-        } 
-        catch(InvalidQueryException iqe) {
+        } catch (InvalidQueryException iqe) {
             throw new org.apache.jackrabbit.ocm.exception.RepositoryException("Invalid query expression", iqe);
-        }
-        catch(RepositoryException e) {
+        } catch (RepositoryException e) {
             throw new org.apache.jackrabbit.ocm.exception.RepositoryException("Impossible to get the object collection", e);
         }
     }
 
     /**
-     *
+     * 
      * @see org.apache.jackrabbit.ocm.manager.ObjectContentManager#objectExists(java.lang.String)
      */
     public boolean objectExists(String path) {
         try {
-            //TODO : Check also if it is an object
+            // TODO : Check also if it is an object
             return session.itemExists(path);
-        } 
-        catch(RepositoryException e) {
+        } catch (RepositoryException e) {
             throw new org.apache.jackrabbit.ocm.exception.RepositoryException("Impossible to check if the object exist", e);
         }
     }
 
     /**
-     *
+     * 
      * @see org.apache.jackrabbit.ocm.manager.ObjectContentManager#isPersistent(java.lang.Class)
      */
     public boolean isPersistent(final Class clazz) {
-        
-        try 
-        {
-    	    ClassDescriptor classDescriptor = mapper.getClassDescriptorByClass(clazz);
-    	    return true;
-        }
-        catch(IncorrectPersistentClassException e)
-        {
-        	return false;
+
+        try {
+            ClassDescriptor classDescriptor = mapper.getClassDescriptorByClass(clazz);
+            return true;
+        } catch (IncorrectPersistentClassException e) {
+            return false;
         }
 
     }
 
     /**
-     *
+     * 
      * @see org.apache.jackrabbit.ocm.manager.ObjectContentManager#getObject(org.apache.jackrabbit.ocm.query.Query)
      */
     public Object getObject(Query query) {
-        try {
-            String jcrExpression = this.queryManager.buildJCRExpression(query);
-            log.debug("Get Object with expression : " + jcrExpression);
+        String jcrExpression = this.queryManager.buildJCRExpression(query);
+        Collection result = getObjects(jcrExpression, javax.jcr.query.Query.XPATH);
 
-            javax.jcr.query.Query jcrQuery = session.getWorkspace().getQueryManager().createQuery(
-                    jcrExpression, javax.jcr.query.Query.XPATH);
-            QueryResult queryResult = jcrQuery.execute();
-            NodeIterator nodeIterator = queryResult.getNodes();
-
-            if (nodeIterator.getSize() > 1) {
-                throw new ObjectContentManagerException("Impossible to get the object - the query returns more than one object");
-            }
-
-            Object object = null;
-            if (nodeIterator.hasNext()) {
-                Node node = nodeIterator.nextNode();
-                object = objectConverter.getObject(session, node.getPath());
-            }
-            requestObjectCache.clear();
-            return object;
-        } 
-        catch(InvalidQueryException iqe) {
-            throw new org.apache.jackrabbit.ocm.exception.RepositoryException("Invalid query expression", iqe);
+        if (result.size() > 1) {
+            throw new ObjectContentManagerException("Impossible to get the object - the query returns more than one object");
         }
-        catch(RepositoryException e) {
-            throw new org.apache.jackrabbit.ocm.exception.RepositoryException(
-                    "Impossible to get the object collection", e);
+
+        return result.iterator().next();
+    }
+
+    /**
+     * 
+     * @see org.apache.jackrabbit.ocm.manager.ObjectContentManager#getObjects(org.apache.jackrabbit.ocm.query.Query)
+     */
+    public Collection getObjects(Query query) {
+        String jcrExpression = this.queryManager.buildJCRExpression(query);
+        return getObjects(jcrExpression, javax.jcr.query.Query.XPATH);
+    }
+
+    /**
+     * 
+     * @see org.apache.jackrabbit.ocm.manager.ObjectContentManager#getObjects(java.lang.Class, java.lang.String)
+     */
+    public Collection getObjects(Class objectClass, String path) throws ObjectContentManagerException {
+        try {
+            if (!session.itemExists(path)) {
+                return null;
+            }
+        } catch (RepositoryException e) {
+            throw new org.apache.jackrabbit.ocm.exception.RepositoryException("Impossible to get the objects at " + path, e);
+        }
+        String jcrExpression = "";
+        // Below code is incorrect as the JCR Expression should be formed in
+        // Query manager. Since the existing implementation of
+        // QueryManagerImpl.buildJCRExpression(Query) is not working fine for
+        // retrieval of objects in that path too.
+        String parentPath = NodeUtil.getParentPath(path);
+        // Making it empty would not cause an issue for //element. Otherwise it
+        // would become ///element which is incorrect.
+        if (parentPath.equals("/")) {
+            parentPath = "";
+        }
+        String nodeName = NodeUtil.getNodeName(path);
+        // If nodeName is missing then include *.
+        if (nodeName == null || nodeName.length() == 0) {
+            nodeName = "*";
+        }
+        ClassDescriptor classDescriptor = mapper.getClassDescriptorByClass(objectClass);
+        String nodeType = getNodeType(classDescriptor);
+        jcrExpression = "/jcr:root" + parentPath + "/element(" + nodeName + "," + nodeType + ") ";
+        if (classDescriptor.hasDiscriminator() && !classDescriptor.isAbstract() && (!classDescriptor.isInterface())) {
+            jcrExpression += "[@" + ManagerConstant.DISCRIMINATOR_PROPERTY_NAME + "='" + classDescriptor.getClassName() + "']";
+        }
+        return getObjects(jcrExpression, javax.jcr.query.Query.XPATH);
+    }
+
+    // This method should go in NodeUtil?
+    private String getNodeType(ClassDescriptor classDescriptor) {
+        String jcrNodeType = classDescriptor.getJcrType();
+        if (jcrNodeType == null || jcrNodeType.equals("")) {
+            return ManagerConstant.NT_UNSTRUCTURED;
+        } else {
+            return jcrNodeType;
         }
     }
 
     /**
-     *
-     * @see org.apache.jackrabbit.ocm.manager.ObjectContentManager#getObjects(org.apache.jackrabbit.ocm.query.Query)
+     * 
+     * @see org.apache.jackrabbit.ocm.manager.ObjectContentManager#getObjectIterator(org.apache.jackrabbit.ocm.query.Query)
      */
-    public Collection getObjects(Query query) {
-        try {
-            String jcrExpression = this.queryManager.buildJCRExpression(query);
-            log.debug("Get Objects with expression : " + jcrExpression);
+    public Iterator getObjectIterator(Query query) {
+        String jcrExpression = this.queryManager.buildJCRExpression(query);
+        log.debug("Get Object with expression : " + jcrExpression);
+        NodeIterator nodeIterator = getNodeIterator(jcrExpression, javax.jcr.query.Query.XPATH);
 
-            javax.jcr.query.Query jcrQuery = session.getWorkspace().getQueryManager()
-                .createQuery(jcrExpression, javax.jcr.query.Query.XPATH);
-            QueryResult queryResult = jcrQuery.execute();
-            NodeIterator nodeIterator = queryResult.getNodes();
+        return new ObjectIterator(nodeIterator, this.objectConverter, this.session);
+
+    }
+
+    /**
+     * 
+     * @see org.apache.jackrabbit.ocm.manager.ObjectContentManager#getObjectIterator(String,
+     *      String)
+     */
+    public Iterator getObjectIterator(String query, String language) {
+        log.debug("Get Object with expression : " + query);
+        NodeIterator nodeIterator = getNodeIterator(query, language);
+
+        return new ObjectIterator(nodeIterator, this.objectConverter, this.session);
+    }
+
+    private Collection getObjects(String query, String language) {
+        try {
+            log.debug("Get Objects with expression : " + query + " and language " + language);
+
+            NodeIterator nodeIterator = getNodeIterator(query, language);
 
             List result = new ArrayList();
             while (nodeIterator.hasNext()) {
                 Node node = nodeIterator.nextNode();
                 log.debug("Node found : " + node.getPath());
-                result.add(objectConverter.getObject(session,  node.getPath()));
+                result.add(objectConverter.getObject(session, node.getPath()));
             }
             requestObjectCache.clear();
             return result;
-        } 
-        catch(InvalidQueryException iqe) {
+        } catch (InvalidQueryException iqe) {
             throw new org.apache.jackrabbit.ocm.exception.RepositoryException("Invalid query expression", iqe);
-        }
-        catch(RepositoryException e) {
-            throw new org.apache.jackrabbit.ocm.exception.RepositoryException(
-                    "Impossible to get the object collection", e);
+        } catch (RepositoryException e) {
+            throw new org.apache.jackrabbit.ocm.exception.RepositoryException("Impossible to get the object collection", e);
         }
     }
 
-    /**
-     *
-     * @see org.apache.jackrabbit.ocm.manager.ObjectContentManager#getObjectIterator(org.apache.jackrabbit.ocm.query.Query)
-     */
-    public Iterator getObjectIterator(Query query) {
+    private NodeIterator getNodeIterator(String query, String language) {
+        if (log.isDebugEnabled()) {
+            log.debug("Get Node Iterator with expression " + query + " and language " + language);
+        }
+        javax.jcr.query.Query jcrQuery;
         try {
-            String jcrExpression = this.queryManager.buildJCRExpression(query);
-            log.debug("Get Object with expression : " + jcrExpression);
-
-            javax.jcr.query.Query jcrQuery = session.getWorkspace().getQueryManager().createQuery(jcrExpression, javax.jcr.query.Query.XPATH);
+            jcrQuery = session.getWorkspace().getQueryManager().createQuery(query, language);
             QueryResult queryResult = jcrQuery.execute();
             NodeIterator nodeIterator = queryResult.getNodes();
-
-            return new ObjectIterator(nodeIterator,
-                                      this.objectConverter,
-                                      this.session);
-
-        } 
-        catch(InvalidQueryException iqe) {
-            throw new org.apache.jackrabbit.ocm.exception.RepositoryException("Invalid query expression", iqe);
-        }
-        catch(RepositoryException e) {
-            throw new org.apache.jackrabbit.ocm.exception.RepositoryException(
-                    "Impossible to get the object collection", e);
-        }
-    }
-
-    /**
-    *
-    * @see org.apache.jackrabbit.ocm.manager.ObjectContentManager#getObjectIterator(String, String)
-    */
-    public Iterator getObjectIterator(String query, String language) {
-        try {
-            log.debug("Get Object with expression : " + query);
-
-            javax.jcr.query.Query jcrQuery = session.getWorkspace().getQueryManager().createQuery(query, language);
-            QueryResult queryResult = jcrQuery.execute();
-            NodeIterator nodeIterator = queryResult.getNodes();
-
-            return new ObjectIterator(nodeIterator,
-                                      this.objectConverter,
-                                      this.session);
-
+            return nodeIterator;
         } catch (InvalidQueryException iqe) {
             throw new org.apache.jackrabbit.ocm.exception.InvalidQueryException(iqe);
         } catch (RepositoryException re) {
             throw new ObjectContentManagerException(re.getMessage(), re);
         }
     }
-    
+
     /**
-     *
+     * 
      * @see org.apache.jackrabbit.ocm.manager.ObjectContentManager#checkin(java.lang.String)
      */
     public void checkin(String path) {
@@ -667,8 +665,9 @@ public class ObjectContentManagerImpl implements ObjectContentManager {
     }
 
     /**
-     *
-     * @see org.apache.jackrabbit.ocm.manager.ObjectContentManager#checkin(java.lang.String, java.lang.String[])
+     * 
+     * @see org.apache.jackrabbit.ocm.manager.ObjectContentManager#checkin(java.lang.String,
+     *      java.lang.String[])
      */
     public void checkin(String path, String[] versionLabels) {
         try {
@@ -682,38 +681,29 @@ public class ObjectContentManagerImpl implements ObjectContentManager {
             if (versionLabels != null) {
                 VersionHistory versionHistory = node.getVersionHistory();
                 for (int i = 0; i < versionLabels.length; i++) {
-                    versionHistory.addVersionLabel(newVersion.getName(),
-                                                   versionLabels[i], false);
+                    versionHistory.addVersionLabel(newVersion.getName(), versionLabels[i], false);
                 }
             }
-        } 
-        catch(ClassCastException cce) {
+        } catch (ClassCastException cce) {
             throw new ObjectContentManagerException("Cannot retrieve an object from a property path " + path);
-        }
-        catch(PathNotFoundException pnfe) {
+        } catch (PathNotFoundException pnfe) {
             throw new ObjectContentManagerException("Cannot retrieve an object at path " + path, pnfe);
-        }
-        catch(InvalidItemStateException iise) {
+        } catch (InvalidItemStateException iise) {
             throw new ObjectContentManagerException("Cannot checking modified object at path " + path, iise);
-        }
-        catch(javax.jcr.version.VersionException ve) {
+        } catch (javax.jcr.version.VersionException ve) {
             throw new VersionException("Impossible to checkin the object " + path, ve);
-        }
-        catch(UnsupportedRepositoryOperationException uroe) {
+        } catch (UnsupportedRepositoryOperationException uroe) {
             throw new VersionException("Cannot checkin unversionable node at path " + path, uroe);
-        }
-        catch(LockException le) {
+        } catch (LockException le) {
             throw new VersionException("Cannot checkin locked node at path " + path, le);
-        }
-        catch (RepositoryException e) {
-            throw new org.apache.jackrabbit.ocm.exception.RepositoryException(
-                    "Impossible to checkin the object " + path, e);
+        } catch (RepositoryException e) {
+            throw new org.apache.jackrabbit.ocm.exception.RepositoryException("Impossible to checkin the object " + path, e);
         }
 
     }
 
     /**
-     *
+     * 
      * @see org.apache.jackrabbit.ocm.manager.ObjectContentManager#checkout(java.lang.String)
      */
     public void checkout(String path) {
@@ -725,28 +715,24 @@ public class ObjectContentManagerImpl implements ObjectContentManager {
             }
 
             node.checkout();
-        }         
-        catch(ClassCastException cce) {
+        } catch (ClassCastException cce) {
             throw new ObjectContentManagerException("Cannot retrieve an object from a property path " + path);
-        }
-        catch(PathNotFoundException pnfe) {
+        } catch (PathNotFoundException pnfe) {
             throw new ObjectContentManagerException("Cannot retrieve an object at path " + path, pnfe);
-        }
-        catch(UnsupportedRepositoryOperationException uroe) {
+        } catch (UnsupportedRepositoryOperationException uroe) {
             throw new VersionException("Cannot checkout unversionable node at path " + path, uroe);
-        }
-        catch(LockException le) {
+        } catch (LockException le) {
             throw new VersionException("Cannot checkout locked node at path " + path, le);
-        }
-        catch(javax.jcr.RepositoryException e) {
+        } catch (javax.jcr.RepositoryException e) {
             throw new org.apache.jackrabbit.ocm.exception.RepositoryException("Impossible to checkout the object " + path, e);
         }
 
     }
 
     /**
-     *
-     * @see org.apache.jackrabbit.ocm.manager.ObjectContentManager#addVersionLabel(java.lang.String, java.lang.String, java.lang.String)
+     * 
+     * @see org.apache.jackrabbit.ocm.manager.ObjectContentManager#addVersionLabel(java.lang.String,
+     *      java.lang.String, java.lang.String)
      */
     public void addVersionLabel(String path, String versionName, String versionLabel) {
         try {
@@ -758,31 +744,23 @@ public class ObjectContentManagerImpl implements ObjectContentManager {
 
             VersionHistory history = node.getVersionHistory();
             history.addVersionLabel(versionName, versionLabel, false);
-        } 
-        catch(ClassCastException cce) {
+        } catch (ClassCastException cce) {
             throw new ObjectContentManagerException("Cannot retrieve an object from a property path " + path);
-        }
-        catch(PathNotFoundException pnfe) {
+        } catch (PathNotFoundException pnfe) {
             throw new ObjectContentManagerException("Cannot retrieve an object at path " + path, pnfe);
-        }
-        catch(javax.jcr.version.VersionException ve) {
-            throw new VersionException("Impossible to add a new version label to  " + path
-                    + " - version name : " + versionName,
-                    ve);
-        }
-        catch(UnsupportedRepositoryOperationException uroe) {
-            throw new VersionException("Impossible to add a new version label to  " + path
-                    + " - version name : " + versionName,
-                    uroe);
-        }
-        catch(javax.jcr.RepositoryException e) {
+        } catch (javax.jcr.version.VersionException ve) {
+            throw new VersionException("Impossible to add a new version label to  " + path + " - version name : " + versionName, ve);
+        } catch (UnsupportedRepositoryOperationException uroe) {
+            throw new VersionException("Impossible to add a new version label to  " + path + " - version name : " + versionName, uroe);
+        } catch (javax.jcr.RepositoryException e) {
             throw new org.apache.jackrabbit.ocm.exception.RepositoryException(e);
         }
     }
 
     /**
-     *
-     * @see org.apache.jackrabbit.ocm.manager.ObjectContentManager#getVersion(java.lang.String, java.lang.String)
+     * 
+     * @see org.apache.jackrabbit.ocm.manager.ObjectContentManager#getVersion(java.lang.String,
+     *      java.lang.String)
      */
     public Version getVersion(String path, String versionName) {
         try {
@@ -794,27 +772,23 @@ public class ObjectContentManagerImpl implements ObjectContentManager {
             VersionHistory history = node.getVersionHistory();
 
             return new Version(history.getVersion(versionName));
-        }
-        catch(ClassCastException cce) {
+        } catch (ClassCastException cce) {
             throw new ObjectContentManagerException("Cannot retrieve an object from a property path " + path);
-        }
-        catch(PathNotFoundException pnfe) {
+        } catch (PathNotFoundException pnfe) {
             throw new ObjectContentManagerException("Cannot retrieve an object at path " + path, pnfe);
-        }
-        catch(javax.jcr.version.VersionException ve) {
+        } catch (javax.jcr.version.VersionException ve) {
             throw new VersionException("The version name " + versionName + "does not exist", ve);
-        }
-        catch(UnsupportedRepositoryOperationException uroe) {
+        } catch (UnsupportedRepositoryOperationException uroe) {
             throw new VersionException("Impossible to retrieve versions for path " + path, uroe);
-        }
-        catch(javax.jcr.RepositoryException e) {
+        } catch (javax.jcr.RepositoryException e) {
             throw new org.apache.jackrabbit.ocm.exception.RepositoryException(e);
         }
     }
 
     /**
-     *
-     * @see org.apache.jackrabbit.ocm.manager.ObjectContentManager#getVersionLabels(java.lang.String, java.lang.String)
+     * 
+     * @see org.apache.jackrabbit.ocm.manager.ObjectContentManager#getVersionLabels(java.lang.String,
+     *      java.lang.String)
      */
     public String[] getVersionLabels(String path, String versionName) {
         try {
@@ -827,22 +801,15 @@ public class ObjectContentManagerImpl implements ObjectContentManager {
             javax.jcr.version.Version version = history.getVersion(versionName);
 
             return history.getVersionLabels(version);
-        } 
-        catch(ClassCastException cce) {
+        } catch (ClassCastException cce) {
             throw new ObjectContentManagerException("Cannot retrieve an object from a property path " + path);
-        }
-        catch(PathNotFoundException pnfe) {
+        } catch (PathNotFoundException pnfe) {
             throw new ObjectContentManagerException("Cannot retrieve an object at path " + path, pnfe);
-        }
-        catch(javax.jcr.version.VersionException ve) {
-            throw new VersionException("Impossible to get the version labels : " + path
-                    + " - version name : " + versionName,
-                    ve);
-        }
-        catch(UnsupportedRepositoryOperationException uroe) {
+        } catch (javax.jcr.version.VersionException ve) {
+            throw new VersionException("Impossible to get the version labels : " + path + " - version name : " + versionName, ve);
+        } catch (UnsupportedRepositoryOperationException uroe) {
             throw new VersionException("Impossible to retrieve versions for path " + path, uroe);
-        }
-        catch(RepositoryException e) {
+        } catch (RepositoryException e) {
             throw new org.apache.jackrabbit.ocm.exception.RepositoryException(e);
         }
     }
@@ -860,53 +827,44 @@ public class ObjectContentManagerImpl implements ObjectContentManager {
             VersionHistory history = node.getVersionHistory();
 
             return history.getVersionLabels();
-        } 
-        catch(ClassCastException cce) {
+        } catch (ClassCastException cce) {
             throw new ObjectContentManagerException("Cannot retrieve an object from a property path " + path);
-        }
-        catch(PathNotFoundException pnfe) {
+        } catch (PathNotFoundException pnfe) {
             throw new ObjectContentManagerException("Cannot retrieve an object at path " + path, pnfe);
-        }
-        catch(UnsupportedRepositoryOperationException uroe) {
+        } catch (UnsupportedRepositoryOperationException uroe) {
             throw new VersionException("Impossible to retrieve version history for path " + path, uroe);
-        }
-        catch(RepositoryException e) {
+        } catch (RepositoryException e) {
             throw new org.apache.jackrabbit.ocm.exception.RepositoryException(e);
         }
     }
 
     /**
-     *
+     * 
      * @see org.apache.jackrabbit.ocm.manager.ObjectContentManager#getAllVersions(java.lang.String)
      */
     public VersionIterator getAllVersions(String path) {
         try {
             Node node = (Node) session.getItem(path);
             if (!node.isNodeType("mix:versionable")) {
-                throw new VersionException("The object " + path
-                                           + "is not versionable");
+                throw new VersionException("The object " + path + "is not versionable");
             }
 
             VersionHistory history = node.getVersionHistory();
 
             return new VersionIterator(history.getAllVersions());
-        } 
-        catch(ClassCastException cce) {
+        } catch (ClassCastException cce) {
             throw new ObjectContentManagerException("Cannot retrieve an object from a property path " + path);
-        }
-        catch(PathNotFoundException pnfe) {
+        } catch (PathNotFoundException pnfe) {
             throw new ObjectContentManagerException("Cannot retrieve an object at path " + path, pnfe);
-        }
-        catch(UnsupportedRepositoryOperationException uroe) {
+        } catch (UnsupportedRepositoryOperationException uroe) {
             throw new VersionException("Impossible to retrieve version history for path " + path, uroe);
-        }
-        catch(RepositoryException e) {
+        } catch (RepositoryException e) {
             throw new org.apache.jackrabbit.ocm.exception.RepositoryException(e);
         }
     }
 
     /**
-     *
+     * 
      * @see org.apache.jackrabbit.ocm.manager.ObjectContentManager#getRootVersion(java.lang.String)
      */
     public Version getRootVersion(String path) {
@@ -919,24 +877,19 @@ public class ObjectContentManagerImpl implements ObjectContentManager {
             VersionHistory history = node.getVersionHistory();
 
             return new Version(history.getRootVersion());
-        } 
-        catch(ClassCastException cce) {
+        } catch (ClassCastException cce) {
             throw new ObjectContentManagerException("Cannot retrieve an object from a property path " + path);
-        }
-        catch(PathNotFoundException pnfe) {
+        } catch (PathNotFoundException pnfe) {
             throw new ObjectContentManagerException("Cannot retrieve an object at path " + path, pnfe);
-        }
-        catch(UnsupportedRepositoryOperationException uroe) {
-            throw new VersionException("Impossible to get the root version  for the object " + path,
-                                       uroe);
-        }
-        catch(RepositoryException e) {
+        } catch (UnsupportedRepositoryOperationException uroe) {
+            throw new VersionException("Impossible to get the root version  for the object " + path, uroe);
+        } catch (RepositoryException e) {
             throw new org.apache.jackrabbit.ocm.exception.RepositoryException(e);
         }
     }
 
     /**
-     *
+     * 
      * @see org.apache.jackrabbit.ocm.manager.ObjectContentManager#getBaseVersion(java.lang.String)
      */
     public Version getBaseVersion(String path) {
@@ -947,28 +900,23 @@ public class ObjectContentManagerImpl implements ObjectContentManager {
             }
 
             return new Version(node.getBaseVersion());
-        } 
-        catch(ClassCastException cce) {
+        } catch (ClassCastException cce) {
             throw new ObjectContentManagerException("Cannot retrieve an object from a property path " + path);
-        }
-        catch(PathNotFoundException pnfe) {
+        } catch (PathNotFoundException pnfe) {
             throw new ObjectContentManagerException("Cannot retrieve an object at path " + path, pnfe);
-        }
-        catch(UnsupportedRepositoryOperationException uroe) {
-            throw new VersionException("Impossible to get the base version for the object " + path,
-                                        uroe);
-        }
-        catch(javax.jcr.RepositoryException e) {
+        } catch (UnsupportedRepositoryOperationException uroe) {
+            throw new VersionException("Impossible to get the base version for the object " + path, uroe);
+        } catch (javax.jcr.RepositoryException e) {
             throw new org.apache.jackrabbit.ocm.exception.RepositoryException(e);
         }
     }
 
     /**
-     *
-     * @see org.apache.jackrabbit.ocm.manager.ObjectContentManager#lock(java.lang.String, java.lang.Object, boolean, boolean)
+     * 
+     * @see org.apache.jackrabbit.ocm.manager.ObjectContentManager#lock(java.lang.String,
+     *      java.lang.Object, boolean, boolean)
      */
-    public Lock lock(final String absPath, final boolean isDeep, final boolean isSessionScoped) 
-    throws LockedException {
+    public Lock lock(final String absPath, final boolean isDeep, final boolean isSessionScoped) throws LockedException {
         try {
 
             // Calling this method will throw exception if node is locked
@@ -979,24 +927,21 @@ public class ObjectContentManagerImpl implements ObjectContentManager {
             javax.jcr.lock.Lock lock = node.lock(isDeep, isSessionScoped);
 
             return new Lock(lock);
-        } 
-        catch (LockException e) {
-            // Only one case with LockException remains: if node is not mix:lockable, propably error in custom node types definitions
-            throw new org.apache.jackrabbit.ocm.exception.RepositoryException(
-                    "Node of type is not type mix:lockable", e);
-        } 
-        catch (RepositoryException e) {
-            throw new org.apache.jackrabbit.ocm.exception.RepositoryException(e.getMessage(),
-                                                                                    e);
+        } catch (LockException e) {
+            // Only one case with LockException remains: if node is not
+            // mix:lockable, propably error in custom node types definitions
+            throw new org.apache.jackrabbit.ocm.exception.RepositoryException("Node of type is not type mix:lockable", e);
+        } catch (RepositoryException e) {
+            throw new org.apache.jackrabbit.ocm.exception.RepositoryException(e.getMessage(), e);
         }
     }
 
     /**
-     *
-     * @see org.apache.jackrabbit.ocm.manager.ObjectContentManager#unlock(java.lang.String, java.lang.Object, java.lang.String)
+     * 
+     * @see org.apache.jackrabbit.ocm.manager.ObjectContentManager#unlock(java.lang.String,
+     *      java.lang.Object, java.lang.String)
      */
-    public void unlock(final String absPath, final String lockToken) 
-    throws IllegalUnlockException {
+    public void unlock(final String absPath, final String lockToken) throws IllegalUnlockException {
         String lockOwner = null;
         try {
             maybeAddLockToken(lockToken);
@@ -1011,27 +956,22 @@ public class ObjectContentManagerImpl implements ObjectContentManager {
             lockOwner = lock.getLockOwner();
 
             node.unlock();
-        } 
-        catch (LockException e) {
-            // LockException if this node does not currently hold a lock (see upper code)
-            // or holds a lock for which this Session does not have the correct lock token
-            log.error("Cannot unlock path: "
-                      + absPath
-                      + " Jcr user: "
-                      + session.getUserID()
-                      + " has no lock token to do this. Lock was placed with user: "
-                      + lockOwner);
+        } catch (LockException e) {
+            // LockException if this node does not currently hold a lock (see
+            // upper code)
+            // or holds a lock for which this Session does not have the correct
+            // lock token
+            log.error("Cannot unlock path: " + absPath + " Jcr user: " + session.getUserID() + " has no lock token to do this. Lock was placed with user: " + lockOwner);
             throw new IllegalUnlockException(lockOwner, absPath);
-        } 
-        catch (RepositoryException e) {
-            // This also catch UnsupportedRepositoryOperationException - we assume that implementation supports it (jackrabbit does)
-            throw new org.apache.jackrabbit.ocm.exception.RepositoryException(e.getMessage(),
-                                                                                    e);
+        } catch (RepositoryException e) {
+            // This also catch UnsupportedRepositoryOperationException - we
+            // assume that implementation supports it (jackrabbit does)
+            throw new org.apache.jackrabbit.ocm.exception.RepositoryException(e.getMessage(), e);
         }
     }
 
     /**
-     *
+     * 
      * @see org.apache.jackrabbit.ocm.manager.ObjectContentManager#isLocked(java.lang.String)
      */
     public boolean isLocked(final String absPath) {
@@ -1039,11 +979,9 @@ public class ObjectContentManagerImpl implements ObjectContentManager {
             final Node node = getNode(absPath);
 
             return node.isLocked();
-        } 
-        catch (RepositoryException e) {
+        } catch (RepositoryException e) {
             // node.isLocked() RepositoryException if an error occurs.
-            throw new org.apache.jackrabbit.ocm.exception.RepositoryException(
-                    "An exception was thrown while checking the lock at path : " + absPath, e);
+            throw new org.apache.jackrabbit.ocm.exception.RepositoryException("An exception was thrown while checking the lock at path : " + absPath, e);
         }
     }
 
@@ -1055,8 +993,9 @@ public class ObjectContentManagerImpl implements ObjectContentManager {
     }
 
     /**
-     * Throws {@link LockedException} id node is locked so alter nopde cannot be done
-     *
+     * Throws {@link LockedException} id node is locked so alter nopde cannot be
+     * done
+     * 
      * @param absPath
      *            abs path to node
      * @throws RepositoryException
@@ -1070,9 +1009,8 @@ public class ObjectContentManagerImpl implements ObjectContentManager {
         if (node.isLocked()) {
             javax.jcr.lock.Lock lock = node.getLock();
             String lockOwner = lock.getLockOwner();
-            
-            if (! session.getUserID().equals(lockOwner))
-            {
+
+            if (!session.getUserID().equals(lockOwner)) {
                 final String path = lock.getNode().getPath();
                 throw new LockedException(lockOwner, path);
             }
@@ -1085,8 +1023,8 @@ public class ObjectContentManagerImpl implements ObjectContentManager {
             // session already has lock token
             final String[] lockTokens = getSession().getLockTokens();
             if (lockTokens != null) {
-                for(int i= 0; i < lockTokens.length; i++) {
-                    if(lockTokens[i].equals(lockToken)) {
+                for (int i = 0; i < lockTokens.length; i++) {
+                    if (lockTokens[i].equals(lockToken)) {
                         // we are already holding a lock
                         break;
                     }
@@ -1103,15 +1041,14 @@ public class ObjectContentManagerImpl implements ObjectContentManager {
         }
         Item item = getSession().getItem(absPath);
         if (!item.isNode()) {
-            throw new ObjectContentManagerException("No object stored on path: " + absPath
-                                           + " on absPath is item (leaf)");
+            throw new ObjectContentManagerException("No object stored on path: " + absPath + " on absPath is item (leaf)");
         }
 
         return (Node) item;
     }
 
     /**
-     *
+     * 
      * @see org.apache.jackrabbit.ocm.manager.ObjectContentManager#logout()
      */
     public void logout() {
@@ -1120,144 +1057,118 @@ public class ObjectContentManagerImpl implements ObjectContentManager {
             this.session.save();
             this.session.logout();
             log.debug("Session closed");
-        }
-        catch(NoSuchNodeTypeException nsnte) {
-            throw new JcrMappingException(
-                    "Cannot persist current session changes. An unknown node type was used.", nsnte);
-        }
-        catch(javax.jcr.version.VersionException ve) {
-            throw new VersionException(
-                    "Cannot persist current session changes. Attempt to overwrite checked-in node", ve);
-        }
-        catch(LockException le) {
-            throw new ObjectContentManagerException(
-                    "Cannot persist current session changes. Violation of a lock detected", le);
-        }
-        catch(javax.jcr.RepositoryException e) {
-            throw new ObjectContentManagerException(
-                    "Cannot persist current session changes.", e);
+        } catch (NoSuchNodeTypeException nsnte) {
+            throw new JcrMappingException("Cannot persist current session changes. An unknown node type was used.", nsnte);
+        } catch (javax.jcr.version.VersionException ve) {
+            throw new VersionException("Cannot persist current session changes. Attempt to overwrite checked-in node", ve);
+        } catch (LockException le) {
+            throw new ObjectContentManagerException("Cannot persist current session changes. Violation of a lock detected", le);
+        } catch (javax.jcr.RepositoryException e) {
+            throw new ObjectContentManagerException("Cannot persist current session changes.", e);
         }
     }
 
     /**
-     *
+     * 
      * @see org.apache.jackrabbit.ocm.manager.ObjectContentManager#save()
      */
     public void save() {
         try {
             this.session.save();
-        }
-        catch(NoSuchNodeTypeException nsnte) {
-            throw new JcrMappingException(
-                    "Cannot persist current session changes. An unknown node type was used.", nsnte);
-        }
-        catch(javax.jcr.version.VersionException ve) {
-            throw new VersionException(
-                    "Cannot persist current session changes. Attempt to overwrite checked-in node", ve);
-        }
-        catch(LockException le) {
-            throw new ObjectContentManagerException(
-                    "Cannot persist current session changes. Violation of a lock detected", le);
-        }
-        catch(RepositoryException e) {
-            throw new ObjectContentManagerException(
-                    "Cannot persist current session changes.", e);
+        } catch (NoSuchNodeTypeException nsnte) {
+            throw new JcrMappingException("Cannot persist current session changes. An unknown node type was used.", nsnte);
+        } catch (javax.jcr.version.VersionException ve) {
+            throw new VersionException("Cannot persist current session changes. Attempt to overwrite checked-in node", ve);
+        } catch (LockException le) {
+            throw new ObjectContentManagerException("Cannot persist current session changes. Violation of a lock detected", le);
+        } catch (RepositoryException e) {
+            throw new ObjectContentManagerException("Cannot persist current session changes.", e);
         }
     }
 
     /**
      * @return The JCR Session
      */
-    public Session getSession() {       
-    	return this.session;
+    public Session getSession() {
+        return this.session;
     }
 
-	public void refresh(boolean keepChanges) {
-		try 
-		{
-		    session.refresh(keepChanges);
-		}
-        catch(RepositoryException e) {
+    public void refresh(boolean keepChanges) {
+        try {
+            session.refresh(keepChanges);
+        } catch (RepositoryException e) {
             throw new ObjectContentManagerException("Cannot refresh current session ", e);
         }
-	}
-    
-	/**
-	 * 
-	 * @see org.apache.jackrabbit.ocm.manager.ObjectContentManager#move(java.lang.String, java.lang.String)
-	 */
-    public void move(String srcPath, String destPath){
-        Workspace workspace = session.getWorkspace();
-        try {
-            
-        	workspace.move(srcPath,destPath);
-            
-        }catch(javax.jcr.nodetype.ConstraintViolationException cve){
-            throw new ObjectContentManagerException(
-                    "Cannot move the object from " + srcPath + " to " + destPath + "." + " Violation of a nodetype or attempt to move under a property detected", cve);
-            
-        }catch(javax.jcr.version.VersionException ve){
-            throw new VersionException(
-                    "Cannot move the object from " + srcPath + " to " + destPath + "." + " Parent node of source or destination is versionable and checked in ", ve);
-            
-        }catch(javax.jcr.AccessDeniedException ade){
-            throw new ObjectContentManagerException(
-                    "Cannot move the object from " + srcPath + " to " + destPath + "." + " Session does not have access permissions", ade);
-            
-        }catch(javax.jcr.PathNotFoundException pnf){
-            throw new ObjectContentManagerException(
-                    "Cannot move the object from " + srcPath + " to " + destPath + "." + " Node at source or destination does not exist ", pnf);
-            
-        }catch(javax.jcr.ItemExistsException ie){
-            throw new ObjectContentManagerException(
-                    "Cannot move the object from " + srcPath + " to " + destPath + "." + " It might already exist at destination path.", ie);
-            
-        }catch(javax.jcr.lock.LockException le){
-            throw new ObjectContentManagerException(
-                    "Cannot move the object from " + srcPath + " to " + destPath + "." + "Violation of a lock detected", le);
-            
-        }catch(javax.jcr.RepositoryException re){
-            throw new ObjectContentManagerException(
-                    "Cannot move the object from " + srcPath + " to " + destPath + "." , re);
-        }   
     }
 
     /**
      * 
-     * @see org.apache.jackrabbit.ocm.manager.ObjectContentManager#copy(java.lang.String, java.lang.String)
+     * @see org.apache.jackrabbit.ocm.manager.ObjectContentManager#move(java.lang.String,
+     *      java.lang.String)
      */
-    public void copy(String srcPath, String destPath){
+    public void move(String srcPath, String destPath) {
         Workspace workspace = session.getWorkspace();
-        try{
-            workspace.copy(srcPath,destPath);
-            
-        }catch(javax.jcr.nodetype.ConstraintViolationException cve){
-            throw new ObjectContentManagerException(
-                    "Cannot copy the object from " + srcPath + " to " + destPath + "." + "Violation of a nodetype or attempt to copy under property detected ", cve);
-            
-        }catch(javax.jcr.version.VersionException ve){
-            throw new VersionException(
-                    "Cannot copy the object from " + srcPath + " to " + destPath + "." + "Parent node of source or destination is versionable and checked in ", ve);
-            
-        }catch(javax.jcr.AccessDeniedException ade){
-            throw new ObjectContentManagerException(
-                    "Cannot copy the object from " + srcPath + " to " + destPath + "." + " Session does not have access permissions", ade);
-            
-        }catch(javax.jcr.PathNotFoundException pnf){
-            throw new ObjectContentManagerException(
-                    "Cannot copy the object from " + srcPath + " to " + destPath + "." + "Node at source or destination does not exist ", pnf);
-            
-        }catch(javax.jcr.ItemExistsException ie){
-            throw new ObjectContentManagerException(
-                    "Cannot copy the object from " + srcPath + " to " + destPath + "." + "It might already exist at destination path.", ie);
-            
-        }catch(javax.jcr.lock.LockException le){
-            throw new ObjectContentManagerException(
-                    "Cannot copy the object from " + srcPath + " to " + destPath + "." + "Violation of a lock detected", le);
-            
-        }catch(javax.jcr.RepositoryException re){
-            throw new ObjectContentManagerException(
-                    "Cannot copy the node from " + srcPath + " to " + destPath + "." , re);
+        try {
+
+            workspace.move(srcPath, destPath);
+
+        } catch (javax.jcr.nodetype.ConstraintViolationException cve) {
+            throw new ObjectContentManagerException("Cannot move the object from " + srcPath + " to " + destPath + "."
+                    + " Violation of a nodetype or attempt to move under a property detected", cve);
+
+        } catch (javax.jcr.version.VersionException ve) {
+            throw new VersionException("Cannot move the object from " + srcPath + " to " + destPath + "." + " Parent node of source or destination is versionable and checked in ",
+                    ve);
+
+        } catch (javax.jcr.AccessDeniedException ade) {
+            throw new ObjectContentManagerException("Cannot move the object from " + srcPath + " to " + destPath + "." + " Session does not have access permissions", ade);
+
+        } catch (javax.jcr.PathNotFoundException pnf) {
+            throw new ObjectContentManagerException("Cannot move the object from " + srcPath + " to " + destPath + "." + " Node at source or destination does not exist ", pnf);
+
+        } catch (javax.jcr.ItemExistsException ie) {
+            throw new ObjectContentManagerException("Cannot move the object from " + srcPath + " to " + destPath + "." + " It might already exist at destination path.", ie);
+
+        } catch (javax.jcr.lock.LockException le) {
+            throw new ObjectContentManagerException("Cannot move the object from " + srcPath + " to " + destPath + "." + "Violation of a lock detected", le);
+
+        } catch (javax.jcr.RepositoryException re) {
+            throw new ObjectContentManagerException("Cannot move the object from " + srcPath + " to " + destPath + ".", re);
         }
-    }    
+    }
+
+    /**
+     * 
+     * @see org.apache.jackrabbit.ocm.manager.ObjectContentManager#copy(java.lang.String,
+     *      java.lang.String)
+     */
+    public void copy(String srcPath, String destPath) {
+        Workspace workspace = session.getWorkspace();
+        try {
+            workspace.copy(srcPath, destPath);
+
+        } catch (javax.jcr.nodetype.ConstraintViolationException cve) {
+            throw new ObjectContentManagerException("Cannot copy the object from " + srcPath + " to " + destPath + "."
+                    + "Violation of a nodetype or attempt to copy under property detected ", cve);
+
+        } catch (javax.jcr.version.VersionException ve) {
+            throw new VersionException("Cannot copy the object from " + srcPath + " to " + destPath + "." + "Parent node of source or destination is versionable and checked in ",
+                    ve);
+
+        } catch (javax.jcr.AccessDeniedException ade) {
+            throw new ObjectContentManagerException("Cannot copy the object from " + srcPath + " to " + destPath + "." + " Session does not have access permissions", ade);
+
+        } catch (javax.jcr.PathNotFoundException pnf) {
+            throw new ObjectContentManagerException("Cannot copy the object from " + srcPath + " to " + destPath + "." + "Node at source or destination does not exist ", pnf);
+
+        } catch (javax.jcr.ItemExistsException ie) {
+            throw new ObjectContentManagerException("Cannot copy the object from " + srcPath + " to " + destPath + "." + "It might already exist at destination path.", ie);
+
+        } catch (javax.jcr.lock.LockException le) {
+            throw new ObjectContentManagerException("Cannot copy the object from " + srcPath + " to " + destPath + "." + "Violation of a lock detected", le);
+
+        } catch (javax.jcr.RepositoryException re) {
+            throw new ObjectContentManagerException("Cannot copy the node from " + srcPath + " to " + destPath + ".", re);
+        }
+    }
 }
