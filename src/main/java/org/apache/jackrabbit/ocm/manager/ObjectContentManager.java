@@ -32,304 +32,405 @@ import org.apache.jackrabbit.ocm.version.Version;
 import org.apache.jackrabbit.ocm.version.VersionIterator;
 
 /**
- * The object content manager encapsulates a JCR session. 
- * This is the main component used to manage objects into the JCR repository.
+ * The object content manager encapsulates a JCR session. This is the main
+ * component used to manage objects into the JCR repository.
  * 
- * @author Sandro Boehme 
- * @author <a href="mailto:christophe.lombart@sword-technologies.com">Lombart Christophe </a>
+ * @author Sandro Boehme
+ * @author <a href="mailto:christophe.lombart@sword-technologies.com">Lombart
+ *         Christophe </a>
  * 
  */
-public interface ObjectContentManager
-{
-    
+public interface ObjectContentManager {
+
     /**
      * Check if an object exists
-     * @param path the object path 
+     * 
+     * @param path
+     *            the object path
      * @return true if the item exists
-     * @throws ObjectContentManagerException when it is not possible to check if the item exist
+     * @throws ObjectContentManagerException
+     *             when it is not possible to check if the item exist
      */
-    public boolean objectExists(String path) throws ObjectContentManagerException;
+    public boolean objectExists(String path)
+            throws ObjectContentManagerException;
 
-    
     /**
      * Can this object content manager insert, update, delete, ... that type?
      * 
-     * @param clazz class for question
+     * @param clazz
+     *            class for question
      * @return <code>true</code> if the class is persistence
      */
-     boolean isPersistent(Class clazz);
-     
-     
+    boolean isPersistent(Class clazz);
+
     /**
      * Insert an object into the JCR repository
      * 
-     * @param object the object to add    
-     * @throws ObjectContentManagerException when it is not possible to insert the object 
+     * @param object
+     *            the object to add
+     * @throws ObjectContentManagerException
+     *             when it is not possible to insert the object
      */
     public void insert(Object object) throws ObjectContentManagerException;
 
     /**
-     * Update an object 
-     *
-     * @param object the object to update 
-     * @throws ObjectContentManagerException when it is not possible to update the object
+     * Update an object
+     * 
+     * @param object
+     *            the object to update
+     * @throws ObjectContentManagerException
+     *             when it is not possible to update the object
      */
     public void update(Object object) throws ObjectContentManagerException;
 
     /**
-     * Get an object from the JCR repository 
-     * @param path the object path
+     * Get an object from the JCR repository
+     * 
+     * @param path
+     *            the object path
      * @return the object found or null
      * 
-     * @throws ObjectContentManagerException when it is not possible to retrieve the object 
+     * @throws ObjectContentManagerException
+     *             when it is not possible to retrieve the object
      */
-    public Object getObject( String path) throws ObjectContentManagerException;
+    public Object getObject(String path) throws ObjectContentManagerException;
 
     /**
-     * Get an object from the JCR repository 
-     * @param the object uuid
+     * Get an object from the JCR repository
+     * 
+     * @param the
+     *            object uuid
      * @return the object found or null
      * 
-     * @throws ObjectContentManagerException when it is not possible to retrieve the object 
+     * @throws ObjectContentManagerException
+     *             when it is not possible to retrieve the object
      */
-    public Object getObjectByUuid( String uuid) throws ObjectContentManagerException;
+    public Object getObjectByUuid(String uuid)
+            throws ObjectContentManagerException;
 
     /**
-     * Get an object from the JCR repository 
-     * @param path the object path
-     * @param versionNumber The desired object version number
+     * Get an object from the JCR repository
+     * 
+     * @param path
+     *            the object path
+     * @param versionNumber
+     *            The desired object version number
      * @return the object found or null
      * 
-     * @throws ObjectContentManagerException when it is not possible to retrieve the object 
+     * @throws ObjectContentManagerException
+     *             when it is not possible to retrieve the object
      */
-    public Object getObject(String path, String versionNumber) throws ObjectContentManagerException;
-    
-    /**
-     * Get an object from the JCR repository 
-     * @param objectClass the object class
-     * @param path the object path
-     * @return the object found or null
-     * 
-     * @throws ObjectContentManagerException when it is not possible to retrieve the object 
-     */
-    public Object getObject(Class objectClass, String path) throws ObjectContentManagerException;
+    public Object getObject(String path, String versionNumber)
+            throws ObjectContentManagerException;
 
     /**
-     * Get an object from the JCR repository 
-     * @param objectClass the object class
-     * @param path the object path
-     * @param versionNumber The desired object version number
+     * Get an object from the JCR repository
+     * 
+     * @param objectClass
+     *            the object class
+     * @param path
+     *            the object path
      * @return the object found or null
      * 
-     * @throws ObjectContentManagerException when it is not possible to retrieve the object 
+     * @throws ObjectContentManagerException
+     *             when it is not possible to retrieve the object
      */
-     public Object getObject(Class objectClass, String path, String versionNumber) throws ObjectContentManagerException;
-    
-    
+    public Object getObject(Class objectClass, String path)
+            throws ObjectContentManagerException;
+
     /**
-     * Retrieve the specified attribute  for the given persistent object.
-     * this attribute is either a bean or a collection. This method is usefull if the corresponding descriptor has an autoRetrieve="false"
+     * Get an object from the JCR repository
      * 
-     * @param object The persistent object
-     * @param attributeName The name of the attribute to retrieve
+     * @param objectClass
+     *            the object class
+     * @param path
+     *            the object path
+     * @param versionNumber
+     *            The desired object version number
+     * @return the object found or null
+     * 
+     * @throws ObjectContentManagerException
+     *             when it is not possible to retrieve the object
+     */
+    public Object getObject(Class objectClass, String path, String versionNumber)
+            throws ObjectContentManagerException;
+
+    /**
+     * Retrieve the specified attribute for the given persistent object. this
+     * attribute is either a bean or a collection. This method is usefull if the
+     * corresponding descriptor has an autoRetrieve="false"
+     * 
+     * @param object
+     *            The persistent object
+     * @param attributeName
+     *            The name of the attribute to retrieve
      */
     public void retrieveMappedAttribute(Object object, String attributeName);
 
-    
     /**
-     * Retrieve all mapped  attributes for the given persistent object.
-     * @param object The persistent object
+     * Retrieve all mapped attributes for the given persistent object.
+     * 
+     * @param object
+     *            The persistent object
      */
     public void retrieveAllMappedAttributes(Object object);
-    
-    
+
     /**
      * Remove an object from a JCR repository
-     * @param path the object path
-     * @throws ObjectContentManagerException when it is not possible to remove the object 
+     * 
+     * @param path
+     *            the object path
+     * @throws ObjectContentManagerException
+     *             when it is not possible to remove the object
      * 
      */
     public void remove(String path) throws ObjectContentManagerException;
-    
-    
+
     /**
      * Remove an object from a JCR repository
-     * @param object the object to remove
-     * @throws ObjectContentManagerException when it is not possible to remove the object 
+     * 
+     * @param object
+     *            the object to remove
+     * @throws ObjectContentManagerException
+     *             when it is not possible to remove the object
      * 
      */
     public void remove(Object object) throws ObjectContentManagerException;
-    
+
     /**
      * Remove all objects matching to a query
-     * @param query The query used to find the objects to remove
-     * @throws ObjectContentManagerException when it is not possible to remove all objects 
+     * 
+     * @param query
+     *            The query used to find the objects to remove
+     * @throws ObjectContentManagerException
+     *             when it is not possible to remove all objects
      * 
      */
     public void remove(Query query) throws ObjectContentManagerException;
 
-    
     /**
-     * Retrieve an object matching to a query     
-     * @param query The Query object used to seach the object
+     * Retrieve an object matching to a query
+     * 
+     * @param query
+     *            The Query object used to seach the object
      * @return The object found or null
-     * @throws ObjectContentManagerException when it is not possible to retrieve the object 
+     * @throws ObjectContentManagerException
+     *             when it is not possible to retrieve the object
      * 
      */
     public Object getObject(Query query) throws ObjectContentManagerException;
 
-    
     /**
-     * Retrieve some objects matching to a query     
-     * @param query The query used to seach the objects
+     * Retrieve some objects matching to a query
+     * 
+     * @param query
+     *            The query used to seach the objects
      * @return a collection of objects found
-     * @throws ObjectContentManagerException when it is not possible to retrieve the objects 
+     * @throws ObjectContentManagerException
+     *             when it is not possible to retrieve the objects
      * 
      */
-    public Collection getObjects(Query query) throws ObjectContentManagerException;
+    public Collection getObjects(Query query)
+            throws ObjectContentManagerException;
 
-    
     /**
-     * Retrieve some objects matching to a query. 
-     *  
-     * @param query The query used to seach the objects
-     * @return an iterator of objects found
-     * @throws ObjectContentManagerException when it is not possible to retrieve the objects 
+     * Returns a list of objects of that particular class which are associated to a specific path.
+     * This method is helpfull when same name sibling is used to create nodes. 
+     * This would not return the objects anywhere below the denoted path.
+     * 
+     * @param objectClass 
+     * @param path Node path. 
+     * @return a collection of object found
      */
-    public Iterator getObjectIterator (Query query) throws ObjectContentManagerException;
-     
-    
+
+    public Collection getObjects(Class objectClass, String path)
+            throws ObjectContentManagerException;
+
     /**
-     * Retrieve an objects matching a query specified in a specific query language.
-     * This method is expected to call create a <code>Query</code> using the
-     * session's <code>QueryManager</code> with the given query exception and
-     * language parameters.
+     * Retrieve some objects matching to a query.
+     * 
+     * @param query
+     *            The query used to seach the objects
+     * @return an iterator of objects found
+     * @throws ObjectContentManagerException
+     *             when it is not possible to retrieve the objects
+     */
+    public Iterator getObjectIterator(Query query)
+            throws ObjectContentManagerException;
+
+    /**
+     * Retrieve an objects matching a query specified in a specific query
+     * language. This method is expected to call create a <code>Query</code>
+     * using the session's <code>QueryManager</code> with the given query
+     * exception and language parameters.
      * <p>
      * If the query <code>statement</code> is syntactically invalid, given the
-     * language specified, an <code>InvalidQueryException</code> is thrown. The
-     * <code>language</code> must be a string from among those returned by
-     * <code>javax.jcr.QueryManager.getSupportedQueryLanguages()</code>;
-     * if it is not, then an <code>InvalidQueryException</code> is thrown.
+     * language specified, an <code>InvalidQueryException</code> is thrown.
+     * The <code>language</code> must be a string from among those returned by
+     * <code>javax.jcr.QueryManager.getSupportedQueryLanguages()</code>; if
+     * it is not, then an <code>InvalidQueryException</code> is thrown.
      * 
-     * @param query The query to execute to find the objects.
-     * @param language The language in which the query is  written
+     * @param query
+     *            The query to execute to find the objects.
+     * @param language
+     *            The language in which the query is written
      * 
      * @return An iterator of objects instances. Each entry in the iterator
-     *      represents the mapping of a node returned by the query. If the
-     *      query returns a node, which may not be mapped, the respective node
-     *      is ignored.
+     *         represents the mapping of a node returned by the query. If the
+     *         query returns a node, which may not be mapped, the respective
+     *         node is ignored.
      * 
-     * @throws org.apache.jackrabbit.ocm.exception.InvalidQueryException If the
-     *      query is not a valid JCR Query according to the specified language 
-     * @throws ObjectContentManagerException If an error occurrs querying for
-     *      the objects.
-     *      
+     * @throws org.apache.jackrabbit.ocm.exception.InvalidQueryException
+     *             If the query is not a valid JCR Query according to the
+     *             specified language
+     * @throws ObjectContentManagerException
+     *             If an error occurrs querying for the objects.
+     * 
      * @see javax.jcr.query.QueryManager#createQuery(String, String)
      * @see javax.jcr.query.QueryManager#getSupportedQueryLanguages()
      */
     public Iterator getObjectIterator(String query, String language);
 
-    
     /**
-     * Checkout - Create a new version
-     * This is only possible if the object is based on mix:versionable node type
-     *  
-     * @param path The object path
-     * @throws VersionException when it is not possible to create a new version 
+     * Checkout - Create a new version This is only possible if the object is
+     * based on mix:versionable node type
+     * 
+     * @param path
+     *            The object path
+     * @throws VersionException
+     *             when it is not possible to create a new version
      */
     public void checkout(String path) throws VersionException;
-    
+
     /**
      * Checkin an object
-     * @param path the object path 
-     * @throws VersionException when it is not possible to checkin
+     * 
+     * @param path
+     *            the object path
+     * @throws VersionException
+     *             when it is not possible to checkin
      */
     public void checkin(String path) throws VersionException;
-    
+
     /**
-     * Checkin an object and apply some labels to this new version 
-     * Within a particular object path, a given label may appear a maximum of once
-     * @param path The object path 
-     * @param versionLabels the version labels to apply to the new version 
-     * @throws VersionException when it is possible to checkin
+     * Checkin an object and apply some labels to this new version Within a
+     * particular object path, a given label may appear a maximum of once
+     * 
+     * @param path
+     *            The object path
+     * @param versionLabels
+     *            the version labels to apply to the new version
+     * @throws VersionException
+     *             when it is possible to checkin
      */
-    public void checkin(String path, String[] versionLabels) throws VersionException;
-    
-    
+    public void checkin(String path, String[] versionLabels)
+            throws VersionException;
+
     /**
-     * Get all version labels assigned to a particular object version 
-     * @param path the object path
-     * @param versionName the object version name (1.0, ...) 
-     * @return a array of string (version labels) 
-     * @throws VersionException when it is not to get all version labels
+     * Get all version labels assigned to a particular object version
+     * 
+     * @param path
+     *            the object path
+     * @param versionName
+     *            the object version name (1.0, ...)
+     * @return a array of string (version labels)
+     * @throws VersionException
+     *             when it is not to get all version labels
      */
-    public String[] getVersionLabels(String path, String versionName) throws VersionException;
-    
-    
+    public String[] getVersionLabels(String path, String versionName)
+            throws VersionException;
+
     /**
-     * Get all version labels assigned to all versions 
-     * @param path the object path     
-     * @return a array of string (version labels) 
-     * @throws VersionException when it is not to get all version labels
+     * Get all version labels assigned to all versions
+     * 
+     * @param path
+     *            the object path
+     * @return a array of string (version labels)
+     * @throws VersionException
+     *             when it is not to get all version labels
      */
-    public String[] getAllVersionLabels(String path) throws VersionException;    
-    
+    public String[] getAllVersionLabels(String path) throws VersionException;
+
     /**
-     * Add  a new label to a particular version  
-     * @param path the object path
-     * @param versionName the object versio name (1.0, 1.1, ...) 
-     * @param versionLabel The new label to apply
-     * @throws VersionException when it is not possible to add a new version label to this version
+     * Add a new label to a particular version
+     * 
+     * @param path
+     *            the object path
+     * @param versionName
+     *            the object versio name (1.0, 1.1, ...)
+     * @param versionLabel
+     *            The new label to apply
+     * @throws VersionException
+     *             when it is not possible to add a new version label to this
+     *             version
      */
-    public void addVersionLabel(String path, String versionName, String versionLabel) throws VersionException;   
-    
-        
+    public void addVersionLabel(String path, String versionName,
+            String versionLabel) throws VersionException;
+
     /**
-     * Get all object versions 
-     * @param path the object path
+     * Get all object versions
+     * 
+     * @param path
+     *            the object path
      * @return a version iterator
-     * @throws VersionException when it is not possible to retrieve all versions
+     * @throws VersionException
+     *             when it is not possible to retrieve all versions
      */
     public VersionIterator getAllVersions(String path) throws VersionException;
-    
+
     /**
-     * Get the first object version 
-     * @param path the object path
+     * Get the first object version
+     * 
+     * @param path
+     *            the object path
      * @return the first version found
-     * @throws VersionException when it is not possible to get the root version 
+     * @throws VersionException
+     *             when it is not possible to get the root version
      */
     public Version getRootVersion(String path) throws VersionException;
-    
+
     /**
-     * Get the lastest object version 
-     * @param path the object path
-     * @return the last version found 
-     * @throws VersionException when it is not possible to get the last version 
+     * Get the lastest object version
+     * 
+     * @param path
+     *            the object path
+     * @return the last version found
+     * @throws VersionException
+     *             when it is not possible to get the last version
      */
     public Version getBaseVersion(String path) throws VersionException;
+
     /**
      * Get a particular version
-     * @param path the object path
-     * @param versionName the version name
-     * @return the version found or null 
-     * @throws VersionException when it is not possible to retrieve this particular version 
+     * 
+     * @param path
+     *            the object path
+     * @param versionName
+     *            the version name
+     * @return the version found or null
+     * @throws VersionException
+     *             when it is not possible to retrieve this particular version
      */
-    public Version getVersion(String path, String versionName) throws VersionException;
-    
+    public Version getVersion(String path, String versionName)
+            throws VersionException;
 
     /**
      * Save all modifications made by the object content manager
-     *
-     * @throws ObjectContentManagerException when it is not possible to save all pending operation into the JCR repo 
+     * 
+     * @throws ObjectContentManagerException
+     *             when it is not possible to save all pending operation into
+     *             the JCR repo
      */
-    public void save() throws ObjectContentManagerException;  
-    
+    public void save() throws ObjectContentManagerException;
+
     /**
-     * Close the session    
-     * @throws ObjectContentManagerException when it is not possible to logout
+     * Close the session
+     * 
+     * @throws ObjectContentManagerException
+     *             when it is not possible to logout
      */
     public void logout() throws ObjectContentManagerException;
-    
+
     /**
      * Lock object saved on {@param path }.
      * 
@@ -338,18 +439,21 @@ public interface ObjectContentManager
      * @param isDeep
      *            is lock deep? See JCR spec: 8.4.3 Shallow and Deep Locks
      * @param isSessionScoped
-     *            is lock session scoped? See JCR spec: Session-scoped and Open-scoped Locks
+     *            is lock session scoped? See JCR spec: Session-scoped and
+     *            Open-scoped Locks
      * @return lock - Wrapper object for a JCR lock
      * 
      * @throws LockedException
      *             if path is locked (cannot lock same path again)
      */
-    public Lock lock(String path, boolean isDeep, boolean isSessionScoped) throws LockedException;
-    
+    public Lock lock(String path, boolean isDeep, boolean isSessionScoped)
+            throws LockedException;
+
     /**
      * Unlock object stored on {@param path }.
-     *  
-     * @param path path to stored object
+     * 
+     * @param path
+     *            path to stored object
      * 
      * 
      * @param lockToken
@@ -358,8 +462,9 @@ public interface ObjectContentManager
      * @throws IllegalUnlockException
      *             throws if the current operation does not own the current lock
      */
-    public void unlock(String path, String lockToken) throws IllegalUnlockException;
-    
+    public void unlock(String path, String lockToken)
+            throws IllegalUnlockException;
+
     /**
      * Is that path locked?
      * 
@@ -367,42 +472,51 @@ public interface ObjectContentManager
      * @return <code>true</code> if path locked
      */
     public boolean isLocked(String absPath);
-    
+
     /**
      * 
      * @return The query manager reference
      */
     public QueryManager getQueryManager();
-    
+
     /**
      * Refresh the underlying jcr session (see the jcr spec)
+     * 
      * @param keepChanges
      */
     public void refresh(boolean keepChanges);
-    
+
     /**
-     *  Move an object
-     *   
-     * @param srcPath path of the object to move
-     * @param destPath destination path
+     * Move an object
+     * 
+     * @param srcPath
+     *            path of the object to move
+     * @param destPath
+     *            destination path
      * 
      * @throws ObjectContentManagerException
      */
-    public void move(String srcPath, String destPath) throws ObjectContentManagerException;
-    
+    public void move(String srcPath, String destPath)
+            throws ObjectContentManagerException;
+
     /**
-     * Copy an object 
+     * Copy an object
      * 
-     * @param srcPath path of the object to copy
-     * @param destPath destination path
+     * @param srcPath
+     *            path of the object to copy
+     * @param destPath
+     *            destination path
      * 
      * @throws ObjectContentManagerException
      */
-    public void copy(String srcPath, String destPath) throws ObjectContentManagerException; 
-        
+    public void copy(String srcPath, String destPath)
+            throws ObjectContentManagerException;
+
     /**
-     * This method returns the JCR session. The JCR session could be used to make some JCR specific calls.
-     * @return the associated JCR session 
+     * This method returns the JCR session. The JCR session could be used to
+     * make some JCR specific calls.
+     * 
+     * @return the associated JCR session
      */
     public Session getSession();
 }
