@@ -63,11 +63,7 @@ public class DigesterSimpleTest extends DigesterTestBase
      */
     public void tearDown() throws Exception
     {
-    	if (getObjectContentManager().objectExists("/test"))
-    	{
-    	   getObjectContentManager().remove("/test");
-    	   getObjectContentManager().save();
-    	}
+    	cleanUpRepisotory();
         super.tearDown();
     }
     

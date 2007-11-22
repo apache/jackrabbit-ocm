@@ -45,9 +45,7 @@ public class DigesterBasicVersionningTest extends DigesterTestBase
 
     public void tearDown() throws Exception
     {
-    	cleanUpRepisotory();
-    	ocm.save();
-       
+    	cleanUpRepisotory();       
         super.tearDown();
     }	
 
