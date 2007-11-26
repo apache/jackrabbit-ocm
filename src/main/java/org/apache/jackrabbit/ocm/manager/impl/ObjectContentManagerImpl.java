@@ -581,33 +581,7 @@ public class ObjectContentManagerImpl implements ObjectContentManager {
         filter.setNodeName(nodeName);
         Query query = queryManager.createQuery(filter);
         return getObjects(query);
-        
-        /*
-        String jcrExpression = "";
-        // Below code is incorrect as the JCR Expression should be formed in
-        // Query manager. Since the existing implementation of
-        // QueryManagerImpl.buildJCRExpression(Query) is not working fine for
-        // retrieval of objects in that path too.
-        String parentPath = NodeUtil.getParentPath(path);
-        // Making it empty would not cause an issue for //element. Otherwise it
-        // would become ///element which is incorrect.
-        if (parentPath.equals("/")) {
-            parentPath = "";
-        }
-        String nodeName = NodeUtil.getNodeName(path);
-        // If nodeName is missing then include *.
-        if (nodeName == null || nodeName.length() == 0) {
-            nodeName = "*";
-        }
-        ClassDescriptor classDescriptor = mapper.getClassDescriptorByClass(objectClass);
-        String nodeType = getNodeType(classDescriptor);
-        jcrExpression = "/jcr:root" + parentPath + "/element(" + nodeName + "," + nodeType + ") ";
-        if (classDescriptor.hasDiscriminator() && !classDescriptor.isAbstract() && (!classDescriptor.isInterface())) {
-            jcrExpression += "[@" + ManagerConstant.DISCRIMINATOR_PROPERTY_NAME + "='" + classDescriptor.getClassName() + "']";
-        }
-        
-        return getObjects(jcrExpression, javax.jcr.query.Query.XPATH);
-        */
+             
         
     }
 
