@@ -48,6 +48,20 @@ public interface Filter
     
     
     /**
+     * Set the node name used to build the jcr search expression. 
+     * 
+     * @param nodeName
+     */
+    void setNodeName(String nodeName);
+    
+    /**
+     * Get the node name used in the jcr expression
+     * @return
+     */
+    String getNodeName();
+    
+    
+    /**
      * Search content based on a fullTextSearch. 
      * Depending on the full text search engine, you can also filter on properties.
      * 

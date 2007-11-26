@@ -64,12 +64,12 @@ public class QueryManagerImpl implements QueryManager {
 
         String jcrExp = "";
 
-        // Add scope
+        // Add scope & node name
         if (((filter.getScope() != null) && (!filter.getScope().equals("")))) {
-            jcrExp += "/jcr:root" + filter.getScope() + "element(*, ";
+            jcrExp += "/jcr:root" + filter.getScope() + "element(" + filter.getNodeName() + ", ";
         }
         else {
-            jcrExp += "//element(*, ";
+            jcrExp += "//element(" + filter.getNodeName() + ", ";
         }
 
         // Add node type

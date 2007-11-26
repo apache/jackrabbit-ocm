@@ -58,6 +58,7 @@ import org.apache.jackrabbit.ocm.manager.objectconverter.impl.ProxyManagerImpl;
 import org.apache.jackrabbit.ocm.mapper.Mapper;
 import org.apache.jackrabbit.ocm.mapper.impl.digester.DigesterMapperImpl;
 import org.apache.jackrabbit.ocm.mapper.model.ClassDescriptor;
+import org.apache.jackrabbit.ocm.query.Filter;
 import org.apache.jackrabbit.ocm.query.Query;
 import org.apache.jackrabbit.ocm.query.QueryManager;
 import org.apache.jackrabbit.ocm.query.impl.QueryManagerImpl;
@@ -547,8 +548,13 @@ public class ObjectContentManagerImpl implements ObjectContentManager {
     }
 
     /**
+     * Returns a list of objects of that particular class which are directly
+     * under that path. This would not return the objects anywhere below the
+     * denoted path.
      * 
-     * @see org.apache.jackrabbit.ocm.manager.ObjectContentManager#getObjects(java.lang.Class, java.lang.String)
+     * @param objectClass
+     * @param path
+     * @return
      */
     public Collection getObjects(Class objectClass, String path) throws ObjectContentManagerException {
         try {
@@ -558,6 +564,25 @@ public class ObjectContentManagerImpl implements ObjectContentManager {
         } catch (RepositoryException e) {
             throw new org.apache.jackrabbit.ocm.exception.RepositoryException("Impossible to get the objects at " + path, e);
         }
+        
+        
+        String parentPath = NodeUtil.getParentPath(path);
+        if (! parentPath.equals("/")) {
+        	parentPath = parentPath + "/";
+        }
+        
+        String nodeName = NodeUtil.getNodeName(path);
+        // If nodeName is missing then include *.
+        if (nodeName == null || nodeName.length() == 0) {
+            nodeName = "*";
+        }
+        Filter filter = queryManager.createFilter(objectClass);
+        filter.setScope(parentPath);
+        filter.setNodeName(nodeName);
+        Query query = queryManager.createQuery(filter);
+        return getObjects(query);
+        
+        /*
         String jcrExpression = "";
         // Below code is incorrect as the JCR Expression should be formed in
         // Query manager. Since the existing implementation of
@@ -580,10 +605,13 @@ public class ObjectContentManagerImpl implements ObjectContentManager {
         if (classDescriptor.hasDiscriminator() && !classDescriptor.isAbstract() && (!classDescriptor.isInterface())) {
             jcrExpression += "[@" + ManagerConstant.DISCRIMINATOR_PROPERTY_NAME + "='" + classDescriptor.getClassName() + "']";
         }
+        
         return getObjects(jcrExpression, javax.jcr.query.Query.XPATH);
+        */
+        
     }
 
-    // This method should go in NodeUtil?
+    /*
     private String getNodeType(ClassDescriptor classDescriptor) {
         String jcrNodeType = classDescriptor.getJcrType();
         if (jcrNodeType == null || jcrNodeType.equals("")) {
@@ -592,7 +620,8 @@ public class ObjectContentManagerImpl implements ObjectContentManager {
             return jcrNodeType;
         }
     }
-
+    */
+   
     /**
      * 
      * @see org.apache.jackrabbit.ocm.manager.ObjectContentManager#getObjectIterator(org.apache.jackrabbit.ocm.query.Query)
