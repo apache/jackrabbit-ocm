@@ -245,6 +245,8 @@ public class DigesterSimpleQueryTest extends DigesterTestBase {
             result = ocm.getObjects(Page.class, "/folder/test");
             assertEquals("Invalid number of objects", 4, result.size());
 
+            result = ocm.getObjects(Page.class, "/folder");
+            assertEquals("Invalid number of objects", 0, result.size());
 
         } catch (Exception e) {
             e.printStackTrace();

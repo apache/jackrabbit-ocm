@@ -39,6 +39,7 @@ public class FilterImpl implements Filter {
 
     private Class claszz;
     private String scope = "";
+    private String nodeName = "*";
     private String jcrExpression = "";
 
     private ClassDescriptor classDescriptor;
@@ -79,9 +80,17 @@ public class FilterImpl implements Filter {
      */
     public String getScope() {
         return this.scope;
-    }
+    }    
+    
+    public String getNodeName() {
+		return nodeName;
+	}
 
-    /**
+	public void setNodeName(String nodeName) {
+		this.nodeName = nodeName;
+	}
+
+	/**
      * @see org.apache.jackrabbit.ocm.query.Filter#addContains(java.lang.String, java.lang.String)
      */
     public Filter addContains(String scope, String fullTextSearch) {
