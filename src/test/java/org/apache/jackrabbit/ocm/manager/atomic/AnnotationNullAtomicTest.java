@@ -55,13 +55,6 @@ public class AnnotationNullAtomicTest extends DigesterTestBase
     }
     
 
-	public void tearDown() throws Exception {
-
-		cleanUpRepisotory();
-		super.tearDown();
-		
-	}  
-
     public void testNullValueAtomicFields()
     {
         try

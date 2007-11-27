@@ -57,15 +57,6 @@ public class DigesterSimpleTest extends DigesterTestBase
                 new TestSuite(DigesterSimpleTest.class));
     }
 
-
-    /**
-     * @see junit.framework.TestCase#tearDown()
-     */
-    public void tearDown() throws Exception
-    {
-    	cleanUpRepisotory();
-        super.tearDown();
-    }
     
     public void testClassA()
     {

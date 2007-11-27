@@ -41,13 +41,7 @@ public class DigesterBasicVersionningTest extends DigesterTestBase
 		// All methods starting with "test" will be executed in the test suite.
 		return new RepositoryLifecycleTestSetup(
                 new TestSuite(DigesterBasicVersionningTest.class));
-	}
-
-    public void tearDown() throws Exception
-    {
-    	cleanUpRepisotory();       
-        super.tearDown();
-    }	
+	}	
 
 	public void testSimpleVersion()
 	{

@@ -75,15 +75,6 @@ public class AnnotationAvoidRecursiveLoopTest extends AnnotationTestBase
                 new TestSuite(AnnotationAvoidRecursiveLoopTest.class));
     }
 
-
-    /**
-     * @see junit.framework.TestCase#tearDown()
-     */
-    public void tearDown() throws Exception
-    {
-    	cleanUpRepisotory();
-        super.tearDown();
-    }
     
     public void testCrossReferences()
     {

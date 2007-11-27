@@ -71,11 +71,6 @@ public class DigesterMultiValueQueryTest extends DigesterTestBase
         
     }
     
-    public void tearDown() throws Exception
-    {
-    	cleanUpRepisotory();
-        super.tearDown();
-    }	
     
     public void testMultiValueSearch()
     {

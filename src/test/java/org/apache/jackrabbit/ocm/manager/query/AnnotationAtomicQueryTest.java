@@ -61,15 +61,6 @@ public class AnnotationAtomicQueryTest extends AnnotationTestBase
 		return new RepositoryLifecycleTestSetup(new TestSuite(AnnotationAtomicQueryTest.class));
 	}
 	
-    
-	public void tearDown() throws Exception {
-
-		cleanUpRepisotory();
-		super.tearDown();
-		
-	}	
-	
-
 	public void testQueryAtomicFields()
 	{
 

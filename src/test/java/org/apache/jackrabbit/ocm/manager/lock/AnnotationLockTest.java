@@ -58,15 +58,6 @@ public class AnnotationLockTest extends AnnotationTestBase
                 new TestSuite(AnnotationLockTest.class));
     }
 
-
-    /**
-     * @see junit.framework.TestCase#tearDown()
-     */
-    public void tearDown() throws Exception
-    {
-    	cleanUpRepisotory();
-        super.tearDown();
-    }
     
     public void testBasicLock()
     {

@@ -55,16 +55,6 @@ public class DigesterResidualPropertiesCollectionConverterImplTest extends Diges
         return new RepositoryLifecycleTestSetup(new TestSuite(DigesterResidualPropertiesCollectionConverterImplTest.class));
     }
 
-    
-    /**
-     * @see junit.framework.TestCase#tearDown()
-     */
-    public void tearDown() throws Exception
-    {
-    	this.cleanUpRepisotory();          
-    	
-        super.tearDown();
-    }    
 
     public void testResidualProperties()
     {

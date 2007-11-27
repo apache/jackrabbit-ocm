@@ -56,17 +56,6 @@ public class AnnotationResidualPropertiesCollectionConverterImplTest extends Ann
         return new RepositoryLifecycleTestSetup(new TestSuite(AnnotationResidualPropertiesCollectionConverterImplTest.class));
     }
 
-    
-    /**
-     * @see junit.framework.TestCase#tearDown()
-     */
-    public void tearDown() throws Exception
-    {
-    	this.cleanUpRepisotory();          
-    	
-        super.tearDown();
-    }    
-
     public void testResidualProperties()
     {
         try

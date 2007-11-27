@@ -59,13 +59,6 @@ public class DigesterInterfaceHierarchyTest extends DigesterTestBase {
 				DigesterInterfaceHierarchyTest.class));
 	}
 
-	public void tearDown() throws Exception {
-
-		cleanUpRepisotory();
-		super.tearDown();
-		
-	}
-
 
 	public void testRetrieveSingleton() {
 

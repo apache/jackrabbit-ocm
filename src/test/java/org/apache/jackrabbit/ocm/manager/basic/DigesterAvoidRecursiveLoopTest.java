@@ -62,15 +62,6 @@ public class DigesterAvoidRecursiveLoopTest extends DigesterTestBase
                 new TestSuite(DigesterAvoidRecursiveLoopTest.class));
     }
 
-
-    /**
-     * @see junit.framework.TestCase#tearDown()
-     */
-    public void tearDown() throws Exception
-    {
-    	cleanUpRepisotory();
-        super.tearDown();
-    }
     
     public void testCrossReferences()
     {

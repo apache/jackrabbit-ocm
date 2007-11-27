@@ -63,14 +63,6 @@ public class AnnotationInheritanceConcreteClassTest extends AnnotationTestBase {
 				AnnotationInheritanceConcreteClassTest.class));
 	}
 
-	public void tearDown() throws Exception {
-
-		cleanUpRepisotory();
-		super.tearDown();
-
-	}
-
-
 	public void testRetrieveSingleton() {
 
 		try {

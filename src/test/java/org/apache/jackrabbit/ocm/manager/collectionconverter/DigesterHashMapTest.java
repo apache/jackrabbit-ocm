@@ -52,17 +52,7 @@ public class DigesterHashMapTest extends DigesterTestBase
         return new RepositoryLifecycleTestSetup(new TestSuite(DigesterHashMapTest.class));
     }
 
-    
-    /**
-     * @see junit.framework.TestCase#tearDown()
-     */
-    public void tearDown() throws Exception
-    {
-    	this.cleanUpRepisotory();          
-    	
-        super.tearDown();
-    }    
-    
+           
     public void testHashMap()
     {
         try

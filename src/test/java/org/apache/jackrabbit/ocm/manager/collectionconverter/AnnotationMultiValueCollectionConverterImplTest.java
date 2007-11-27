@@ -52,16 +52,7 @@ public class AnnotationMultiValueCollectionConverterImplTest extends AnnotationT
         return new RepositoryLifecycleTestSetup(new TestSuite(AnnotationMultiValueCollectionConverterImplTest.class));
     }
 
-    
-    /**
-     * @see junit.framework.TestCase#tearDown()
-     */
-    public void tearDown() throws Exception
-    {
-        this.cleanUpRepisotory();       
-    	
-        super.tearDown();
-    }    
+ 
 
     public void testMultiValue()
     {

@@ -41,12 +41,7 @@ public class AnnotationBasicVersionningTest extends AnnotationTestBase
 		return new RepositoryLifecycleTestSetup(
                 new TestSuite(AnnotationBasicVersionningTest.class));
 	}
-
-    public void tearDown() throws Exception
-    {
-        cleanUpRepisotory();       
-        super.tearDown();
-    }	
+	
 
 	public void testSimpleVersion()
 	{

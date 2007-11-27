@@ -72,12 +72,6 @@ public class AnnotationRemoveTest extends DigesterTestBase
         
     }
 	
-	public void tearDown() throws Exception {
-
-		cleanUpRepisotory();
-		super.tearDown();
-		
-	}
 
 	public void testRemove()
 	{

@@ -76,12 +76,7 @@ public class DigesterScopeQueryTest extends DigesterTestBase
         
 		
     }
-    
-    public void tearDown() throws Exception
-    {
-    	cleanUpRepisotory();
-        super.tearDown();
-    }	
+    	
     
     /**
      * Test equalTo
