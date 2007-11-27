@@ -245,6 +245,15 @@ public interface ObjectContentManager {
 
     public Collection getObjects(Class objectClass, String path)
             throws ObjectContentManagerException;
+    
+    /**
+     * Return a list of object matching to a JCR query
+     * 
+     * @param query the JCR query 
+     * @param language the JCR Language ("XPATH" or "SQL").
+     * @return
+     */
+    public Collection getObjects(String query, String language);
 
     /**
      * Retrieve some objects matching to a query.

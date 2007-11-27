@@ -584,17 +584,6 @@ public class ObjectContentManagerImpl implements ObjectContentManager {
              
         
     }
-
-    /*
-    private String getNodeType(ClassDescriptor classDescriptor) {
-        String jcrNodeType = classDescriptor.getJcrType();
-        if (jcrNodeType == null || jcrNodeType.equals("")) {
-            return ManagerConstant.NT_UNSTRUCTURED;
-        } else {
-            return jcrNodeType;
-        }
-    }
-    */
    
     /**
      * 
@@ -621,7 +610,7 @@ public class ObjectContentManagerImpl implements ObjectContentManager {
         return new ObjectIterator(nodeIterator, this.objectConverter, this.session);
     }
 
-    private Collection getObjects(String query, String language) {
+    public Collection getObjects(String query, String language) {
         try {
             log.debug("Get Objects with expression : " + query + " and language " + language);
 
