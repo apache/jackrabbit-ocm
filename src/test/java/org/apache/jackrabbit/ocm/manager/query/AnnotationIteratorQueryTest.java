@@ -76,12 +76,6 @@ public class AnnotationIteratorQueryTest extends AnnotationTestBase
         
     }
     
-    public void tearDown() throws Exception
-    {
-    	cleanUpRepisotory();
-        super.tearDown();
-    }	
-    
     /**
      * Test equalTo
      *

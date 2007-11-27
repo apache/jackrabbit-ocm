@@ -53,17 +53,7 @@ public class AnnotationNTCollectionConverterImplTest extends AnnotationTestBase
         return new RepositoryLifecycleTestSetup(
                 new TestSuite(AnnotationNTCollectionConverterImplTest.class));
     }
-    
-    
-    /**
-     * @see junit.framework.TestCase#tearDown()
-     */
-    public void tearDown() throws Exception
-    {
-    	this.cleanUpRepisotory();          
-    	
-        super.tearDown();
-    }       
+          
 
     public void testCollection()
     {

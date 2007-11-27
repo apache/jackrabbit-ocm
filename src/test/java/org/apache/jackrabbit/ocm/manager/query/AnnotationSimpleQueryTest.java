@@ -70,14 +70,6 @@ public class AnnotationSimpleQueryTest extends AnnotationTestBase
         importData();
     }
 
-    /**
-     * @see junit.framework.TestCase#tearDown()
-     */
-    public void tearDown() throws Exception
-    {
-    	cleanUpRepisotory();
-        super.tearDown();
-    }
     
     /**
      * Test equalTo

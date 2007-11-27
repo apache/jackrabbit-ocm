@@ -70,12 +70,7 @@ public class AnnotationMultiValueQueryTest extends AnnotationTestBase
 		this.importData();
         
     }
-    
-    public void tearDown() throws Exception
-    {
-    	cleanUpRepisotory();
-        super.tearDown();
-    }	
+    	
     
     public void testMultiValueSearch()
     {

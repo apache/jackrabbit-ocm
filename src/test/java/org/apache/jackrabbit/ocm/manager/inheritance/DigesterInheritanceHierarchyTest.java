@@ -58,14 +58,6 @@ public class DigesterInheritanceHierarchyTest extends DigesterTestBase {
 				DigesterInheritanceHierarchyTest.class));
 	}
 
-	public void tearDown() throws Exception {
-
-		cleanUpRepisotory();
-		super.tearDown();
-		
-	}
-
-
 	public void testRetrieveSingleton() {
 
 		try {

@@ -75,12 +75,7 @@ public class DigesterIteratorQueryTest extends DigesterTestBase
 		this.importData();
         
     }
-    
-    public void tearDown() throws Exception
-    {
-    	cleanUpRepisotory();
-        super.tearDown();
-    }	
+    	
     
     /**
      * Test equalTo

@@ -55,13 +55,6 @@ public class DigesterProxyTest extends DigesterTestBase {
 				DigesterProxyTest.class));
 	}
 
-	public void tearDown() throws Exception {
-
-		cleanUpRepisotory();
-		super.tearDown();
-		
-	}
-
 	public void testBeanProxy() {
 
 		try {

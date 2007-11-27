@@ -61,13 +61,6 @@ public class DigesterAutoTest extends DigesterTestBase {
 				DigesterAutoTest.class));
 	}
 
-	public void tearDown() throws Exception {
-
-		cleanUpRepisotory();
-		super.tearDown();
-		
-	}
-
 	
 	public void testAuto() {
 		

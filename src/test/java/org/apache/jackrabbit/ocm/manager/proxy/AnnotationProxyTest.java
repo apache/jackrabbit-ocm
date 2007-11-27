@@ -55,12 +55,6 @@ public class AnnotationProxyTest extends AnnotationTestBase {
 				AnnotationProxyTest.class));
 	}
 
-	public void tearDown() throws Exception {
-
-		cleanUpRepisotory();
-		super.tearDown();
-		
-	}
 
 	public void testBeanProxy() {
 

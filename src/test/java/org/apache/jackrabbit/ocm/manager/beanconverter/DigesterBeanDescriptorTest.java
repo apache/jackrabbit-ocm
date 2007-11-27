@@ -64,17 +64,16 @@ public class DigesterBeanDescriptorTest extends DigesterTestBase {
         super.setUp();
     }
 
-    
-    /**
-     * @see org.apache.jackrabbit.ocm.DigesterTestBase#tearDown()
-     */
-    public void tearDown() throws Exception {
-        this.cleanUpRepisotory();
-        FakeBeanConverter.cleanUpLog();
-        super.tearDown();
-    }
+	/**
+	 * @see junit.framework.TestCase#tearDown()
+	 */
+	public void tearDown() throws Exception
+	{		
+		FakeBeanConverter.cleanUpLog();
+		cleanUpRepisotory();
+		super.tearDown();
+	}    
 
-    
     public void testBasic() throws Exception 
     {
     	

@@ -58,13 +58,6 @@ public class AnnotationInheritanceHierarchyTest extends AnnotationTestBase {
 				AnnotationInheritanceHierarchyTest.class));
 	}
 
-	public void tearDown() throws Exception {
-
-		cleanUpRepisotory();
-		super.tearDown();
-		
-	}
-
 
 	public void testRetrieveSingleton() {
 

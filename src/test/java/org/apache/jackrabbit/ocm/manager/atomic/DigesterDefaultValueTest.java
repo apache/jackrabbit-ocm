@@ -49,14 +49,6 @@ public class DigesterDefaultValueTest extends DigesterTestBase
         // All methods starting with "test" will be executed in the test suite.
         return new RepositoryLifecycleTestSetup(new TestSuite(DigesterDefaultValueTest.class));
     }
-
-
-	public void tearDown() throws Exception {
-
-		cleanUpRepisotory();
-		super.tearDown();
-		
-	}
     
 	public void testDefaultValues()
 	{

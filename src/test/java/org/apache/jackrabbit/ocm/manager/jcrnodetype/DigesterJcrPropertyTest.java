@@ -48,14 +48,6 @@ public class DigesterJcrPropertyTest extends DigesterTestBase {
 		return new RepositoryLifecycleTestSetup(new TestSuite(DigesterJcrPropertyTest.class));
 	}
 
-	public void tearDown() throws Exception {
-
-		cleanUpRepisotory();
-		super.tearDown();
-		
-	}
-
-
 	public void testRequiredProperty() 
 	{
 

@@ -69,13 +69,7 @@ public class AnnotationSameNameSiblingTest extends DigesterTestBase
                 new TestSuite(AnnotationSameNameSiblingTest.class));
 	}
 
-	public void tearDown() throws Exception 
-	{
 
-		cleanUpRepisotory();
-		super.tearDown();
-		
-	}
 	public void testSameNameSiblings()
 	{
 

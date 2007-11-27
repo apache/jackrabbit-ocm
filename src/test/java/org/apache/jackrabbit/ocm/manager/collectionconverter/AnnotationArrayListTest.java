@@ -51,17 +51,7 @@ public class AnnotationArrayListTest extends AnnotationTestBase
         // All methods starting with "test" will be executed in the test suite.
         return new RepositoryLifecycleTestSetup(new TestSuite(AnnotationArrayListTest.class));
     }
-
-    
-    /**
-     * @see junit.framework.TestCase#tearDown()
-     */
-    public void tearDown() throws Exception
-    {
-    	this.cleanUpRepisotory();          
-    	
-        super.tearDown();
-    }    
+  
     
     public void testArrayList()
     {

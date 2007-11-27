@@ -56,17 +56,7 @@ public class DigesterMultiValueCollectionConverterImplTest extends DigesterTestB
         // All methods starting with "test" will be executed in the test suite.
         return new RepositoryLifecycleTestSetup(new TestSuite(DigesterMultiValueCollectionConverterImplTest.class));
     }
-
-    
-    /**
-     * @see junit.framework.TestCase#tearDown()
-     */
-    public void tearDown() throws Exception
-    {
-    	this.cleanUpRepisotory();          
-    	
-        super.tearDown();
-    }    
+   
 
     public void testMultiValue()
     {

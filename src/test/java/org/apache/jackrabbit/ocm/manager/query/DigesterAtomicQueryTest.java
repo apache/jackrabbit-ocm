@@ -60,16 +60,7 @@ public class DigesterAtomicQueryTest extends DigesterTestBase
 		// All methods starting with "test" will be executed in the test suite.
 		return new RepositoryLifecycleTestSetup(new TestSuite(DigesterAtomicQueryTest.class));
 	}
-	
-    
-	public void tearDown() throws Exception {
-
-		cleanUpRepisotory();
-		super.tearDown();
 		
-	}	
-	
-
 	public void testQueryAtomicFields()
 	{
 

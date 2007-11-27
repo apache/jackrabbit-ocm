@@ -49,14 +49,6 @@ public class AnnotationJcrPropertyTest extends AnnotationTestBase
 		return new RepositoryLifecycleTestSetup(new TestSuite(AnnotationJcrPropertyTest.class));
 	}
 
-	public void tearDown() throws Exception {
-
-		cleanUpRepisotory();
-		super.tearDown();
-		
-	}
-
-
 	public void testRequiredProperty() 
 	{
 

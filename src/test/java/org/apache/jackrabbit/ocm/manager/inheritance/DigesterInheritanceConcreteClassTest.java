@@ -63,14 +63,6 @@ public class DigesterInheritanceConcreteClassTest extends DigesterTestBase {
 				DigesterInheritanceConcreteClassTest.class));
 	}
 
-	public void tearDown() throws Exception {
-
-		cleanUpRepisotory();
-		super.tearDown();
-
-	}
-
-
 	public void testRetrieveSingleton() {
 
 		try {

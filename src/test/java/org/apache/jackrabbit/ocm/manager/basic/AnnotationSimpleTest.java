@@ -57,15 +57,6 @@ public class AnnotationSimpleTest extends DigesterTestBase
                 new TestSuite(AnnotationSimpleTest.class));
     }
 
-
-    /**
-     * @see junit.framework.TestCase#tearDown()
-     */
-    public void tearDown() throws Exception
-    {
-    	cleanUpRepisotory();
-        super.tearDown();
-    }
     
     public void testClassA()
     {

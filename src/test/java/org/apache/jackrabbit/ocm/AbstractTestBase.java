@@ -114,7 +114,8 @@ public abstract class AbstractTestBase extends TestCase
 	 * @see junit.framework.TestCase#tearDown()
 	 */
 	public void tearDown() throws Exception
-	{
+	{		
+		cleanUpRepisotory();
 		super.tearDown();
 	}
 

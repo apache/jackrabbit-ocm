@@ -56,17 +56,7 @@ public class DigesterNTCollectionConverterImplTest extends DigesterTestBase
         return new RepositoryLifecycleTestSetup(
                 new TestSuite(DigesterNTCollectionConverterImplTest.class));
     }
-    
-    
-    /**
-     * @see junit.framework.TestCase#tearDown()
-     */
-    public void tearDown() throws Exception
-    {
-    	this.cleanUpRepisotory();          
-    	
-        super.tearDown();
-    }       
+         
 
     public void testCollection()
     {
