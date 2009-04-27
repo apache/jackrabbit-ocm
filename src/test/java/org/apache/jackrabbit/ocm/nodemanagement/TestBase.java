@@ -28,7 +28,7 @@ import org.apache.jackrabbit.ocm.nodemanagement.impl.RepositorySessionFactory;
  *
  * @author Oliver Kiessler
  */
-public class TestBase  extends TestCase
+public abstract class TestBase  extends TestCase
 {
     protected static Session session;
 
@@ -44,7 +44,7 @@ public class TestBase  extends TestCase
             RepositoryConfiguration configuration = new RepositoryConfiguration();
             configuration.setConfigurationFile("./src/test/config/jackrabbit/repository.xml");
             configuration.setRepositoryName("repositoryTest");
-            configuration.setRepositoryPath("./target/repository");
+            configuration.setRepositoryPath("./target/nodemanagement-repository");
             session = RepositorySessionFactory.getSession(RepositorySessionFactory.JACKRABBIT, "superuser", "superuser", configuration);
 
             /*RepositoryConfiguration configuration = new RepositoryConfiguration();
