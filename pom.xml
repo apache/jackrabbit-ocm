@@ -26,7 +26,7 @@
   <parent>
     <groupId>org.apache.jackrabbit</groupId>
     <artifactId>parent</artifactId>
-    <version>2</version>
+    <version>3</version>
   </parent>
 
   <artifactId>jackrabbit-ocm</artifactId>
@@ -187,13 +187,13 @@
 
   <scm>
     <connection>
-      scm:svn:http://svn.apache.org/repos/asf/jackrabbit/trunk/jackrabbit-ocm
+      scm:svn:http://svn.apache.org/repos/asf/jackrabbit/commons/ocm/trunk
     </connection>
     <developerConnection>
-      scm:svn:https://svn.apache.org/repos/asf/jackrabbit/trunk/jackrabbit-ocm
+      scm:svn:https://svn.apache.org/repos/asf/jackrabbit/commons/ocm/trunk
     </developerConnection>
     <url>
-      http://svn.apache.org/viewvc/asf/jackrabbit/trunk/jackrabbit-ocm
+      http://svn.apache.org/viewvc/asf/jackrabbit/commons/ocm/trunk
     </url>
   </scm>
 
