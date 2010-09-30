@@ -25,6 +25,7 @@ import java.util.Map;
 
 import javax.jcr.InvalidItemStateException;
 import javax.jcr.Item;
+import javax.jcr.ItemNotFoundException;
 import javax.jcr.Node;
 import javax.jcr.NodeIterator;
 import javax.jcr.PathNotFoundException;
@@ -33,10 +34,12 @@ import javax.jcr.Session;
 import javax.jcr.UnsupportedRepositoryOperationException;
 import javax.jcr.Workspace;
 import javax.jcr.lock.LockException;
+import javax.jcr.lock.LockManager;
 import javax.jcr.nodetype.NoSuchNodeTypeException;
 import javax.jcr.query.InvalidQueryException;
 import javax.jcr.query.QueryResult;
 import javax.jcr.version.VersionHistory;
+import javax.jcr.version.VersionManager;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -281,7 +284,7 @@ public class ObjectContentManagerImpl implements ObjectContentManager {
     public Object getObjectByUuid(String uuid) {
 
         try {
-            Node node = session.getNodeByUUID(uuid);
+            Node node = session.getNodeByIdentifier(uuid);
             Object object = objectConverter.getObject(session, node.getPath());
             requestObjectCache.clear();
             return object;
@@ -669,10 +672,10 @@ public class ObjectContentManagerImpl implements ObjectContentManager {
             if (!node.isNodeType("mix:versionable")) {
                 throw new VersionException("The object " + path + "is not versionable");
             }
-            javax.jcr.version.Version newVersion = node.checkin();
+            javax.jcr.version.Version newVersion = getVersionManager().checkin(path);
 
             if (versionLabels != null) {
-                VersionHistory versionHistory = node.getVersionHistory();
+                VersionHistory versionHistory = getVersionManager().getVersionHistory(path);
                 for (int i = 0; i < versionLabels.length; i++) {
                     versionHistory.addVersionLabel(newVersion.getName(), versionLabels[i], false);
                 }
@@ -707,7 +710,7 @@ public class ObjectContentManagerImpl implements ObjectContentManager {
                 throw new VersionException("The object " + path + "is not versionable");
             }
 
-            node.checkout();
+            getVersionManager().checkout(path);
         } catch (ClassCastException cce) {
             throw new ObjectContentManagerException("Cannot retrieve an object from a property path " + path);
         } catch (PathNotFoundException pnfe) {
@@ -735,7 +738,7 @@ public class ObjectContentManagerImpl implements ObjectContentManager {
                 throw new VersionException("The object " + path + "is not versionable");
             }
 
-            VersionHistory history = node.getVersionHistory();
+            VersionHistory history = getVersionManager().getVersionHistory(path);
             history.addVersionLabel(versionName, versionLabel, false);
         } catch (ClassCastException cce) {
             throw new ObjectContentManagerException("Cannot retrieve an object from a property path " + path);
@@ -762,7 +765,7 @@ public class ObjectContentManagerImpl implements ObjectContentManager {
                 throw new VersionException("The object " + path + "is not versionable");
             }
 
-            VersionHistory history = node.getVersionHistory();
+            VersionHistory history = getVersionManager().getVersionHistory(path);
 
             return new Version(history.getVersion(versionName));
         } catch (ClassCastException cce) {
@@ -790,7 +793,7 @@ public class ObjectContentManagerImpl implements ObjectContentManager {
                 throw new VersionException("The object " + path + "is not versionable");
             }
 
-            VersionHistory history = node.getVersionHistory();
+            VersionHistory history = getVersionManager().getVersionHistory(path);
             javax.jcr.version.Version version = history.getVersion(versionName);
 
             return history.getVersionLabels(version);
@@ -817,7 +820,7 @@ public class ObjectContentManagerImpl implements ObjectContentManager {
                 throw new VersionException("The object " + path + "is not versionable");
             }
 
-            VersionHistory history = node.getVersionHistory();
+            VersionHistory history = getVersionManager().getVersionHistory(path);
 
             return history.getVersionLabels();
         } catch (ClassCastException cce) {
@@ -842,7 +845,7 @@ public class ObjectContentManagerImpl implements ObjectContentManager {
                 throw new VersionException("The object " + path + "is not versionable");
             }
 
-            VersionHistory history = node.getVersionHistory();
+            VersionHistory history = getVersionManager().getVersionHistory(path);
 
             return new VersionIterator(history.getAllVersions());
         } catch (ClassCastException cce) {
@@ -867,7 +870,7 @@ public class ObjectContentManagerImpl implements ObjectContentManager {
                 throw new VersionException("The object " + path + "is not versionable");
             }
 
-            VersionHistory history = node.getVersionHistory();
+            VersionHistory history = getVersionManager().getVersionHistory(path);
 
             return new Version(history.getRootVersion());
         } catch (ClassCastException cce) {
@@ -892,7 +895,7 @@ public class ObjectContentManagerImpl implements ObjectContentManager {
                 throw new VersionException("The object " + path + "is not versionable");
             }
 
-            return new Version(node.getBaseVersion());
+            return new Version(getVersionManager().getBaseVersion(path));
         } catch (ClassCastException cce) {
             throw new ObjectContentManagerException("Cannot retrieve an object from a property path " + path);
         } catch (PathNotFoundException pnfe) {
@@ -917,7 +920,7 @@ public class ObjectContentManagerImpl implements ObjectContentManager {
             checkIfNodeLocked(absPath);
 
             Node node = getNode(absPath);
-            javax.jcr.lock.Lock lock = node.lock(isDeep, isSessionScoped);
+            javax.jcr.lock.Lock lock = getLockManager().lock(absPath, isDeep, isSessionScoped, 0L, session.getUserID());
 
             return new Lock(lock);
         } catch (LockException e) {
@@ -937,7 +940,7 @@ public class ObjectContentManagerImpl implements ObjectContentManager {
     public void unlock(final String absPath, final String lockToken) throws IllegalUnlockException {
         String lockOwner = null;
         try {
-            maybeAddLockToken(lockToken);
+            maybeAddLockToken(lockToken, absPath);
 
             Node node = getNode(absPath);
             if (node.isLocked() == false) {
@@ -945,10 +948,10 @@ public class ObjectContentManagerImpl implements ObjectContentManager {
                 return;
             }
 
-            javax.jcr.lock.Lock lock = node.getLock();
+            javax.jcr.lock.Lock lock = getLockManager().getLock(absPath);
             lockOwner = lock.getLockOwner();
 
-            node.unlock();
+            getLockManager().unlock(absPath);
         } catch (LockException e) {
             // LockException if this node does not currently hold a lock (see
             // upper code)
@@ -1000,7 +1003,7 @@ public class ObjectContentManagerImpl implements ObjectContentManager {
 
         // Node can hold nock or can be locked with precedencor
         if (node.isLocked()) {
-            javax.jcr.lock.Lock lock = node.getLock();
+            javax.jcr.lock.Lock lock = getLockManager().getLock(absPath);
             String lockOwner = lock.getLockOwner();
 
             if (!session.getUserID().equals(lockOwner)) {
@@ -1010,11 +1013,18 @@ public class ObjectContentManagerImpl implements ObjectContentManager {
         }
     }
 
-    protected void maybeAddLockToken(final String lockToken) {
+    protected void maybeAddLockToken(final String lockToken, final String path) {
         if (lockToken != null) {
             // This user (this instance of PM) potentionally placed lock so
             // session already has lock token
-            final String[] lockTokens = getSession().getLockTokens();
+            String[] lockTokens = null;
+            try {
+                lockTokens = getLockManager().getLockTokens();
+            } catch (UnsupportedRepositoryOperationException ex) {
+                throw new LockedException(session.getUserID(), path);
+            } catch (RepositoryException ex) {
+                throw new org.apache.jackrabbit.ocm.exception.RepositoryException(ex.getMessage(), ex);
+            }
             if (lockTokens != null) {
                 for (int i = 0; i < lockTokens.length; i++) {
                     if (lockTokens[i].equals(lockToken)) {
@@ -1023,7 +1033,13 @@ public class ObjectContentManagerImpl implements ObjectContentManager {
                     }
                 }
             } else {
-                getSession().addLockToken(lockToken);
+                try {
+                    getLockManager().addLockToken(lockToken);
+                } catch (UnsupportedRepositoryOperationException ex) {
+                    throw new LockedException(session.getUserID(), path);
+                } catch (RepositoryException ex) {
+                    throw new org.apache.jackrabbit.ocm.exception.RepositoryException(ex.getMessage(), ex);
+                }
             }
         }
     }
@@ -1164,4 +1180,13 @@ public class ObjectContentManagerImpl implements ObjectContentManager {
             throw new ObjectContentManagerException("Cannot copy the node from " + srcPath + " to " + destPath + ".", re);
         }
     }
+
+    private LockManager getLockManager() throws UnsupportedRepositoryOperationException, RepositoryException {
+        return session.getWorkspace().getLockManager();
+    }
+
+    private VersionManager getVersionManager() throws UnsupportedRepositoryOperationException, RepositoryException {
+        return session.getWorkspace().getVersionManager();
+    }
+
 }

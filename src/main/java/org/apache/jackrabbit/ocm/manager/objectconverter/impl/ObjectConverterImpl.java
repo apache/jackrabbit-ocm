@@ -276,7 +276,7 @@ public class ObjectConverterImpl implements ObjectConverter {
 	public void update(Session session, String uuId, Object object) {
 		try {
 			ClassDescriptor classDescriptor = mapper.getClassDescriptorByClass(ReflectionUtils.getBeanClass(object));
-			Node objectNode = session.getNodeByUUID(uuId);
+			Node objectNode = session.getNodeByIdentifier(uuId);
 			update(session, objectNode, object);
 		} catch (PathNotFoundException pnfe) {
 			throw new ObjectContentManagerException("Impossible to update the object with UUID: " + uuId , pnfe);
@@ -341,7 +341,7 @@ public class ObjectConverterImpl implements ObjectConverter {
         	if (currentItemUuid != null){
         		//The Node already exists so we need to update the existing node 
         		//rather than to replace it.
-        		return parentNode.getSession().getNodeByUUID(currentItemUuid);
+        		return parentNode.getSession().getNodeByIdentifier(currentItemUuid);
         	}
         	else{
         		throw new NullPointerException("Cannot locate the node to update since there is no UUID provided even though, " + classDescriptor.getClassName() + " has been mapped with a UUID field , " + uuidFieldName );
@@ -953,9 +953,9 @@ public class ObjectConverterImpl implements ObjectConverter {
 		if (type.getName().equals("nt:versionedChild")) {
 
 			String uuid = node.getProperty("jcr:childVersionHistory").getValue().getString();
-			Node actualNode = session.getNodeByUUID(uuid);
+			Node actualNode = session.getNodeByIdentifier(uuid);
 			String name = actualNode.getName();
-			actualNode = session.getNodeByUUID(name);
+			actualNode = session.getNodeByIdentifier(name);
 
 			return actualNode;
 		}

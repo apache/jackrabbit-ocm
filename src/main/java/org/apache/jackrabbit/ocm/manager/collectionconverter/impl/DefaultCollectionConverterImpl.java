@@ -228,7 +228,7 @@ public class DefaultCollectionConverterImpl extends AbstractCollectionConverterI
             	if (currentItemUuid != null){
             		//The Node already exists so we need to update the existing node 
             		//rather than to replace it.
-            		Node nodeToUpdate = collectionNode.getSession().getNodeByUUID(currentItemUuid);
+            		Node nodeToUpdate = collectionNode.getSession().getNodeByIdentifier(currentItemUuid);
             		objectConverter.update(session, currentItemUuid, item);
             		validUuidsForTheNode.add(currentItemUuid);
             	}
@@ -269,7 +269,7 @@ public class DefaultCollectionConverterImpl extends AbstractCollectionConverterI
             List<Node> removeNodes = new ArrayList<Node>();
             while (nodeIterator.hasNext()) {
             	Node currentNode = nodeIterator.nextNode();
-            	if (!validUuidsForTheNode.contains(currentNode.getUUID())) {
+            	if (!validUuidsForTheNode.contains(currentNode.getIdentifier())) {
                     removeNodes.add(currentNode);
                 }
             }

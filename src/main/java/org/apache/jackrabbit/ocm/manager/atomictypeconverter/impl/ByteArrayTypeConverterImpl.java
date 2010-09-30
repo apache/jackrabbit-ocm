@@ -49,7 +49,7 @@ public class ByteArrayTypeConverterImpl implements AtomicTypeConverter
 			return null;
 		}
 		  InputStream ins = new ByteArrayInputStream((byte[]) propValue);
-		  return valueFactory.createValue(ins);
+                  return new BinaryTypeConverterImpl().getValue(valueFactory, ins);
 	}
 
 
@@ -61,7 +61,7 @@ public class ByteArrayTypeConverterImpl implements AtomicTypeConverter
     {
 		try
 		{
-			return inputStreamToBytes(value.getStream());
+			return inputStreamToBytes(value.getBinary().getStream());
 		}
 		catch (Exception e)
 		{

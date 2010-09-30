@@ -111,7 +111,7 @@ public class SimpleFieldsHelper
 							initializedBean = ReflectionUtils.newInstance(classDescriptor.getClassName());
 						}
 
-						ReflectionUtils.setNestedProperty(initializedBean, fieldName, node.getUUID());
+						ReflectionUtils.setNestedProperty(initializedBean, fieldName, node.getIdentifier());
 
 					} else {
 						initializedBean = retrieveSimpleField(classDescriptor, node, initializedBean, fieldDescriptor, fieldName, propertyName);
@@ -148,7 +148,7 @@ public class SimpleFieldsHelper
 			FieldDescriptor uuidField = classDescriptor.getUuidFieldDescriptor();
 			if (uuidField != null)
 			{
-				ReflectionUtils.setNestedProperty(initializedBean, uuidField.getFieldName(), node.getUUID());
+				ReflectionUtils.setNestedProperty(initializedBean, uuidField.getFieldName(), node.getIdentifier());
 			}
 			
 		} catch (ValueFormatException vfe) {

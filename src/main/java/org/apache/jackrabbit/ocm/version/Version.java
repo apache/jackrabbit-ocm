@@ -55,7 +55,7 @@ public class Version
 	{
 		try
 		{
-			return version.getUUID();
+			return version.getIdentifier();
 		}
 		catch (RepositoryException e)
 		{

@@ -70,7 +70,7 @@ public class ReferenceBeanConverterImpl extends AbstractBeanConverterImpl  imple
 	{
         try {
 			String uuid = parentNode.getProperty(beanDescriptor.getJcrName()).getString();
-			String path = session.getNodeByUUID(uuid).getPath();
+			String path = session.getNodeByIdentifier(uuid).getPath();
 			
 			return objectConverter.getObject(session, path);
 		} catch (Exception e) {
