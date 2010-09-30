@@ -302,6 +302,8 @@ public class NTCollectionConverterImpl extends AbstractCollectionConverterImpl {
     	{
             jcrExpression = "SELECT * FROM " + jcrNodeType + " WHERE jcr:path LIKE '" + parentNode.getPath()
                                        + "/%' AND NOT jcr:path LIKE '" + parentNode.getPath() + "/%/%'";
+            //FIXME: for doIsNull(..) only need to know if there are attributes or childnodes, queryResult.getNodes().getSize() delivers -1
+            jcrExpression += " order by jcr:path";
     	}
     	else
     	{

@@ -61,7 +61,7 @@ public class UndefinedTypeConverterImpl implements AtomicTypeConverter
 
           if (propValue instanceof InputStream)
           {
-        	  return valueFactory.createValue((InputStream) propValue);
+        	  return new BinaryTypeConverterImpl().getValue(valueFactory, propValue);
           }
 	
           if ((propValue instanceof Long || propValue instanceof Integer))
@@ -123,7 +123,7 @@ public class UndefinedTypeConverterImpl implements AtomicTypeConverter
 
 			if (value.getType() == PropertyType.BINARY)
 			{
-				return value.getStream();	
+				return value.getBinary().getStream();
 			}
 
 			if (value.getType() == PropertyType.DOUBLE)
@@ -151,7 +151,7 @@ public class UndefinedTypeConverterImpl implements AtomicTypeConverter
 				return value.getString();	
 			}
 
-			if (value.getType() == PropertyType.REFERENCE)
+			if (value.getType() == PropertyType.REFERENCE || value.getType() == PropertyType.WEAKREFERENCE)
 			{
 				return value.getString();	
 			}

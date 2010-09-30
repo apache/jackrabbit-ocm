@@ -146,7 +146,7 @@ public class BeanReferenceMapConverterImpl extends AbstractCollectionConverterIm
                 String uuid = MapReferenceValueEncoder.decodeReference(encoded);
 
 
-                String path = session.getNodeByUUID(uuid).getPath();
+                String path = session.getNodeByIdentifier(uuid).getPath();
                 Object object = objectConverter.getObject(session, path);
                 ((ManageableMap) objects).addObject(key, object);
             }

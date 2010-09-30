@@ -18,6 +18,7 @@
 package org.apache.jackrabbit.ocm.manager.atomictypeconverter.impl;
 
 import java.io.InputStream;
+import javax.jcr.Binary;
 
 import javax.jcr.RepositoryException;
 import javax.jcr.Value;
@@ -45,7 +46,18 @@ public class BinaryTypeConverterImpl implements AtomicTypeConverter
         {
             return null;
         }
-        return valueFactory.createValue((InputStream) propValue);
+
+        Binary binaryvalue = null;
+        try {
+            binaryvalue = valueFactory.createBinary((InputStream) propValue);
+        } catch (RepositoryException ex) {
+            throw new IncorrectAtomicTypeException("Impossible to create binary value from stream!", ex);
+        }
+        if (binaryvalue == null) {
+            return null;
+        }
+
+        return valueFactory.createValue(binaryvalue);
     }
 
     /**
@@ -56,7 +68,7 @@ public class BinaryTypeConverterImpl implements AtomicTypeConverter
     {
     	try
     	{
-		    return value.getStream();
+		    return value.getBinary().getStream();
 		}
 		catch (RepositoryException e)
 		{

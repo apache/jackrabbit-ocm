@@ -33,6 +33,7 @@ import javax.jcr.Session;
 import javax.jcr.UnsupportedRepositoryOperationException;
 import javax.jcr.Workspace;
 import javax.jcr.nodetype.NoSuchNodeTypeException;
+import javax.jcr.nodetype.NodeTypeDefinition;
 import javax.jcr.nodetype.NodeTypeManager;
 
 import junit.framework.TestCase;
@@ -40,7 +41,6 @@ import junit.framework.TestCase;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.jackrabbit.core.nodetype.InvalidNodeTypeDefException;
-import org.apache.jackrabbit.core.nodetype.NodeTypeDef;
 import org.apache.jackrabbit.core.nodetype.NodeTypeManagerImpl;
 import org.apache.jackrabbit.core.nodetype.NodeTypeRegistry;
 import org.apache.jackrabbit.core.nodetype.xml.NodeTypeReader;
@@ -50,6 +50,7 @@ import org.apache.jackrabbit.ocm.mapper.Mapper;
 import org.apache.jackrabbit.ocm.query.QueryManager;
 import org.apache.jackrabbit.ocm.reflection.ReflectionUtils;
 import org.apache.jackrabbit.ocm.repository.RepositoryUtil;
+import org.apache.jackrabbit.spi.QNodeTypeDefinition;
 import org.xml.sax.ContentHandler;
 
 /**
@@ -151,14 +152,14 @@ public abstract class AbstractTestBase extends TestCase
                 "./src/test/test-config/nodetypes/custom_nodetypes.xml");
 
         // HINT: throws InvalidNodeTypeDefException, IOException
-        NodeTypeDef[] types = NodeTypeReader.read(xml);
+        QNodeTypeDefinition[] types = NodeTypeReader.read(xml);
 
         Workspace workspace = session.getWorkspace();
         NodeTypeManager ntMgr = workspace.getNodeTypeManager();
         NodeTypeRegistry ntReg = ((NodeTypeManagerImpl) ntMgr).getNodeTypeRegistry();
 
         for (int j = 0; j < types.length; j++) {
-            NodeTypeDef def = types[j];
+            QNodeTypeDefinition def = types[j];
 
             try {
                 ntReg.getNodeTypeDef(def.getName());

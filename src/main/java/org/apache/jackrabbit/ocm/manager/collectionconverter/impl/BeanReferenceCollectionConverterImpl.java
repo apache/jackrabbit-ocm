@@ -132,7 +132,7 @@ public class BeanReferenceCollectionConverterImpl extends AbstractCollectionConv
 
             for (int i = 0; i < values.length; i++) {
                 String uuid = values[i].getString();
-                String path = session.getNodeByUUID(uuid).getPath();
+                String path = session.getNodeByIdentifier(uuid).getPath();
     			Object object = objectConverter.getObject(session, path);
                 ((ManageableCollection) objects).addObject(object);
             }

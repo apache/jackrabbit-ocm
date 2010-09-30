@@ -18,7 +18,6 @@ package org.apache.jackrabbit.ocm.nodemanagement.impl.jackrabbit;
 
 import javax.jcr.NamespaceRegistry;
 
-import org.apache.jackrabbit.core.nodetype.ItemDef;
 
 import org.apache.jackrabbit.ocm.nodemanagement.impl.BaseNamespaceHelper;
 import org.apache.jackrabbit.spi.Name;
@@ -54,7 +53,8 @@ public class NamespaceHelper extends BaseNamespaceHelper
         {
             if (itemName.equals("*"))
             {
-                name = ItemDef.ANY_NAME;
+                //name = ItemDef.ANY_NAME;
+                NameFactoryImpl.getInstance().create(DEFAULT_NAMESPACE_URI, "*");
             }
             else
             {

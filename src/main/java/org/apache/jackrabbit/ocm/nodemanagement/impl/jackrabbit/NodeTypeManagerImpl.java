@@ -18,6 +18,7 @@ package org.apache.jackrabbit.ocm.nodemanagement.impl.jackrabbit;
 
 import java.io.InputStream;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Iterator;
 import java.util.List;
 
@@ -25,18 +26,14 @@ import javax.jcr.PropertyType;
 import javax.jcr.RepositoryException;
 import javax.jcr.Session;
 import javax.jcr.Workspace;
+import javax.jcr.nodetype.NodeTypeDefinition;
 import javax.jcr.nodetype.PropertyDefinition;
 import javax.jcr.version.OnParentVersionAction;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.jackrabbit.core.nodetype.InvalidNodeTypeDefException;
-import org.apache.jackrabbit.core.nodetype.NodeDef;
-import org.apache.jackrabbit.core.nodetype.NodeDefImpl;
-import org.apache.jackrabbit.core.nodetype.NodeTypeDef;
 import org.apache.jackrabbit.core.nodetype.NodeTypeRegistry;
-import org.apache.jackrabbit.core.nodetype.PropDef;
-import org.apache.jackrabbit.core.nodetype.PropDefImpl;
 import org.apache.jackrabbit.core.nodetype.xml.NodeTypeReader;
 import org.apache.jackrabbit.ocm.mapper.model.BeanDescriptor;
 import org.apache.jackrabbit.ocm.mapper.model.ChildNodeDefDescriptor;
@@ -51,6 +48,14 @@ import org.apache.jackrabbit.ocm.nodemanagement.exception.NodeTypeCreationExcept
 import org.apache.jackrabbit.ocm.nodemanagement.exception.NodeTypeRemovalException;
 import org.apache.jackrabbit.ocm.nodemanagement.exception.OperationNotSupportedException;
 import org.apache.jackrabbit.spi.Name;
+import org.apache.jackrabbit.spi.QNodeDefinition;
+import org.apache.jackrabbit.spi.QNodeTypeDefinition;
+import org.apache.jackrabbit.spi.QPropertyDefinition;
+import org.apache.jackrabbit.spi.QValue;
+import org.apache.jackrabbit.spi.QValueConstraint;
+import org.apache.jackrabbit.spi.commons.nodetype.QNodeDefinitionBuilder;
+import org.apache.jackrabbit.spi.commons.nodetype.QNodeTypeDefinitionBuilder;
+import org.apache.jackrabbit.spi.commons.nodetype.QPropertyDefinitionBuilder;
 
 /** This is the NodeTypeManager implementation for Apache Jackrabbit.
  *
@@ -62,6 +67,7 @@ public class NodeTypeManagerImpl implements NodeTypeManager
      * Logging.
      */
     private static Log log = LogFactory.getLog(NodeTypeManagerImpl.class);
+    private static final boolean debug = false;
 
     /** Namespace helper class for Jackrabbit.
      */
@@ -160,12 +166,11 @@ public class NodeTypeManagerImpl implements NodeTypeManager
             if (checkSuperTypes(session.getWorkspace().getNodeTypeManager(),
                     classDescriptor.getJcrSuperTypes()))
             {
-                NodeTypeDef nodeTypeDef = getNodeTypeDef(classDescriptor.getJcrType(),
-                        classDescriptor.getJcrSuperTypes(),
-                        classDescriptor.getClassName());
+                Name nodeTypeName = getNodeTypeName(classDescriptor.getJcrType(),
+			classDescriptor.getClassName());
 
-                List propDefs = new ArrayList();
-                List nodeDefs = new ArrayList();
+                List<QPropertyDefinition> propDefs = new ArrayList<QPropertyDefinition>();
+                List<QNodeDefinition> nodeDefs = new ArrayList<QNodeDefinition>();
                 if (classDescriptor.getFieldDescriptors() != null)
                 {
                     Iterator fieldIterator = classDescriptor.getFieldDescriptors().iterator();
@@ -173,7 +178,7 @@ public class NodeTypeManagerImpl implements NodeTypeManager
                     {
                         FieldDescriptor field = (FieldDescriptor) fieldIterator.next();
                         if (!field.isPath()) {
-                            propDefs.add(getPropertyDefinition(field.getFieldName(), field, nodeTypeDef.getName()));
+                            propDefs.add(getPropertyDefinition(field.getFieldName(), field, nodeTypeName));
                         }
                     }
                 }
@@ -183,9 +188,9 @@ public class NodeTypeManagerImpl implements NodeTypeManager
                     while (beanIterator.hasNext()) {
                         BeanDescriptor field = (BeanDescriptor) beanIterator.next();
                         if (this.isPropertyType(field.getJcrType())) {
-                            propDefs.add(getPropertyDefinition(field.getFieldName(), field, nodeTypeDef.getName()));
+                            propDefs.add(getPropertyDefinition(field.getFieldName(), field, nodeTypeName));
                         } else {
-                            nodeDefs.add(getNodeDefinition(field.getFieldName(), field, nodeTypeDef.getName()));
+                            nodeDefs.add(getNodeDefinition(field.getFieldName(), field, nodeTypeName));
                         }
                     }
                 }
@@ -195,15 +200,24 @@ public class NodeTypeManagerImpl implements NodeTypeManager
                     while (collectionIterator.hasNext()) {
                         CollectionDescriptor field = (CollectionDescriptor) collectionIterator.next();
                         if (this.isPropertyType(field.getJcrType())) {
-                            propDefs.add(getPropertyDefinition(field.getFieldName(), field, nodeTypeDef.getName()));
+                            propDefs.add(getPropertyDefinition(field.getFieldName(), field, nodeTypeName));
                         } else {
-                            nodeDefs.add(getNodeDefinition(field.getFieldName(), field, nodeTypeDef.getName()));
+                            nodeDefs.add(getNodeDefinition(field.getFieldName(), field, nodeTypeName));
                         }
                     }
                 }
 
-                nodeTypeDef.setPropertyDefs((PropDef[]) propDefs.toArray(new PropDef[propDefs.size()]));
-                nodeTypeDef.setChildNodeDefs((NodeDef[]) nodeDefs.toArray(new NodeDef[nodeDefs.size()]));
+                 QNodeTypeDefinition nodeTypeDef = getNodeTypeDef(
+                         classDescriptor.getJcrType(),
+                         classDescriptor.getJcrSuperTypes(),
+                         classDescriptor.getClassName(),
+                         nodeTypeName,
+                         propDefs,
+                         nodeDefs,
+                         classDescriptor.getJcrMixinTypes(),
+                         classDescriptor.isAbstract(),
+                         //TODO:is this correkt, how to decide whether mixin or not?
+                         classDescriptor.isInterface());
 
                 list.add(nodeTypeDef);
                 createNodeTypesFromList(session, list);
@@ -255,30 +269,43 @@ public class NodeTypeManagerImpl implements NodeTypeManager
         return exists;
     }
 
+        private Name getNodeTypeName(String jcrNodeType,String className) {
+                Name name = null;
+
+                if (jcrNodeType != null && (!jcrNodeType.equals(""))) {
+                        name = getNamespaceHelper().getName(jcrNodeType);
+
+                } else {
+                        name = getNamespaceHelper().getName(className);
+
+                }
+                return name;
+        }
+
     /** Creates a NodeTypeDef object.
      *
      * @param jcrNodeType Name of JCR node type
      * @param jcrSuperTypes JCR node super types
      * @return type
      */
-    public NodeTypeDef getNodeTypeDef(String jcrNodeType, String jcrSuperTypes,
-            String className)
+    public QNodeTypeDefinition getNodeTypeDef(String jcrNodeType, String jcrSuperTypes, String className,
+            Name jcrNodeTypeName, List<QPropertyDefinition> propDefs, List<QNodeDefinition> nodeDefs,
+            String[] jcrMixinTypes, boolean isAbstract, boolean isMixin)
     {
-        NodeTypeDef type = new NodeTypeDef();
-        type.setMixin(false);
+        QNodeTypeDefinitionBuilder ntdb = new QNodeTypeDefinitionBuilder();
+        ntdb.setAbstract(isAbstract);
+        ntdb.setChildNodeDefs(nodeDefs.toArray(QNodeDefinition.EMPTY_ARRAY));
+        //ntdb.setMixin(classDescriptor.isAbstract());
+        ntdb.setMixin(isMixin);
+        ntdb.setName(jcrNodeTypeName);
+        ntdb.setOrderableChildNodes(false);
+        //ntdb.setPrimaryItemName(primaryItemName);
+        ntdb.setPropertyDefs(propDefs.toArray(QPropertyDefinition.EMPTY_ARRAY));
+        ntdb.setQueryable(true);
+        ntdb.setSupertypes( getJcrSuperTypes(jcrSuperTypes) );
+        ntdb.setSupportedMixinTypes( getJcrMixinTypes(jcrMixinTypes) );
 
-        if (jcrNodeType != null && (! jcrNodeType.equals("")))
-        {
-            type.setName(getNamespaceHelper().getName(jcrNodeType));
-        }
-        else
-        {
-            type.setName(getNamespaceHelper().getName(className));
-        }
-
-        type.setSupertypes(getJcrSuperTypes(jcrSuperTypes));
-        type.setPrimaryItemName(getNamespaceHelper().getName(jcrNodeType));
-        return type;
+        return ntdb.build();
     }
 
     /** Creates a PropDefImpl object.
@@ -288,45 +315,57 @@ public class NodeTypeManagerImpl implements NodeTypeManager
      * @param declaringNodeType Node Type QName where the property belongs to
      * @return property
      */
-    public PropDefImpl getPropertyDefinition(String fieldName,
+    public QPropertyDefinition getPropertyDefinition(String fieldName,
             PropertyDefDescriptor field, Name declaringNodeType)
     {
-        PropDefImpl property = new PropDefImpl();
+            Name name = null;
 
         if (field.getJcrName() != null)
         {
-            property.setName(getNamespaceHelper().getName(field.getJcrName()));
-        	
+            name = getNamespaceHelper().getName(field.getJcrName());
         }
         else
         {
-            property.setName(getNamespaceHelper().getName(fieldName));
+            name = getNamespaceHelper().getName(fieldName);
         }
+
+        int requiredType = PropertyType.UNDEFINED;
 
         if (field.getJcrType() != null)
         {
-            property.setRequiredType(PropertyType.valueFromName(field.getJcrType()));
+            requiredType = PropertyType.valueFromName(field.getJcrType());
         }
         else
         {
-            log.info("No property type set for " + property.getName() +
+            log.info("No property type set for " + name.getLocalName() +
                     ". Setting 'String' type.");
-            property.setRequiredType(PropertyType.valueFromName("String"));
+            requiredType = PropertyType.STRING;
         }
 
-        property.setDeclaringNodeType(declaringNodeType);
-        property.setAutoCreated(field.isJcrAutoCreated());
-        property.setMandatory(field.isJcrMandatory());
-        property.setMultiple(field.isJcrMultiple());
+        int onParentVersion = OnParentVersionAction.IGNORE;
 
         if (field.getJcrOnParentVersion() != null &&
                 field.getJcrOnParentVersion().length() > 0)
         {
-            property.setOnParentVersion(OnParentVersionAction.valueFromName(field.getJcrOnParentVersion()));
+            onParentVersion = OnParentVersionAction.valueFromName(field.getJcrOnParentVersion());
         }
 
-        property.setProtected(field.isJcrProtected());
-        return property;
+        QPropertyDefinitionBuilder pdb = new QPropertyDefinitionBuilder();
+        pdb.setAutoCreated(field.isJcrAutoCreated());
+        pdb.setAvailableQueryOperators(new String[0]);
+        pdb.setDeclaringNodeType(declaringNodeType);
+        pdb.setDefaultValues(QValue.EMPTY_ARRAY);
+        pdb.setFullTextSearchable(false);
+        pdb.setMandatory(field.isJcrMandatory());
+        pdb.setMultiple(field.isJcrMultiple());
+        pdb.setName(name);
+        pdb.setOnParentVersion(onParentVersion);
+        pdb.setProtected(field.isJcrProtected());
+        pdb.setQueryOrderable(false);
+        pdb.setRequiredType(requiredType);
+        pdb.setValueConstraints(QValueConstraint.EMPTY_ARRAY);
+
+        return pdb.build();
     }
 
     /** Creates a NodeDefImpl object.
@@ -336,34 +375,36 @@ public class NodeTypeManagerImpl implements NodeTypeManager
      * @param declaringNodeType Node Type QName where the chid node belongs to
      * @return child node definition
      */
-    private NodeDefImpl getNodeDefinition(String fieldName,
+    private QNodeDefinition getNodeDefinition(String fieldName,
         ChildNodeDefDescriptor field, Name declaringNodeType) {
 
-        NodeDefImpl node = new NodeDefImpl();
+            Name name = null;
 
         if (field.getJcrName() != null) {
-            node.setName(getNamespaceHelper().getName(field.getJcrName()));
+            name = getNamespaceHelper().getName(field.getJcrName());
         } else {
-            node.setName(getNamespaceHelper().getName("*"));
+            name = getNamespaceHelper().getName("*");
         }
 
-        if (field.getJcrType() != null) {
-            node.setRequiredPrimaryTypes(getJcrSuperTypes(field.getJcrType()));
-        }
-
-        node.setDeclaringNodeType(declaringNodeType);
-        node.setAutoCreated(field.isJcrAutoCreated());
-        node.setMandatory(field.isJcrMandatory());
-        node.setAllowsSameNameSiblings(field.isJcrSameNameSiblings());
-        node.setDefaultPrimaryType( getNamespaceHelper().getName( field.getDefaultPrimaryType() ) );
+        int onParentVersion = OnParentVersionAction.IGNORE;
 
         if (field.getJcrOnParentVersion() != null
             && field.getJcrOnParentVersion().length() > 0) {
-            node.setOnParentVersion(OnParentVersionAction.valueFromName(field.getJcrOnParentVersion()));
+            onParentVersion = OnParentVersionAction.valueFromName(field.getJcrOnParentVersion());
         }
 
-        node.setProtected(field.isJcrProtected());
-        return node;
+        QNodeDefinitionBuilder ndb = new QNodeDefinitionBuilder();
+        ndb.setAllowsSameNameSiblings(field.isJcrSameNameSiblings());
+        ndb.setAutoCreated(field.isJcrAutoCreated());
+        ndb.setDeclaringNodeType(declaringNodeType);
+        ndb.setDefaultPrimaryType(getNamespaceHelper().getName(field.getDefaultPrimaryType()));
+        ndb.setMandatory(field.isJcrMandatory());
+        ndb.setName(name);
+        ndb.setOnParentVersion(onParentVersion);
+        ndb.setProtected(field.isJcrProtected());
+        ndb.setRequiredPrimaryTypes(getJcrSuperTypes(field.getJcrType()));
+
+        return ndb.build();
     }
 
     /**
@@ -390,21 +431,32 @@ public class NodeTypeManagerImpl implements NodeTypeManager
      */
     public Name[] getJcrSuperTypes(String superTypes)
     {
-    	Name[] nameSuperTypes = null;
-        if (superTypes != null && superTypes.length() > 0)
+        return getNames(superTypes.split(","), "super type");
+    }
+
+
+    public Name[] getJcrMixinTypes(String[] jcrMixinTypes)
+    {
+    	return getNames(jcrMixinTypes, "mixin type");
+    }
+
+
+    private Name[] getNames(String[] jcrTypeNames, String logTypeKind)
+    {
+    	Name[] names = null;
+        if (jcrTypeNames != null && jcrTypeNames.length > 0)
         {
-            String[] superTypesArray = superTypes.split(",");
-            log.debug("JCR super types found: " + superTypesArray.length);
-            nameSuperTypes = new Name[superTypesArray.length];
-            for (int i = 0; i < superTypesArray.length; i++)
+            log.debug("JCR " + logTypeKind + "'s types found: " + jcrTypeNames.length);
+            names = new Name[jcrTypeNames.length];
+            for (int i = 0; i < jcrTypeNames.length; i++)
             {
-                String superTypeName = superTypesArray[i].trim();
-                nameSuperTypes[i] = getNamespaceHelper().getName(superTypeName);
-                log.debug("Setting JCR super type: " + superTypeName);
+                String superTypeName = jcrTypeNames[i].trim();
+                names[i] = getNamespaceHelper().getName(superTypeName);
+                log.debug("Setting JCR " + logTypeKind +  ": " + superTypeName);
             }
         }
 
-        return nameSuperTypes;
+        return names;
     }
 
     /**
@@ -434,7 +486,7 @@ public class NodeTypeManagerImpl implements NodeTypeManager
     {
         try
         {
-            NodeTypeDef[] types = NodeTypeReader.read(jcrRepositoryConfigurationFile);
+            QNodeTypeDefinition[] types = NodeTypeReader.read(jcrRepositoryConfigurationFile);
 
             ArrayList list = new ArrayList();
             for (int i = 0; i < types.length; i++)
@@ -473,13 +525,10 @@ public class NodeTypeManagerImpl implements NodeTypeManager
     {
     	try
         {
-            NodeTypeDef[] types = NodeTypeReader.read(jcrRepositoryConfigurationFile);
+            QNodeTypeDefinition[] types = NodeTypeReader.read(jcrRepositoryConfigurationFile);
 
             ArrayList list = new ArrayList();
-            for (int i = 0; i < types.length; i++)
-            {
-                list.add(types[i]);
-            }
+            list.addAll(Arrays.asList(types));
 
             removeNodeTypesFromList(session, list);
             log.info("Registered " + list.size() + " nodetypes from xml configuration file.");
@@ -496,11 +545,11 @@ public class NodeTypeManagerImpl implements NodeTypeManager
     {
         for (Iterator nodeTypeIterator = nodeTypes.iterator(); nodeTypeIterator.hasNext();)
         {
-			NodeTypeDef nodeTypeDef = (NodeTypeDef) nodeTypeIterator.next();
+			NodeTypeDefinition nodeTypeDef = (NodeTypeDefinition) nodeTypeIterator.next();
 			this.removeSingleNodeType(session, nodeTypeDef.getName());
-			
+
 		}
-    	
+
     }
 
     /**
@@ -600,6 +649,9 @@ public class NodeTypeManagerImpl implements NodeTypeManager
     	        type.equals(PropertyType.TYPENAME_NAME) ||
     	        type.equals(PropertyType.TYPENAME_PATH) ||
     	        type.equals(PropertyType.TYPENAME_REFERENCE) ||
-    	        type.equals(PropertyType.TYPENAME_STRING));    	
+    	        type.equals(PropertyType.TYPENAME_WEAKREFERENCE) ||
+    	        type.equals(PropertyType.TYPENAME_DECIMAL) ||
+    	        type.equals(PropertyType.TYPENAME_URI) ||
+    	        type.equals(PropertyType.TYPENAME_STRING));
     }
 }
