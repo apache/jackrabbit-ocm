@@ -208,31 +208,28 @@ abstract public class ReflectionUtils {
 
     /**
      * Check if an class is implementing an specific interface.
-     *
+     * 
      * @param clazz
      * @param interfaceClass
      * @return true if the class is implementing the interface otherwise false
      */
-	public static boolean implementsInterface( Class clazz, Class interfaceClass ) {
+    public static boolean implementsInterface(Class clazz, Class interfaceClass) {
 
-		// Try to find the interface class in the interfaces list
-		if (clazz.getInterfaces() != null  )
-		{
-		   for ( Class foundInterface : clazz.getInterfaces() ) {
-			   if ( foundInterface == interfaceClass ) {
-				  return true;
-			   }
-			   return implementsInterface(foundInterface, interfaceClass) ;
-		   }
-		}
-		// Try to find from the ancestors
-		if (clazz.getSuperclass() != null)
-		{
-		    return implementsInterface(clazz.getSuperclass(), interfaceClass);
-		}
-
-		return false;
-	}
+        // Try to find the interface class in the interfaces list
+        if (clazz.getInterfaces() != null) {
+            for (Class foundInterface : clazz.getInterfaces()) {
+                if (foundInterface == interfaceClass
+                        || implementsInterface(foundInterface, interfaceClass)) {
+                    return true;
+                }
+            }
+        }
+        // Try to find from the ancestors
+        if (clazz.getSuperclass() != null) {
+            return implementsInterface(clazz.getSuperclass(), interfaceClass);
+        }
+        return false;
+    }
 
 	/**
 	 * Get the default implementation for an interface
