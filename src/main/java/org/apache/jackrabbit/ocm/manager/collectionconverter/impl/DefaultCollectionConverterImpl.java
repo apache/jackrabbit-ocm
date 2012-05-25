@@ -32,8 +32,10 @@ import javax.jcr.RepositoryException;
 import javax.jcr.Session;
 import javax.jcr.lock.LockException;
 import javax.jcr.nodetype.ConstraintViolationException;
+import javax.jcr.nodetype.NodeType;
 import javax.jcr.version.VersionException;
 
+import org.apache.commons.lang.StringUtils;
 import org.apache.jackrabbit.ocm.exception.JcrMappingException;
 import org.apache.jackrabbit.ocm.manager.collectionconverter.ManageableCollection;
 import org.apache.jackrabbit.ocm.manager.collectionconverter.ManageableObjectsUtil;
@@ -93,7 +95,7 @@ public class DefaultCollectionConverterImpl extends AbstractCollectionConverterI
     }
 
     /**
-     * @see AbstractCollectionConverterImpl#doInsertCollection(Session, Node, CollectionDescriptor, ManageableCollection)
+     * @see AbstractCollectionConverterImpl#doInsertCollection(Session, Node, CollectionDescriptor, ManageableObjects)
      */
     protected void doInsertCollection(Session session,
                                       Node parentNode,
@@ -111,7 +113,12 @@ public class DefaultCollectionConverterImpl extends AbstractCollectionConverterI
                     + collectionDescriptor.getFieldName() + " for the classdescriptor : " + collectionDescriptor.getClassDescriptor().getClassName());
         }
 
-        Node collectionNode = parentNode.addNode(jcrName);
+        Node collectionNode;
+        if (!StringUtils.isBlank(collectionDescriptor.getJcrType())) {
+            collectionNode = parentNode.addNode(jcrName, collectionDescriptor.getJcrType());
+        } else {
+            collectionNode = parentNode.addNode(jcrName);
+        }
 
         ClassDescriptor elementClassDescriptor = mapper.getClassDescriptorByClass( ReflectionUtils.forName(collectionDescriptor.getElementClassName()));
 
@@ -162,7 +169,7 @@ public class DefaultCollectionConverterImpl extends AbstractCollectionConverterI
 
     /**
      *
-     * @see AbstractCollectionConverterImpl#doUpdateCollection(Session, Node, CollectionDescriptor, ManageableCollection)
+     * @see AbstractCollectionConverterImpl#doUpdateCollection(Session, Node, CollectionDescriptor, ManageableObjects)
      */
     protected void doUpdateCollection(Session session,
                                  Node parentNode,
@@ -207,8 +214,9 @@ public class DefaultCollectionConverterImpl extends AbstractCollectionConverterI
         //  If the collection elements have not an id, it is not possible to find the matching JCR nodes 
         //  => delete the complete collection
         if (!elementClassDescriptor.hasIdField() && !elementClassDescriptor.hasUUIdField()) {
+            String primaryNodeTypeName = collectionNode.getPrimaryNodeType().getName();
             collectionNode.remove();
-            collectionNode = parentNode.addNode(jcrName);
+            collectionNode = parentNode.addNode(jcrName, primaryNodeTypeName);
         }
 
         Iterator collectionIterator = objects.getIterator();
