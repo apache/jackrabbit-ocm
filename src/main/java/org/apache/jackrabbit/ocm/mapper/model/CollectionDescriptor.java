@@ -48,79 +48,52 @@ public class CollectionDescriptor implements ChildNodeDefDescriptor, PropertyDef
 
      private ClassDescriptor classDescriptor;
 
-    /**
-     * @return Returns the fieldName.
-     */
     public String getFieldName()
     {
         return fieldName;
     }
-    /**
-     * @param fieldName The fieldName to set.
-     */
+
     public void setFieldName(String fieldName)
     {
         this.fieldName = fieldName;
     }
-    /**
-     * @return Returns the jcrName.
-     */
+
     public String getJcrName()
     {
         return jcrName;
     }
-    /**
-     * @param jcrName The jcrName to set.
-     */
+
     public void setJcrName(String jcrName)
     {
         this.jcrName = jcrName;
     }
 
-
-    /**
-     * @return Returns the elementClassName.
-     */
     public String getElementClassName()
     {
         return elementClassName;
     }
-    /**
-     * @param elementClassName The collection element class name to set.
-     *
-     */
+
     public void setElementClassName(String elementClassName)
     {
         this.elementClassName = elementClassName;
     }
 
-    /**
-     * @return Returns the elementName.
-     */
     public String getJcrElementName()
     {
         return jcrElementName;
     }
 
-    /**
-     * @param jcrElementName The collection element name to set.
-     *
-     */
     public void setJcrElementName(String jcrElementName)
     {
         this.jcrElementName = jcrElementName;
     }
 
-    /**
-     * @return Returns the proxy.
-     */
+
     public boolean isProxy()
     {
         return proxy;
     }
-    /**
-     * @param proxy The proxy to set.
-     */
+
     public void setProxy(boolean proxy)
     {
         this.proxy = proxy;
@@ -146,19 +119,12 @@ public class CollectionDescriptor implements ChildNodeDefDescriptor, PropertyDef
 	public void setAutoUpdate(boolean autoUpdate) {
 		this.autoUpdate = autoUpdate;
 	}
-	/**
-     *
-     * @return The collection converter class name
-     */
+
     public String getCollectionConverter()
     {
         return collectionConverterClassName;
     }
 
-    /**
-     * Set the collection converter class name
-     * @param collectionConverterClassName The converter to set
-     */
     public void setCollectionConverter(String collectionConverterClassName)
     {
         this.collectionConverterClassName = collectionConverterClassName;
@@ -202,128 +168,68 @@ public class CollectionDescriptor implements ChildNodeDefDescriptor, PropertyDef
     }
 
 
-    /**
-     * Getter for property jcrType.
-     *
-     * @return jcrType
-     */
     public String getJcrType() {
         return jcrType;
     }
 
-    /**
-     * Setter for property jcrType.
-     *
-     * @param value jcrType
-     */
     public void setJcrType(String value) {
         this.jcrType = value;
     }
 
-    /** Getter for property jcrAutoCreated.
-     *
-     * @return jcrAutoCreated
-     */
     public boolean isJcrAutoCreated()
     {
         return jcrAutoCreated;
     }
 
-    /** Setter for property jcrAutoCreated.
-     *
-     * @param value jcrAutoCreated
-     */
     public void setJcrAutoCreated(boolean value)
     {
         this.jcrAutoCreated = value;
     }
 
-    /** Getter for property jcrMandatory.
-     *
-     * @return jcrMandatory
-     */
     public boolean isJcrMandatory()
     {
         return jcrMandatory;
     }
 
-    /** Setter for property jcrMandatory.
-     *
-     * @param value jcrMandatory
-     */
     public void setJcrMandatory(boolean value)
     {
         this.jcrMandatory = value;
     }
 
-    /** Getter for property jcrOnParentVersion.
-     *
-     * @return jcrOnParentVersion
-     */
     public String getJcrOnParentVersion()
     {
         return jcrOnParentVersion;
     }
 
-    /** Setter for property jcrOnParentVersion.
-     *
-     * @param value jcrOnParentVersion
-     */
     public void setJcrOnParentVersion(String value)
     {
         this.jcrOnParentVersion = value;
     }
 
-    /** Getter for property jcrProtected.
-     *
-     * @return jcrProtected
-     */
     public boolean isJcrProtected()
     {
         return jcrProtected;
     }
 
-    /** Setter for property jcrProtected.
-     *
-     * @param value jcrProtected
-     */
     public void setJcrProtected(boolean value)
     {
         this.jcrProtected = value;
     }
 
-    /** Getter for property jcrSameNameSiblings.
-     *
-     * @return jcrSameNameSiblings
-     */
     public boolean isJcrSameNameSiblings()
     {
         return jcrSameNameSiblings;
     }
 
-    /** Setter for property jcrSameNameSiblings.
-     *
-     * @param value jcrSameNameSiblings
-     */
     public void setJcrSameNameSiblings(boolean value)
     {
         this.jcrSameNameSiblings = value;
     }
 
-    /**
-     * Getter for property jcrMultiple.
-     *
-     * @return jcrMultiple
-     */
     public boolean isJcrMultiple() {
         return jcrMultiple;
     }
 
-    /**
-     * Setter for property jcrMultiple.
-     *
-     * @param value jcrMultiple
-     */
     public void setJcrMultiple(boolean value) {
         this.jcrMultiple = value;
     }
