@@ -21,15 +21,12 @@ import java.util.Collection;
 import java.util.Iterator;
 
 import javax.jcr.Node;
-
 import junit.framework.Test;
 import junit.framework.TestSuite;
 
-import org.apache.commons.lang.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.jackrabbit.ocm.DigesterTestBase;
-import org.apache.jackrabbit.ocm.RepositoryLifecycleTestSetup;
 import org.apache.jackrabbit.ocm.exception.JcrMappingException;
 import org.apache.jackrabbit.ocm.manager.ObjectContentManager;
 import org.apache.jackrabbit.ocm.query.Filter;
@@ -62,7 +59,7 @@ public class DigesterSimpleQueryTest extends DigesterTestBase {
 
     public static Test suite() {
         // All methods starting with "test" will be executed in the test suite.
-        return new RepositoryLifecycleTestSetup(new TestSuite(DigesterSimpleQueryTest.class));
+        return new TestSuite(DigesterSimpleQueryTest.class);
     }
 
     /**

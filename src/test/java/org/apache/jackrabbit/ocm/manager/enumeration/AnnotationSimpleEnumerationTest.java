@@ -16,25 +16,12 @@
  */
 package org.apache.jackrabbit.ocm.manager.enumeration;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
-
 import junit.framework.Test;
 import junit.framework.TestSuite;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.jackrabbit.ocm.AnnotationTestBase;
-import org.apache.jackrabbit.ocm.RepositoryLifecycleTestSetup;
-import org.apache.jackrabbit.ocm.DigesterTestBase;
-import org.apache.jackrabbit.ocm.manager.ObjectContentManager;
-import org.apache.jackrabbit.ocm.testmodel.A;
-import org.apache.jackrabbit.ocm.testmodel.B;
-import org.apache.jackrabbit.ocm.testmodel.C;
-import org.apache.jackrabbit.ocm.testmodel.Discriminator;
-import org.apache.jackrabbit.ocm.testmodel.enumeration.Odyssey;
-import org.apache.jackrabbit.ocm.testmodel.enumeration.Planet;
 
 /**
  * Test Simple Enumeration mappings
@@ -57,8 +44,7 @@ public class AnnotationSimpleEnumerationTest extends AnnotationTestBase
     public static Test suite()
     {
         // All methods starting with "test" will be executed in the test suite.
-        return new RepositoryLifecycleTestSetup(
-                new TestSuite(AnnotationSimpleEnumerationTest.class));
+        return new TestSuite(AnnotationSimpleEnumerationTest.class);
     }
 
     public void testMapSimpleEnumeration()

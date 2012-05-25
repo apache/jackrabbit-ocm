@@ -27,7 +27,6 @@ import junit.framework.TestSuite;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.jackrabbit.ocm.AnnotationTestBase;
-import org.apache.jackrabbit.ocm.RepositoryLifecycleTestSetup;
 import org.apache.jackrabbit.ocm.manager.ObjectContentManager;
 import org.apache.jackrabbit.ocm.testmodel.Atomic;
 
@@ -52,7 +51,7 @@ public class AnnotationAtomicTest extends AnnotationTestBase
     public static Test suite()
     {
         // All methods starting with "test" will be executed in the test suite.
-        return new RepositoryLifecycleTestSetup(new TestSuite(AnnotationAtomicTest.class));
+        return new TestSuite(AnnotationAtomicTest.class);
     }
 
 
@@ -135,7 +134,7 @@ public class AnnotationAtomicTest extends AnnotationTestBase
             // --------------------------------------------------------------------------------
             try
             {
-               // update with an incorrect namespace - Should throws an exception
+               // update with an incorrect namespace - Should throw an exception
                a.setNamedProperty("unknown:test");
                ocm.update(a);
                fail("Exception was not triggered with an invalid namespace");
@@ -152,7 +151,7 @@ public class AnnotationAtomicTest extends AnnotationTestBase
             // --------------------------------------------------------------------------------
             try
             {
-               // update with an incorrect namespace - Should throws an exception
+               // update with an incorrect path - Should throw an exception
                a.setPathProperty("//node1");
                ocm.update(a);
                fail("Exception was not triggered with an invalid path");

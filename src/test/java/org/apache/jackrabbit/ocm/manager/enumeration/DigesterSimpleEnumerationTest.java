@@ -17,14 +17,11 @@
 package org.apache.jackrabbit.ocm.manager.enumeration;
 
 import junit.framework.Test;
-import junit.framework.TestCase;
 import junit.framework.TestSuite;
-import junit.runner.TestCaseClassLoader;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.jackrabbit.ocm.DigesterTestBase;
-import org.apache.jackrabbit.ocm.RepositoryLifecycleTestSetup;
 
 /**
  * Test Persisting and retrieving Enum values.
@@ -47,8 +44,8 @@ public class DigesterSimpleEnumerationTest extends DigesterTestBase
     public static Test suite()
     {
         // All methods starting with "test" will be executed in the test suite.
-        return new RepositoryLifecycleTestSetup(
-                new TestSuite(DigesterSimpleEnumerationTest.class));
+        return
+                new TestSuite(DigesterSimpleEnumerationTest.class);
     }
 
     public void testMapSimpleEnumeration()

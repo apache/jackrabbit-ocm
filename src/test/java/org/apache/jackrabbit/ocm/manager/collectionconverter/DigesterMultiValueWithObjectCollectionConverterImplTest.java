@@ -17,8 +17,6 @@
 package org.apache.jackrabbit.ocm.manager.collectionconverter;
 
 import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.GregorianCalendar;
 import java.util.Iterator;
 
 import junit.framework.Test;
@@ -27,7 +25,6 @@ import junit.framework.TestSuite;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.jackrabbit.ocm.DigesterTestBase;
-import org.apache.jackrabbit.ocm.RepositoryLifecycleTestSetup;
 import org.apache.jackrabbit.ocm.manager.ObjectContentManager;
 import org.apache.jackrabbit.ocm.testmodel.MultiValueWithObjectCollection;
 
@@ -52,7 +49,7 @@ public class DigesterMultiValueWithObjectCollectionConverterImplTest extends Dig
     public static Test suite()
     {
         // All methods starting with "test" will be executed in the test suite.
-        return new RepositoryLifecycleTestSetup(new TestSuite(DigesterMultiValueWithObjectCollectionConverterImplTest.class));
+        return new TestSuite(DigesterMultiValueWithObjectCollectionConverterImplTest.class);
     }
 
     public void testMultiValue(){

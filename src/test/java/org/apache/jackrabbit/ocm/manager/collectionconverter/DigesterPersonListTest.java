@@ -17,7 +17,6 @@
 package org.apache.jackrabbit.ocm.manager.collectionconverter;
 
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.List;
 
 import junit.framework.Test;
@@ -26,11 +25,7 @@ import junit.framework.TestSuite;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.jackrabbit.ocm.DigesterTestBase;
-import org.apache.jackrabbit.ocm.RepositoryLifecycleTestSetup;
 import org.apache.jackrabbit.ocm.manager.ObjectContentManager;
-import org.apache.jackrabbit.ocm.testmodel.collection.ArrayListElement;
-import org.apache.jackrabbit.ocm.testmodel.collection.Element;
-import org.apache.jackrabbit.ocm.testmodel.collection.Main;
 import org.apache.jackrabbit.ocm.testmodel.collection.Person;
 
 /**
@@ -52,7 +47,7 @@ public class DigesterPersonListTest extends DigesterTestBase
     public static Test suite()
     {
         // All methods starting with "test" will be executed in the test suite.
-        return new RepositoryLifecycleTestSetup(new TestSuite(DigesterPersonListTest.class));
+        return new TestSuite(DigesterPersonListTest.class);
     }
 
     public void testPersonList()
