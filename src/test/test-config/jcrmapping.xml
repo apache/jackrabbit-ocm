@@ -48,7 +48,7 @@
 
 		-->
 		<collection-descriptor fieldName="collection" jcrName="collection" proxy="false"
-        elementClassName="org.apache.jackrabbit.ocm.testmodel.C" jcrType="ocm:C"
+        elementClassName="org.apache.jackrabbit.ocm.testmodel.C" jcrType="nt:unstructured"
         jcrAutoCreated="false" jcrMandatory="false" jcrOnParentVersion="IGNORE"
         jcrProtected="false" jcrSameNameSiblings="false"/>
 

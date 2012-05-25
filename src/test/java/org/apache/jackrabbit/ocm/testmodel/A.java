@@ -39,7 +39,7 @@ public class A
 
     private B emptyB;
 
-    @Collection(elementClassName=C.class, jcrType="ocm:C", jcrOnParentVersion="IGNORE") private java.util.Collection collection;	
+    @Collection(elementClassName=C.class, jcrType="nt:unstructured", jcrOnParentVersion="IGNORE") private java.util.Collection collection;
     @Collection(elementClassName=C.class) private java.util.Collection emptyCollection;
 
     public String getPath() {
