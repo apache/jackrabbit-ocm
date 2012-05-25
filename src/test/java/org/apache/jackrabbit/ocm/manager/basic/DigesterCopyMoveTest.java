@@ -19,14 +19,11 @@ package org.apache.jackrabbit.ocm.manager.basic;
 import java.util.ArrayList;
 import java.util.Collection;
 
-import javax.jcr.Node;
-
 import junit.framework.Test;
 import junit.framework.TestSuite;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.apache.jackrabbit.ocm.RepositoryLifecycleTestSetup;
 import org.apache.jackrabbit.ocm.DigesterTestBase;
 import org.apache.jackrabbit.ocm.exception.ObjectContentManagerException;
 import org.apache.jackrabbit.ocm.testmodel.A;
@@ -57,8 +54,8 @@ public class DigesterCopyMoveTest extends DigesterTestBase
 	public static Test suite()
 	{
 		// All methods starting with "test" will be executed in the test suite.
-		return new RepositoryLifecycleTestSetup(
-                new TestSuite(DigesterCopyMoveTest.class));
+		return
+                new TestSuite(DigesterCopyMoveTest.class);
 	}
 
     /**

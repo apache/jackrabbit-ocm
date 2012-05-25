@@ -28,7 +28,7 @@ import junit.framework.TestSuite;
 public class AllTests {
 
     public static Test suite() throws Exception {
-        return new RepositoryLifecycleTestSetup(buildSuite());
+        return buildSuite();
     }
 
     public static Test buildSuite() throws Exception {

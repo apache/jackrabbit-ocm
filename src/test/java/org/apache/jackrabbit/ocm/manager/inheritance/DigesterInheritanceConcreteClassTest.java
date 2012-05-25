@@ -23,7 +23,6 @@ import junit.framework.TestSuite;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.apache.jackrabbit.ocm.RepositoryLifecycleTestSetup;
 import org.apache.jackrabbit.ocm.DigesterTestBase;
 import org.apache.jackrabbit.ocm.exception.JcrMappingException;
 import org.apache.jackrabbit.ocm.manager.ObjectContentManager;
@@ -59,8 +58,7 @@ public class DigesterInheritanceConcreteClassTest extends DigesterTestBase {
 
 	public static Test suite() {
 		// All methods starting with "test" will be executed in the test suite.
-		return new RepositoryLifecycleTestSetup(new TestSuite(
-				DigesterInheritanceConcreteClassTest.class));
+		return new TestSuite(DigesterInheritanceConcreteClassTest.class);
 	}
 
 	public void testRetrieveSingleton() {

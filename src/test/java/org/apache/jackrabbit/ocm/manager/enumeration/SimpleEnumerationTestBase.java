@@ -27,12 +27,15 @@ import org.apache.jackrabbit.ocm.manager.ObjectContentManager;
 import org.apache.jackrabbit.ocm.testmodel.enumeration.Odyssey;
 import org.apache.jackrabbit.ocm.testmodel.enumeration.Planet;
 
+import static junit.framework.Assert.assertTrue;
+import static junit.framework.Assert.fail;
+
 /**
  * Test Simple Enumeration mappings
  *
  * @author <a href="mailto:boni.g@bioimagene.com">Boni Gopalan</a>
  */
-public class SimpleEnumerationTestBase extends TestCase
+public class SimpleEnumerationTestBase
 {
     private final static Log logger = LogFactory.getLog(SimpleEnumerationTestBase.class);
     ObjectContentManager ocm;

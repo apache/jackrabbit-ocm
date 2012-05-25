@@ -16,8 +16,6 @@
  */
 package org.apache.jackrabbit.ocm.manager.query;
 
-import org.apache.jackrabbit.ocm.RepositoryLifecycleTestSetup;
-
 import junit.framework.Test;
 import junit.framework.TestSuite;
 
@@ -30,7 +28,7 @@ import junit.framework.TestSuite;
 public class AllTests {
 
     public static Test suite() {
-        return new RepositoryLifecycleTestSetup(buildSuite());
+        return buildSuite();
     }
 
     public static Test buildSuite() {

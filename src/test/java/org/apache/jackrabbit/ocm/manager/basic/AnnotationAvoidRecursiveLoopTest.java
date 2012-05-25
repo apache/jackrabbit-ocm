@@ -22,28 +22,17 @@ import java.util.List;
 
 import javax.jcr.Repository;
 import javax.jcr.UnsupportedRepositoryOperationException;
-
 import junit.framework.Test;
 import junit.framework.TestSuite;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.jackrabbit.ocm.AnnotationTestBase;
-import org.apache.jackrabbit.ocm.DigesterTestBase;
-import org.apache.jackrabbit.ocm.RepositoryLifecycleTestSetup;
 import org.apache.jackrabbit.ocm.manager.ObjectContentManager;
 import org.apache.jackrabbit.ocm.manager.impl.ObjectContentManagerImpl;
 import org.apache.jackrabbit.ocm.mapper.Mapper;
 import org.apache.jackrabbit.ocm.mapper.impl.annotation.AnnotationMapperImpl;
 import org.apache.jackrabbit.ocm.repository.RepositoryUtil;
-import org.apache.jackrabbit.ocm.testmodel.auto.CmsObject;
-import org.apache.jackrabbit.ocm.testmodel.auto.Content;
-import org.apache.jackrabbit.ocm.testmodel.auto.Document;
-import org.apache.jackrabbit.ocm.testmodel.auto.Folder;
-import org.apache.jackrabbit.ocm.testmodel.auto.impl.CmsObjectImpl;
-import org.apache.jackrabbit.ocm.testmodel.auto.impl.ContentImpl;
-import org.apache.jackrabbit.ocm.testmodel.auto.impl.DocumentImpl;
-import org.apache.jackrabbit.ocm.testmodel.auto.impl.FolderImpl;
 import org.apache.jackrabbit.ocm.testmodel.crossreference.A;
 import org.apache.jackrabbit.ocm.testmodel.crossreference.B;
 
@@ -71,8 +60,8 @@ public class AnnotationAvoidRecursiveLoopTest extends AnnotationTestBase
     public static Test suite()
     {
         // All methods starting with "test" will be executed in the test suite.
-        return new RepositoryLifecycleTestSetup(
-                new TestSuite(AnnotationAvoidRecursiveLoopTest.class));
+        return
+                new TestSuite(AnnotationAvoidRecursiveLoopTest.class);
     }
 
 

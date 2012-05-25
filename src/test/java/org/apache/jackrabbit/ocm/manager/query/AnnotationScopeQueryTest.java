@@ -22,15 +22,12 @@ import java.util.Collection;
 import javax.jcr.Node;
 import javax.jcr.RepositoryException;
 import javax.jcr.Session;
-
 import junit.framework.Test;
 import junit.framework.TestSuite;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.jackrabbit.ocm.AnnotationTestBase;
-import org.apache.jackrabbit.ocm.RepositoryLifecycleTestSetup;
-import org.apache.jackrabbit.ocm.DigesterTestBase;
 import org.apache.jackrabbit.ocm.exception.JcrMappingException;
 import org.apache.jackrabbit.ocm.manager.ObjectContentManager;
 import org.apache.jackrabbit.ocm.manager.impl.ObjectContentManagerImpl;
@@ -62,8 +59,7 @@ public class AnnotationScopeQueryTest extends AnnotationTestBase
     public static Test suite()
     {
         // All methods starting with "test" will be executed in the test suite.
-        return new RepositoryLifecycleTestSetup(
-                new TestSuite(AnnotationScopeQueryTest.class));
+        return new TestSuite(AnnotationScopeQueryTest.class);
     }
 
     /**

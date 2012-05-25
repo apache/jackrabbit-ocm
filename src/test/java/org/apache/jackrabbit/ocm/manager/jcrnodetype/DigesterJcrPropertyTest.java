@@ -21,7 +21,6 @@ import junit.framework.TestSuite;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.apache.jackrabbit.ocm.RepositoryLifecycleTestSetup;
 import org.apache.jackrabbit.ocm.DigesterTestBase;
 import org.apache.jackrabbit.ocm.manager.ObjectContentManager;
 import org.apache.jackrabbit.ocm.testmodel.PropertyTest;
@@ -45,7 +44,7 @@ public class DigesterJcrPropertyTest extends DigesterTestBase {
 
 	public static Test suite() {
 		// All methods starting with "test" will be executed in the test suite.
-		return new RepositoryLifecycleTestSetup(new TestSuite(DigesterJcrPropertyTest.class));
+		return new TestSuite(DigesterJcrPropertyTest.class);
 	}
 
 	public void testRequiredProperty()

@@ -17,16 +17,12 @@
 package org.apache.jackrabbit.ocm.manager.beanconverter;
 
 
-
 import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Iterator;
 import java.util.List;
 
 import junit.framework.Test;
 import junit.framework.TestSuite;
 
-import org.apache.jackrabbit.ocm.RepositoryLifecycleTestSetup;
 import org.apache.jackrabbit.ocm.DigesterTestBase;
 import org.apache.jackrabbit.ocm.manager.ObjectContentManager;
 import org.apache.jackrabbit.ocm.testmodel.A;
@@ -53,7 +49,7 @@ public class DigesterBeanDescriptorTest extends DigesterTestBase {
     public static Test suite() {
 
         // All methods starting with "test" will be executed in the test suite.
-        return new RepositoryLifecycleTestSetup(new TestSuite(DigesterBeanDescriptorTest.class));
+        return new TestSuite(DigesterBeanDescriptorTest.class);
     }
 
 
@@ -68,7 +64,7 @@ public class DigesterBeanDescriptorTest extends DigesterTestBase {
 	 * @see junit.framework.TestCase#tearDown()
 	 */
 	public void tearDown() throws Exception
-	{		
+	{
 		FakeBeanConverter.cleanUpLog();
 		cleanUpRepisotory();
 		super.tearDown();
@@ -76,30 +72,30 @@ public class DigesterBeanDescriptorTest extends DigesterTestBase {
 
     public void testBasic() throws Exception
     {
-    	
+
     	try
     	{
     		// ------------------------------------------------------------------------
     		// Create a main object (a) with a null attribute (A.b)
-    		// ------------------------------------------------------------------------    		
+    		// ------------------------------------------------------------------------
 			A a = new A();
 			a.setPath("/test");
 			a.setA1("a1");
 			ocm.insert(a);
 			ocm.save();
-			
+
     		// ------------------------------------------------------------------------
     		// Retrieve
     		// ------------------------------------------------------------------------
 			a = (A) ocm.getObject("/test");
 			assertNotNull("Object is null", a);
 			assertNull("attribute is not null", a.getB());
-			
+
 			B b = new B();
 			b.setB1("b1");
 			b.setB2("b2");
 			a.setB(b);
-			
+
 			ocm.update(a);
 			ocm.save();
 
@@ -109,20 +105,20 @@ public class DigesterBeanDescriptorTest extends DigesterTestBase {
 			a = (A) ocm.getObject("/test");
 			assertNotNull("Object is null", a);
 			assertNotNull("attribute is null", a.getB());
-			
+
     		// ------------------------------------------------------------------------
 			// Remove object
-    		// ------------------------------------------------------------------------			
+    		// ------------------------------------------------------------------------
 			ocm.remove("/test");
 			ocm.save();
 		}
     	catch (RuntimeException e)
     	{
             e.printStackTrace();
-            fail("Exception occurs during the unit test : " + e);    		
+            fail("Exception occurs during the unit test : " + e);
 		}
-    	
-    	
+
+
     }
     public void testInlined() throws Exception {
 
@@ -263,7 +259,7 @@ public class DigesterBeanDescriptorTest extends DigesterTestBase {
             page = (Page) ocm.getObject("/test");
             paragraphs = page.getParagraphs();
             for (Paragraph paragraph : paragraphs) {
-				log.info("Paragraph path : " + paragraph.getPath());				
+				log.info("Paragraph path : " + paragraph.getPath());
 			}
             Paragraph p1 = (Paragraph) ocm.getObject("/test/paragraph[2]");
             Page paraPage = p1.getPage();
@@ -282,7 +278,7 @@ public class DigesterBeanDescriptorTest extends DigesterTestBase {
             e.printStackTrace();
             fail("Exception occurs during the unit test : " + e);
         }
-    	
+
     }
 
 }
