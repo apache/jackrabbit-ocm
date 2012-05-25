@@ -203,7 +203,7 @@ public class AnnotationMapperImplTest extends TestCase {
 			CollectionDescriptor collectionDescriptor = classDescriptor2
 					.getCollectionDescriptor("collection");
 			assertNotNull(collectionDescriptor);
-			assertEquals(collectionDescriptor.getJcrType(), "ocm:C");
+			assertEquals(collectionDescriptor.getJcrType(), "nt:unstructured");
 			assertFalse(collectionDescriptor.isJcrAutoCreated());
 			assertFalse(collectionDescriptor.isJcrMandatory());
 			assertFalse(collectionDescriptor.isJcrProtected());

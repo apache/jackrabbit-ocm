@@ -243,7 +243,6 @@ public class AnnotationDescriptorReader implements DescriptorReader
 		   collectionDescriptor.setJcrName(field.getName());
 		}
 
-		Node annotationNode = (Node) targetClass.getAnnotation(Node.class);
 		collectionDescriptor.setProxy(collectionAnnotation.proxy());
 
 		collectionDescriptor.setAutoInsert(collectionAnnotation.autoInsert());
@@ -267,10 +266,7 @@ public class AnnotationDescriptorReader implements DescriptorReader
 		}
 
 		collectionDescriptor.setCollectionConverter(collectionAnnotation.collectionConverter().getName());
-		if (annotationNode != null)
-		{
-		    collectionDescriptor.setJcrType(annotationNode.jcrType());
-		}
+		collectionDescriptor.setJcrType(collectionAnnotation.jcrType());
 		collectionDescriptor.setJcrSameNameSiblings(collectionAnnotation.jcrSameNameSiblings());
 		collectionDescriptor.setJcrAutoCreated(collectionAnnotation.jcrAutoCreated());
 		collectionDescriptor.setJcrProtected(collectionAnnotation.jcrProtected());
