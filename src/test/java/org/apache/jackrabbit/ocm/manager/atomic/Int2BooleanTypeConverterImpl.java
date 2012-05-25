@@ -33,7 +33,7 @@ public class Int2BooleanTypeConverterImpl implements AtomicTypeConverter
 {
 	/**
 	 *
-	 * @see org.apache.jackrabbit.ocm.manager.atomictypeconverter.AtomicTypeConverter#getValue(java.lang.Object)
+	 * @see org.apache.jackrabbit.ocm.manager.atomictypeconverter.AtomicTypeConverter#getValue(javax.jcr.ValueFactory, Object)
 	 */
 	public Value getValue(ValueFactory valueFactory, Object propValue)
 	{
@@ -78,7 +78,7 @@ public class Int2BooleanTypeConverterImpl implements AtomicTypeConverter
 	
 	/**
 	 *
-	 * @see org.apache.jackrabbit.ocm.manager.atomictypeconverter.AtomicTypeConverter#getStringValue(java.lang.Object)
+	 * @see org.apache.jackrabbit.ocm.manager.atomictypeconverter.AtomicTypeConverter#getXPathQueryValue(javax.jcr.ValueFactory, Object)
 	 */
 	public String getXPathQueryValue(ValueFactory valueFactory, Object object)
 	{
