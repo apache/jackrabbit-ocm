@@ -169,6 +169,7 @@ public class AnnotationCopyMoveTest extends AnnotationTestBase
 			// Copy the object
 			// --------------------------------------------------------------------------------
         	ocm.move("/source", "/result");
+            ocm.save();
 
 			// --------------------------------------------------------------------------------
 			// Get the object
@@ -257,6 +258,7 @@ public class AnnotationCopyMoveTest extends AnnotationTestBase
 			// Copy the object
 			// --------------------------------------------------------------------------------			
         	ocm.move("/source", "/result");
+            ocm.save();
         	// --------------------------------------------------------------------------------
 			// Get the object
 			// --------------------------------------------------------------------------------

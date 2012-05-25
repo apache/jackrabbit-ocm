@@ -19,6 +19,9 @@ package org.apache.jackrabbit.ocm.manager.basic;
 import java.util.ArrayList;
 import java.util.Collection;
 
+import javax.jcr.Node;
+import javax.jcr.NodeIterator;
+import javax.jcr.RepositoryException;
 import junit.framework.Test;
 import junit.framework.TestSuite;
 
@@ -26,6 +29,7 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.jackrabbit.ocm.DigesterTestBase;
 import org.apache.jackrabbit.ocm.exception.ObjectContentManagerException;
+import org.apache.jackrabbit.ocm.repository.RepositoryUtil;
 import org.apache.jackrabbit.ocm.testmodel.A;
 import org.apache.jackrabbit.ocm.testmodel.Atomic;
 import org.apache.jackrabbit.ocm.testmodel.B;
@@ -169,6 +173,7 @@ public class DigesterCopyMoveTest extends DigesterTestBase
 			// Copy the object
 			// --------------------------------------------------------------------------------
         	ocm.move("/source", "/result");
+            ocm.save();
 
 			// --------------------------------------------------------------------------------
 			// Get the object
@@ -184,7 +189,7 @@ public class DigesterCopyMoveTest extends DigesterTestBase
 			// --------------------------------------------------------------------------------
 			try
 			{
-				ocm.move("/incorrectpath", "/test2");			
+				ocm.move("/incorrectpath", "/test2");
 				fail("the copy method accepts an incorrect source path");
 			} catch (ObjectContentManagerException e)
 			{
@@ -193,7 +198,8 @@ public class DigesterCopyMoveTest extends DigesterTestBase
 
 			try
 			{
-				ocm.move("/test", "incorrectpath");			
+				ocm.move("/test", "incorrectpath");
+
 				fail("the copy method accepts an incorrect destination path");
 			} catch (ObjectContentManagerException e)
 			{
@@ -252,11 +258,14 @@ public class DigesterCopyMoveTest extends DigesterTestBase
 			
 			ocm.insert(a);
         	ocm.save();
-			
+
 			// --------------------------------------------------------------------------------
-			// Copy the object
+			// Move the object
 			// --------------------------------------------------------------------------------			
         	ocm.move("/source", "/result");
+            //session = RepositoryUtil.login(repository, "superuser", "superuser");
+            ocm.save();
+
         	// --------------------------------------------------------------------------------
 			// Get the object
 			// --------------------------------------------------------------------------------
@@ -280,6 +289,5 @@ public class DigesterCopyMoveTest extends DigesterTestBase
         	fail();
 		}
 	}
-	
-	
+
 }

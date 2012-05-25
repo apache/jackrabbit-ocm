@@ -1116,11 +1116,8 @@ public class ObjectContentManagerImpl implements ObjectContentManager {
      *      java.lang.String)
      */
     public void move(String srcPath, String destPath) {
-        Workspace workspace = session.getWorkspace();
         try {
-
-            workspace.move(srcPath, destPath);
-
+            session.move(srcPath, destPath);
         } catch (javax.jcr.nodetype.ConstraintViolationException cve) {
             throw new ObjectContentManagerException("Cannot move the object from " + srcPath + " to " + destPath + "."
                     + " Violation of a nodetype or attempt to move under a property detected", cve);
@@ -1155,7 +1152,6 @@ public class ObjectContentManagerImpl implements ObjectContentManager {
         Workspace workspace = session.getWorkspace();
         try {
             workspace.copy(srcPath, destPath);
-
         } catch (javax.jcr.nodetype.ConstraintViolationException cve) {
             throw new ObjectContentManagerException("Cannot copy the object from " + srcPath + " to " + destPath + "."
                     + "Violation of a nodetype or attempt to copy under property detected ", cve);
