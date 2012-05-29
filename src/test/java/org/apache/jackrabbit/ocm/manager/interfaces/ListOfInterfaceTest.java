@@ -22,18 +22,18 @@ import java.util.List;
 import junit.framework.Test;
 import junit.framework.TestSuite;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.apache.jackrabbit.ocm.AnnotationTestBase;
 import org.apache.jackrabbit.ocm.manager.ObjectContentManager;
 import org.apache.jackrabbit.ocm.testmodel.interfaces.EntityA;
 import org.apache.jackrabbit.ocm.testmodel.interfaces.EntityB;
 import org.apache.jackrabbit.ocm.testmodel.interfaces.MyInterface;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 
 public class ListOfInterfaceTest extends AnnotationTestBase
 {
-	private final static Log log = LogFactory.getLog(ListOfInterfaceTest.class);
+	private final static Logger log = LoggerFactory.getLogger(ListOfInterfaceTest.class);
 
 	/**
 	 * <p>Defines the test case name for junit.</p>

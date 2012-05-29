@@ -19,13 +19,13 @@ package org.apache.jackrabbit.ocm.querymanager;
 import junit.framework.Test;
 import junit.framework.TestSuite;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.apache.jackrabbit.ocm.AnnotationTestBase;
 import org.apache.jackrabbit.ocm.query.Filter;
 import org.apache.jackrabbit.ocm.query.Query;
 import org.apache.jackrabbit.ocm.query.QueryManager;
 import org.apache.jackrabbit.ocm.testmodel.C;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 
 /**
@@ -35,7 +35,7 @@ import org.apache.jackrabbit.ocm.testmodel.C;
  */
 public class AnnotationQueryManagerTest extends AnnotationTestBase
 {
-    private final static Log log = LogFactory.getLog(AnnotationQueryManagerTest.class);
+    private final static Logger log = LoggerFactory.getLogger(AnnotationQueryManagerTest.class);
 
     /**
      * <p>Defines the test case name for junit.</p>

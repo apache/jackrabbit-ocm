@@ -22,8 +22,6 @@ import java.util.Collection;
 import junit.framework.Test;
 import junit.framework.TestSuite;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.apache.jackrabbit.ocm.AnnotationTestBase;
 import org.apache.jackrabbit.ocm.lock.Lock;
 import org.apache.jackrabbit.ocm.manager.ObjectContentManager;
@@ -31,6 +29,8 @@ import org.apache.jackrabbit.ocm.testmodel.A;
 import org.apache.jackrabbit.ocm.testmodel.B;
 import org.apache.jackrabbit.ocm.testmodel.C;
 import org.apache.jackrabbit.ocm.testmodel.Lockable;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Test object content Manager lock feature
@@ -39,7 +39,7 @@ import org.apache.jackrabbit.ocm.testmodel.Lockable;
  */
 public class AnnotationLockTest extends AnnotationTestBase
 {
-    private final static Log log = LogFactory.getLog(AnnotationLockTest.class);
+    private final static Logger log = LoggerFactory.getLogger(AnnotationLockTest.class);
 
     /**
      * <p>Defines the test case name for junit.</p>

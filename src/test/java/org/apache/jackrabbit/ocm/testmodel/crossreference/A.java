@@ -18,7 +18,6 @@ package org.apache.jackrabbit.ocm.testmodel.crossreference;
 
 import java.util.ArrayList;
 
-
 import org.apache.jackrabbit.ocm.mapper.impl.annotation.Bean;
 import org.apache.jackrabbit.ocm.mapper.impl.annotation.Collection;
 import org.apache.jackrabbit.ocm.mapper.impl.annotation.Field;

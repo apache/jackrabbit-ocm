@@ -24,14 +24,12 @@ import javax.jcr.SimpleCredentials;
 import javax.naming.Context;
 import javax.naming.InitialContext;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.apache.jackrabbit.core.jndi.RegistryHelper;
 import org.apache.jackrabbit.ocm.exception.RepositoryException;
 import org.apache.jackrabbit.util.ISO9075;
 import org.apache.jackrabbit.util.Text;
-
-
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 
 /**
@@ -53,7 +51,7 @@ public class RepositoryUtil
     /** Item path separator */
     public static final String PATH_SEPARATOR = "/";
 
-    private final static Log log = LogFactory.getLog(RepositoryUtil.class);
+    private final static Logger log = LoggerFactory.getLogger(RepositoryUtil.class);
 
     /**
      * Register a new repository

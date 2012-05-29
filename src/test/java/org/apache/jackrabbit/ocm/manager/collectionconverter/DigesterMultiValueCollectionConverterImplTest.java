@@ -21,11 +21,11 @@ import java.util.ArrayList;
 import junit.framework.Test;
 import junit.framework.TestSuite;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.apache.jackrabbit.ocm.DigesterTestBase;
 import org.apache.jackrabbit.ocm.manager.ObjectContentManager;
 import org.apache.jackrabbit.ocm.testmodel.MultiValue;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Test NTCollectionConverterImpl
@@ -34,7 +34,7 @@ import org.apache.jackrabbit.ocm.testmodel.MultiValue;
  */
 public class DigesterMultiValueCollectionConverterImplTest extends DigesterTestBase
 {
-    private final static Log log = LogFactory.getLog(DigesterMultiValueCollectionConverterImplTest.class);
+    private final static Logger log = LoggerFactory.getLogger(DigesterMultiValueCollectionConverterImplTest.class);
 
     /**
      * <p>Defines the test case name for junit.</p>

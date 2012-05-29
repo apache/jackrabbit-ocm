@@ -19,21 +19,17 @@ package org.apache.jackrabbit.ocm.manager.basic;
 import java.util.ArrayList;
 import java.util.Collection;
 
-import javax.jcr.Node;
-import javax.jcr.NodeIterator;
-import javax.jcr.RepositoryException;
 import junit.framework.Test;
 import junit.framework.TestSuite;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.apache.jackrabbit.ocm.DigesterTestBase;
 import org.apache.jackrabbit.ocm.exception.ObjectContentManagerException;
-import org.apache.jackrabbit.ocm.repository.RepositoryUtil;
 import org.apache.jackrabbit.ocm.testmodel.A;
 import org.apache.jackrabbit.ocm.testmodel.Atomic;
 import org.apache.jackrabbit.ocm.testmodel.B;
 import org.apache.jackrabbit.ocm.testmodel.C;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 
 /**
@@ -43,7 +39,7 @@ import org.apache.jackrabbit.ocm.testmodel.C;
  */
 public class DigesterCopyMoveTest extends DigesterTestBase
 {
-	private final static Log log = LogFactory.getLog(DigesterCopyMoveTest.class);
+	private final static Logger log = LoggerFactory.getLogger(DigesterCopyMoveTest.class);
 	
 	/**
 	 * <p>Defines the test case name for junit.</p>

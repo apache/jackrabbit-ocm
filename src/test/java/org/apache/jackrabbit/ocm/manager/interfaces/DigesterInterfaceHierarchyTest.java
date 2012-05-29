@@ -21,8 +21,6 @@ import java.util.Collection;
 import junit.framework.Test;
 import junit.framework.TestSuite;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.apache.jackrabbit.ocm.DigesterTestBase;
 import org.apache.jackrabbit.ocm.manager.ObjectContentManager;
 import org.apache.jackrabbit.ocm.query.Filter;
@@ -34,6 +32,8 @@ import org.apache.jackrabbit.ocm.testmodel.inheritance.Descendant;
 import org.apache.jackrabbit.ocm.testmodel.inheritance.SubDescendant;
 import org.apache.jackrabbit.ocm.testmodel.interfaces.AnotherInterface;
 import org.apache.jackrabbit.ocm.testmodel.interfaces.Interface;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Test interface (with discreminator field)
@@ -41,7 +41,7 @@ import org.apache.jackrabbit.ocm.testmodel.interfaces.Interface;
  * @author <a href="mailto:christophe.lombart@gmail.com">Christophe Lombart</a>
  */
 public class DigesterInterfaceHierarchyTest extends DigesterTestBase {
-	private final static Log log = LogFactory.getLog(DigesterInterfaceHierarchyTest.class);
+	private final static Logger log = LoggerFactory.getLogger(DigesterInterfaceHierarchyTest.class);
 
 	/**
 	 * <p>Defines the test case name for junit.</p>

@@ -18,14 +18,15 @@ package org.apache.jackrabbit.ocm.testmodel;
 
 import java.io.InputStream;
 import java.util.Calendar;
+
+import org.apache.jackrabbit.ocm.mapper.impl.annotation.Field;
+import org.apache.jackrabbit.ocm.mapper.impl.annotation.Node;
+
 /**
  * Java class used to map the jcr node type nt:resource
  * @author <a href="mailto:christophe.lombart@gmail.com">Lombart Christophe </a>
  *
  */
-
-import org.apache.jackrabbit.ocm.mapper.impl.annotation.Field;
-import org.apache.jackrabbit.ocm.mapper.impl.annotation.Node;
 
 @Node(jcrType="nt:resource")
 public class Resource

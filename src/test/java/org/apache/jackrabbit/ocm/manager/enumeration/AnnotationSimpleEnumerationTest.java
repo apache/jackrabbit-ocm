@@ -19,8 +19,6 @@ package org.apache.jackrabbit.ocm.manager.enumeration;
 import junit.framework.Test;
 import junit.framework.TestSuite;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.apache.jackrabbit.ocm.AnnotationTestBase;
 
 /**
@@ -30,8 +28,6 @@ import org.apache.jackrabbit.ocm.AnnotationTestBase;
  */
 public class AnnotationSimpleEnumerationTest extends AnnotationTestBase
 {
-    private final static Log logger = LogFactory.getLog(AnnotationSimpleEnumerationTest.class);
-
     /**
      * <p>Defines the test case name for junit.</p>
      * @param testName The test case name.

@@ -22,8 +22,6 @@ import java.util.Date;
 import junit.framework.Test;
 import junit.framework.TestSuite;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.apache.jackrabbit.ocm.AnnotationTestBase;
 import org.apache.jackrabbit.ocm.manager.ObjectContentManager;
 import org.apache.jackrabbit.ocm.testmodel.Page;
@@ -34,6 +32,8 @@ import org.apache.jackrabbit.ocm.testmodel.version.Author;
 import org.apache.jackrabbit.ocm.testmodel.version.PressRelease;
 import org.apache.jackrabbit.ocm.version.Version;
 import org.apache.jackrabbit.ocm.version.VersionIterator;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Test Query on atomic fields
@@ -42,7 +42,7 @@ import org.apache.jackrabbit.ocm.version.VersionIterator;
  */
 public class AnnotationBasicVersionningTest extends AnnotationTestBase
 {
-	private final static Log log = LogFactory.getLog(AnnotationBasicVersionningTest.class);
+	private final static Logger log = LoggerFactory.getLogger(AnnotationBasicVersionningTest.class);
 
 	/**
 	 * <p>Defines the test case name for junit.</p>

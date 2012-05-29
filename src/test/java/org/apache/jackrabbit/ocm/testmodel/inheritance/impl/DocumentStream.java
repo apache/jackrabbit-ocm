@@ -20,10 +20,10 @@ package org.apache.jackrabbit.ocm.testmodel.inheritance.impl;
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.apache.jackrabbit.ocm.mapper.impl.annotation.Field;
 import org.apache.jackrabbit.ocm.mapper.impl.annotation.Node;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 
 
@@ -36,7 +36,7 @@ import org.apache.jackrabbit.ocm.mapper.impl.annotation.Node;
 @Node(jcrType="ocm:documentstream", discriminator=false)
 public class DocumentStream
 {
-    protected final static Log log = LogFactory.getLog(DocumentStream.class);
+    protected final static Logger log = LoggerFactory.getLogger(DocumentStream.class);
 
     @Field(jcrName="ocm:binarycontent") protected byte[] content;
 

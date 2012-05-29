@@ -24,8 +24,6 @@ import javax.jcr.UnsupportedRepositoryOperationException;
 import junit.framework.Test;
 import junit.framework.TestSuite;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.apache.jackrabbit.ocm.DigesterTestBase;
 import org.apache.jackrabbit.ocm.manager.ObjectContentManager;
 import org.apache.jackrabbit.ocm.manager.impl.ObjectContentManagerImpl;
@@ -35,6 +33,8 @@ import org.apache.jackrabbit.ocm.testmodel.auto.Folder;
 import org.apache.jackrabbit.ocm.testmodel.auto.impl.DocumentImpl;
 import org.apache.jackrabbit.ocm.testmodel.auto.impl.DocumentStream;
 import org.apache.jackrabbit.ocm.testmodel.auto.impl.FolderImpl;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Test autoupdate setting
@@ -42,7 +42,7 @@ import org.apache.jackrabbit.ocm.testmodel.auto.impl.FolderImpl;
  * @author <a href="mailto:christophe.lombart@gmail.com">Christophe Lombart</a>
  */
 public class DigesterAutoTest extends DigesterTestBase {
-	private final static Log log = LogFactory.getLog(DigesterAutoTest.class);
+	private final static Logger log = LoggerFactory.getLogger(DigesterAutoTest.class);
 
 	/**
 	 * <p>Defines the test case name for junit.</p>

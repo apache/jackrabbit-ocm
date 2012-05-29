@@ -16,7 +16,6 @@
  */
 package org.apache.jackrabbit.ocm.manager.collectionconverter.impl;
 
-import java.util.Collection;
 import java.util.Iterator;
 import java.util.Map;
 

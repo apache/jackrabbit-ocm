@@ -21,8 +21,6 @@ import javax.jcr.PropertyType;
 import javax.jcr.Session;
 import javax.jcr.Value;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.apache.jackrabbit.ocm.exception.JcrMappingException;
 import org.apache.jackrabbit.ocm.exception.ObjectContentManagerException;
 import org.apache.jackrabbit.ocm.exception.RepositoryException;
@@ -34,6 +32,9 @@ import org.apache.jackrabbit.ocm.mapper.model.BeanDescriptor;
 import org.apache.jackrabbit.ocm.mapper.model.ClassDescriptor;
 import org.apache.jackrabbit.ocm.mapper.model.FieldDescriptor;
 import org.apache.jackrabbit.ocm.reflection.ReflectionUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 /**
  *
  * Map a bean attribute into a reference jcr property. It is not possible to update direclty the referenced bean.
@@ -45,7 +46,7 @@ import org.apache.jackrabbit.ocm.reflection.ReflectionUtils;
  */
 public class ReferenceBeanConverterImpl extends AbstractBeanConverterImpl  implements BeanConverter {
 
-	private final static Log log = LogFactory.getLog(ReferenceBeanConverterImpl.class);
+	private final static Logger log = LoggerFactory.getLogger(ReferenceBeanConverterImpl.class);
 	
 	public ReferenceBeanConverterImpl(Mapper mapper, ObjectConverter objectConverter, AtomicTypeConverterProvider atomicTypeConverterProvider)
 	{

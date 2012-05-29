@@ -22,8 +22,6 @@ import java.util.Map;
 
 import javax.jcr.ValueFactory;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.apache.jackrabbit.ocm.manager.ManagerConstant;
 import org.apache.jackrabbit.ocm.manager.impl.ObjectContentManagerImpl;
 import org.apache.jackrabbit.ocm.mapper.Mapper;
@@ -31,10 +29,12 @@ import org.apache.jackrabbit.ocm.mapper.model.ClassDescriptor;
 import org.apache.jackrabbit.ocm.query.Filter;
 import org.apache.jackrabbit.ocm.query.Query;
 import org.apache.jackrabbit.ocm.query.QueryManager;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class QueryManagerImpl implements QueryManager {
 
-	private final static Log log = LogFactory.getLog(ObjectContentManagerImpl.class);
+	private final static Logger log = LoggerFactory.getLogger(ObjectContentManagerImpl.class);
 
 	private Mapper mapper;
     private Map atomicTypeConverters;

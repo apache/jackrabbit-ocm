@@ -36,18 +36,18 @@ import javax.jcr.query.Query;
 import javax.jcr.query.QueryResult;
 import javax.jcr.version.VersionException;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.apache.jackrabbit.ocm.exception.JcrMappingException;
 import org.apache.jackrabbit.ocm.manager.collectionconverter.ManageableCollection;
-import org.apache.jackrabbit.ocm.manager.collectionconverter.ManageableObjectsUtil;
 import org.apache.jackrabbit.ocm.manager.collectionconverter.ManageableMap;
 import org.apache.jackrabbit.ocm.manager.collectionconverter.ManageableObjects;
+import org.apache.jackrabbit.ocm.manager.collectionconverter.ManageableObjectsUtil;
 import org.apache.jackrabbit.ocm.manager.objectconverter.ObjectConverter;
 import org.apache.jackrabbit.ocm.mapper.Mapper;
 import org.apache.jackrabbit.ocm.mapper.model.ClassDescriptor;
 import org.apache.jackrabbit.ocm.mapper.model.CollectionDescriptor;
 import org.apache.jackrabbit.ocm.reflection.ReflectionUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Collection Mapping/convertion based on node type.
@@ -88,7 +88,7 @@ import org.apache.jackrabbit.ocm.reflection.ReflectionUtils;
  */
 public class NTCollectionConverterImpl extends AbstractCollectionConverterImpl {
 
-    private final static Log log = LogFactory.getLog(NTCollectionConverterImpl.class);
+    private final static Logger log = LoggerFactory.getLogger(NTCollectionConverterImpl.class);
 
     protected static final String COLLECTION_ELEMENT_NAME = "collection-element";
 
@@ -105,9 +105,7 @@ public class NTCollectionConverterImpl extends AbstractCollectionConverterImpl {
         super(atomicTypeConverters, objectConverter, mapper);
     }
 
-    /**
-     * @see AbstractCollectionConverterImpl#doInsertCollection(Session, Node, CollectionDescriptor, ManageableCollection)
-     */
+
     protected void doInsertCollection(Session session,
                                       Node parentNode,
                                       CollectionDescriptor collectionDescriptor,
@@ -139,10 +137,6 @@ public class NTCollectionConverterImpl extends AbstractCollectionConverterImpl {
         }
     }
 
-    /**
-     *
-     * @see org.apache.jackrabbit.ocm.manager.collectionconverter.CollectionConverter#updateCollection(javax.jcr.Session, javax.jcr.Node, org.apache.jackrabbit.ocm.mapper.model.CollectionDescriptor, org.apache.jackrabbit.ocm.manager.collectionconverter.ManageableCollection)
-     */
     protected void doUpdateCollection(Session session,
                                       Node parentNode,
                                       CollectionDescriptor collectionDescriptor,
@@ -314,6 +308,7 @@ public class NTCollectionConverterImpl extends AbstractCollectionConverterImpl {
 
 
     	}
+        @SuppressWarnings("deprecation")
         Query jcrQuery = session.getWorkspace().getQueryManager().createQuery(jcrExpression, javax.jcr.query.Query.SQL);
         QueryResult queryResult = jcrQuery.execute();
 		return queryResult;

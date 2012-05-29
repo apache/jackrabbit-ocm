@@ -17,19 +17,17 @@
 package org.apache.jackrabbit.ocm.mapper.model;
 
 
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
-import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.apache.jackrabbit.ocm.exception.JcrMappingException;
 import org.apache.jackrabbit.ocm.reflection.ReflectionUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  *
@@ -40,7 +38,7 @@ import org.apache.jackrabbit.ocm.reflection.ReflectionUtils;
  */
 public class ClassDescriptor {
 
-	private static final Log log = LogFactory.getLog(ClassDescriptor.class);
+	private static final Logger log = LoggerFactory.getLogger(ClassDescriptor.class);
 
     private static final String NODETYPE_PER_HIERARCHY = "nodetypeperhierarchy";
     private static final String NODETYPE_PER_CONCRETECLASS = "nodetypeperconcreteclass";

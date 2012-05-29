@@ -24,8 +24,6 @@ import javax.jcr.Node;
 import junit.framework.Test;
 import junit.framework.TestSuite;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.apache.jackrabbit.ocm.DigesterTestBase;
 import org.apache.jackrabbit.ocm.exception.JcrMappingException;
 import org.apache.jackrabbit.ocm.manager.ObjectContentManager;
@@ -35,6 +33,8 @@ import org.apache.jackrabbit.ocm.query.QueryManager;
 import org.apache.jackrabbit.ocm.query.impl.QueryImpl;
 import org.apache.jackrabbit.ocm.testmodel.Page;
 import org.apache.jackrabbit.ocm.testmodel.Paragraph;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Test QueryManagerImpl Query methods
@@ -43,7 +43,7 @@ import org.apache.jackrabbit.ocm.testmodel.Paragraph;
  *         Lombart</a>
  */
 public class DigesterSimpleQueryTest extends DigesterTestBase {
-    private final static Log log = LogFactory.getLog(DigesterSimpleQueryTest.class);
+    private final static Logger log = LoggerFactory.getLogger(DigesterSimpleQueryTest.class);
 
     /**
      * <p>

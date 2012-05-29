@@ -22,18 +22,18 @@ import java.util.List;
 import junit.framework.Test;
 import junit.framework.TestSuite;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.apache.jackrabbit.ocm.AnnotationTestBase;
 import org.apache.jackrabbit.ocm.manager.ObjectContentManager;
 import org.apache.jackrabbit.ocm.testmodel.collection.Person;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * @author <a href="mailto:boni.g@bioimagene.com">Boni Gopalan</a>
  */
 public class AnnotationPersonListTest extends AnnotationTestBase
 {
-    private final static Log log = LogFactory.getLog(AnnotationPersonListTest.class);
+    private final static Logger log = LoggerFactory.getLogger(AnnotationPersonListTest.class);
 
     /**
      * <p>Defines the test case name for junit.</p>

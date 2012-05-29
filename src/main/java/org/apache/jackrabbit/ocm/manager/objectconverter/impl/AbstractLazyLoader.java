@@ -20,10 +20,10 @@ import java.io.Serializable;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 
-import net.sf.cglib.proxy.InvocationHandler;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import net.sf.cglib.proxy.InvocationHandler;
 
 /**
  * Parent Class of the OCM Lazy Loaders
@@ -35,7 +35,7 @@ public abstract class AbstractLazyLoader implements InvocationHandler, Serializa
 	/**
 	 * The logger
 	 */
-	private final static Log log = LogFactory.getLog(AbstractLazyLoader.class);
+	private final static Logger log = LoggerFactory.getLogger(AbstractLazyLoader.class);
 
 	/**
 	 * The proxified instance

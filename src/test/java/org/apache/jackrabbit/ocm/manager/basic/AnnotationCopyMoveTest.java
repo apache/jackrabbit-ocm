@@ -22,14 +22,14 @@ import java.util.Collection;
 import junit.framework.Test;
 import junit.framework.TestSuite;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.apache.jackrabbit.ocm.AnnotationTestBase;
 import org.apache.jackrabbit.ocm.exception.ObjectContentManagerException;
 import org.apache.jackrabbit.ocm.testmodel.A;
 import org.apache.jackrabbit.ocm.testmodel.Atomic;
 import org.apache.jackrabbit.ocm.testmodel.B;
 import org.apache.jackrabbit.ocm.testmodel.C;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 
 /**
@@ -39,7 +39,7 @@ import org.apache.jackrabbit.ocm.testmodel.C;
  */
 public class AnnotationCopyMoveTest extends AnnotationTestBase
 {
-	private final static Log log = LogFactory.getLog(AnnotationCopyMoveTest.class);
+	private final static Logger log = LoggerFactory.getLogger(AnnotationCopyMoveTest.class);
 	
 	/**
 	 * <p>Defines the test case name for junit.</p>

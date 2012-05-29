@@ -18,18 +18,17 @@
 package org.apache.jackrabbit.ocm.query.impl;
 
 
-
 import java.util.Map;
 
 import javax.jcr.ValueFactory;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.apache.jackrabbit.ocm.manager.atomictypeconverter.AtomicTypeConverter;
 import org.apache.jackrabbit.ocm.mapper.model.ClassDescriptor;
 import org.apache.jackrabbit.ocm.mapper.model.FieldDescriptor;
 import org.apache.jackrabbit.ocm.query.Filter;
 import org.apache.jackrabbit.ocm.reflection.ReflectionUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * {@link org.apache.jackrabbit.ocm.query.Filter}
@@ -38,7 +37,7 @@ import org.apache.jackrabbit.ocm.reflection.ReflectionUtils;
  * @author <a href="mailto:the_mindstorm[at]evolva[dot]ro">Alex Popescu</a>
  */
 public class FilterImpl implements Filter {
-    private final static Log log = LogFactory.getLog(FilterImpl.class);
+    private final static Logger log = LoggerFactory.getLogger(FilterImpl.class);
 
     private Class claszz;
     private String scope = "";

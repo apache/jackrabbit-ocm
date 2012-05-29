@@ -25,9 +25,7 @@ import javax.jcr.Session;
 import org.apache.jackrabbit.ocm.exception.JcrMappingException;
 import org.apache.jackrabbit.ocm.exception.ObjectContentManagerException;
 import org.apache.jackrabbit.ocm.exception.RepositoryException;
-
 import org.apache.jackrabbit.ocm.manager.atomictypeconverter.AtomicTypeConverterProvider;
-import org.apache.jackrabbit.ocm.manager.beanconverter.BeanConverter;
 import org.apache.jackrabbit.ocm.manager.beanconverter.impl.AbstractBeanConverterImpl;
 import org.apache.jackrabbit.ocm.manager.objectconverter.ObjectConverter;
 import org.apache.jackrabbit.ocm.mapper.Mapper;
@@ -37,40 +35,32 @@ import org.apache.jackrabbit.ocm.testmodel.B;
 
 public class FakeBeanConverter extends AbstractBeanConverterImpl implements BeanConverter {
 
-    private static  List log = new ArrayList();
+    private static List log = new ArrayList();
 
     public FakeBeanConverter(Mapper mapper, ObjectConverter objectConverter, AtomicTypeConverterProvider atomicTypeConverterProvider) {
-		super(mapper, objectConverter, atomicTypeConverterProvider);
-		
-		
-	}
+        super(mapper, objectConverter, atomicTypeConverterProvider);
 
-    public static void cleanUpLog()
-    {
-    	log.clear();
+
     }
 
-	public static List getLog() {
+    public static void cleanUpLog() {
+        log.clear();
+    }
+
+    public static List getLog() {
         return log;
     }
 
-    /**
-     * @see org.apache.jackrabbit.ocm.manager.beanconverter.BeanConverter#insert(javax.jcr.Session, javax.jcr.Node, org.apache.jackrabbit.ocm.mapper.Mapper, java.lang.String, java.lang.Object)
-     */
-	public void insert(Session session, Node parentNode, BeanDescriptor beanDescriptor, ClassDescriptor beanClassDescriptor, Object object, ClassDescriptor parentClassDescriptor, Object parent)
-	throws ObjectContentManagerException, RepositoryException, 	JcrMappingException {
+    public void insert(Session session, Node parentNode, BeanDescriptor beanDescriptor, ClassDescriptor beanClassDescriptor, Object object, ClassDescriptor parentClassDescriptor, Object parent)
+            throws ObjectContentManagerException, RepositoryException, JcrMappingException {
         try {
             log.add("insert at path " + parentNode.getPath());
 
-        }
-        catch(javax.jcr.RepositoryException re) {
+        } catch (javax.jcr.RepositoryException re) {
             throw new ObjectContentManagerException(re);
         }
     }
 
-    /**
-     * @see org.apache.jackrabbit.ocm.manager.beanconverter.BeanConverter#update(javax.jcr.Session, javax.jcr.Node, org.apache.jackrabbit.ocm.mapper.Mapper, java.lang.String, java.lang.Object)
-     */
 	public void update(Session session, Node parentNode, BeanDescriptor beanDescriptor, ClassDescriptor beanClassDescriptor, Object object, ClassDescriptor parentClassDescriptor, Object parent)
 	throws ObjectContentManagerException, RepositoryException,	JcrMappingException {
         try {
@@ -79,17 +69,14 @@ public class FakeBeanConverter extends AbstractBeanConverterImpl implements Bean
         catch(javax.jcr.RepositoryException re) {
             throw new ObjectContentManagerException(re);
         }
+
     }
 
-    /**
-     * @see org.apache.jackrabbit.ocm.manager.beanconverter.BeanConverter#getObject(javax.jcr.Session, javax.jcr.Node, org.apache.jackrabbit.ocm.mapper.Mapper, java.lang.String, java.lang.Class)
-     */
     public Object getObject(Session session, Node parentNode, BeanDescriptor beanDescriptor, ClassDescriptor beanClassDescriptor, Class beanClass, Object parent)
-	throws ObjectContentManagerException, RepositoryException,JcrMappingException {
+            throws ObjectContentManagerException, RepositoryException, JcrMappingException {
         try {
             log.add("get from path " + parentNode.getPath());
-        }
-        catch(javax.jcr.RepositoryException re) {
+        } catch (javax.jcr.RepositoryException re) {
             throw new ObjectContentManagerException(re);
         }
         // The B object is not important for the unit test.
@@ -97,16 +84,12 @@ public class FakeBeanConverter extends AbstractBeanConverterImpl implements Bean
         return new B();
     }
 
-    /**
-     * @see org.apache.jackrabbit.ocm.manager.beanconverter.BeanConverter#remove(javax.jcr.Session, javax.jcr.Node, org.apache.jackrabbit.ocm.mapper.Mapper, java.lang.String)
-     */
-	public void remove(Session session, Node parentNode, BeanDescriptor beanDescriptor, ClassDescriptor beanClassDescriptor, Object object, ClassDescriptor parentClassDescriptor, Object parent)
-    throws ObjectContentManagerException,	RepositoryException, JcrMappingException {
+    public void remove(Session session, Node parentNode, BeanDescriptor beanDescriptor, ClassDescriptor beanClassDescriptor, Object object, ClassDescriptor parentClassDescriptor, Object parent)
+            throws ObjectContentManagerException, RepositoryException, JcrMappingException {
 
         try {
             log.add("remove from path " + parentNode.getPath());
-        }
-        catch(javax.jcr.RepositoryException re) {
+        } catch (javax.jcr.RepositoryException re) {
             throw new ObjectContentManagerException(re);
         }
     }

@@ -18,8 +18,6 @@ package org.apache.jackrabbit.ocm.testmodel.unstructured;
 
 import java.util.ArrayList;
 
-
-import org.apache.jackrabbit.ocm.manager.collectionconverter.impl.NTCollectionConverterImpl;
 import org.apache.jackrabbit.ocm.mapper.impl.annotation.Collection;
 import org.apache.jackrabbit.ocm.mapper.impl.annotation.Field;
 import org.apache.jackrabbit.ocm.mapper.impl.annotation.Node;

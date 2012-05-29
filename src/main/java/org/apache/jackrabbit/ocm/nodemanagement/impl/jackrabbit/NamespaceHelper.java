@@ -18,7 +18,6 @@ package org.apache.jackrabbit.ocm.nodemanagement.impl.jackrabbit;
 
 import javax.jcr.NamespaceRegistry;
 
-
 import org.apache.jackrabbit.ocm.nodemanagement.impl.BaseNamespaceHelper;
 import org.apache.jackrabbit.spi.Name;
 import org.apache.jackrabbit.spi.commons.name.NameFactoryImpl;

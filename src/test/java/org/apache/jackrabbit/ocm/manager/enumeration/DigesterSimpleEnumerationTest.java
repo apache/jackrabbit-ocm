@@ -19,9 +19,9 @@ package org.apache.jackrabbit.ocm.manager.enumeration;
 import junit.framework.Test;
 import junit.framework.TestSuite;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.apache.jackrabbit.ocm.DigesterTestBase;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Test Persisting and retrieving Enum values.
@@ -30,7 +30,7 @@ import org.apache.jackrabbit.ocm.DigesterTestBase;
  */
 public class DigesterSimpleEnumerationTest extends DigesterTestBase
 {
-    private final static Log log = LogFactory.getLog(DigesterSimpleEnumerationTest.class);
+    private final static Logger log = LoggerFactory.getLogger(DigesterSimpleEnumerationTest.class);
 
     /**
      * <p>Defines the test case name for junit.</p>

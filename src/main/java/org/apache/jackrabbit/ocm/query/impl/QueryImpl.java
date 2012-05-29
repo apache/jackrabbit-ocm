@@ -17,9 +17,6 @@
 
 package org.apache.jackrabbit.ocm.query.impl;
 
-import java.util.ArrayList;
-import java.util.Iterator;
-
 import org.apache.jackrabbit.ocm.mapper.Mapper;
 import org.apache.jackrabbit.ocm.mapper.model.ClassDescriptor;
 import org.apache.jackrabbit.ocm.query.Filter;

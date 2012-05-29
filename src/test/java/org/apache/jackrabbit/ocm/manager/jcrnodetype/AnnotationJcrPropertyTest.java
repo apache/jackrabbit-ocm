@@ -19,11 +19,11 @@ package org.apache.jackrabbit.ocm.manager.jcrnodetype;
 import junit.framework.Test;
 import junit.framework.TestSuite;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.apache.jackrabbit.ocm.AnnotationTestBase;
 import org.apache.jackrabbit.ocm.manager.ObjectContentManager;
 import org.apache.jackrabbit.ocm.testmodel.PropertyTest;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Test inheritance with node type per concrete class (without  discreminator field)
@@ -32,7 +32,7 @@ import org.apache.jackrabbit.ocm.testmodel.PropertyTest;
  */
 public class AnnotationJcrPropertyTest extends AnnotationTestBase
 {
-	private final static Log log = LogFactory.getLog(AnnotationJcrPropertyTest.class);
+	private final static Logger log = LoggerFactory.getLogger(AnnotationJcrPropertyTest.class);
 
 	/**
 	 * <p>Defines the test case name for junit.</p>

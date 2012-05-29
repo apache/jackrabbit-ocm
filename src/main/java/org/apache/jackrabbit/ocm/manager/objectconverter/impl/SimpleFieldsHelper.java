@@ -31,8 +31,6 @@ import javax.jcr.nodetype.NodeType;
 import javax.jcr.nodetype.PropertyDefinition;
 import javax.jcr.version.VersionException;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.apache.jackrabbit.ocm.exception.ObjectContentManagerException;
 import org.apache.jackrabbit.ocm.manager.ManagerConstant;
 import org.apache.jackrabbit.ocm.manager.atomictypeconverter.AtomicTypeConverter;
@@ -41,6 +39,8 @@ import org.apache.jackrabbit.ocm.manager.atomictypeconverter.impl.NullTypeConver
 import org.apache.jackrabbit.ocm.mapper.model.ClassDescriptor;
 import org.apache.jackrabbit.ocm.mapper.model.FieldDescriptor;
 import org.apache.jackrabbit.ocm.reflection.ReflectionUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Helper class used to map simple fields.
@@ -51,7 +51,7 @@ import org.apache.jackrabbit.ocm.reflection.ReflectionUtils;
 public class SimpleFieldsHelper
 {
 
-	private final static Log log = LogFactory.getLog(SimpleFieldsHelper.class);
+	private final static Logger log = LoggerFactory.getLogger(SimpleFieldsHelper.class);
 
 	private static final AtomicTypeConverter NULL_CONVERTER = new NullTypeConverterImpl();
 

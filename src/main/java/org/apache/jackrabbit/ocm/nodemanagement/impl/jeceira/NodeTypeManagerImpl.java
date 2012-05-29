@@ -21,9 +21,6 @@ import java.util.List;
 
 import javax.jcr.Session;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
-
 import org.apache.jackrabbit.ocm.mapper.model.ClassDescriptor;
 import org.apache.jackrabbit.ocm.mapper.model.MappingDescriptor;
 import org.apache.jackrabbit.ocm.nodemanagement.NodeTypeManager;
@@ -31,6 +28,8 @@ import org.apache.jackrabbit.ocm.nodemanagement.exception.NamespaceCreationExcep
 import org.apache.jackrabbit.ocm.nodemanagement.exception.NodeTypeCreationException;
 import org.apache.jackrabbit.ocm.nodemanagement.exception.NodeTypeRemovalException;
 import org.apache.jackrabbit.ocm.nodemanagement.exception.OperationNotSupportedException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /** This is the NodeTypeManager implementation for Jeceira.
  *
@@ -41,7 +40,7 @@ public class NodeTypeManagerImpl implements NodeTypeManager {
     /**
      * Logging.
      */
-    private static Log log = LogFactory.getLog(NodeTypeManagerImpl.class);
+    private static Logger log = LoggerFactory.getLogger(NodeTypeManagerImpl.class);
 
     /** Creates a new instance of NodeTypeManagerImpl. */
     public NodeTypeManagerImpl()

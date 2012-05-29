@@ -28,11 +28,11 @@ import java.util.Set;
 import java.util.SortedMap;
 import java.util.TreeMap;
 
-import net.sf.cglib.proxy.Enhancer;
-
 import org.apache.commons.beanutils.ConstructorUtils;
 import org.apache.commons.beanutils.PropertyUtils;
 import org.apache.jackrabbit.ocm.exception.JcrMappingException;
+
+import net.sf.cglib.proxy.Enhancer;
 
 
 /**

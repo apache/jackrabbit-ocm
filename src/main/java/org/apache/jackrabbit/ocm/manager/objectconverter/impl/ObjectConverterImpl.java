@@ -33,8 +33,6 @@ import javax.jcr.nodetype.NodeType;
 import javax.jcr.nodetype.NodeTypeManager;
 import javax.jcr.version.VersionException;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.apache.jackrabbit.ocm.exception.IncorrectPersistentClassException;
 import org.apache.jackrabbit.ocm.exception.JcrMappingException;
 import org.apache.jackrabbit.ocm.exception.ObjectContentManagerException;
@@ -59,6 +57,8 @@ import org.apache.jackrabbit.ocm.mapper.model.CollectionDescriptor;
 import org.apache.jackrabbit.ocm.mapper.model.FieldDescriptor;
 import org.apache.jackrabbit.ocm.reflection.ReflectionUtils;
 import org.apache.jackrabbit.ocm.repository.NodeUtil;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Default implementation for {@link ObjectConverterImpl}
@@ -71,7 +71,7 @@ public class ObjectConverterImpl implements ObjectConverter {
 
 	private static final String DEFAULT_BEAN_CONVERTER = "org.apache.jackrabbit.ocm.manager.beanconverter.impl.DefaultBeanConverterImpl";
 
-	private final static Log log = LogFactory.getLog(ObjectConverterImpl.class);
+	private final static Logger log = LoggerFactory.getLogger(ObjectConverterImpl.class);
 
 	private Mapper mapper;
 

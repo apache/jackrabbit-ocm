@@ -16,10 +16,7 @@
  */
 package org.apache.jackrabbit.ocm.repository;
 
-import junit.extensions.TestSetup;
-import junit.framework.Test;
 import junit.framework.TestCase;
-import junit.framework.TestSuite;
 
 /** Testcase for RepositoryUtil.
  *

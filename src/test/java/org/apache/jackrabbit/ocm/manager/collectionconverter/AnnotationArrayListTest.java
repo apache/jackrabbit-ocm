@@ -23,21 +23,21 @@ import java.util.List;
 import junit.framework.Test;
 import junit.framework.TestSuite;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.apache.jackrabbit.ocm.AnnotationTestBase;
 import org.apache.jackrabbit.ocm.manager.ObjectContentManager;
 import org.apache.jackrabbit.ocm.testmodel.collection.ArrayListElement;
 import org.apache.jackrabbit.ocm.testmodel.collection.CustomList;
 import org.apache.jackrabbit.ocm.testmodel.collection.Element;
 import org.apache.jackrabbit.ocm.testmodel.collection.Main;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * @author <a href="mailto:christophe.lombart@gmail.com">Christophe Lombart</a>
  */
 public class AnnotationArrayListTest extends AnnotationTestBase
 {
-    private final static Log log = LogFactory.getLog(AnnotationArrayListTest.class);
+    private final static Logger log = LoggerFactory.getLogger(AnnotationArrayListTest.class);
 
     /**
      * <p>Defines the test case name for junit.</p>

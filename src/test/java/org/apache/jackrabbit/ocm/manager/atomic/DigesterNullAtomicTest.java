@@ -23,11 +23,11 @@ import java.util.Date;
 import junit.framework.Test;
 import junit.framework.TestSuite;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.apache.jackrabbit.ocm.DigesterTestBase;
 import org.apache.jackrabbit.ocm.manager.ObjectContentManager;
 import org.apache.jackrabbit.ocm.testmodel.Atomic;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Test Atomic perisstence fields
@@ -36,7 +36,7 @@ import org.apache.jackrabbit.ocm.testmodel.Atomic;
  */
 public class DigesterNullAtomicTest extends DigesterTestBase
 {
-    private final static Log log = LogFactory.getLog(DigesterNullAtomicTest.class);
+    private final static Logger log = LoggerFactory.getLogger(DigesterNullAtomicTest.class);
 
     /**
      * <p>Defines the test case name for junit.</p>
