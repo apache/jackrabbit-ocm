@@ -36,10 +36,7 @@ import org.apache.jackrabbit.ocm.manager.atomictypeconverter.AtomicTypeConverter
  */
 public class BinaryTypeConverterImpl implements AtomicTypeConverter
 {
-	/**
-	 *
-	 * @see org.apache.jackrabbit.ocm.manager.atomictypeconverter.AtomicTypeConverter#getValue(java.lang.Object)
-	 */
+
     public Value getValue(ValueFactory valueFactory, Object propValue)
     {
         if (propValue == null)
@@ -76,11 +73,6 @@ public class BinaryTypeConverterImpl implements AtomicTypeConverter
 		}
     }
 
-
-    /**
-     *
-     * @see org.apache.jackrabbit.ocm.manager.atomictypeconverter.AtomicTypeConverter#getStringValue(java.lang.Object)
-     */
 	public String getXPathQueryValue(ValueFactory valueFactory,Object object)
 	{		
 		throw new IncorrectAtomicTypeException("Binary cannot be used in queries");
