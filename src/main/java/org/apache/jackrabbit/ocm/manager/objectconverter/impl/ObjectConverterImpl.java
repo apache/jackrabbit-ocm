@@ -83,9 +83,6 @@ public class ObjectConverterImpl implements ObjectConverter {
 
 	private ObjectCache requestObjectCache;
 
-	/**
-	 * No-arg constructor.
-	 */
 	public ObjectConverterImpl() {
 	}
 
@@ -142,16 +139,12 @@ public class ObjectConverterImpl implements ObjectConverter {
 		this.atomicTypeConverterProvider = converterProvider;
 	}
 
-	/**
-	 * @see org.apache.jackrabbit.ocm.manager.objectconverter.ObjectConverter#insert(javax.jcr.Session,
-	 *      java.lang.Object)
-	 */
 	public void insert(Session session, Object object) {
 		String path = this.getPath(session, object);
 		try {
 			String parentPath = NodeUtil.getParentPath(path);
 			String nodeName = NodeUtil.getNodeName(path);
-			Node parentNode = (Node) session.getItem(parentPath);
+			Node parentNode = session.getNode(parentPath);
 			this.insert(session, parentNode, nodeName, object);
 
 		} catch (PathNotFoundException pnfe) {
@@ -162,11 +155,7 @@ public class ObjectConverterImpl implements ObjectConverter {
 		}
 	}
 
-	/**
-	 *
-	 * @see org.apache.jackrabbit.ocm.manager.objectconverter.ObjectConverter#insert(javax.jcr.Session,
-	 *      javax.jcr.Node, java.lang.String, java.lang.Object)
-	 */
+
 	public void insert(Session session, Node parentNode, String nodeName, Object object) {
 		ClassDescriptor classDescriptor = mapper.getClassDescriptorByClass(object.getClass());
 
@@ -175,10 +164,9 @@ public class ObjectConverterImpl implements ObjectConverter {
 			jcrType = ManagerConstant.NT_UNSTRUCTURED;
 		}
 
-		Node objectNode = null;
+		Node objectNode;
 		try {
 			objectNode = parentNode.addNode(nodeName, jcrType);
-
 		} catch (NoSuchNodeTypeException nsnte) {
 			throw new JcrMappingException("Unknown node type " + jcrType + " for mapped class " + object.getClass(), nsnte);
 		} catch (RepositoryException re) {
@@ -249,16 +237,12 @@ public class ObjectConverterImpl implements ObjectConverter {
 
 	}
 
-	/**
-	 * @see org.apache.jackrabbit.ocm.manager.objectconverter.ObjectConverter#update(javax.jcr.Session,
-	 *      java.lang.Object)
-	 */
 	public void update(Session session, Object object) {
 		String path = this.getPath(session, object);
 		try {
 			String parentPath = NodeUtil.getParentPath(path);
 			String nodeName = NodeUtil.getNodeName(path);
-			Node parentNode = (Node) session.getItem(parentPath);
+			Node parentNode = session.getNode(parentPath);
 			this.update(session, parentNode, nodeName, object);
 		} catch (PathNotFoundException pnfe) {
 			throw new ObjectContentManagerException("Impossible to update the object at '" + path + "'", pnfe);
@@ -268,11 +252,6 @@ public class ObjectConverterImpl implements ObjectConverter {
 		}
 	}
 
-	/**
-	 *
-	 * @see org.apache.jackrabbit.ocm.manager.objectconverter.ObjectConverter#update(javax.jcr.Session,
-	 *      javax.jcr.Node, java.lang.String, java.lang.Object)
-	 */
 	public void update(Session session, String uuId, Object object) {
 		try {
 			ClassDescriptor classDescriptor = mapper.getClassDescriptorByClass(ReflectionUtils.getBeanClass(object));
@@ -285,11 +264,6 @@ public class ObjectConverterImpl implements ObjectConverter {
 		}
 	}
 
-	/**
-	 *
-	 * @see org.apache.jackrabbit.ocm.manager.objectconverter.ObjectConverter#update(javax.jcr.Session,
-	 *      javax.jcr.Node, java.lang.Object)
-	 */
 	public void update(Session session, Node objectNode, Object object) {
 			ClassDescriptor classDescriptor = mapper.getClassDescriptorByClass(ReflectionUtils.getBeanClass(object));
 
@@ -302,13 +276,7 @@ public class ObjectConverterImpl implements ObjectConverter {
 			updateCollectionFields(session, object, classDescriptor, objectNode);
 			simpleFieldsHelp.refreshUuidPath(session, classDescriptor, objectNode, object);
 	}
-	
 
-	/**
-	 *
-	 * @see org.apache.jackrabbit.ocm.manager.objectconverter.ObjectConverter#update(javax.jcr.Session,
-	 *      javax.jcr.Node, java.lang.String, java.lang.Object)
-	 */
 	public void update(Session session, Node parentNode, String nodeName, Object object) {
 		try {
 			ClassDescriptor classDescriptor = mapper.getClassDescriptorByClass(ReflectionUtils.getBeanClass(object));
@@ -351,14 +319,10 @@ public class ObjectConverterImpl implements ObjectConverter {
 		return parentNode.getNode(nodeName);
 		
 	}
-	
-	/**
-	 * @see org.apache.jackrabbit.ocm.manager.objectconverter.ObjectConverter#getObject(javax.jcr.Session,
-	 *      java.lang.Class, java.lang.String)
-	 */
+
 	public Object getObject(Session session, String path) {
 		try {
-			if (!session.itemExists(path)) {
+			if (!session.nodeExists(path)) {
 				return null;
 			}
 
@@ -367,8 +331,8 @@ public class ObjectConverterImpl implements ObjectConverter {
 		        return requestObjectCache.getObject(path);
 		    }
 
-			ClassDescriptor classDescriptor = null;
-			Node node = (Node) session.getItem(path);
+			ClassDescriptor classDescriptor;
+			Node node = session.getNode(path);
 			if (node.hasProperty(ManagerConstant.DISCRIMINATOR_CLASS_NAME_PROPERTY)) {
 				String className = node.getProperty(ManagerConstant.DISCRIMINATOR_CLASS_NAME_PROPERTY).getValue().getString();
 				classDescriptor = mapper.getClassDescriptorByClass(ReflectionUtils.forName(className));
@@ -393,7 +357,7 @@ public class ObjectConverterImpl implements ObjectConverter {
             }
 
 			simpleFieldsHelp.retrieveSimpleFields(session, classDescriptor, node, object);
-			retrieveBeanFields(session, classDescriptor, node, path, object, false);
+			retrieveBeanFields(session, classDescriptor, node, object, false);
 			retrieveCollectionFields(session, classDescriptor, node, object, false);
 
 			return object;
@@ -406,16 +370,10 @@ public class ObjectConverterImpl implements ObjectConverter {
 		}
 	}
 
-
-
-	/**
-	 * @see org.apache.jackrabbit.ocm.manager.objectconverter.ObjectConverter#getObject(javax.jcr.Session,
-	 *      java.lang.Class, java.lang.String)
-	 */
 	public Object getObject(Session session, Class clazz, String path)
 	{
 		try {
-			if (!session.itemExists(path)) {
+			if (!session.nodeExists(path)) {
 				return null;
 			}
 
@@ -428,7 +386,7 @@ public class ObjectConverterImpl implements ObjectConverter {
 
 			checkNodeType(session, classDescriptor);
 
-			Node node = (Node) session.getItem(path);
+			Node node = session.getNode(path);
 			if (!classDescriptor.isInterface()) {
 				node = getActualNode(session,node);
 				checkCompatiblePrimaryNodeTypes(session, node, classDescriptor, true);
@@ -483,7 +441,7 @@ public class ObjectConverterImpl implements ObjectConverter {
             }
 
             simpleFieldsHelp.retrieveSimpleFields(session, classDescriptor, node, object);
-			retrieveBeanFields(session, classDescriptor, node, path, object, false);
+			retrieveBeanFields(session, classDescriptor, node, object, false);
 			retrieveCollectionFields(session, classDescriptor, node, object, false);
 
 			return object;
@@ -501,8 +459,8 @@ public class ObjectConverterImpl implements ObjectConverter {
 			ClassDescriptor classDescriptor = getClassDescriptor(object.getClass());
 			String pathFieldName = classDescriptor.getPathFieldDescriptor().getFieldName();
 			path = (String) ReflectionUtils.getNestedProperty(object, pathFieldName);
-			Node node = (Node) session.getItem(path);
-			retrieveBeanFields(session, classDescriptor, node, path, object, true);
+			Node node = session.getNode(path);
+			retrieveBeanFields(session, classDescriptor, node, object, true);
 			retrieveCollectionFields(session, classDescriptor, node, object, true);
 
 		} catch (PathNotFoundException pnfe) {
@@ -520,11 +478,11 @@ public class ObjectConverterImpl implements ObjectConverter {
 			classDescriptor = getClassDescriptor(object.getClass());
 			String pathFieldName = classDescriptor.getPathFieldDescriptor().getFieldName();
 			path = (String) ReflectionUtils.getNestedProperty(object, pathFieldName);
-			Node node = (Node) session.getItem(path);
+			Node node = session.getNode(path);
 			BeanDescriptor beanDescriptor = classDescriptor.getBeanDescriptor(attributeName);
 			if (beanDescriptor != null)
 			{
-				this.retrieveBeanField(session, beanDescriptor, node, path, object, true);
+				this.retrieveBeanField(session, beanDescriptor, node, object, true);
 			}
 			// Check if the attribute is a collection
 			else
@@ -662,8 +620,6 @@ public class ObjectConverterImpl implements ObjectConverter {
 	}
 
 	/**
-	 * @see org.apache.jackrabbit.ocm.manager.objectconverter.ObjectConverter#getPath(javax.jcr.Session,
-	 *      java.lang.Object)
 	 * @throws JcrMappingException
 	 */
 	public String getPath(Session session, Object object) {
@@ -682,20 +638,17 @@ public class ObjectConverterImpl implements ObjectConverter {
 		return (String) ReflectionUtils.getNestedProperty(object, pathField);
 	}
 
-	/**
-	 * Retrieve bean fields
-	 */
-	private void retrieveBeanFields(Session session, ClassDescriptor classDescriptor, Node node, String path, Object object,
+	private void retrieveBeanFields(Session session, ClassDescriptor classDescriptor, Node node, Object object,
 			boolean forceToRetrieve) {
 		Iterator beanDescriptorIterator = classDescriptor.getBeanDescriptors().iterator();
 		while (beanDescriptorIterator.hasNext()) {
 			BeanDescriptor beanDescriptor = (BeanDescriptor) beanDescriptorIterator.next();
-			this.retrieveBeanField(session, beanDescriptor, node, path, object, forceToRetrieve);
+			this.retrieveBeanField(session, beanDescriptor, node, object, forceToRetrieve);
 		}
 	}
 
 
-	private void retrieveBeanField(Session session,BeanDescriptor beanDescriptor, Node node, String path, Object object, boolean forceToRetrieve )
+	private void retrieveBeanField(Session session,BeanDescriptor beanDescriptor, Node node, Object object, boolean forceToRetrieve )
 	{
 		if (!beanDescriptor.isAutoRetrieve() && !forceToRetrieve)
 		{
@@ -758,11 +711,6 @@ public class ObjectConverterImpl implements ObjectConverter {
 		}
 	}
 
-
-
-	/**
-	 * Retrieve Collection fields
-	 */
 	private void retrieveCollectionFields(Session session, ClassDescriptor classDescriptor, Node parentNode, Object object,
 			boolean forceToRetrieve) {
 		Iterator collectionDescriptorIterator = classDescriptor.getCollectionDescriptors().iterator();
@@ -780,7 +728,6 @@ public class ObjectConverterImpl implements ObjectConverter {
 
 		CollectionConverter collectionConverter = this.getCollectionConverter(session, collectionDescriptor);
 		Class collectionFieldClass = ReflectionUtils.getPropertyType(object, collectionDescriptor.getFieldName());
-		ManageableObjects objects = null;
 		if (collectionDescriptor.isProxy()) {
 			Object proxy = proxyManager.createCollectionProxy(session, collectionConverter, parentNode,
 					collectionDescriptor, collectionFieldClass);
@@ -788,7 +735,7 @@ public class ObjectConverterImpl implements ObjectConverter {
 		}
 		else
 		{
-			objects = collectionConverter.getCollection(session, parentNode, collectionDescriptor, collectionFieldClass);
+            ManageableObjects objects = collectionConverter.getCollection(session, parentNode, collectionDescriptor, collectionFieldClass);
 			if (objects==null)
 			{
 			  ReflectionUtils.setNestedProperty(object, collectionDescriptor.getFieldName(), null);
@@ -812,9 +759,6 @@ public class ObjectConverterImpl implements ObjectConverter {
 
 	}
 
-	/**
-	 * Insert Bean fields
-	 */
 	private void insertBeanFields(Session session, Object object, ClassDescriptor classDescriptor, Node objectNode) {
 		Iterator beanDescriptorIterator = classDescriptor.getBeanDescriptors().iterator();
 		while (beanDescriptorIterator.hasNext()) {
@@ -824,7 +768,6 @@ public class ObjectConverterImpl implements ObjectConverter {
 				continue;
 			}
 
-			String jcrName = beanDescriptor.getJcrName();
 			Object bean = ReflectionUtils.getNestedProperty(object, beanDescriptor.getFieldName());
 			if (bean != null)
 			{
@@ -846,11 +789,8 @@ public class ObjectConverterImpl implements ObjectConverter {
 		}
 	}
 
-	/**
-	 * Update Bean fields
-	 */
+
 	private void updateBeanFields(Session session, Object object, ClassDescriptor classDescriptor, Node objectNode) {
-		String jcrName = null;
 		Iterator beanDescriptorIterator = classDescriptor.getBeanDescriptors().iterator();
 		while (beanDescriptorIterator.hasNext())
 		{
@@ -859,7 +799,6 @@ public class ObjectConverterImpl implements ObjectConverter {
 				continue;
 			}
 
-			jcrName = beanDescriptor.getJcrName();
 			Object bean = ReflectionUtils.getNestedProperty(object, beanDescriptor.getFieldName());
 
 			String converterClassName = null;
