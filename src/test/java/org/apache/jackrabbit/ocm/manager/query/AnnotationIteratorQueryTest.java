@@ -141,8 +141,8 @@ public class AnnotationIteratorQueryTest extends AnnotationTestBase
 			root.addNode("test");
 			root.addNode("test/node1");
 			root.addNode("test/node2");
-			
-			root.save();
+
+            session.save();
 			
 			Page page = new Page();
 			page.setPath("/test/node1/page1");
