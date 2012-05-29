@@ -25,8 +25,6 @@ import javax.jcr.Session;
 import junit.framework.Test;
 import junit.framework.TestSuite;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.apache.jackrabbit.ocm.DigesterTestBase;
 import org.apache.jackrabbit.ocm.exception.JcrMappingException;
 import org.apache.jackrabbit.ocm.manager.ObjectContentManager;
@@ -36,6 +34,8 @@ import org.apache.jackrabbit.ocm.query.Query;
 import org.apache.jackrabbit.ocm.query.QueryManager;
 import org.apache.jackrabbit.ocm.testmodel.Page;
 import org.apache.jackrabbit.ocm.testmodel.Paragraph;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 
 /**
@@ -45,7 +45,7 @@ import org.apache.jackrabbit.ocm.testmodel.Paragraph;
  */
 public class DigesterScopeQueryTest extends DigesterTestBase
 {
-    private final static Log log = LogFactory.getLog(DigesterScopeQueryTest.class);
+    private final static Logger log = LoggerFactory.getLogger(DigesterScopeQueryTest.class);
 
     /**
      * <p>Defines the test case name for junit.</p>

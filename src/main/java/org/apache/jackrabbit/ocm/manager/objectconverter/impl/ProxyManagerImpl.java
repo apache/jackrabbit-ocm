@@ -21,9 +21,6 @@ import javax.jcr.Node;
 import javax.jcr.RepositoryException;
 import javax.jcr.Session;
 
-import net.sf.cglib.proxy.Callback;
-import net.sf.cglib.proxy.Enhancer;
-
 import org.apache.commons.lang.ArrayUtils;
 import org.apache.jackrabbit.ocm.manager.beanconverter.BeanConverter;
 import org.apache.jackrabbit.ocm.manager.collectionconverter.CollectionConverter;
@@ -31,6 +28,9 @@ import org.apache.jackrabbit.ocm.manager.objectconverter.ProxyManager;
 import org.apache.jackrabbit.ocm.mapper.model.BeanDescriptor;
 import org.apache.jackrabbit.ocm.mapper.model.ClassDescriptor;
 import org.apache.jackrabbit.ocm.mapper.model.CollectionDescriptor;
+
+import net.sf.cglib.proxy.Callback;
+import net.sf.cglib.proxy.Enhancer;
 
 public class ProxyManagerImpl implements ProxyManager {
 

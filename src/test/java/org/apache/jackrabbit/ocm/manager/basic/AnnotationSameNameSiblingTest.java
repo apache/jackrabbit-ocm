@@ -27,8 +27,6 @@ import javax.jcr.UnsupportedRepositoryOperationException;
 import junit.framework.Test;
 import junit.framework.TestSuite;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.apache.jackrabbit.ocm.AnnotationTestBase;
 import org.apache.jackrabbit.ocm.manager.ObjectContentManager;
 import org.apache.jackrabbit.ocm.manager.impl.ObjectContentManagerImpl;
@@ -39,6 +37,8 @@ import org.apache.jackrabbit.ocm.repository.RepositoryUtil;
 import org.apache.jackrabbit.ocm.testmodel.Atomic;
 import org.apache.jackrabbit.ocm.testmodel.Page;
 import org.apache.jackrabbit.ocm.testmodel.Paragraph;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Test Query on atomic fields
@@ -47,7 +47,7 @@ import org.apache.jackrabbit.ocm.testmodel.Paragraph;
  */
 public class AnnotationSameNameSiblingTest extends AnnotationTestBase
 {
-	private final static Log log = LogFactory.getLog(AnnotationSameNameSiblingTest.class);
+	private final static Logger log = LoggerFactory.getLogger(AnnotationSameNameSiblingTest.class);
 	private Date date = new Date();
 	
 	/**

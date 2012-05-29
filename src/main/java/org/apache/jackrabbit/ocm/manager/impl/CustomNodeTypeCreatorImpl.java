@@ -16,11 +16,11 @@
  */
 package org.apache.jackrabbit.ocm.manager.impl;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.apache.jackrabbit.ocm.exception.CustomNodeTypeCreationException;
 import org.apache.jackrabbit.ocm.manager.CustomNodeTypeCreator;
 import org.apache.jackrabbit.ocm.manager.ObjectContentManager;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /** Default implementation of the jackrabbit custom node creator.
  *
@@ -31,7 +31,7 @@ public class CustomNodeTypeCreatorImpl implements CustomNodeTypeCreator {
 
     /** Logger.
      */
-    private final static Log log = LogFactory.getLog(CustomNodeTypeCreatorImpl.class);
+    private final static Logger log = LoggerFactory.getLogger(CustomNodeTypeCreatorImpl.class);
 
     /** Session to the jcr repository.
      */

@@ -16,15 +16,11 @@
  */
 package org.apache.jackrabbit.ocm.testmodel.version;
 
-import java.util.ArrayList;
 import java.util.Date;
-import java.util.List;
 
 import org.apache.jackrabbit.ocm.mapper.impl.annotation.Bean;
-import org.apache.jackrabbit.ocm.mapper.impl.annotation.Collection;
 import org.apache.jackrabbit.ocm.mapper.impl.annotation.Field;
 import org.apache.jackrabbit.ocm.mapper.impl.annotation.Node;
-import org.w3c.dom.Comment;
 
 @Node(jcrMixinTypes = "mix:versionable")
 public class PressRelease {

@@ -30,8 +30,6 @@ import javax.jcr.nodetype.NodeTypeDefinition;
 import javax.jcr.nodetype.PropertyDefinition;
 import javax.jcr.version.OnParentVersionAction;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.apache.jackrabbit.core.nodetype.InvalidNodeTypeDefException;
 import org.apache.jackrabbit.core.nodetype.NodeTypeRegistry;
 import org.apache.jackrabbit.core.nodetype.xml.NodeTypeReader;
@@ -56,6 +54,8 @@ import org.apache.jackrabbit.spi.QValueConstraint;
 import org.apache.jackrabbit.spi.commons.nodetype.QNodeDefinitionBuilder;
 import org.apache.jackrabbit.spi.commons.nodetype.QNodeTypeDefinitionBuilder;
 import org.apache.jackrabbit.spi.commons.nodetype.QPropertyDefinitionBuilder;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /** This is the NodeTypeManager implementation for Apache Jackrabbit.
  *
@@ -66,7 +66,7 @@ public class NodeTypeManagerImpl implements NodeTypeManager
     /**
      * Logging.
      */
-    private static Log log = LogFactory.getLog(NodeTypeManagerImpl.class);
+    private static Logger log = LoggerFactory.getLogger(NodeTypeManagerImpl.class);
     private static final boolean debug = false;
 
     /** Namespace helper class for Jackrabbit.

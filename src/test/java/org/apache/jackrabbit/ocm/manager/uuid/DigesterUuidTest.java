@@ -22,14 +22,14 @@ import java.util.Collection;
 import junit.framework.Test;
 import junit.framework.TestSuite;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.apache.jackrabbit.ocm.DigesterTestBase;
 import org.apache.jackrabbit.ocm.manager.ObjectContentManager;
 import org.apache.jackrabbit.ocm.testmodel.uuid.A;
 import org.apache.jackrabbit.ocm.testmodel.uuid.B;
 import org.apache.jackrabbit.ocm.testmodel.uuid.B2;
 import org.apache.jackrabbit.ocm.testmodel.uuid.Descendant;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 
 /**
@@ -39,7 +39,7 @@ import org.apache.jackrabbit.ocm.testmodel.uuid.Descendant;
  */
 public class DigesterUuidTest extends DigesterTestBase
 {
-    private final static Log log = LogFactory.getLog(DigesterUuidTest.class);
+    private final static Logger log = LoggerFactory.getLogger(DigesterUuidTest.class);
 
     /**
      * <p>Defines the test case name for junit.</p>
@@ -121,8 +121,7 @@ public class DigesterUuidTest extends DigesterTestBase
             catch(Exception e)
             {
             	//Throws an exception due to an invalid uuid
-            	log.info(e);
-
+                log.info("Invalid uuid : " + e);
             }
 
 

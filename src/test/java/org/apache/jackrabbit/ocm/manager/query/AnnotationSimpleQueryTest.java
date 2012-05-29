@@ -22,8 +22,6 @@ import java.util.Collection;
 import junit.framework.Test;
 import junit.framework.TestSuite;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.apache.jackrabbit.ocm.AnnotationTestBase;
 import org.apache.jackrabbit.ocm.exception.JcrMappingException;
 import org.apache.jackrabbit.ocm.manager.ObjectContentManager;
@@ -32,6 +30,8 @@ import org.apache.jackrabbit.ocm.query.Query;
 import org.apache.jackrabbit.ocm.query.QueryManager;
 import org.apache.jackrabbit.ocm.testmodel.Page;
 import org.apache.jackrabbit.ocm.testmodel.Paragraph;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 
 /**
@@ -41,7 +41,7 @@ import org.apache.jackrabbit.ocm.testmodel.Paragraph;
  */
 public class AnnotationSimpleQueryTest extends AnnotationTestBase
 {
-    private final static Log log = LogFactory.getLog(AnnotationSimpleQueryTest.class);
+    private final static Logger log = LoggerFactory.getLogger(AnnotationSimpleQueryTest.class);
 
     /**
      * <p>Defines the test case name for junit.</p>

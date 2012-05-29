@@ -21,15 +21,11 @@ import javax.jcr.Repository;
 import javax.jcr.Session;
 import javax.jcr.nodetype.NodeTypeManager;
 import javax.transaction.UserTransaction;
-
-import junit.extensions.TestSetup;
-import junit.framework.Test;
 import junit.framework.TestCase;
-import junit.framework.TestSuite;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.apache.jackrabbit.ocm.transaction.jackrabbit.UserTransactionImpl;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /** Testcase for RepositoryUtil.
  *
@@ -38,7 +34,7 @@ import org.apache.jackrabbit.ocm.transaction.jackrabbit.UserTransactionImpl;
  */
 public class RepositoryUtilTest extends TestCase
 {
-    private final static Log log = LogFactory.getLog(RepositoryUtilTest.class);
+    private final static Logger log = LoggerFactory.getLogger(RepositoryUtilTest.class);
     private static boolean isInit = false;
     /**
      * <p>Defines the test case name for junit.</p>
@@ -150,8 +146,8 @@ public class RepositoryUtilTest extends TestCase
 
 			// add node and save
 			Node root = session.getRootNode();
-			Node n = root.addNode("test");
-			root.save();
+			root.addNode("test");
+			session.save();
 			utx.commit();
 			
 			assertTrue("test node doesn't exist", session.itemExists("/test"));

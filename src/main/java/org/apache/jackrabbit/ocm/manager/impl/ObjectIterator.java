@@ -17,17 +17,12 @@
 
 package org.apache.jackrabbit.ocm.manager.impl;
 
-import java.util.NoSuchElementException;
-
 import javax.jcr.Node;
 import javax.jcr.NodeIterator;
 import javax.jcr.RangeIterator;
 import javax.jcr.RepositoryException;
 import javax.jcr.Session;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
-import org.apache.jackrabbit.ocm.exception.ObjectContentManagerException;
 import org.apache.jackrabbit.ocm.manager.objectconverter.ObjectConverter;
 
 

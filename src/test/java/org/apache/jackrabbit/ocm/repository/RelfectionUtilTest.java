@@ -26,10 +26,10 @@ import java.util.SortedMap;
 
 import junit.framework.TestCase;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.apache.jackrabbit.ocm.reflection.ReflectionUtils;
 import org.apache.jackrabbit.ocm.testmodel.collection.CustomList;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /** Testcase for ReflectionUtils.
  *
@@ -38,7 +38,7 @@ import org.apache.jackrabbit.ocm.testmodel.collection.CustomList;
  */
 public class RelfectionUtilTest extends TestCase
 {
-    private final static Log log = LogFactory.getLog(RelfectionUtilTest.class);
+    private final static Logger log = LoggerFactory.getLogger(RelfectionUtilTest.class);
 
     /**
      * <p>Defines the test case name for junit.</p>

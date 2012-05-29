@@ -17,7 +17,6 @@
 package org.apache.jackrabbit.ocm.mapper.impl;
 
 
-
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
@@ -26,17 +25,15 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.apache.jackrabbit.ocm.exception.IncorrectPersistentClassException;
 import org.apache.jackrabbit.ocm.exception.InitMapperException;
 import org.apache.jackrabbit.ocm.exception.JcrMappingException;
-import org.apache.jackrabbit.ocm.manager.atomictypeconverter.impl.AtomicTypeConverterProviderImpl;
 import org.apache.jackrabbit.ocm.mapper.DescriptorReader;
 import org.apache.jackrabbit.ocm.mapper.Mapper;
 import org.apache.jackrabbit.ocm.mapper.model.ClassDescriptor;
-import org.apache.jackrabbit.ocm.mapper.model.ImplementDescriptor;
 import org.apache.jackrabbit.ocm.mapper.model.MappingDescriptor;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  *
@@ -49,7 +46,7 @@ import org.apache.jackrabbit.ocm.mapper.model.MappingDescriptor;
  *        of a collectiondescriptor exists. For performance reasone, we can defined some optional validations.
  */
 public abstract class AbstractMapperImpl implements Mapper {
-    protected static final Log log = LogFactory.getLog(AbstractMapperImpl.class);
+    protected static final Logger log = LoggerFactory.getLogger(AbstractMapperImpl.class);
 
     protected DescriptorReader descriptorReader;
     protected MappingDescriptor mappingDescriptor;

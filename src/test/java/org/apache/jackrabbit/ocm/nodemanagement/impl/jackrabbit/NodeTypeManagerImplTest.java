@@ -22,8 +22,8 @@ import javax.jcr.PropertyType;
 import javax.jcr.nodetype.NodeDefinition;
 import javax.jcr.nodetype.NodeType;
 import javax.jcr.nodetype.PropertyDefinition;
-
-import junit.framework.*;
+import junit.framework.Test;
+import junit.framework.TestSuite;
 
 import org.apache.jackrabbit.ocm.mapper.model.BeanDescriptor;
 import org.apache.jackrabbit.ocm.mapper.model.ClassDescriptor;
@@ -32,7 +32,6 @@ import org.apache.jackrabbit.ocm.mapper.model.FieldDescriptor;
 import org.apache.jackrabbit.ocm.nodemanagement.TestBase;
 import org.apache.jackrabbit.ocm.nodemanagement.exception.NamespaceCreationException;
 import org.apache.jackrabbit.ocm.nodemanagement.exception.NodeTypeCreationException;
-import org.apache.jackrabbit.ocm.nodemanagement.impl.jackrabbit.NodeTypeManagerImpl;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

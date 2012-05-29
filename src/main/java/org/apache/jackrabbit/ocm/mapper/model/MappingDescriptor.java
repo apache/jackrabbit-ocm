@@ -21,10 +21,10 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.apache.jackrabbit.ocm.manager.ManagerConstant;
 import org.apache.jackrabbit.ocm.mapper.Mapper;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 
 /**
@@ -34,8 +34,8 @@ import org.apache.jackrabbit.ocm.mapper.Mapper;
  * @version $Id: Exp $
  */
 public class MappingDescriptor {
-	
-	private static final Log log = LogFactory.getLog(MappingDescriptor.class);
+
+    private static Logger log = LoggerFactory.getLogger(MappingDescriptor.class);
     private HashMap classDescriptorsByClassName = new HashMap();
     private HashMap classDescriptorsByNodeType = new HashMap();
 

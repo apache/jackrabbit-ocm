@@ -17,13 +17,13 @@
 package org.apache.jackrabbit.ocm.testmodel.inheritance.impl;
 
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.apache.jackrabbit.ocm.mapper.impl.annotation.Bean;
 import org.apache.jackrabbit.ocm.mapper.impl.annotation.Field;
 import org.apache.jackrabbit.ocm.mapper.impl.annotation.Implement;
 import org.apache.jackrabbit.ocm.mapper.impl.annotation.Node;
 import org.apache.jackrabbit.ocm.testmodel.interfaces.Document;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * CMS VersionnedDocument implementation.
@@ -35,7 +35,7 @@ import org.apache.jackrabbit.ocm.testmodel.interfaces.Document;
 @Implement(interfaceName=Document.class)
 public class DocumentImpl extends ContentImpl implements Document
 {
-    protected final static Log log =  LogFactory.getLog(DocumentImpl.class);
+    protected final static Logger log = LoggerFactory.getLogger(DocumentImpl.class);
 
     @Field(jcrName="ocm:size") protected long size;
     @Field(jcrName="ocm:contenttype") protected String contentType;

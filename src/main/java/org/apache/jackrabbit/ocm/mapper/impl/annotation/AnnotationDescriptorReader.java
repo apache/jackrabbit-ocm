@@ -17,16 +17,12 @@
 package org.apache.jackrabbit.ocm.mapper.impl.annotation;
 
 import java.beans.BeanInfo;
-import java.beans.IntrospectionException;
 import java.beans.Introspector;
 import java.beans.PropertyDescriptor;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
-import java.lang.reflect.TypeVariable;
 import java.util.List;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.apache.jackrabbit.ocm.exception.InitMapperException;
 import org.apache.jackrabbit.ocm.mapper.DescriptorReader;
 import org.apache.jackrabbit.ocm.mapper.model.BeanDescriptor;
@@ -36,6 +32,8 @@ import org.apache.jackrabbit.ocm.mapper.model.FieldDescriptor;
 import org.apache.jackrabbit.ocm.mapper.model.ImplementDescriptor;
 import org.apache.jackrabbit.ocm.mapper.model.MappingDescriptor;
 import org.apache.jackrabbit.ocm.reflection.ReflectionUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Helper class that reads the xml mapping file and load all class descriptors into memory (object graph)
@@ -46,7 +44,7 @@ import org.apache.jackrabbit.ocm.reflection.ReflectionUtils;
  */
 public class AnnotationDescriptorReader implements DescriptorReader
 {
-	private static final Log log = LogFactory.getLog(AnnotationDescriptorReader.class);
+	private static final Logger log = LoggerFactory.getLogger(AnnotationDescriptorReader.class);
 
 	List<Class> annotatedClassNames;
     public AnnotationDescriptorReader(List<Class> annotatedClassNames)

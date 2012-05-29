@@ -19,8 +19,6 @@ package org.apache.jackrabbit.ocm.manager.beanconverter.impl;
 import javax.jcr.Node;
 import javax.jcr.Session;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.apache.jackrabbit.ocm.exception.JcrMappingException;
 import org.apache.jackrabbit.ocm.exception.ObjectContentManagerException;
 import org.apache.jackrabbit.ocm.exception.RepositoryException;
@@ -30,6 +28,9 @@ import org.apache.jackrabbit.ocm.manager.objectconverter.ObjectConverter;
 import org.apache.jackrabbit.ocm.mapper.Mapper;
 import org.apache.jackrabbit.ocm.mapper.model.BeanDescriptor;
 import org.apache.jackrabbit.ocm.mapper.model.ClassDescriptor;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 /**
  *
  * Bean converter used to access to the parent object.
@@ -41,7 +42,7 @@ import org.apache.jackrabbit.ocm.mapper.model.ClassDescriptor;
  */
 public class ParentBeanConverterImpl extends AbstractBeanConverterImpl  implements BeanConverter {
 
-	private final static Log log = LogFactory.getLog(ParentBeanConverterImpl.class);
+	private final static Logger log = LoggerFactory.getLogger(ParentBeanConverterImpl.class);
 	
 	public ParentBeanConverterImpl(Mapper mapper, ObjectConverter objectConverter, AtomicTypeConverterProvider atomicTypeConverterProvider)
 	{

@@ -25,8 +25,6 @@ import javax.jcr.UnsupportedRepositoryOperationException;
 import junit.framework.Test;
 import junit.framework.TestSuite;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.apache.jackrabbit.ocm.AnnotationTestBase;
 import org.apache.jackrabbit.ocm.manager.ObjectContentManager;
 import org.apache.jackrabbit.ocm.manager.impl.ObjectContentManagerImpl;
@@ -35,6 +33,8 @@ import org.apache.jackrabbit.ocm.mapper.impl.annotation.AnnotationMapperImpl;
 import org.apache.jackrabbit.ocm.repository.RepositoryUtil;
 import org.apache.jackrabbit.ocm.testmodel.crossreference.A;
 import org.apache.jackrabbit.ocm.testmodel.crossreference.B;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 
 /**
@@ -46,7 +46,7 @@ import org.apache.jackrabbit.ocm.testmodel.crossreference.B;
  */
 public class AnnotationAvoidRecursiveLoopTest extends AnnotationTestBase
 {
-    private final static Log log = LogFactory.getLog(AnnotationAvoidRecursiveLoopTest.class);
+    private final static Logger log = LoggerFactory.getLogger(AnnotationAvoidRecursiveLoopTest.class);
 
     /**
      * <p>Defines the test case name for junit.</p>

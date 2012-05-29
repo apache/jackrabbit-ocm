@@ -22,13 +22,13 @@ import java.util.Map;
 import junit.framework.Test;
 import junit.framework.TestSuite;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.apache.jackrabbit.ocm.AnnotationTestBase;
 import org.apache.jackrabbit.ocm.manager.ObjectContentManager;
 import org.apache.jackrabbit.ocm.testmodel.collection.Element;
 import org.apache.jackrabbit.ocm.testmodel.collection.HashMapElement;
 import org.apache.jackrabbit.ocm.testmodel.collection.Main;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Test NTCollectionConverterImpl
@@ -37,7 +37,7 @@ import org.apache.jackrabbit.ocm.testmodel.collection.Main;
  */
 public class AnnotationHashMapTest extends AnnotationTestBase
 {
-    private final static Log log = LogFactory.getLog(AnnotationHashMapTest.class);
+    private final static Logger log = LoggerFactory.getLogger(AnnotationHashMapTest.class);
 
     /**
      * <p>Defines the test case name for junit.</p>

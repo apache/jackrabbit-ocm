@@ -18,7 +18,6 @@ package org.apache.jackrabbit.ocm.nodemanagement;
 
 import javax.jcr.Session;
 import javax.jcr.nodetype.PropertyDefinition;
-
 import junit.framework.TestCase;
 
 import org.apache.jackrabbit.ocm.nodemanagement.impl.RepositoryConfiguration;

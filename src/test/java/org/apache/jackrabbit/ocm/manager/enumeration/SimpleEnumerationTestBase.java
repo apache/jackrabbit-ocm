@@ -19,13 +19,11 @@ package org.apache.jackrabbit.ocm.manager.enumeration;
 import java.util.ArrayList;
 import java.util.List;
 
-import junit.framework.TestCase;
-
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.apache.jackrabbit.ocm.manager.ObjectContentManager;
 import org.apache.jackrabbit.ocm.testmodel.enumeration.Odyssey;
 import org.apache.jackrabbit.ocm.testmodel.enumeration.Planet;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import static junit.framework.Assert.assertTrue;
 import static junit.framework.Assert.fail;
@@ -37,7 +35,7 @@ import static junit.framework.Assert.fail;
  */
 public class SimpleEnumerationTestBase
 {
-    private final static Log logger = LogFactory.getLog(SimpleEnumerationTestBase.class);
+    private final static Logger log = LoggerFactory.getLogger(SimpleEnumerationTestBase.class);
     ObjectContentManager ocm;
     public SimpleEnumerationTestBase(ObjectContentManager ocm){
     	this.ocm = ocm;
@@ -64,7 +62,7 @@ public class SimpleEnumerationTestBase
             List<Planet> fbStops = fbOdessey.getStops();
             for (Planet aStop : stops){
             	assertContains("Fetched back list did not contain :" + aStop.toString(), aStop, fbStops);
-            	logger.info("Contains Enum : " + aStop.toString());
+                log.info("Contains Enum : " + aStop.toString());
             }
         }
         catch (Exception e)

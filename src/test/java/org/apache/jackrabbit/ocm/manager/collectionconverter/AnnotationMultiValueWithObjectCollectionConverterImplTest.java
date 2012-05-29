@@ -22,8 +22,6 @@ import java.util.Iterator;
 import junit.framework.Test;
 import junit.framework.TestSuite;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.apache.jackrabbit.ocm.AnnotationTestBase;
 import org.apache.jackrabbit.ocm.manager.ObjectContentManager;
 import org.apache.jackrabbit.ocm.testmodel.MultiValueWithObjectCollection;
@@ -35,8 +33,6 @@ import org.apache.jackrabbit.ocm.testmodel.MultiValueWithObjectCollection;
  */
 public class AnnotationMultiValueWithObjectCollectionConverterImplTest extends
 		AnnotationTestBase {
-	private final static Log log = LogFactory
-			.getLog(AnnotationMultiValueWithObjectCollectionConverterImplTest.class);
 
 	/**
 	 * <p>Defines the test case name for junit.</p>

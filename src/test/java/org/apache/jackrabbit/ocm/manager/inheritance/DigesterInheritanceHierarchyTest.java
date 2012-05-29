@@ -21,8 +21,6 @@ import java.util.Collection;
 import junit.framework.Test;
 import junit.framework.TestSuite;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.apache.jackrabbit.ocm.DigesterTestBase;
 import org.apache.jackrabbit.ocm.manager.ObjectContentManager;
 import org.apache.jackrabbit.ocm.query.Filter;
@@ -33,6 +31,8 @@ import org.apache.jackrabbit.ocm.testmodel.inheritance.Ancestor;
 import org.apache.jackrabbit.ocm.testmodel.inheritance.AnotherDescendant;
 import org.apache.jackrabbit.ocm.testmodel.inheritance.Descendant;
 import org.apache.jackrabbit.ocm.testmodel.inheritance.SubDescendant;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Test inheritance with node type per hierarchy stategy (with discreminator field)
@@ -40,7 +40,7 @@ import org.apache.jackrabbit.ocm.testmodel.inheritance.SubDescendant;
  * @author <a href="mailto:christophe.lombart@gmail.com">Christophe Lombart</a>
  */
 public class DigesterInheritanceHierarchyTest extends DigesterTestBase {
-	private final static Log log = LogFactory.getLog(DigesterInheritanceHierarchyTest.class);
+	private final static Logger log = LoggerFactory.getLogger(DigesterInheritanceHierarchyTest.class);
 
 	/**
 	 * <p>Defines the test case name for junit.</p>

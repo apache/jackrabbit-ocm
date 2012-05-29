@@ -36,8 +36,8 @@ import javax.jcr.version.VersionException;
 
 import org.apache.jackrabbit.ocm.exception.ObjectContentManagerException;
 import org.apache.jackrabbit.ocm.manager.collectionconverter.ManageableCollection;
-import org.apache.jackrabbit.ocm.manager.collectionconverter.ManageableObjectsUtil;
 import org.apache.jackrabbit.ocm.manager.collectionconverter.ManageableObjects;
+import org.apache.jackrabbit.ocm.manager.collectionconverter.ManageableObjectsUtil;
 import org.apache.jackrabbit.ocm.manager.objectconverter.ObjectConverter;
 import org.apache.jackrabbit.ocm.mapper.Mapper;
 import org.apache.jackrabbit.ocm.mapper.model.CollectionDescriptor;

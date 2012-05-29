@@ -20,12 +20,12 @@ import javax.jcr.RepositoryException;
 import junit.framework.Test;
 import junit.framework.TestSuite;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.apache.jackrabbit.ocm.AnnotationTestBase;
 import org.apache.jackrabbit.ocm.manager.ObjectContentManager;
 import org.apache.jackrabbit.ocm.testmodel.collection.Main;
 import org.apache.jackrabbit.ocm.testmodel.uuid.A;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 
 /**
@@ -41,7 +41,7 @@ import org.apache.jackrabbit.ocm.testmodel.uuid.A;
  *
  */
 public class BeanReferenceMapConverterImplTest extends AnnotationTestBase {
-    private final static Log log = LogFactory.getLog(BeanReferenceMapConverterImplTest.class);
+    private final static Logger log = LoggerFactory.getLogger(BeanReferenceMapConverterImplTest.class);
 
     /**
      * <p>Defines the test case name for junit.</p>

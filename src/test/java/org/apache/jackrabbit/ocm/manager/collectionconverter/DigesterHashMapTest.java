@@ -21,13 +21,13 @@ import java.util.Map;
 import junit.framework.Test;
 import junit.framework.TestSuite;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.apache.jackrabbit.ocm.DigesterTestBase;
 import org.apache.jackrabbit.ocm.manager.ObjectContentManager;
 import org.apache.jackrabbit.ocm.testmodel.collection.Element;
 import org.apache.jackrabbit.ocm.testmodel.collection.HashMapElement;
 import org.apache.jackrabbit.ocm.testmodel.collection.Main;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Test NTCollectionConverterImpl
@@ -36,7 +36,7 @@ import org.apache.jackrabbit.ocm.testmodel.collection.Main;
  */
 public class DigesterHashMapTest extends DigesterTestBase
 {
-    private final static Log log = LogFactory.getLog(DigesterHashMapTest.class);
+    private final static Logger log = LoggerFactory.getLogger(DigesterHashMapTest.class);
 
     /**
      * <p>Defines the test case name for junit.</p>

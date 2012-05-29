@@ -18,8 +18,8 @@
 package org.apache.jackrabbit.ocm.manager.atomictypeconverter.impl;
 
 import java.io.InputStream;
-import javax.jcr.Binary;
 
+import javax.jcr.Binary;
 import javax.jcr.RepositoryException;
 import javax.jcr.Value;
 import javax.jcr.ValueFactory;

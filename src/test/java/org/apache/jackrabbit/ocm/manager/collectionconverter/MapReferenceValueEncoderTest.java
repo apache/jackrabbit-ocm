@@ -17,9 +17,9 @@
 
 package org.apache.jackrabbit.ocm.manager.collectionconverter;
 
-import org.apache.jackrabbit.ocm.manager.collectionconverter.impl.MapReferenceValueEncoder;
-import static junit.framework.Assert.assertEquals;import static junit.framework.Assert.assertTrue;
 import junit.framework.TestCase;
+
+import org.apache.jackrabbit.ocm.manager.collectionconverter.impl.MapReferenceValueEncoder;
 
 /**
  * TODO: JAVADOC

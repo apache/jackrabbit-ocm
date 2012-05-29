@@ -25,7 +25,6 @@ import java.util.Map;
 
 import javax.jcr.InvalidItemStateException;
 import javax.jcr.Item;
-import javax.jcr.ItemNotFoundException;
 import javax.jcr.Node;
 import javax.jcr.NodeIterator;
 import javax.jcr.PathNotFoundException;
@@ -41,8 +40,6 @@ import javax.jcr.query.QueryResult;
 import javax.jcr.version.VersionHistory;
 import javax.jcr.version.VersionManager;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.apache.jackrabbit.ocm.exception.IllegalUnlockException;
 import org.apache.jackrabbit.ocm.exception.IncorrectPersistentClassException;
 import org.apache.jackrabbit.ocm.exception.JcrMappingException;
@@ -67,6 +64,8 @@ import org.apache.jackrabbit.ocm.query.impl.QueryManagerImpl;
 import org.apache.jackrabbit.ocm.repository.NodeUtil;
 import org.apache.jackrabbit.ocm.version.Version;
 import org.apache.jackrabbit.ocm.version.VersionIterator;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  *
@@ -81,7 +80,7 @@ import org.apache.jackrabbit.ocm.version.VersionIterator;
  */
 public class ObjectContentManagerImpl implements ObjectContentManager {
 
-    private final static Log log = LogFactory.getLog(ObjectContentManagerImpl.class);
+    private final static Logger log = LoggerFactory.getLogger(ObjectContentManagerImpl.class);
 
     protected Session session;
 
@@ -421,6 +420,7 @@ public class ObjectContentManagerImpl implements ObjectContentManager {
         this.remove(objectConverter.getPath(session, object));
     }
 
+
     public void remove(Query query) {
         try {
             String jcrExpression = this.queryManager.buildJCRExpression(query);
@@ -428,6 +428,7 @@ public class ObjectContentManagerImpl implements ObjectContentManager {
 
             // Since only nodes are sufficient for us to remove,
             // getObjects(query, language) method is not called here.
+            @SuppressWarnings("deprecation")
             NodeIterator nodeIterator = getNodeIterator(jcrExpression, javax.jcr.query.Query.XPATH);
             List nodes = new ArrayList();
 
@@ -487,6 +488,7 @@ public class ObjectContentManagerImpl implements ObjectContentManager {
 
     public Object getObject(Query query) {
         String jcrExpression = this.queryManager.buildJCRExpression(query);
+        @SuppressWarnings("deprecation")
         Collection result = getObjects(jcrExpression, javax.jcr.query.Query.XPATH);
 
         if (result.size() > 1) {
@@ -496,7 +498,7 @@ public class ObjectContentManagerImpl implements ObjectContentManager {
         return result.isEmpty() ? null : result.iterator().next();
     }
 
-
+    @SuppressWarnings("deprecation")
     public Collection getObjects(Query query) {
         String jcrExpression = this.queryManager.buildJCRExpression(query);
         return getObjects(jcrExpression, javax.jcr.query.Query.XPATH);
@@ -543,6 +545,7 @@ public class ObjectContentManagerImpl implements ObjectContentManager {
     public Iterator getObjectIterator(Query query) {
         String jcrExpression = this.queryManager.buildJCRExpression(query);
         log.debug("Get Object with expression : " + jcrExpression);
+        @SuppressWarnings("deprecation")
         NodeIterator nodeIterator = getNodeIterator(jcrExpression, javax.jcr.query.Query.XPATH);
 
         return new ObjectIterator(nodeIterator, this.objectConverter, this.session);

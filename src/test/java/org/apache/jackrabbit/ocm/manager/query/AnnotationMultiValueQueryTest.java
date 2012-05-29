@@ -24,8 +24,6 @@ import javax.jcr.Session;
 import junit.framework.Test;
 import junit.framework.TestSuite;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.apache.jackrabbit.ocm.AnnotationTestBase;
 import org.apache.jackrabbit.ocm.manager.ObjectContentManager;
 import org.apache.jackrabbit.ocm.manager.impl.ObjectContentManagerImpl;
@@ -33,6 +31,8 @@ import org.apache.jackrabbit.ocm.query.Filter;
 import org.apache.jackrabbit.ocm.query.Query;
 import org.apache.jackrabbit.ocm.query.QueryManager;
 import org.apache.jackrabbit.ocm.testmodel.MultiValue;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Test NTCollectionConverterImpl
@@ -41,7 +41,7 @@ import org.apache.jackrabbit.ocm.testmodel.MultiValue;
  */
 public class AnnotationMultiValueQueryTest extends AnnotationTestBase
 {
-    private final static Log log = LogFactory.getLog(AnnotationMultiValueQueryTest.class);
+    private final static Logger log = LoggerFactory.getLogger(AnnotationMultiValueQueryTest.class);
 
     /**
      * <p>Defines the test case name for junit.</p>
