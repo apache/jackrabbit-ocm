@@ -80,31 +80,17 @@ import org.apache.jackrabbit.ocm.version.VersionIterator;
  * @author <a href='mailto:the_mindstorm[at]evolva[dot]ro'>Alexandru Popescu</a>
  */
 public class ObjectContentManagerImpl implements ObjectContentManager {
-    /**
-     * Logger.
-     */
+
     private final static Log log = LogFactory.getLog(ObjectContentManagerImpl.class);
 
-    /**
-     * JCR session.
-     */
     protected Session session;
 
     protected Mapper mapper;
 
-    /**
-     * The query manager
-     */
     protected QueryManager queryManager;
 
-    /**
-     * Object Converter
-     */
     protected ObjectConverter objectConverter;
 
-    /**
-     * Request Cache manager
-     */
     protected ObjectCache requestObjectCache;
 
     /**
@@ -257,7 +243,7 @@ public class ObjectContentManagerImpl implements ObjectContentManager {
      */
     public Object getObject(String path) {
         try {
-            if (!session.itemExists(path)) {
+            if (!session.nodeExists(path)) {
                 return null;
             }
         } catch (RepositoryException e) {
@@ -271,15 +257,13 @@ public class ObjectContentManagerImpl implements ObjectContentManager {
     }
 
     /**
-     * @see org.apache.jackrabbit.ocm.manager.ObjectContentManager#getObject(java.lang.Class,
-     *      java.lang.String)
+     * @param uuid the <code>uuid</code> of the backing jcr node
+     * @return the Object for <code>uuid</code>
      * @throws org.apache.jackrabbit.ocm.exception.RepositoryException
-     *             if the underlying repository has thrown a
-     *             javax.jcr.RepositoryException
-     * @throws JcrMappingException
-     *             if the mapping for the class is not correct
-     * @throws ObjectContentManagerException
-     *             if the object cannot be retrieved from the path
+     *                                       if the underlying repository has thrown a javax.jcr.RepositoryException
+     * @throws JcrMappingException           if the mapping for the class is not correct
+     * @throws ObjectContentManagerException if the object cannot be retrieved from the path
+     * @throws IllegalArgumentException      when the <code>uuid</code> is <code>null</code> or not a valid UUID
      */
     public Object getObjectByUuid(String uuid) {
 
@@ -296,13 +280,23 @@ public class ObjectContentManagerImpl implements ObjectContentManager {
     }
 
     /**
-     * @see org.apache.jackrabbit.ocm.manager.ObjectContentManager#getObject(java.lang.Class,
-     *      java.lang.String, java.lang.String)
+     *
+     * @param path the object's absolute jcr path
+     * @param versionName the version that needs to be fetched
+     * @return the Object for <code>path</code> and version <code>versionName</code> or <code>null</code> if there is no jcr node for the specified
+     * path and versionName
+     * @throws org.apache.jackrabbit.ocm.exception.RepositoryException
+     *             if the underlying repository has thrown a
+     *             javax.jcr.RepositoryException
+     * @throws JcrMappingException
+     *             if the mapping for the class is not correct
+     * @throws ObjectContentManagerException
+     *             if the object cannot be retrieved from the path and versionName
      */
     public Object getObject(String path, String versionName) {
-        String pathVersion = null;
+        String pathVersion;
         try {
-            if (!session.itemExists(path)) {
+            if (!session.nodeExists(path)) {
                 return null;
             }
 
@@ -319,8 +313,10 @@ public class ObjectContentManagerImpl implements ObjectContentManager {
     }
 
     /**
-     * @see org.apache.jackrabbit.ocm.manager.ObjectContentManager#getObject(java.lang.Class,
-     *      java.lang.String)
+     *
+     * @param objectClass  the object mapping class
+     * @param path the object's absolute jcr  path
+     * @return the Object for <code>path</code> pr <code>null</code> if there is no jcr node at <code>path</code>
      * @throws org.apache.jackrabbit.ocm.exception.RepositoryException
      *             if the underlying repository has thrown a
      *             javax.jcr.RepositoryException
@@ -331,7 +327,7 @@ public class ObjectContentManagerImpl implements ObjectContentManager {
      */
     public Object getObject(Class objectClass, String path) {
         try {
-            if (!session.itemExists(path)) {
+            if (!session.nodeExists(path)) {
                 return null;
             }
         } catch (RepositoryException e) {
@@ -344,14 +340,10 @@ public class ObjectContentManagerImpl implements ObjectContentManager {
 
     }
 
-    /**
-     * @see org.apache.jackrabbit.ocm.manager.ObjectContentManager#getObject(java.lang.Class,
-     *      java.lang.String, java.lang.String)
-     */
     public Object getObject(Class objectClass, String path, String versionName) {
         String pathVersion = null;
         try {
-            if (!session.itemExists(path)) {
+            if (!session.nodeExists(path)) {
                 return null;
             }
 
@@ -367,40 +359,25 @@ public class ObjectContentManagerImpl implements ObjectContentManager {
         return object;
     }
 
-    /**
-     * @see org.apache.jackrabbit.ocm.manager.ObjectContentManager#retrieveAllMappedAttributes(Object)
-     */
     public void retrieveAllMappedAttributes(Object object) {
         objectConverter.retrieveAllMappedAttributes(session, object);
 
     }
 
-    /**
-     * @see org.apache.jackrabbit.ocm.manager.ObjectContentManager#retrieveMappedAttribute(Object,
-     *      String)
-     */
     public void retrieveMappedAttribute(Object object, String attributeName) {
         objectConverter.retrieveMappedAttribute(session, object, attributeName);
 
     }
 
-    /**
-     * @see org.apache.jackrabbit.ocm.manager.ObjectContentManager#insert(java.lang.Object)
-     */
     public void insert(Object object) {
         String path = objectConverter.getPath(session, object);
 
         try {
-            if (session.itemExists(path)) {
-                Item item = session.getItem(path);
-                if (item.isNode()) {
-                    if (!((Node) item).getDefinition().allowsSameNameSiblings()) {
-                        throw new ObjectContentManagerException("Path already exists and it is not supporting the same name sibling : " + path);
-                    }
-                } else {
-                    throw new ObjectContentManagerException("Path already exists and it is a property : " + path);
+            if (session.nodeExists(path)) {
+                Node node = session.getNode(path);
+                if (!node.getDefinition().allowsSameNameSiblings()) {
+                    throw new ObjectContentManagerException("Path already exists and it is not supporting the same name sibling : " + path);
                 }
-
             }
         } catch (RepositoryException e) {
             throw new org.apache.jackrabbit.ocm.exception.RepositoryException("Impossible to insert the object at " + path, e);
@@ -409,13 +386,10 @@ public class ObjectContentManagerImpl implements ObjectContentManager {
         objectConverter.insert(session, object);
     }
 
-    /**
-     * @see org.apache.jackrabbit.ocm.manager.ObjectContentManager#update(java.lang.Object)
-     */
     public void update(Object object) {
         String path = objectConverter.getPath(session, object);
         try {
-            if (!session.itemExists(path)) {
+            if (!session.nodeExists(path)) {
                 throw new ObjectContentManagerException("Path is not existing : " + path);
             } else {
                 checkIfNodeLocked(path);
@@ -427,13 +401,9 @@ public class ObjectContentManagerImpl implements ObjectContentManager {
         objectConverter.update(session, object);
     }
 
-    /**
-     *
-     * @see org.apache.jackrabbit.ocm.manager.ObjectContentManager#remove(java.lang.String)
-     */
     public void remove(String path) {
         try {
-            if (!session.itemExists(path)) {
+            if (!session.nodeExists(path)) {
                 throw new ObjectContentManagerException("Path does not exist : " + path);
             } else {
                 checkIfNodeLocked(path);
@@ -447,18 +417,10 @@ public class ObjectContentManagerImpl implements ObjectContentManager {
         }
     }
 
-    /**
-     *
-     * @see org.apache.jackrabbit.ocm.manager.ObjectContentManager#remove(java.lang.Object)
-     */
     public void remove(Object object) {
         this.remove(objectConverter.getPath(session, object));
     }
 
-    /**
-     *
-     * @see org.apache.jackrabbit.ocm.manager.ObjectContentManager#remove(org.apache.jackrabbit.ocm.query.Query)
-     */
     public void remove(Query query) {
         try {
             String jcrExpression = this.queryManager.buildJCRExpression(query);
@@ -471,6 +433,10 @@ public class ObjectContentManagerImpl implements ObjectContentManager {
 
             while (nodeIterator.hasNext()) {
                 Node node = nodeIterator.nextNode();
+                if (node == null) {
+                    // node has been removed possibly by another thread during iterating through the results
+                    continue;
+                }
                 log.debug("Remove node : " + node.getPath());
 
                 // it is not possible to remove nodes from an NodeIterator
@@ -497,29 +463,21 @@ public class ObjectContentManagerImpl implements ObjectContentManager {
         }
     }
 
-    /**
-     *
-     * @see org.apache.jackrabbit.ocm.manager.ObjectContentManager#objectExists(java.lang.String)
-     */
     public boolean objectExists(String path) {
         try {
-            // TODO : Check also if it is an object
-            return session.itemExists(path);
+            return session.nodeExists(path);
         } catch (RepositoryException e) {
             throw new org.apache.jackrabbit.ocm.exception.RepositoryException("Impossible to check if the object exist", e);
         }
     }
 
-    /**
-     *
-     * @see org.apache.jackrabbit.ocm.manager.ObjectContentManager#isPersistent(java.lang.Class)
-     */
     public boolean isPersistent(final Class clazz) {
 
         try {
             ClassDescriptor classDescriptor = mapper.getClassDescriptorByClass(clazz);
-            if (classDescriptor == null)
+            if (classDescriptor == null) {
             	return false;
+            }
             return true;
         } catch (IncorrectPersistentClassException e) {
             return false;
@@ -527,10 +485,6 @@ public class ObjectContentManagerImpl implements ObjectContentManager {
 
     }
 
-    /**
-     *
-     * @see org.apache.jackrabbit.ocm.manager.ObjectContentManager#getObject(org.apache.jackrabbit.ocm.query.Query)
-     */
     public Object getObject(Query query) {
         String jcrExpression = this.queryManager.buildJCRExpression(query);
         Collection result = getObjects(jcrExpression, javax.jcr.query.Query.XPATH);
@@ -542,10 +496,7 @@ public class ObjectContentManagerImpl implements ObjectContentManager {
         return result.isEmpty() ? null : result.iterator().next();
     }
 
-    /**
-     *
-     * @see org.apache.jackrabbit.ocm.manager.ObjectContentManager#getObjects(org.apache.jackrabbit.ocm.query.Query)
-     */
+
     public Collection getObjects(Query query) {
         String jcrExpression = this.queryManager.buildJCRExpression(query);
         return getObjects(jcrExpression, javax.jcr.query.Query.XPATH);
@@ -562,7 +513,7 @@ public class ObjectContentManagerImpl implements ObjectContentManager {
      */
     public Collection getObjects(Class objectClass, String path) throws ObjectContentManagerException {
         try {
-            if (!session.itemExists(path)) {
+            if (!session.nodeExists(path)) {
                 return null;
             }
         } catch (RepositoryException e) {
@@ -589,10 +540,6 @@ public class ObjectContentManagerImpl implements ObjectContentManager {
 
     }
 
-    /**
-     *
-     * @see org.apache.jackrabbit.ocm.manager.ObjectContentManager#getObjectIterator(org.apache.jackrabbit.ocm.query.Query)
-     */
     public Iterator getObjectIterator(Query query) {
         String jcrExpression = this.queryManager.buildJCRExpression(query);
         log.debug("Get Object with expression : " + jcrExpression);
@@ -602,11 +549,6 @@ public class ObjectContentManagerImpl implements ObjectContentManager {
 
     }
 
-    /**
-     *
-     * @see org.apache.jackrabbit.ocm.manager.ObjectContentManager#getObjectIterator(String,
-     *      String)
-     */
     public Iterator getObjectIterator(String query, String language) {
         log.debug("Get Object with expression : " + query);
         NodeIterator nodeIterator = getNodeIterator(query, language);
@@ -652,19 +594,10 @@ public class ObjectContentManagerImpl implements ObjectContentManager {
         }
     }
 
-    /**
-     *
-     * @see org.apache.jackrabbit.ocm.manager.ObjectContentManager#checkin(java.lang.String)
-     */
     public void checkin(String path) {
         this.checkin(path, null);
     }
 
-    /**
-     *
-     * @see org.apache.jackrabbit.ocm.manager.ObjectContentManager#checkin(java.lang.String,
-     *      java.lang.String[])
-     */
     public void checkin(String path, String[] versionLabels) {
         try {
             Node node = (Node) session.getItem(path);
@@ -698,12 +631,8 @@ public class ObjectContentManagerImpl implements ObjectContentManager {
 
     }
 
-    /**
-     *
-     * @see org.apache.jackrabbit.ocm.manager.ObjectContentManager#checkout(java.lang.String)
-     */
     public void checkout(String path) {
-        Node node = null;
+        Node node;
         try {
             node = (Node) session.getItem(path);
             if (!node.isNodeType("mix:versionable")) {
@@ -725,11 +654,6 @@ public class ObjectContentManagerImpl implements ObjectContentManager {
 
     }
 
-    /**
-     *
-     * @see org.apache.jackrabbit.ocm.manager.ObjectContentManager#addVersionLabel(java.lang.String,
-     *      java.lang.String, java.lang.String)
-     */
     public void addVersionLabel(String path, String versionName, String versionLabel) {
         try {
             Node node = (Node) session.getItem(path);
@@ -753,11 +677,6 @@ public class ObjectContentManagerImpl implements ObjectContentManager {
         }
     }
 
-    /**
-     *
-     * @see org.apache.jackrabbit.ocm.manager.ObjectContentManager#getVersion(java.lang.String,
-     *      java.lang.String)
-     */
     public Version getVersion(String path, String versionName) {
         try {
             Node node = (Node) session.getItem(path);
@@ -781,11 +700,6 @@ public class ObjectContentManagerImpl implements ObjectContentManager {
         }
     }
 
-    /**
-     *
-     * @see org.apache.jackrabbit.ocm.manager.ObjectContentManager#getVersionLabels(java.lang.String,
-     *      java.lang.String)
-     */
     public String[] getVersionLabels(String path, String versionName) {
         try {
             Node node = (Node) session.getItem(path);
@@ -810,12 +724,9 @@ public class ObjectContentManagerImpl implements ObjectContentManager {
         }
     }
 
-    /**
-     * @see org.apache.jackrabbit.ocm.manager.ObjectContentManager#getAllVersionLabels(java.lang.String)
-     */
     public String[] getAllVersionLabels(String path) {
         try {
-            Node node = (Node) session.getItem(path);
+            Node node = session.getNode(path);
             if (!node.isNodeType("mix:versionable")) {
                 throw new VersionException("The object " + path + "is not versionable");
             }
@@ -834,13 +745,9 @@ public class ObjectContentManagerImpl implements ObjectContentManager {
         }
     }
 
-    /**
-     *
-     * @see org.apache.jackrabbit.ocm.manager.ObjectContentManager#getAllVersions(java.lang.String)
-     */
     public VersionIterator getAllVersions(String path) {
         try {
-            Node node = (Node) session.getItem(path);
+            Node node = session.getNode(path);
             if (!node.isNodeType("mix:versionable")) {
                 throw new VersionException("The object " + path + "is not versionable");
             }
@@ -859,13 +766,9 @@ public class ObjectContentManagerImpl implements ObjectContentManager {
         }
     }
 
-    /**
-     *
-     * @see org.apache.jackrabbit.ocm.manager.ObjectContentManager#getRootVersion(java.lang.String)
-     */
     public Version getRootVersion(String path) {
         try {
-            Node node = (Node) session.getItem(path);
+            Node node = session.getNode(path);
             if (!node.isNodeType("mix:versionable")) {
                 throw new VersionException("The object " + path + "is not versionable");
             }
@@ -884,13 +787,9 @@ public class ObjectContentManagerImpl implements ObjectContentManager {
         }
     }
 
-    /**
-     *
-     * @see org.apache.jackrabbit.ocm.manager.ObjectContentManager#getBaseVersion(java.lang.String)
-     */
     public Version getBaseVersion(String path) {
         try {
-            Node node = (Node) session.getItem(path);
+            Node node = session.getNode(path);
             if (!node.isNodeType("mix:versionable")) {
                 throw new VersionException("The object " + path + "is not versionable");
             }
@@ -907,11 +806,6 @@ public class ObjectContentManagerImpl implements ObjectContentManager {
         }
     }
 
-    /**
-     *
-     * @see org.apache.jackrabbit.ocm.manager.ObjectContentManager#lock(java.lang.String,
-     *      java.lang.Object, boolean, boolean)
-     */
     public Lock lock(final String absPath, final boolean isDeep, final boolean isSessionScoped) throws LockedException {
         try {
 
@@ -919,7 +813,6 @@ public class ObjectContentManagerImpl implements ObjectContentManager {
             // and this operation cant be done (exception translation)
             checkIfNodeLocked(absPath);
 
-            Node node = getNode(absPath);
             javax.jcr.lock.Lock lock = getLockManager().lock(absPath, isDeep, isSessionScoped, 0L, session.getUserID());
 
             return new Lock(lock);
@@ -932,11 +825,6 @@ public class ObjectContentManagerImpl implements ObjectContentManager {
         }
     }
 
-    /**
-     *
-     * @see org.apache.jackrabbit.ocm.manager.ObjectContentManager#unlock(java.lang.String,
-     *      java.lang.Object, java.lang.String)
-     */
     public void unlock(final String absPath, final String lockToken) throws IllegalUnlockException {
         String lockOwner = null;
         try {
@@ -966,14 +854,9 @@ public class ObjectContentManagerImpl implements ObjectContentManager {
         }
     }
 
-    /**
-     *
-     * @see org.apache.jackrabbit.ocm.manager.ObjectContentManager#isLocked(java.lang.String)
-     */
     public boolean isLocked(final String absPath) {
         try {
             final Node node = getNode(absPath);
-
             return node.isLocked();
         } catch (RepositoryException e) {
             // node.isLocked() RepositoryException if an error occurs.
@@ -981,9 +864,6 @@ public class ObjectContentManagerImpl implements ObjectContentManager {
         }
     }
 
-    /**
-     * @see org.apache.jackrabbit.ocm.manager.ObjectContentManager#getQueryManager()
-     */
     public QueryManager getQueryManager() {
         return this.queryManager;
     }
@@ -1001,7 +881,7 @@ public class ObjectContentManagerImpl implements ObjectContentManager {
     protected void checkIfNodeLocked(final String absPath) throws RepositoryException, LockedException {
         Node node = getNode(absPath);
 
-        // Node can hold nock or can be locked with precedencor
+        // Node can hold lock or can be locked with precedencor
         if (node.isLocked()) {
             javax.jcr.lock.Lock lock = getLockManager().getLock(absPath);
             String lockOwner = lock.getLockOwner();
@@ -1045,21 +925,12 @@ public class ObjectContentManagerImpl implements ObjectContentManager {
     }
 
     protected Node getNode(final String absPath) throws PathNotFoundException, RepositoryException {
-        if (!getSession().itemExists(absPath)) {
+        if (!session.nodeExists(absPath)) {
             throw new ObjectContentManagerException("No object stored on path: " + absPath);
         }
-        Item item = getSession().getItem(absPath);
-        if (!item.isNode()) {
-            throw new ObjectContentManagerException("No object stored on path: " + absPath + " on absPath is item (leaf)");
-        }
-
-        return (Node) item;
+        return session.getNode(absPath);
     }
 
-    /**
-     *
-     * @see org.apache.jackrabbit.ocm.manager.ObjectContentManager#logout()
-     */
     public void logout() {
         try {
             log.debug("Logout. Persisting current session changes.");
@@ -1077,10 +948,6 @@ public class ObjectContentManagerImpl implements ObjectContentManager {
         }
     }
 
-    /**
-     *
-     * @see org.apache.jackrabbit.ocm.manager.ObjectContentManager#save()
-     */
     public void save() {
         try {
             this.session.save();
@@ -1095,9 +962,6 @@ public class ObjectContentManagerImpl implements ObjectContentManager {
         }
     }
 
-    /**
-     * @return The JCR Session
-     */
     public Session getSession() {
         return this.session;
     }
@@ -1110,11 +974,6 @@ public class ObjectContentManagerImpl implements ObjectContentManager {
         }
     }
 
-    /**
-     *
-     * @see org.apache.jackrabbit.ocm.manager.ObjectContentManager#move(java.lang.String,
-     *      java.lang.String)
-     */
     public void move(String srcPath, String destPath) {
         try {
             session.move(srcPath, destPath);
@@ -1143,11 +1002,6 @@ public class ObjectContentManagerImpl implements ObjectContentManager {
         }
     }
 
-    /**
-     *
-     * @see org.apache.jackrabbit.ocm.manager.ObjectContentManager#copy(java.lang.String,
-     *      java.lang.String)
-     */
     public void copy(String srcPath, String destPath) {
         Workspace workspace = session.getWorkspace();
         try {
