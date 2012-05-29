@@ -173,8 +173,7 @@ public abstract class AbstractTestBase extends TestCase
 		try
 		{
 			BufferedOutputStream os = new BufferedOutputStream(new FileOutputStream(filePath));
-			ContentHandler handler = new org.apache.xml.serialize.XMLSerializer(os, null).asContentHandler();
-			session.exportDocumentView(nodePath, handler, skipBinary, noRecurse);
+            session.exportDocumentView(nodePath, os, skipBinary, noRecurse);
 			os.flush();
 			os.close();
 		}
