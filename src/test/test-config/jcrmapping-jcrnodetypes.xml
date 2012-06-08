@@ -45,7 +45,7 @@
 		<field-descriptor fieldName="lastModified" jcrName="jcr:lastModified"/>	
 	</class-descriptor>	
 
-    <class-descriptor className="org.apache.jackrabbit.ocm.testmodel.PropertyTest" jcrType="ocm:propertytest" >
+    <class-descriptor className="org.apache.jackrabbit.ocm.testmodel.OcmTestProperty" jcrType="ocm:ocmtestproperty" >
 		<field-descriptor fieldName="path" path="true" />
 		<field-descriptor fieldName="requiredProp" jcrName="ocm:requiredProp" />
 		<field-descriptor fieldName="requiredWithConstraintsProp" jcrName="ocm:requiredWithConstraintsProp" jcrValueConstraints="abc,def,ghi" />

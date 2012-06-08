@@ -40,9 +40,9 @@ import org.apache.jackrabbit.ocm.testmodel.HierarchyNode;
 import org.apache.jackrabbit.ocm.testmodel.Lockable;
 import org.apache.jackrabbit.ocm.testmodel.MultiValue;
 import org.apache.jackrabbit.ocm.testmodel.MultiValueWithObjectCollection;
+import org.apache.jackrabbit.ocm.testmodel.OcmTestProperty;
 import org.apache.jackrabbit.ocm.testmodel.Page;
 import org.apache.jackrabbit.ocm.testmodel.Paragraph;
-import org.apache.jackrabbit.ocm.testmodel.PropertyTest;
 import org.apache.jackrabbit.ocm.testmodel.Residual;
 import org.apache.jackrabbit.ocm.testmodel.Residual.ResidualNodes;
 import org.apache.jackrabbit.ocm.testmodel.Residual.ResidualProperties;
@@ -151,7 +151,7 @@ public abstract class AnnotationTestBase extends AbstractTestBase
 		classes.add(File.class);
 		classes.add(org.apache.jackrabbit.ocm.testmodel.Folder.class);
 		classes.add(Resource.class);
-		classes.add(PropertyTest.class);
+		classes.add(OcmTestProperty.class);
 
 		classes.add(Lockable.class);
 

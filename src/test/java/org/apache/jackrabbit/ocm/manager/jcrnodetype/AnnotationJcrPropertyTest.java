@@ -21,7 +21,7 @@ import junit.framework.TestSuite;
 
 import org.apache.jackrabbit.ocm.AnnotationTestBase;
 import org.apache.jackrabbit.ocm.manager.ObjectContentManager;
-import org.apache.jackrabbit.ocm.testmodel.PropertyTest;
+import org.apache.jackrabbit.ocm.testmodel.OcmTestProperty;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -58,14 +58,14 @@ public class AnnotationJcrPropertyTest extends AnnotationTestBase
 			// Insert without the mandatory field
 			//---------------------------------------------------------------------------------------------------------			
 			
-            PropertyTest propertyTest = new PropertyTest();
-            propertyTest.setPath("/test");
-            propertyTest.setRequiredProp("requiredPropValue");
-            propertyTest.setRequiredWithConstraintsProp("abc");
+            OcmTestProperty ocmTestProperty = new OcmTestProperty();
+            ocmTestProperty.setPath("/test");
+            ocmTestProperty.setRequiredProp("requiredPropValue");
+            ocmTestProperty.setRequiredWithConstraintsProp("abc");
 
             try
             {
-                 ocm.insert(propertyTest);
+                 ocm.insert(ocmTestProperty);
                  fail("Incorrect insert operation - the mandatory fields have no value");
             }
             catch(Exception e)
@@ -77,29 +77,29 @@ public class AnnotationJcrPropertyTest extends AnnotationTestBase
 			//---------------------------------------------------------------------------------------------------------
 			// Insert with the mandatory fields
 			//---------------------------------------------------------------------------------------------------------			
-            propertyTest.setMandatoryProp("mandatoryValue");
-            propertyTest.setMandatoryWithConstaintsProp("xx");
-            ocm.insert(propertyTest);
+            ocmTestProperty.setMandatoryProp("mandatoryValue");
+            ocmTestProperty.setMandatoryWithConstaintsProp("xx");
+            ocm.insert(ocmTestProperty);
             ocm.save();
 
 			//---------------------------------------------------------------------------------------------------------
 			// Retrieve
 			//---------------------------------------------------------------------------------------------------------			
-            propertyTest = (PropertyTest) ocm.getObject("/test");
-            assertTrue("Invalid required property", propertyTest.getRequiredProp().equals("requiredPropValue"));
-            assertTrue("Invalid required property with constraints", propertyTest.getRequiredWithConstraintsProp().equals("abc"));
-            assertTrue("Invalid autocreated property", propertyTest.getAutoCreatedProp().equals("aaa"));
-            assertTrue("Invalid autocreated property", propertyTest.getAutoCreatedWithConstraintsProp().equals("ccc"));
-            assertTrue("Invalid protected property", propertyTest.getProtectedWithDefaultValueProp().equals("protectedValue"));
+            ocmTestProperty = (OcmTestProperty) ocm.getObject("/test");
+            assertTrue("Invalid required property", ocmTestProperty.getRequiredProp().equals("requiredPropValue"));
+            assertTrue("Invalid required property with constraints", ocmTestProperty.getRequiredWithConstraintsProp().equals("abc"));
+            assertTrue("Invalid autocreated property", ocmTestProperty.getAutoCreatedProp().equals("aaa"));
+            assertTrue("Invalid autocreated property", ocmTestProperty.getAutoCreatedWithConstraintsProp().equals("ccc"));
+            assertTrue("Invalid protected property", ocmTestProperty.getProtectedWithDefaultValueProp().equals("protectedValue"));
 
             //---------------------------------------------------------------------------------------------------------
 			// update the property requiredWithConstraintsProp with bad value
 			//---------------------------------------------------------------------------------------------------------			
-            propertyTest = (PropertyTest) ocm.getObject("/test");
-            propertyTest.setRequiredWithConstraintsProp("invalid value");
+            ocmTestProperty = (OcmTestProperty) ocm.getObject("/test");
+            ocmTestProperty.setRequiredWithConstraintsProp("invalid value");
             try
             {
-            	ocm.update(propertyTest);
+            	ocm.update(ocmTestProperty);
             	ocm.save();
             	fail("Invalid value was accepted for requiredWithConstraintsProp");
             }
@@ -111,11 +111,11 @@ public class AnnotationJcrPropertyTest extends AnnotationTestBase
             //---------------------------------------------------------------------------------------------------------
 			// update the property AutoCreatedWithConstraintsProp with bad value
 			//---------------------------------------------------------------------------------------------------------			
-            propertyTest = (PropertyTest) ocm.getObject("/test");
-            propertyTest.setAutoCreatedWithConstraintsProp("invalid value");
+            ocmTestProperty = (OcmTestProperty) ocm.getObject("/test");
+            ocmTestProperty.setAutoCreatedWithConstraintsProp("invalid value");
             try
             {
-            	ocm.update(propertyTest);
+            	ocm.update(ocmTestProperty);
             	ocm.save();
             	fail("Invalid value was accepted for autoCreatedWithConstraintsProp ");
             }
@@ -128,11 +128,11 @@ public class AnnotationJcrPropertyTest extends AnnotationTestBase
             //---------------------------------------------------------------------------------------------------------
 			// update the property mandatoryWithConstaintsProp with bad value
 			//---------------------------------------------------------------------------------------------------------			
-            propertyTest = (PropertyTest) ocm.getObject("/test");
-            propertyTest.setMandatoryWithConstaintsProp("yy");
+            ocmTestProperty = (OcmTestProperty) ocm.getObject("/test");
+            ocmTestProperty.setMandatoryWithConstaintsProp("yy");
             try
             {
-            	ocm.update(propertyTest);
+            	ocm.update(ocmTestProperty);
             	ocm.save();
             	fail("Invalid value was accepted for mandatoryWithConstaintsProp");
             }

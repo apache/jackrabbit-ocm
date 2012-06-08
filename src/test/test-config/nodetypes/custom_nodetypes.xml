@@ -178,7 +178,7 @@
   </nodeType>    
 
 
-   <nodeType name="ocm:propertytest" >
+   <nodeType name="ocm:ocmtestproperty" >
     <supertypes>
       <supertype>nt:base</supertype>
     </supertypes>

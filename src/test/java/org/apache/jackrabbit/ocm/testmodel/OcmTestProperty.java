@@ -25,8 +25,8 @@ import org.apache.jackrabbit.ocm.mapper.impl.annotation.Node;
  * @author <a href="mailto:christophe.lombart@gmail.com">Lombart Christophe </a>
  *
  */
-@Node(jcrType="ocm:propertytest")
-public class PropertyTest
+@Node(jcrType="ocm:ocmtestproperty")
+public class OcmTestProperty
 {
 	@Field(path=true) private String path;
 	@Field(jcrName="ocm:requiredProp") private String requiredProp;

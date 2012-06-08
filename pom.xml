@@ -42,6 +42,18 @@
     also features like version support and object locking.
   </description>
 
+  <properties>
+    <javax.jcr.version>2.0</javax.jcr.version>
+    <apache.jackrabbit.version>2.4.1</apache.jackrabbit.version>
+    <commons.digester.version>1.7</commons.digester.version>
+    <commons.lang.version>2.1</commons.lang.version>
+    <commons.collection.version>3.1</commons.collection.version>
+    <commons.beanutils.version>1.7.0</commons.beanutils.version>
+    <org.slf4j.version>1.6.4</org.slf4j.version>
+    <junit.version>4.7</junit.version>
+    <xerces.version>2.9.1</xerces.version>
+  </properties>
+
   <!-- ====================================================================== -->
   <!-- B U I L D                                                              -->
   <!-- ====================================================================== -->
@@ -78,12 +90,12 @@
     <dependency>
       <groupId>javax.jcr</groupId>
       <artifactId>jcr</artifactId>
-      <version>2.0</version>
+      <version>${javax.jcr.version}</version>
     </dependency>
     <dependency>
       <groupId>commons-digester</groupId>
       <artifactId>commons-digester</artifactId>
-      <version>1.7</version>
+      <version>${commons.digester.version}</version>
       <exclusions>
         <exclusion>
           <groupId>commons-logging</groupId>
@@ -94,18 +106,18 @@
     <dependency>
       <groupId>commons-collections</groupId>
       <artifactId>commons-collections</artifactId>
-      <version>3.1</version>
+      <version>${commons.collection.version}</version>
     </dependency>
     <dependency>
       <groupId>commons-lang</groupId>
       <artifactId>commons-lang</artifactId>
-      <version>2.1</version>
+      <version>${commons.lang.version}</version>
     </dependency>
 
     <dependency>
       <groupId>org.slf4j</groupId>
       <artifactId>slf4j-api</artifactId>
-      <version>1.6.4</version>
+      <version>${org.slf4j.version}</version>
     </dependency>
 
     <dependency>
@@ -113,10 +125,11 @@
       <artifactId>cglib</artifactId>
       <version>2.2</version>
     </dependency>
+
     <dependency>
       <groupId>commons-beanutils</groupId>
       <artifactId>commons-beanutils</artifactId>
-      <version>1.7.0</version>
+      <version>${commons.beanutils.version}</version>
       <exclusions>
         <exclusion>
           <groupId>commons-logging</groupId>
@@ -128,33 +141,27 @@
     <dependency>
       <groupId>org.apache.jackrabbit</groupId>
       <artifactId>jackrabbit-core</artifactId>
-      <version>2.4.1</version>
-      <optional>true</optional>
+      <version>${apache.jackrabbit.version}</version>
+      <!--<scope>test</scope>-->
     </dependency>
 
     <!-- Test -->
     <dependency>
-      <groupId>geronimo-spec</groupId>
-      <artifactId>geronimo-spec-jta</artifactId>
-      <version>1.0-M1</version>
-      <scope>test</scope>
-    </dependency>
-    <dependency>
       <groupId>junit</groupId>
       <artifactId>junit</artifactId>
-      <version>3.8.1</version>
+      <version>${junit.version}</version>
       <scope>test</scope>
     </dependency>
     <dependency>
       <groupId>org.slf4j</groupId>
       <artifactId>slf4j-log4j12</artifactId>
-      <version>1.6.4</version>
+      <version>${org.slf4j.version}</version>
       <scope>test</scope>
     </dependency>
     <dependency>
       <groupId>xerces</groupId>
       <artifactId>xercesImpl</artifactId>
-      <version>2.9.1</version>
+      <version>${xerces.version}</version>
       <scope>test</scope>
     </dependency>
   </dependencies>
