@@ -23,7 +23,7 @@ package org.apache.jackrabbit.ocm.exception;
  * @author <a href="mailto:christophe.lombart@sword-technologies.com">Christophe Lombart</a>
  * @author <a href='mailto:the_mindstorm[at]evolva[dot]ro'>Alexandru Popescu</a>
  */
-public class RepositoryException extends NestableRuntimeException {
+public class RepositoryException extends RuntimeException {
     /** Use serialVersionUID for interoperability. */
     private final static long serialVersionUID = 910346108378604638L;
 

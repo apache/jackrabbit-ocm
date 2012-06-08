@@ -25,7 +25,7 @@ package org.apache.jackrabbit.ocm.exception;
  * @author <a href='mailto:the_mindstorm[at]evolva[dot]ro'>Alexandru Popescu</a>
  */
 
-public class JcrMappingException extends NestableRuntimeException {
+public class JcrMappingException extends RuntimeException {
 
     /** Use serialVersionUID for interoperability. */
     private final static long serialVersionUID = -5237713309666840905L;
