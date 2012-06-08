@@ -20,10 +20,8 @@ import javax.jcr.Node;
 import javax.jcr.Repository;
 import javax.jcr.Session;
 import javax.jcr.nodetype.NodeTypeManager;
-import javax.transaction.UserTransaction;
 import junit.framework.TestCase;
 
-import org.apache.jackrabbit.ocm.transaction.jackrabbit.UserTransactionImpl;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -128,54 +126,6 @@ public class RepositoryUtilTest extends TestCase
          encodedPath = RepositoryUtil.encodePath("/files/test/12aa/b/34/rrr/1.0");
          assertTrue("Incorrect encoded path", encodedPath.equals("/files/test/_x0031_2aa/b/_x0033_4/rrr/_x0031_.0"));
 
-    }
-
-    public void testUserTransaction()
-    {
-    	try
-		{
-			Repository repository = RepositoryUtil.getRepository("repositoryTest");
-			assertNotNull("The repository is null", repository);
-			Session session = RepositoryUtil.login(repository, "superuser",
-					"superuser");
-
-			UserTransaction utx = new UserTransactionImpl(session);
-
-			// start transaction
-			utx.begin();
-
-			// add node and save
-			Node root = session.getRootNode();
-			root.addNode("test");
-			session.save();
-			utx.commit();
-			
-			assertTrue("test node doesn't exist", session.itemExists("/test"));
-			
-			utx = new UserTransactionImpl(session);
-			utx.begin();
-			Node test = (Node) session.getItem("/test");
-			test.remove();
-			session.save();
-			utx.rollback();
-			
-			assertTrue("test node doesn't exist", session.itemExists("/test"));			
-
-			utx = new UserTransactionImpl(session);
-			utx.begin();
-			test = (Node) session.getItem("/test");
-			test.remove();
-			session.save();
-			utx.commit();
-			
-			assertFalse("test node exists", session.itemExists("/test"));			
-			
-		}
-		catch (Exception e)
-		{
-            e.printStackTrace();
-            fail("Unable to run user transaction : " + e);
-		}
     }
 
 }
