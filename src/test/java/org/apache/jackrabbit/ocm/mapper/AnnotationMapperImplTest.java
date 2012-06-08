@@ -33,7 +33,7 @@ import org.apache.jackrabbit.ocm.mapper.model.FieldDescriptor;
 import org.apache.jackrabbit.ocm.testmodel.A;
 import org.apache.jackrabbit.ocm.testmodel.B;
 import org.apache.jackrabbit.ocm.testmodel.C;
-import org.apache.jackrabbit.ocm.testmodel.PropertyTest;
+import org.apache.jackrabbit.ocm.testmodel.OcmTestProperty;
 import org.apache.jackrabbit.ocm.testmodel.SimpleAnnotedAbstractClass;
 import org.apache.jackrabbit.ocm.testmodel.SimpleAnnotedClass;
 import org.apache.jackrabbit.ocm.testmodel.SimpleInterface;
@@ -210,7 +210,7 @@ public class AnnotationMapperImplTest extends TestCase {
 			assertFalse(collectionDescriptor.isJcrSameNameSiblings());
 			assertEquals(collectionDescriptor.getJcrOnParentVersion(), "IGNORE");
 			
-			classDescriptor = mapper.getClassDescriptorByClass(PropertyTest.class);
+			classDescriptor = mapper.getClassDescriptorByClass(OcmTestProperty.class);
 			assertNotNull(classDescriptor);
 			FieldDescriptor fieldDescriptor = classDescriptor.getFieldDescriptor("requiredWithConstraintsProp");
 			assertNotNull(fieldDescriptor.getJcrValueConstraints());
@@ -550,7 +550,7 @@ public class AnnotationMapperImplTest extends TestCase {
 		classes.add( org.apache.jackrabbit.ocm.testmodel.A.class);
 		classes.add(org.apache.jackrabbit.ocm.testmodel.B.class);
 		classes.add( org.apache.jackrabbit.ocm.testmodel.C.class);
-		classes.add(org.apache.jackrabbit.ocm.testmodel.PropertyTest.class);
+		classes.add(OcmTestProperty.class);
 		classes.add(org.apache.jackrabbit.ocm.testmodel.inheritance.Ancestor.class);
 		classes.add(org.apache.jackrabbit.ocm.testmodel.inheritance.AnotherDescendant.class);
 		classes.add( org.apache.jackrabbit.ocm.testmodel.inheritance.Descendant.class);

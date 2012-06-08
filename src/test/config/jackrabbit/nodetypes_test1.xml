@@ -29,7 +29,7 @@
             <supertype>nt:base</supertype>
         </supertypes>
 
-        <propertyDefinition name="ocm:testProperty" requiredType="String" autoCreated="false" mandatory="false"
+        <propertyDefinition name="ocm:ocmtestproperty" requiredType="String" autoCreated="false" mandatory="false"
         onParentVersion="IGNORE" protected="false" multiple="false"/>
   </nodeType>
 </nodeTypes>

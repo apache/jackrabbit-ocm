@@ -97,7 +97,7 @@ public class NodeTypeManagerImplTest extends TestBase {
         assertEquals(test1.getPrimaryItemName(), "test1");
         assertEquals(test1.getSupertypes().length, 1);
         assertEquals(test1.getSupertypes()[0].getName(), "nt:base");
-        assertTrue(containsPropertyDefintion(test1.getPropertyDefinitions(), "ocm:testProperty"));
+        assertTrue(containsPropertyDefintion(test1.getPropertyDefinitions(), "ocm:ocmtestproperty"));
     }
 
     public void testCreateSingleNodeType() throws Exception

@@ -31,7 +31,7 @@ import org.apache.jackrabbit.ocm.mapper.model.FieldDescriptor;
 import org.apache.jackrabbit.ocm.testmodel.A;
 import org.apache.jackrabbit.ocm.testmodel.B;
 import org.apache.jackrabbit.ocm.testmodel.C;
-import org.apache.jackrabbit.ocm.testmodel.PropertyTest;
+import org.apache.jackrabbit.ocm.testmodel.OcmTestProperty;
 import org.apache.jackrabbit.ocm.testmodel.inheritance.Ancestor;
 import org.apache.jackrabbit.ocm.testmodel.inheritance.AnotherDescendant;
 import org.apache.jackrabbit.ocm.testmodel.inheritance.Descendant;
@@ -210,7 +210,7 @@ public class DigesterMapperImplTest extends TestCase {
 			assertFalse(collectionDescriptor.isJcrSameNameSiblings());
 			assertEquals(collectionDescriptor.getJcrOnParentVersion(), "IGNORE");
 			
-			classDescriptor = mapper.getClassDescriptorByClass(PropertyTest.class);
+			classDescriptor = mapper.getClassDescriptorByClass(OcmTestProperty.class);
 			assertNotNull(classDescriptor);
 			FieldDescriptor fieldDescriptor = classDescriptor.getFieldDescriptor("requiredWithConstraintsProp");
 			assertNotNull(fieldDescriptor.getJcrValueConstraints());
