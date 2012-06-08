@@ -55,9 +55,8 @@ public interface ObjectConverter
      * Retrieve an object from the JCR repo
      *
      * @param session The JCR session
-     * @param clazz The class assigned to the object to retrieve
      * @param path the JCR path
-     * @return The object found or null
+     * @return The object found or <code>null</code> when it does not exist at <code>path</code>
      *
      * @throws ObjectContentManagerException when it is not possible to retrieve the object
      */
@@ -69,7 +68,7 @@ public interface ObjectConverter
      * @param session The JCR session
      * @param clazz The class assigned to the object to retrieve
      * @param path the JCR path
-     * @return The object found or null
+     * @return The object found or <code>null</code> when it does not exist at <code>path</code>
      *
      * @throws ObjectContentManagerException when it is not possible to retrieve the object
      */
