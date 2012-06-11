@@ -21,7 +21,7 @@ import java.util.Collection;
 import junit.framework.Test;
 import junit.framework.TestSuite;
 
-import org.apache.jackrabbit.ocm.DigesterTestBase;
+import org.apache.jackrabbit.ocm.DigesterRepositoryTestBase;
 import org.apache.jackrabbit.ocm.exception.JcrMappingException;
 import org.apache.jackrabbit.ocm.manager.ObjectContentManager;
 import org.apache.jackrabbit.ocm.query.Filter;
@@ -44,17 +44,9 @@ import org.slf4j.LoggerFactory;
  *
  * @author <a href="mailto:christophe.lombart@gmail.com">Christophe Lombart</a>
  */
-public class DigesterInheritanceConcreteClassTest extends DigesterTestBase {
+public class DigesterInheritanceConcreteClassTest extends DigesterRepositoryTestBase {
 	private final static Logger log = LoggerFactory.getLogger(DigesterInheritanceConcreteClassTest.class);
 
-	/**
-	 * <p>Defines the test case name for junit.</p>
-	 * @param testName The test case name.
-	 */
-	public DigesterInheritanceConcreteClassTest(String testName) throws Exception {
-		super(testName);
-
-	}
 
 	public static Test suite() {
 		// All methods starting with "test" will be executed in the test suite.

@@ -16,13 +16,10 @@
   limitations under the License.
 -->
 <nodeTypes xmlns:nt="http://www.jcp.org/jcr/nt/1.0"
-	xmlns:jcr="http://www.jcp.org/jcr/1.0" xmlns:rep="internal"
-	xmlns:sv="http://www.jcp.org/jcr/sv/1.0"
-	xmlns:test="http://www.apache.org/jackrabbit/test"
-	xmlns:mix="http://www.jcp.org/jcr/mix/1.0"
-	xmlns:ocm="http://jackrabbit.apache.org/ocm">
+           xmlns:mix="http://www.jcp.org/jcr/mix/1.0"
+           xmlns:ocm="http://jackrabbit.apache.org/ocm">
 	
-   <nodeType name="ocm:discriminator" isMixin="true">
+  <nodeType name="ocm:discriminator" isMixin="true">
     <supertypes>
       <supertype>nt:base</supertype>
     </supertypes>

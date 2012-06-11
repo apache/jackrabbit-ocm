@@ -49,7 +49,6 @@ public class AllTests {
         suite.addTest(org.apache.jackrabbit.ocm.manager.version.AllTests.buildSuite());
         suite.addTest(org.apache.jackrabbit.ocm.mapper.AllTests.buildSuite());
         suite.addTest(org.apache.jackrabbit.ocm.querymanager.AllTests.buildSuite());
-        suite.addTest(org.apache.jackrabbit.ocm.repository.AllTests.buildSuite());
 
         return suite;
     }

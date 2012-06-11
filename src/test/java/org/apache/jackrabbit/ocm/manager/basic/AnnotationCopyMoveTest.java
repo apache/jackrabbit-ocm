@@ -22,14 +22,13 @@ import java.util.Collection;
 import junit.framework.Test;
 import junit.framework.TestSuite;
 
-import org.apache.jackrabbit.ocm.AnnotationTestBase;
+import org.apache.jackrabbit.ocm.AnnotationRepositoryTestBase;
 import org.apache.jackrabbit.ocm.exception.ObjectContentManagerException;
+import org.apache.jackrabbit.ocm.manager.ObjectContentManager;
 import org.apache.jackrabbit.ocm.testmodel.A;
 import org.apache.jackrabbit.ocm.testmodel.Atomic;
 import org.apache.jackrabbit.ocm.testmodel.B;
 import org.apache.jackrabbit.ocm.testmodel.C;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 
 /**
@@ -37,19 +36,8 @@ import org.slf4j.LoggerFactory;
  *
  * @author <a href="mailto:christophe.lombart@gmail.com">Christophe Lombart</a>
  */
-public class AnnotationCopyMoveTest extends AnnotationTestBase
+public class AnnotationCopyMoveTest extends AnnotationRepositoryTestBase
 {
-	private final static Logger log = LoggerFactory.getLogger(AnnotationCopyMoveTest.class);
-	
-	/**
-	 * <p>Defines the test case name for junit.</p>
-	 * @param testName The test case name.
-	 */
-	public AnnotationCopyMoveTest(String testName) throws Exception
-	{
-		super(testName);
-
-	}
 
 	public static Test suite()
 	{
@@ -70,7 +58,7 @@ public class AnnotationCopyMoveTest extends AnnotationTestBase
 
 	public void testCopy()
 	{
-
+        ObjectContentManager ocm = getObjectContentManager();
         // --------------------------------------------------------------------------------
         // Create and store an object graph in the repository
         // --------------------------------------------------------------------------------
@@ -155,6 +143,7 @@ public class AnnotationCopyMoveTest extends AnnotationTestBase
 	{
 
         try {
+            ObjectContentManager ocm = getObjectContentManager();
 			// --------------------------------------------------------------------------------
 			// Create and store an object graph in the repository
 			// --------------------------------------------------------------------------------
@@ -220,6 +209,7 @@ public class AnnotationCopyMoveTest extends AnnotationTestBase
 	{
 
         try {
+            ObjectContentManager ocm = getObjectContentManager();
 			// --------------------------------------------------------------------------------
 			// Create and store an object graph in the repository
 			// --------------------------------------------------------------------------------

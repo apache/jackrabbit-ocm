@@ -22,7 +22,7 @@ import java.util.Date;
 import junit.framework.Test;
 import junit.framework.TestSuite;
 
-import org.apache.jackrabbit.ocm.AnnotationTestBase;
+import org.apache.jackrabbit.ocm.AnnotationRepositoryTestBase;
 import org.apache.jackrabbit.ocm.manager.ObjectContentManager;
 import org.apache.jackrabbit.ocm.testmodel.Page;
 import org.apache.jackrabbit.ocm.testmodel.Paragraph;
@@ -40,19 +40,10 @@ import org.slf4j.LoggerFactory;
  *
  * @author <a href="mailto:christophe.lombart@sword-technologies.com">Christophe Lombart</a>
  */
-public class AnnotationBasicVersionningTest extends AnnotationTestBase
+public class AnnotationBasicVersionningTest extends AnnotationRepositoryTestBase
 {
 	private final static Logger log = LoggerFactory.getLogger(AnnotationBasicVersionningTest.class);
 
-	/**
-	 * <p>Defines the test case name for junit.</p>
-	 * @param testName The test case name.
-	 */
-	public AnnotationBasicVersionningTest(String testName) throws Exception
-	{
-		super(testName);
-
-	}
 
 	public static Test suite()
 	{

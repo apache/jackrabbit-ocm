@@ -22,7 +22,7 @@ import java.util.Collection;
 import junit.framework.Test;
 import junit.framework.TestSuite;
 
-import org.apache.jackrabbit.ocm.AnnotationTestBase;
+import org.apache.jackrabbit.ocm.AnnotationRepositoryTestBase;
 import org.apache.jackrabbit.ocm.exception.JcrMappingException;
 import org.apache.jackrabbit.ocm.manager.ObjectContentManager;
 import org.apache.jackrabbit.ocm.query.Filter;
@@ -30,8 +30,6 @@ import org.apache.jackrabbit.ocm.query.Query;
 import org.apache.jackrabbit.ocm.query.QueryManager;
 import org.apache.jackrabbit.ocm.testmodel.Page;
 import org.apache.jackrabbit.ocm.testmodel.Paragraph;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 
 /**
@@ -39,18 +37,8 @@ import org.slf4j.LoggerFactory;
  *
  * @author <a href="mailto:christophe.lombart@sword-technologies.com">Christophe Lombart</a>
  */
-public class AnnotationSimpleQueryTest extends AnnotationTestBase
+public class AnnotationSimpleQueryTest extends AnnotationRepositoryTestBase
 {
-    private final static Logger log = LoggerFactory.getLogger(AnnotationSimpleQueryTest.class);
-
-    /**
-     * <p>Defines the test case name for junit.</p>
-     * @param testName The test case name.
-     */
-    public AnnotationSimpleQueryTest(String testName)  throws Exception
-    {
-        super(testName);
-    }
 
     public static Test suite()
     {
@@ -79,7 +67,7 @@ public class AnnotationSimpleQueryTest extends AnnotationTestBase
     	{
     		    		      		
     		  // Build the Query Object
-    	      QueryManager queryManager = this.getQueryManager();
+    	      QueryManager queryManager = getObjectContentManager().getQueryManager();
     	      Filter filter = queryManager.createFilter(Paragraph.class);
     	      filter.addEqualTo("text", "Para 1");    	          	
     	
@@ -111,7 +99,7 @@ public class AnnotationSimpleQueryTest extends AnnotationTestBase
     	{
     		    		      		
     		  // Build the Query Object
-    	      QueryManager queryManager = this.getQueryManager();
+    	      QueryManager queryManager = getObjectContentManager().getQueryManager();
     	      Filter filter = queryManager.createFilter(Paragraph.class);
     	      filter.addEqualTo("text", "Para 1");    	          	
     	      filter.setScope("/test/");
@@ -143,7 +131,7 @@ public class AnnotationSimpleQueryTest extends AnnotationTestBase
     	{
     		
     		  // Build the Query Object
-    	      QueryManager queryManager = this.getQueryManager();
+    	      QueryManager queryManager = getObjectContentManager().getQueryManager();
     	      Filter filter = queryManager.createFilter(Paragraph.class);
     	      filter.addLike("text", "Para%");    	          	
     	      filter.setScope("/test/");
@@ -181,7 +169,7 @@ public class AnnotationSimpleQueryTest extends AnnotationTestBase
     	{
     		
     		  // Build the Query Object
-    	      QueryManager queryManager = this.getQueryManager();
+    	      QueryManager queryManager = getObjectContentManager().getQueryManager();
     	      Filter filter1 = queryManager.createFilter(Paragraph.class);
     	      filter1.addEqualTo("text", "Para 1");    	
     	      filter1.setScope("/test/");
@@ -217,7 +205,7 @@ public class AnnotationSimpleQueryTest extends AnnotationTestBase
     	{
     		
     		  // Build the Query Object
-    	      QueryManager queryManager = this.getQueryManager();
+    	      QueryManager queryManager = getObjectContentManager().getQueryManager();
     	      Filter filter = queryManager.createFilter(Paragraph.class);
     	      filter.addLike("text", "Para%");    	          	
     	      filter.setScope("/test/");

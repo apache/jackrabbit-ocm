@@ -22,30 +22,18 @@ import java.util.Collection;
 import junit.framework.Test;
 import junit.framework.TestSuite;
 
-import org.apache.jackrabbit.ocm.AnnotationTestBase;
+import org.apache.jackrabbit.ocm.AnnotationRepositoryTestBase;
 import org.apache.jackrabbit.ocm.manager.ObjectContentManager;
 import org.apache.jackrabbit.ocm.testmodel.A;
 import org.apache.jackrabbit.ocm.testmodel.C;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 /**
  * Test DefaultCollectionConverterImpl
  *
  * @author <a href="mailto:christophe.lombart@sword-technologies.com">Christophe Lombart</a>
  */
-public class AnnotationDefaultCollectionConverterImplTest extends AnnotationTestBase
+public class AnnotationDefaultCollectionConverterImplTest extends AnnotationRepositoryTestBase
 {
-    private final static Logger log = LoggerFactory.getLogger(AnnotationDefaultCollectionConverterImplTest.class);
-
-    /**
-     * <p>Defines the test case name for junit.</p>
-     * @param testName The test case name.
-     */
-    public AnnotationDefaultCollectionConverterImplTest(String testName)  throws Exception
-    {
-        super(testName);
-    }
 
     public static Test suite()
     {

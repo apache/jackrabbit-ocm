@@ -22,31 +22,20 @@ import java.util.Collection;
 import junit.framework.Test;
 import junit.framework.TestSuite;
 
-import org.apache.jackrabbit.ocm.AnnotationTestBase;
+import org.apache.jackrabbit.ocm.AnnotationRepositoryTestBase;
 import org.apache.jackrabbit.ocm.manager.ObjectContentManager;
 import org.apache.jackrabbit.ocm.testmodel.proxy.Detail;
 import org.apache.jackrabbit.ocm.testmodel.proxy.Main;
 import org.apache.jackrabbit.ocm.testmodel.proxy.NTDetail;
 import org.apache.jackrabbit.ocm.testmodel.proxy.NTMain;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 /**
  * Test inheritance with node type per concrete class (without  discreminator field)
  *
  * @author <a href="mailto:christophe.lombart@gmail.com">Christophe Lombart</a>
  */
-public class AnnotationProxyTest extends AnnotationTestBase {
-	private final static Logger log = LoggerFactory.getLogger(AnnotationProxyTest.class);
+public class AnnotationProxyTest extends AnnotationRepositoryTestBase {
 
-	/**
-	 * <p>Defines the test case name for junit.</p>
-	 * @param testName The test case name.
-	 */
-	public AnnotationProxyTest(String testName) throws Exception {
-		super(testName);
-
-	}
 
 	public static Test suite() {
 		// All methods starting with "test" will be executed in the test suite.
@@ -57,7 +46,7 @@ public class AnnotationProxyTest extends AnnotationTestBase {
 	public void testBeanProxy() {
 
 		try {
-			ObjectContentManager ocm = this.getObjectContentManager();
+			ObjectContentManager ocm = getObjectContentManager();
 
 			Detail detail = new Detail();
 			detail.setField("FieldValue");			
@@ -136,7 +125,7 @@ public class AnnotationProxyTest extends AnnotationTestBase {
 	public void testDefaultCollectionConverterWithProxy() {
 
 		try {
-			ObjectContentManager ocm = this.getObjectContentManager();
+			ObjectContentManager ocm = getObjectContentManager();
 
 			ArrayList  details= new ArrayList();
 			for(int i=1; i<=100;i++)
@@ -201,7 +190,7 @@ public class AnnotationProxyTest extends AnnotationTestBase {
 
 		try {
 
-			ObjectContentManager ocm = this.getObjectContentManager();			
+			ObjectContentManager ocm = getObjectContentManager();
 			
 			NTMain main = new NTMain();
 			main.setPath("/test");							

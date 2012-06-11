@@ -18,19 +18,17 @@ package org.apache.jackrabbit.ocm.manager.basic;
 
 import java.util.Collection;
 
-import javax.jcr.Repository;
+import javax.jcr.RepositoryException;
+import javax.jcr.Session;
 import javax.jcr.UnsupportedRepositoryOperationException;
 import junit.framework.Test;
 import junit.framework.TestSuite;
 
-import org.apache.jackrabbit.ocm.DigesterTestBase;
+import org.apache.jackrabbit.ocm.DigesterRepositoryTestBase;
 import org.apache.jackrabbit.ocm.manager.ObjectContentManager;
 import org.apache.jackrabbit.ocm.manager.impl.ObjectContentManagerImpl;
-import org.apache.jackrabbit.ocm.repository.RepositoryUtil;
 import org.apache.jackrabbit.ocm.testmodel.crossreference.A;
 import org.apache.jackrabbit.ocm.testmodel.crossreference.B;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 
 /**
@@ -40,18 +38,8 @@ import org.slf4j.LoggerFactory;
  *
  * @author <a href="mailto:christophe.lombart@gmail.com>Christophe Lombart</a>
  */
-public class DigesterAvoidRecursiveLoopTest extends DigesterTestBase
+public class DigesterAvoidRecursiveLoopTest extends DigesterRepositoryTestBase
 {
-    private final static Logger log = LoggerFactory.getLogger(DigesterAvoidRecursiveLoopTest.class);
-
-    /**
-     * <p>Defines the test case name for junit.</p>
-     * @param testName The test case name.
-     */
-    public DigesterAvoidRecursiveLoopTest(String testName)  throws Exception
-    {
-        super(testName);
-    }
 
     public static Test suite()
     {
@@ -128,14 +116,14 @@ public class DigesterAvoidRecursiveLoopTest extends DigesterTestBase
 
     }
 
-	
-	protected void initObjectContentManager() throws UnsupportedRepositoryOperationException, javax.jcr.RepositoryException
-	{
-		Repository repository = RepositoryUtil.getRepository("repositoryTest");
-		String[] files = { "./src/test/test-config/jcrmapping-avoidrecursiveloop.xml" };
-		session = RepositoryUtil.login(repository, "superuser", "superuser");
 
-		ocm = new ObjectContentManagerImpl(session, files);
+
+    @Override
+    protected ObjectContentManager createObjectContentManager(Session session) throws RepositoryException
+    {
+		String[] files = { "./src/test/test-config/jcrmapping-avoidrecursiveloop.xml" };
+
+		return new ObjectContentManagerImpl(session, files);
 		
 	}	
 

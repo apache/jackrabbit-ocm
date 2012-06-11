@@ -16,11 +16,11 @@
  */
 package org.apache.jackrabbit.ocm;
 
-import javax.jcr.Repository;
-import javax.jcr.UnsupportedRepositoryOperationException;
+import javax.jcr.RepositoryException;
+import javax.jcr.Session;
 
+import org.apache.jackrabbit.ocm.manager.ObjectContentManager;
 import org.apache.jackrabbit.ocm.manager.impl.ObjectContentManagerImpl;
-import org.apache.jackrabbit.ocm.repository.RepositoryUtil;
 
 /**
  * Base class for testcases. Provides priviledged access to the jcr test
@@ -30,26 +30,12 @@ import org.apache.jackrabbit.ocm.repository.RepositoryUtil;
  *
  *
  */
-public abstract class DigesterTestBase extends AbstractTestBase
+public abstract class DigesterRepositoryTestBase extends AbstractRepositoryTestBase
 {
 
-	/**
-	 * <p>
-	 * Defines the test case name for junit.
-	 * </p>
-	 *
-	 * @param testName
-	 *            The test case name.
-	 */
-	public DigesterTestBase(String testName)
-	{
-		super(testName);
-	}
-
-
-	protected void initObjectContentManager() throws UnsupportedRepositoryOperationException, javax.jcr.RepositoryException
-	{
-		Repository repository = RepositoryUtil.getRepository("repositoryTest");
+    @Override
+    protected ObjectContentManager createObjectContentManager(Session session) throws RepositoryException
+    {
 		String[] files = { "./src/test/test-config/jcrmapping.xml",
 						   "./src/test/test-config/jcrmapping-proxy.xml",
 						   "./src/test/test-config/jcrmapping-atomic.xml",
@@ -61,8 +47,8 @@ public abstract class DigesterTestBase extends AbstractTestBase
                            "./src/test/test-config/jcrmapping-complex-collections.xml",
                            "./src/test/test-config/jcrmapping-Enum.xml"
 		};
-		session = RepositoryUtil.login(repository, "superuser", "superuser");
-		ocm = new ObjectContentManagerImpl(session, files);
+
+	    return new ObjectContentManagerImpl(session, files);
 		
 	}
 

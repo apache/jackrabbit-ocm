@@ -22,7 +22,7 @@ import java.util.Collection;
 import junit.framework.Test;
 import junit.framework.TestSuite;
 
-import org.apache.jackrabbit.ocm.AnnotationTestBase;
+import org.apache.jackrabbit.ocm.AnnotationRepositoryTestBase;
 import org.apache.jackrabbit.ocm.manager.ObjectContentManager;
 import org.apache.jackrabbit.ocm.testmodel.uuid.A;
 import org.apache.jackrabbit.ocm.testmodel.uuid.B;
@@ -37,18 +37,9 @@ import org.slf4j.LoggerFactory;
  *
  * @author <a href="mailto:christophe.lombart@sword-technologies.com">Christophe Lombart</a>
  */
-public class AnnotationUuidTest extends AnnotationTestBase
+public class AnnotationUuidTest extends AnnotationRepositoryTestBase
 {
     private final static Logger log = LoggerFactory.getLogger(AnnotationUuidTest.class);
-
-    /**
-     * <p>Defines the test case name for junit.</p>
-     * @param testName The test case name.
-     */
-    public AnnotationUuidTest(String testName)  throws Exception
-    {
-        super(testName);
-    }
 
     public static Test suite()
     {

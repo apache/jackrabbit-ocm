@@ -20,21 +20,18 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
-import javax.jcr.Repository;
-import javax.jcr.UnsupportedRepositoryOperationException;
+import javax.jcr.RepositoryException;
+import javax.jcr.Session;
 import junit.framework.Test;
 import junit.framework.TestSuite;
 
-import org.apache.jackrabbit.ocm.AnnotationTestBase;
+import org.apache.jackrabbit.ocm.AnnotationRepositoryTestBase;
 import org.apache.jackrabbit.ocm.manager.ObjectContentManager;
 import org.apache.jackrabbit.ocm.manager.impl.ObjectContentManagerImpl;
 import org.apache.jackrabbit.ocm.mapper.Mapper;
 import org.apache.jackrabbit.ocm.mapper.impl.annotation.AnnotationMapperImpl;
-import org.apache.jackrabbit.ocm.repository.RepositoryUtil;
 import org.apache.jackrabbit.ocm.testmodel.crossreference.A;
 import org.apache.jackrabbit.ocm.testmodel.crossreference.B;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 
 /**
@@ -44,19 +41,8 @@ import org.slf4j.LoggerFactory;
  *
  * @author <a href="mailto:christophe.lombart@gmail.com>Christophe Lombart</a>
  */
-public class AnnotationAvoidRecursiveLoopTest extends AnnotationTestBase
+public class AnnotationAvoidRecursiveLoopTest extends AnnotationRepositoryTestBase
 {
-    private final static Logger log = LoggerFactory.getLogger(AnnotationAvoidRecursiveLoopTest.class);
-
-    /**
-     * <p>Defines the test case name for junit.</p>
-     * @param testName The test case name.
-     */
-    public AnnotationAvoidRecursiveLoopTest(String testName)  throws Exception
-    {
-        super(testName);
-    }
-
     public static Test suite()
     {
         // All methods starting with "test" will be executed in the test suite.
@@ -132,19 +118,15 @@ public class AnnotationAvoidRecursiveLoopTest extends AnnotationTestBase
 
     }
 
-	
-	protected void initObjectContentManager() throws UnsupportedRepositoryOperationException, javax.jcr.RepositoryException
+	@Override
+	protected ObjectContentManager createObjectContentManager(Session session) throws RepositoryException
 	{
-		Repository repository = RepositoryUtil.getRepository("repositoryTest");	
-		session = RepositoryUtil.login(repository, "superuser", "superuser");
 		List<Class> classes = new ArrayList<Class>();
-		
 		classes.add(B.class);
 		classes.add(A.class);		
 		Mapper mapper = new AnnotationMapperImpl(classes);
-		ocm = new ObjectContentManagerImpl(session, mapper);
+        return new ObjectContentManagerImpl(session, mapper);
 
-		
 	}	
 
 

@@ -19,13 +19,13 @@ package org.apache.jackrabbit.ocm;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.jcr.Repository;
-import javax.jcr.UnsupportedRepositoryOperationException;
+import javax.jcr.RepositoryException;
+import javax.jcr.Session;
 
+import org.apache.jackrabbit.ocm.manager.ObjectContentManager;
 import org.apache.jackrabbit.ocm.manager.impl.ObjectContentManagerImpl;
 import org.apache.jackrabbit.ocm.mapper.Mapper;
 import org.apache.jackrabbit.ocm.mapper.impl.annotation.AnnotationMapperImpl;
-import org.apache.jackrabbit.ocm.repository.RepositoryUtil;
 import org.apache.jackrabbit.ocm.testmodel.A;
 import org.apache.jackrabbit.ocm.testmodel.Atomic;
 import org.apache.jackrabbit.ocm.testmodel.B;
@@ -44,8 +44,6 @@ import org.apache.jackrabbit.ocm.testmodel.OcmTestProperty;
 import org.apache.jackrabbit.ocm.testmodel.Page;
 import org.apache.jackrabbit.ocm.testmodel.Paragraph;
 import org.apache.jackrabbit.ocm.testmodel.Residual;
-import org.apache.jackrabbit.ocm.testmodel.Residual.ResidualNodes;
-import org.apache.jackrabbit.ocm.testmodel.Residual.ResidualProperties;
 import org.apache.jackrabbit.ocm.testmodel.Resource;
 import org.apache.jackrabbit.ocm.testmodel.SimpleAnnotedAbstractClass;
 import org.apache.jackrabbit.ocm.testmodel.SimpleAnnotedClass;
@@ -84,111 +82,91 @@ import org.apache.jackrabbit.ocm.testmodel.version.PressRelease;
  * @author : <a href="mailto:boni.g@bioimagene.com">Boni Gopalan</a>
  *
  */
-public abstract class AnnotationTestBase extends AbstractTestBase
+public abstract class AnnotationRepositoryTestBase extends AbstractRepositoryTestBase
 {
 
+    @Override
+    protected ObjectContentManager createObjectContentManager(Session session) throws RepositoryException
+    {
+        List<Class> classes = new ArrayList<Class>();
 
-	/**
-	 * <p>
-	 * Defines the test case name for junit.
-	 * </p>
-	 *
-	 * @param testName
-	 *            The test case name.
-	 */
-	public AnnotationTestBase(String testName)
-	{
-		super(testName);
-	}
+        // Register content classes used by the unit tests
+        classes.add(Atomic.class);
+        classes.add(Default.class);
+        classes.add(A.class);
+        classes.add(B.class);
+        classes.add(C.class);
+        classes.add(D.class);
+        classes.add(DFull.class);
+        classes.add(E.class);
+        classes.add(Page.class);
+        classes.add(Paragraph.class);
+        classes.add(Main.class);
+        classes.add(Element.class);
+        classes.add(MultiValue.class);
+        classes.add(MultiValueWithObjectCollection.class);
+        classes.add(Discriminator.class);
 
+        classes.add(Residual.class);
+        classes.add(Residual.ResidualProperties.class);
+        classes.add(Residual.ResidualNodes.class);
 
-	protected void initObjectContentManager() throws UnsupportedRepositoryOperationException, javax.jcr.RepositoryException
-	{
-		Repository repository = RepositoryUtil.getRepository("repositoryTest");
-		session = RepositoryUtil.login(repository, "superuser", "superuser");
-		List<Class> classes = new ArrayList<Class>();
+        classes.add(CmsObject.class);
+        classes.add(Content.class);
+        classes.add(Document.class);
+        classes.add(Folder.class);
+        classes.add(CmsObjectImpl.class);
+        classes.add(ContentImpl.class);
+        classes.add(DocumentImpl.class);
+        classes.add(DocumentExtImpl.class);
+        classes.add(DocumentStream.class);
+        classes.add(FolderImpl.class);
 
-		// Register content classes used by the unit tests
-		classes.add(Atomic.class);
-		classes.add(Default.class);
-		classes.add(A.class);
-		classes.add(B.class);
-		classes.add(C.class);
-		classes.add(D.class);
-		classes.add(DFull.class);
-		classes.add(E.class);
-		classes.add(Page.class);
-		classes.add(Paragraph.class);
-		classes.add(Main.class);
-		classes.add(Element.class);
-		classes.add(MultiValue.class);
-		classes.add(MultiValueWithObjectCollection.class);
-		classes.add(Discriminator.class);
+        classes.add(Ancestor.class);
+        classes.add(Descendant.class);
+        classes.add(AnotherDescendant.class);
+        classes.add(SubDescendant.class);
+        classes.add(Interface.class);
+        classes.add(AnotherInterface.class);
 
-		classes.add(Residual.class);
-		classes.add(ResidualProperties.class);
-		classes.add(ResidualNodes.class);
+        classes.add(HierarchyNode.class);
+        classes.add(File.class);
+        classes.add(org.apache.jackrabbit.ocm.testmodel.Folder.class);
+        classes.add(Resource.class);
+        classes.add(OcmTestProperty.class);
 
-		classes.add(CmsObject.class);
-		classes.add(Content.class);
-		classes.add(Document.class);
-		classes.add(Folder.class);
-		classes.add(CmsObjectImpl.class);
-		classes.add(ContentImpl.class);
-		classes.add(DocumentImpl.class);
-		classes.add(DocumentExtImpl.class);
-		classes.add(DocumentStream.class);
-		classes.add(FolderImpl.class);
+        classes.add(Lockable.class);
 
-		classes.add(Ancestor.class);
-		classes.add(Descendant.class);
-		classes.add(AnotherDescendant.class);
-		classes.add(SubDescendant.class);
-		classes.add(Interface.class);
-		classes.add(AnotherInterface.class);
+        classes.add(org.apache.jackrabbit.ocm.testmodel.proxy.Main.class);
+        classes.add(org.apache.jackrabbit.ocm.testmodel.proxy.Detail.class);
 
-		classes.add(HierarchyNode.class);
-		classes.add(File.class);
-		classes.add(org.apache.jackrabbit.ocm.testmodel.Folder.class);
-		classes.add(Resource.class);
-		classes.add(OcmTestProperty.class);
+        classes.add(org.apache.jackrabbit.ocm.testmodel.proxy.NTMain.class);
+        classes.add(org.apache.jackrabbit.ocm.testmodel.proxy.NTDetail.class);
 
-		classes.add(Lockable.class);
+        classes.add(org.apache.jackrabbit.ocm.testmodel.uuid.A.class);
+        classes.add(org.apache.jackrabbit.ocm.testmodel.uuid.B.class);
+        classes.add(org.apache.jackrabbit.ocm.testmodel.uuid.B2.class);
+        classes.add(org.apache.jackrabbit.ocm.testmodel.uuid.Ancestor.class);
+        classes.add(org.apache.jackrabbit.ocm.testmodel.uuid.Descendant.class);
+        classes.add(org.apache.jackrabbit.ocm.testmodel.unstructured.UnstructuredParagraph.class);
+        classes.add(org.apache.jackrabbit.ocm.testmodel.unstructured.UnstructuredPage.class);
 
-		classes.add(org.apache.jackrabbit.ocm.testmodel.proxy.Main.class);
-		classes.add(org.apache.jackrabbit.ocm.testmodel.proxy.Detail.class);
+        classes.add(PressRelease.class);
+        classes.add(Author.class);
 
-		classes.add(org.apache.jackrabbit.ocm.testmodel.proxy.NTMain.class);
-		classes.add(org.apache.jackrabbit.ocm.testmodel.proxy.NTDetail.class);
+        classes.add(SimpleAnnotedAbstractClass.class);
+        classes.add(SimpleAnnotedClass.class);
+        classes.add(SimpleInterface.class);
+        classes.add(Person.class);
+        classes.add(Odyssey.class);
 
-		classes.add(org.apache.jackrabbit.ocm.testmodel.uuid.A.class);
-		classes.add(org.apache.jackrabbit.ocm.testmodel.uuid.B.class);
-		classes.add(org.apache.jackrabbit.ocm.testmodel.uuid.B2.class);
-		classes.add(org.apache.jackrabbit.ocm.testmodel.uuid.Ancestor.class);
-		classes.add(org.apache.jackrabbit.ocm.testmodel.uuid.Descendant.class);
-		classes.add(org.apache.jackrabbit.ocm.testmodel.unstructured.UnstructuredParagraph.class);
-		classes.add(org.apache.jackrabbit.ocm.testmodel.unstructured.UnstructuredPage.class);
+        classes.add(EntityA.class);
+        classes.add(EntityB.class);
+        classes.add(MyInterface.class);
 
-		classes.add(PressRelease.class);
-		classes.add(Author.class);
-		
-		classes.add(SimpleAnnotedAbstractClass.class);
-		classes.add(SimpleAnnotedClass.class);
-		classes.add(SimpleInterface.class);
-		classes.add(Person.class);
-		classes.add(Odyssey.class);
-		
-		classes.add(EntityA.class); 
-		classes.add(EntityB.class); 
-		classes.add(MyInterface.class);
-		
-		Mapper mapper = new AnnotationMapperImpl(classes);
-		ocm = new ObjectContentManagerImpl(session, mapper);
+        Mapper mapper = new AnnotationMapperImpl(classes);
+        return new ObjectContentManagerImpl(session, mapper);
 
-	}
-
-
-
-
+    }
 
 }

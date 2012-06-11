@@ -22,33 +22,21 @@ import java.util.Collection;
 import junit.framework.Test;
 import junit.framework.TestSuite;
 
-import org.apache.jackrabbit.ocm.AnnotationTestBase;
+import org.apache.jackrabbit.ocm.AnnotationRepositoryTestBase;
 import org.apache.jackrabbit.ocm.manager.ObjectContentManager;
 import org.apache.jackrabbit.ocm.query.Filter;
 import org.apache.jackrabbit.ocm.query.Query;
 import org.apache.jackrabbit.ocm.query.QueryManager;
 import org.apache.jackrabbit.ocm.testmodel.SimpleAnnotedClass;
 import org.apache.jackrabbit.ocm.testmodel.SimpleInterface;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 /**
  * Test atomic persistence fields
  *
  * @author <a href="mailto:christophe.lombart@sword-technologies.com">Christophe Lombart</a>
  */
-public class AnnotationSimpleTest extends AnnotationTestBase
+public class AnnotationSimpleTest extends AnnotationRepositoryTestBase
 {
-    private final static Logger log = LoggerFactory.getLogger(AnnotationSimpleTest.class);
-
-    /**
-     * <p>Defines the test case name for junit.</p>
-     * @param testName The test case name.
-     */
-    public AnnotationSimpleTest(String testName) throws Exception
-    {
-        super(testName);
-    }
 
     public static Test suite()
     {

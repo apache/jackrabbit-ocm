@@ -25,14 +25,12 @@ import java.util.Date;
 import junit.framework.Test;
 import junit.framework.TestSuite;
 
-import org.apache.jackrabbit.ocm.DigesterTestBase;
+import org.apache.jackrabbit.ocm.DigesterRepositoryTestBase;
 import org.apache.jackrabbit.ocm.manager.ObjectContentManager;
 import org.apache.jackrabbit.ocm.query.Filter;
 import org.apache.jackrabbit.ocm.query.Query;
 import org.apache.jackrabbit.ocm.query.QueryManager;
 import org.apache.jackrabbit.ocm.testmodel.Atomic;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 
 /**
@@ -40,19 +38,9 @@ import org.slf4j.LoggerFactory;
  *
  * @author <a href="mailto:christophe.lombart@sword-technologies.com">Christophe Lombart</a>
  */
-public class DigesterRemoveTest extends DigesterTestBase
+public class DigesterRemoveTest extends DigesterRepositoryTestBase
 {
-	private final static Logger log = LoggerFactory.getLogger(DigesterRemoveTest.class);
 	private Date date = new Date();
-	/**
-	 * <p>Defines the test case name for junit.</p>
-	 * @param testName The test case name.
-	 */
-	public DigesterRemoveTest(String testName) throws Exception
-	{
-		super(testName);
-
-	}
 
 	public static Test suite()
 	{
@@ -78,13 +66,13 @@ public class DigesterRemoveTest extends DigesterTestBase
 		try
 		{
 			
-			ObjectContentManager ocm = this.getObjectContentManager();
+			ObjectContentManager ocm = getObjectContentManager();
 			ocm.remove("/test5");
 			ocm.save();
 
 			assertFalse("Test5 has not been removed", ocm.objectExists("/test5"));
 
-			QueryManager queryManager = this.getQueryManager();
+			QueryManager queryManager = ocm.getQueryManager();
 			Filter filter = queryManager.createFilter(Atomic.class);
 			filter.addEqualTo("booleanObject" , new Boolean(false));
 			Query query = queryManager.createQuery(filter);

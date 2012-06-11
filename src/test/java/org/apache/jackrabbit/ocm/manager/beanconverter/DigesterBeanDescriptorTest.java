@@ -23,7 +23,7 @@ import java.util.List;
 import junit.framework.Test;
 import junit.framework.TestSuite;
 
-import org.apache.jackrabbit.ocm.DigesterTestBase;
+import org.apache.jackrabbit.ocm.DigesterRepositoryTestBase;
 import org.apache.jackrabbit.ocm.manager.ObjectContentManager;
 import org.apache.jackrabbit.ocm.testmodel.A;
 import org.apache.jackrabbit.ocm.testmodel.B;
@@ -32,6 +32,8 @@ import org.apache.jackrabbit.ocm.testmodel.DFull;
 import org.apache.jackrabbit.ocm.testmodel.E;
 import org.apache.jackrabbit.ocm.testmodel.Page;
 import org.apache.jackrabbit.ocm.testmodel.Paragraph;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * ObjectConverter test for bean-descriptor with inner bean inlined and inner bean with
@@ -39,12 +41,10 @@ import org.apache.jackrabbit.ocm.testmodel.Paragraph;
  *
  * @author <a href='mailto:the_mindstorm[at]evolva[dot]ro'>Alexandru Popescu</a>
  */
-public class DigesterBeanDescriptorTest extends DigesterTestBase {
+public class DigesterBeanDescriptorTest extends DigesterRepositoryTestBase {
 
 
-    public DigesterBeanDescriptorTest(String testname) {
-        super(testname);
-    }
+    private final static Logger log = LoggerFactory.getLogger(DigesterBeanDescriptorTest.class);
 
     public static Test suite() {
 
@@ -75,6 +75,7 @@ public class DigesterBeanDescriptorTest extends DigesterTestBase {
 
     	try
     	{
+            ObjectContentManager ocm = getObjectContentManager();
     		// ------------------------------------------------------------------------
     		// Create a main object (a) with a null attribute (A.b)
     		// ------------------------------------------------------------------------
@@ -122,6 +123,7 @@ public class DigesterBeanDescriptorTest extends DigesterTestBase {
     }
     public void testInlined() throws Exception {
 
+        ObjectContentManager ocm = getObjectContentManager();
         B expB = new B();
         expB.setB1("b1value");
         expB.setB2("b2value");
@@ -183,6 +185,7 @@ public class DigesterBeanDescriptorTest extends DigesterTestBase {
     public void testBeanDescriptorConverter() throws Exception
     {
 
+        ObjectContentManager ocm = getObjectContentManager();
         B expB = new B();
         expB.setB1("b1value");
         expB.setB2("b2value");

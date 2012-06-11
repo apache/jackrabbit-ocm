@@ -22,32 +22,20 @@ import java.util.Collection;
 import junit.framework.Test;
 import junit.framework.TestSuite;
 
-import org.apache.jackrabbit.ocm.DigesterTestBase;
+import org.apache.jackrabbit.ocm.DigesterRepositoryTestBase;
 import org.apache.jackrabbit.ocm.manager.ObjectContentManager;
 import org.apache.jackrabbit.ocm.testmodel.A;
 import org.apache.jackrabbit.ocm.testmodel.B;
 import org.apache.jackrabbit.ocm.testmodel.C;
 import org.apache.jackrabbit.ocm.testmodel.Discriminator;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 /**
  * Test JcrSession
  *
  * @author <a href="mailto:christophe.lombart@sword-technologies.com">Christophe Lombart</a>
  */
-public class DigesterSimpleTest extends DigesterTestBase
+public class DigesterSimpleTest extends DigesterRepositoryTestBase
 {
-    private final static Logger log = LoggerFactory.getLogger(DigesterSimpleTest.class);
-
-    /**
-     * <p>Defines the test case name for junit.</p>
-     * @param testName The test case name.
-     */
-    public DigesterSimpleTest(String testName)  throws Exception
-    {
-        super(testName);
-    }
 
     public static Test suite()
     {

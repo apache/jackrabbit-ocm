@@ -24,33 +24,20 @@ import javax.jcr.Session;
 import junit.framework.Test;
 import junit.framework.TestSuite;
 
-import org.apache.jackrabbit.ocm.AnnotationTestBase;
+import org.apache.jackrabbit.ocm.AnnotationRepositoryTestBase;
 import org.apache.jackrabbit.ocm.manager.ObjectContentManager;
-import org.apache.jackrabbit.ocm.manager.impl.ObjectContentManagerImpl;
 import org.apache.jackrabbit.ocm.query.Filter;
 import org.apache.jackrabbit.ocm.query.Query;
 import org.apache.jackrabbit.ocm.query.QueryManager;
 import org.apache.jackrabbit.ocm.testmodel.MultiValue;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 /**
  * Test NTCollectionConverterImpl
  *
  * @author <a href="mailto:christophe.lombart@sword-technologies.com">Christophe Lombart</a>
  */
-public class AnnotationMultiValueQueryTest extends AnnotationTestBase
+public class AnnotationMultiValueQueryTest extends AnnotationRepositoryTestBase
 {
-    private final static Logger log = LoggerFactory.getLogger(AnnotationMultiValueQueryTest.class);
-
-    /**
-     * <p>Defines the test case name for junit.</p>
-     * @param testName The test case name.
-     */
-    public AnnotationMultiValueQueryTest(String testName)  throws Exception
-    {
-        super(testName);
-    }
 
     public static Test suite()
     {
@@ -74,7 +61,7 @@ public class AnnotationMultiValueQueryTest extends AnnotationTestBase
         try
         {
         	
-  	      QueryManager queryManager = this.getQueryManager();
+  	      QueryManager queryManager = getObjectContentManager().getQueryManager();
 	      Filter filter = queryManager.createFilter(MultiValue.class);
 	      filter.addEqualTo("multiValues", "Value1");
 	      Query query = queryManager.createQuery(filter);    	
@@ -82,7 +69,6 @@ public class AnnotationMultiValueQueryTest extends AnnotationTestBase
 	      Collection result = ocm.getObjects(query);
 	      assertTrue("Invalid number of objects - should be = 3", result.size() == 3);
 
-  	      queryManager = this.getQueryManager();
 	      filter = queryManager.createFilter(MultiValue.class);
 	      filter.addEqualTo("multiValues", "Value9");
 	      query = queryManager.createQuery(filter);    	
@@ -108,9 +94,7 @@ public class AnnotationMultiValueQueryTest extends AnnotationTestBase
         {
         	ObjectContentManager ocm = getObjectContentManager();
 
-			ObjectContentManagerImpl ocmImpl = (ObjectContentManagerImpl) ocm;
-			
-			Session session = ocmImpl.getSession();
+			Session session = ocm.getSession();
 			Node root = session.getRootNode();
 			root.addNode("test");
 

@@ -14,9 +14,11 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.apache.jackrabbit.ocm.repository;
+package org.apache.jackrabbit.ocm;
 
 import junit.framework.TestCase;
+
+import org.apache.jackrabbit.ocm.repository.NodeUtil;
 
 /** Testcase for RepositoryUtil.
  *

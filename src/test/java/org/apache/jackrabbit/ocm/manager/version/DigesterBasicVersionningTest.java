@@ -20,7 +20,7 @@ package org.apache.jackrabbit.ocm.manager.version;
 import junit.framework.Test;
 import junit.framework.TestSuite;
 
-import org.apache.jackrabbit.ocm.DigesterTestBase;
+import org.apache.jackrabbit.ocm.DigesterRepositoryTestBase;
 import org.apache.jackrabbit.ocm.manager.ObjectContentManager;
 import org.apache.jackrabbit.ocm.testmodel.Page;
 import org.apache.jackrabbit.ocm.testmodel.Paragraph;
@@ -34,20 +34,9 @@ import org.slf4j.LoggerFactory;
  *
  * @author <a href="mailto:christophe.lombart@sword-technologies.com">Christophe Lombart</a>
  */
-public class DigesterBasicVersionningTest extends DigesterTestBase
+public class DigesterBasicVersionningTest extends DigesterRepositoryTestBase
 {
 	private final static Logger log = LoggerFactory.getLogger(DigesterBasicVersionningTest.class);
-	
-	
-	/**
-	 * <p>Defines the test case name for junit.</p>
-	 * @param testName The test case name.
-	 */
-	public DigesterBasicVersionningTest(String testName) throws Exception
-	{
-		super(testName);
-		
-	}
 
 	public static Test suite()
 	{

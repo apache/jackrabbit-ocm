@@ -26,7 +26,7 @@ import javax.jcr.Session;
 import junit.framework.Test;
 import junit.framework.TestSuite;
 
-import org.apache.jackrabbit.ocm.DigesterTestBase;
+import org.apache.jackrabbit.ocm.DigesterRepositoryTestBase;
 import org.apache.jackrabbit.ocm.exception.JcrMappingException;
 import org.apache.jackrabbit.ocm.manager.ObjectContentManager;
 import org.apache.jackrabbit.ocm.manager.impl.ObjectContentManagerImpl;
@@ -44,18 +44,9 @@ import org.slf4j.LoggerFactory;
  *
  * @author <a href="mailto:christophe.lombart@sword-technologies.com">Christophe Lombart</a>
  */
-public class DigesterIteratorQueryTest extends DigesterTestBase
+public class DigesterIteratorQueryTest extends DigesterRepositoryTestBase
 {
     private final static Logger log = LoggerFactory.getLogger(DigesterIteratorQueryTest.class);
-
-    /**
-     * <p>Defines the test case name for junit.</p>
-     * @param testName The test case name.
-     */
-    public DigesterIteratorQueryTest(String testName)  throws Exception
-    {
-        super(testName);
-    }
 
     public static Test suite()
     {
@@ -85,7 +76,7 @@ public class DigesterIteratorQueryTest extends DigesterTestBase
     	{
     		
     		  // No scope    		
-    	      QueryManager queryManager = this.getQueryManager();
+    	      QueryManager queryManager = getObjectContentManager().getQueryManager();
     	      Filter filter = queryManager.createFilter(Page.class);        	
     	      Query query = queryManager.createQuery(filter);    	
     	      ObjectContentManager ocm = this.getObjectContentManager();

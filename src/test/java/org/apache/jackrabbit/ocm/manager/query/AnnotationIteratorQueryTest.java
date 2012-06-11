@@ -25,10 +25,9 @@ import javax.jcr.Session;
 import junit.framework.Test;
 import junit.framework.TestSuite;
 
-import org.apache.jackrabbit.ocm.AnnotationTestBase;
+import org.apache.jackrabbit.ocm.AnnotationRepositoryTestBase;
 import org.apache.jackrabbit.ocm.exception.JcrMappingException;
 import org.apache.jackrabbit.ocm.manager.ObjectContentManager;
-import org.apache.jackrabbit.ocm.manager.impl.ObjectContentManagerImpl;
 import org.apache.jackrabbit.ocm.manager.impl.ObjectIterator;
 import org.apache.jackrabbit.ocm.query.Filter;
 import org.apache.jackrabbit.ocm.query.Query;
@@ -44,18 +43,10 @@ import org.slf4j.LoggerFactory;
  *
  * @author <a href="mailto:christophe.lombart@sword-technologies.com">Christophe Lombart</a>
  */
-public class AnnotationIteratorQueryTest extends AnnotationTestBase
+public class AnnotationIteratorQueryTest extends AnnotationRepositoryTestBase
 {
     private final static Logger log = LoggerFactory.getLogger(AnnotationIteratorQueryTest.class);
 
-    /**
-     * <p>Defines the test case name for junit.</p>
-     * @param testName The test case name.
-     */
-    public AnnotationIteratorQueryTest(String testName)  throws Exception
-    {
-        super(testName);
-    }
 
     public static Test suite()
     {
@@ -84,7 +75,7 @@ public class AnnotationIteratorQueryTest extends AnnotationTestBase
     	{
     		
     		  // No scope    		
-    	      QueryManager queryManager = this.getQueryManager();
+    	      QueryManager queryManager = getObjectContentManager().getQueryManager();
     	      Filter filter = queryManager.createFilter(Page.class);        	
     	      Query query = queryManager.createQuery(filter);
               // we need this to be sure about objects order in the iterator test
@@ -133,10 +124,8 @@ public class AnnotationIteratorQueryTest extends AnnotationTestBase
             {
                 ocm.remove("/test");
             }
-        	
-			ObjectContentManagerImpl ocmImpl = (ObjectContentManagerImpl) ocm;
-			
-			Session session = ocmImpl.getSession();
+
+			Session session = ocm.getSession();
 			Node root = session.getRootNode();
 			root.addNode("test");
 			root.addNode("test/node1");

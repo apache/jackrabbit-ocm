@@ -21,30 +21,17 @@ import java.util.ArrayList;
 import junit.framework.Test;
 import junit.framework.TestSuite;
 
-import org.apache.jackrabbit.ocm.AnnotationTestBase;
+import org.apache.jackrabbit.ocm.AnnotationRepositoryTestBase;
 import org.apache.jackrabbit.ocm.manager.ObjectContentManager;
 import org.apache.jackrabbit.ocm.testmodel.MultiValue;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 /**
  * Test NTCollectionConverterImpl
  *
  * @author <a href="mailto:christophe.lombart@sword-technologies.com">Christophe Lombart</a>
  */
-public class AnnotationMultiValueCollectionConverterImplTest extends AnnotationTestBase
+public class AnnotationMultiValueCollectionConverterImplTest extends AnnotationRepositoryTestBase
 {
-    private final static Logger log = LoggerFactory.getLogger(AnnotationMultiValueCollectionConverterImplTest.class);
-
-    /**
-     * <p>Defines the test case name for junit.</p>
-     * @param testName The test case name.
-     */
-    public AnnotationMultiValueCollectionConverterImplTest(String testName)  throws Exception
-    {
-        super(testName);
-    }
-
     public static Test suite()
     {
         // All methods starting with "test" will be executed in the test suite.
