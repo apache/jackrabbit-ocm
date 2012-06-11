@@ -19,7 +19,7 @@ package org.apache.jackrabbit.ocm.manager.jcrnodetype;
 import junit.framework.Test;
 import junit.framework.TestSuite;
 
-import org.apache.jackrabbit.ocm.AnnotationTestBase;
+import org.apache.jackrabbit.ocm.AnnotationRepositoryTestBase;
 import org.apache.jackrabbit.ocm.manager.ObjectContentManager;
 import org.apache.jackrabbit.ocm.testmodel.OcmTestProperty;
 import org.slf4j.Logger;
@@ -30,18 +30,9 @@ import org.slf4j.LoggerFactory;
  *
  * @author <a href="mailto:christophe.lombart@gmail.com">Christophe Lombart</a>
  */
-public class AnnotationJcrPropertyTest extends AnnotationTestBase
+public class AnnotationJcrPropertyTest extends AnnotationRepositoryTestBase
 {
 	private final static Logger log = LoggerFactory.getLogger(AnnotationJcrPropertyTest.class);
-
-	/**
-	 * <p>Defines the test case name for junit.</p>
-	 * @param testName The test case name.
-	 */
-	public AnnotationJcrPropertyTest(String testName) throws Exception {
-		super(testName);
-
-	}
 
 	public static Test suite() {
 		// All methods starting with "test" will be executed in the test suite.
@@ -53,7 +44,7 @@ public class AnnotationJcrPropertyTest extends AnnotationTestBase
 
 		try
 		{
-			ObjectContentManager ocm = this.getObjectContentManager();
+			ObjectContentManager ocm = getObjectContentManager();
 			//---------------------------------------------------------------------------------------------------------
 			// Insert without the mandatory field
 			//---------------------------------------------------------------------------------------------------------			

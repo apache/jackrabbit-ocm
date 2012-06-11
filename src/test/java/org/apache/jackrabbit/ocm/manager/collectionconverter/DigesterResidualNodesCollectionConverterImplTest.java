@@ -21,12 +21,10 @@ import java.util.HashMap;
 import junit.framework.Test;
 import junit.framework.TestSuite;
 
-import org.apache.jackrabbit.ocm.DigesterTestBase;
+import org.apache.jackrabbit.ocm.DigesterRepositoryTestBase;
 import org.apache.jackrabbit.ocm.manager.ObjectContentManager;
 import org.apache.jackrabbit.ocm.testmodel.Paragraph;
 import org.apache.jackrabbit.ocm.testmodel.Residual;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 /**
  * Test ResidualNodesCollectionConverterImpl
@@ -34,18 +32,8 @@ import org.slf4j.LoggerFactory;
  * @author <a href="mailto:fmeschbe[at]apache[dot]com">Felix Meschberger</a>
  *
  */
-public class DigesterResidualNodesCollectionConverterImplTest extends DigesterTestBase
+public class DigesterResidualNodesCollectionConverterImplTest extends DigesterRepositoryTestBase
 {
-    private final static Logger log = LoggerFactory.getLogger(DigesterResidualNodesCollectionConverterImplTest.class);
-
-    /**
-     * <p>Defines the test case name for junit.</p>
-     * @param testName The test case name.
-     */
-    public DigesterResidualNodesCollectionConverterImplTest(String testName)  throws Exception
-    {
-        super(testName);
-    }
 
     public static Test suite()
     {

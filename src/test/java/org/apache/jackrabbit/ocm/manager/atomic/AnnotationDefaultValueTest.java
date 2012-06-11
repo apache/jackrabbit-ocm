@@ -20,7 +20,7 @@ import javax.jcr.Node;
 import junit.framework.Test;
 import junit.framework.TestSuite;
 
-import org.apache.jackrabbit.ocm.AnnotationTestBase;
+import org.apache.jackrabbit.ocm.AnnotationRepositoryTestBase;
 import org.apache.jackrabbit.ocm.manager.ObjectContentManager;
 import org.apache.jackrabbit.ocm.testmodel.Default;
 import org.slf4j.Logger;
@@ -29,18 +29,10 @@ import org.slf4j.LoggerFactory;
 /**
  * Test Default value assignement
  */
-public class AnnotationDefaultValueTest extends AnnotationTestBase
+public class AnnotationDefaultValueTest extends AnnotationRepositoryTestBase
 {
     private final static Logger log = LoggerFactory.getLogger(AnnotationDefaultValueTest.class);
 
-    /**
-     * <p>Defines the test case name for junit.</p>
-     * @param testName The test case name.
-     */
-    public AnnotationDefaultValueTest(String testName) throws Exception
-    {
-        super(testName);
-    }
 
     public static Test suite()
     {

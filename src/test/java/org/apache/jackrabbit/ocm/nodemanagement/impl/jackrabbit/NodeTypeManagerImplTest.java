@@ -17,19 +17,24 @@
 package org.apache.jackrabbit.ocm.nodemanagement.impl.jackrabbit;
 
 import java.io.FileInputStream;
+import java.io.IOException;
 
 import javax.jcr.PropertyType;
+import javax.jcr.RepositoryException;
+import javax.jcr.Session;
 import javax.jcr.nodetype.NodeDefinition;
 import javax.jcr.nodetype.NodeType;
 import javax.jcr.nodetype.PropertyDefinition;
 import junit.framework.Test;
 import junit.framework.TestSuite;
 
+import org.apache.jackrabbit.core.nodetype.InvalidNodeTypeDefException;
+import org.apache.jackrabbit.ocm.AbstractRepositoryTestBase;
+import org.apache.jackrabbit.ocm.manager.ObjectContentManager;
 import org.apache.jackrabbit.ocm.mapper.model.BeanDescriptor;
 import org.apache.jackrabbit.ocm.mapper.model.ClassDescriptor;
 import org.apache.jackrabbit.ocm.mapper.model.CollectionDescriptor;
 import org.apache.jackrabbit.ocm.mapper.model.FieldDescriptor;
-import org.apache.jackrabbit.ocm.nodemanagement.TestBase;
 import org.apache.jackrabbit.ocm.nodemanagement.exception.NamespaceCreationException;
 import org.apache.jackrabbit.ocm.nodemanagement.exception.NodeTypeCreationException;
 import org.slf4j.Logger;
@@ -40,7 +45,7 @@ import org.slf4j.LoggerFactory;
  *
  * @author <a href="mailto:okiessler@apache.org">Oliver Kiessler</a>
  */
-public class NodeTypeManagerImplTest extends TestBase {
+public class NodeTypeManagerImplTest extends AbstractRepositoryTestBase {
 
     /**
      * Logger instance.
@@ -50,7 +55,7 @@ public class NodeTypeManagerImplTest extends TestBase {
 
     /** Class to test.
      */
-    private NodeTypeManagerImpl jackrabbitNodeTypeManagerImpl
+    private NodeTypeManagerImpl nodeTypeManagerImpl
                 = new NodeTypeManagerImpl();
 
     /** Returns testsuite.
@@ -62,20 +67,35 @@ public class NodeTypeManagerImplTest extends TestBase {
         return suite;
     }
 
+    @Override
+    protected ObjectContentManager createObjectContentManager(Session session) throws RepositoryException {
+        // no ObjectContentManager needed for this test
+        return null;
+    }
+
+    @Override
+    protected void registerNodeTypes(Session session)
+            throws InvalidNodeTypeDefException, javax.jcr.RepositoryException, IOException {
+         // do not register any node types at startup hence override the one from AbstractRepositoryTestBase
+        return;
+    }
+
     public void testCreateNamespace() throws Exception
     {
-        getJackrabbitNodeTypeManagerImpl().createNamespace(session,
-                "test", "http://www.test.com/test-uri");
 
-        assertEquals(session.getWorkspace().getNamespaceRegistry().getPrefix("http://www.test.com/test-uri"), "test");
-        assertEquals(session.getWorkspace().getNamespaceRegistry().getURI("test"), "http://www.test.com/test-uri");
+        Session session = getSession();
+        nodeTypeManagerImpl.createNamespace(session,
+                "ocmtest", "http://www.test.com/test-uri");
+
+        assertEquals(session.getWorkspace().getNamespaceRegistry().getPrefix("http://www.test.com/test-uri"), "ocmtest");
+        assertEquals(session.getWorkspace().getNamespaceRegistry().getURI("ocmtest"), "http://www.test.com/test-uri");
 
         boolean failed = false;
 
         try
         {
-            getJackrabbitNodeTypeManagerImpl().createNamespace(session,
-                    "test", "http://www.test.com/test-uri");
+            nodeTypeManagerImpl.createNamespace(session,
+                    "ocmtest", "http://www.test.com/test-uri");
         } catch (NamespaceCreationException nce) {
             // expected
             failed = true;
@@ -87,10 +107,10 @@ public class NodeTypeManagerImplTest extends TestBase {
 
     public void testCreateNodeTypesFromConfiguration() throws Exception
     {
-        getJackrabbitNodeTypeManagerImpl().createNodeTypesFromConfiguration(session,
-                new FileInputStream("./src/test/config/jackrabbit/nodetypes_test1.xml"));
+        nodeTypeManagerImpl.createNodeTypesFromConfiguration(getSession(),
+                new FileInputStream("./src/test/test-config/nodetypes/nodetypes_test1.xml"));
 
-        NodeType test1 = session.getWorkspace().getNodeTypeManager().getNodeType("ocm:test1");
+        NodeType test1 = getSession().getWorkspace().getNodeTypeManager().getNodeType("ocm:test1");
         assertNotNull(test1);
         assertFalse(test1.isMixin());
         assertFalse(test1.hasOrderableChildNodes());
@@ -125,9 +145,9 @@ public class NodeTypeManagerImplTest extends TestBase {
         field1.setJcrMultiple(false);
         classDescriptor.addFieldDescriptor(field2);
 
-        getJackrabbitNodeTypeManagerImpl().createSingleNodeType(session, classDescriptor);
+        nodeTypeManagerImpl.createSingleNodeType(getSession(), classDescriptor);
 
-        NodeType testNodeType = session.getWorkspace().getNodeTypeManager().getNodeType("ocm:test2");
+        NodeType testNodeType = getSession().getWorkspace().getNodeTypeManager().getNodeType("ocm:test2");
         assertNotNull(testNodeType);
         assertFalse(testNodeType.isMixin());
         assertEquals(testNodeType.getName(), "ocm:test2");
@@ -143,11 +163,11 @@ public class NodeTypeManagerImplTest extends TestBase {
         assertTrue(containsProperty("jcr:mixinTypes", testNodeType.getPropertyDefinitions()));
 
         PropertyDefinition propDef1 = getPropertyDefinition(testNodeType.getPropertyDefinitions(), "ocm:a");
-        log.info(getJackrabbitNodeTypeManagerImpl().showPropertyDefinition(propDef1));
+        log.info(nodeTypeManagerImpl.showPropertyDefinition(propDef1));
         // TODO test all properties
 
         PropertyDefinition propDef2 = getPropertyDefinition(testNodeType.getPropertyDefinitions(), "ocm:b");
-        log.info(getJackrabbitNodeTypeManagerImpl().showPropertyDefinition(propDef2));
+        log.info(nodeTypeManagerImpl.showPropertyDefinition(propDef2));
         // TODO test all properties
     }
 
@@ -164,9 +184,9 @@ public class NodeTypeManagerImplTest extends TestBase {
         field1.setJcrType("String");
         classDescriptor.addFieldDescriptor(field1);
 
-        getJackrabbitNodeTypeManagerImpl().createSingleNodeType(session, classDescriptor);
+        nodeTypeManagerImpl.createSingleNodeType(getSession(), classDescriptor);
 
-        NodeType test3 = session.getWorkspace().getNodeTypeManager().getNodeType("test3");
+        NodeType test3 = getSession().getWorkspace().getNodeTypeManager().getNodeType("test3");
         assertNotNull(test3);
         assertFalse(test3.isMixin());
         assertEquals(test3.getName(), "test3");
@@ -186,9 +206,9 @@ public class NodeTypeManagerImplTest extends TestBase {
         field1.setJcrType("String");
         classDescriptor.addFieldDescriptor(field1);
 
-        getJackrabbitNodeTypeManagerImpl().createSingleNodeType(session, classDescriptor);
+        nodeTypeManagerImpl.createSingleNodeType(getSession(), classDescriptor);
 
-        NodeType test4 = session.getWorkspace().getNodeTypeManager().getNodeType("test.Test4Class");
+        NodeType test4 = getSession().getWorkspace().getNodeTypeManager().getNodeType("test.Test4Class");
         assertNotNull(test4);
         assertFalse(test4.isMixin());
         assertEquals(test4.getName(), "test.Test4Class");
@@ -207,9 +227,9 @@ public class NodeTypeManagerImplTest extends TestBase {
         field1.setFieldName("abc");
         classDescriptor.addFieldDescriptor(field1);
 
-        getJackrabbitNodeTypeManagerImpl().createSingleNodeType(session, classDescriptor);
+        nodeTypeManagerImpl.createSingleNodeType(getSession(), classDescriptor);
 
-        NodeType test5 = session.getWorkspace().getNodeTypeManager().getNodeType("ocm:test5");
+        NodeType test5 = getSession().getWorkspace().getNodeTypeManager().getNodeType("ocm:test5");
         assertNotNull(test5);
         assertFalse(test5.isMixin());
         assertEquals(test5.getName(), "ocm:test5");
@@ -237,7 +257,7 @@ public class NodeTypeManagerImplTest extends TestBase {
 
         try
         {
-            getJackrabbitNodeTypeManagerImpl().createSingleNodeType(session, classDescriptor);
+            nodeTypeManagerImpl.createSingleNodeType(getSession(), classDescriptor);
         }
         catch (NodeTypeCreationException nce)
         {
@@ -262,9 +282,9 @@ public class NodeTypeManagerImplTest extends TestBase {
 
         classDescriptor.addCollectionDescriptor(collection1);
 
-        getJackrabbitNodeTypeManagerImpl().createSingleNodeType(session, classDescriptor);
+        nodeTypeManagerImpl.createSingleNodeType(getSession(), classDescriptor);
 
-        NodeType test9 = session.getWorkspace().getNodeTypeManager().getNodeType("ocm:test9");
+        NodeType test9 = getSession().getWorkspace().getNodeTypeManager().getNodeType("ocm:test9");
         assertNotNull(test9);
         // not check node type definition, assuming other tests have done that
 
@@ -287,9 +307,9 @@ public class NodeTypeManagerImplTest extends TestBase {
         bean1.setJcrType("String");
         classDescriptor.addBeanDescriptor(bean1);
 
-        getJackrabbitNodeTypeManagerImpl().createSingleNodeType(session, classDescriptor);
+        nodeTypeManagerImpl.createSingleNodeType(getSession(), classDescriptor);
 
-        NodeType test10 = session.getWorkspace().getNodeTypeManager().getNodeType("ocm:test10");
+        NodeType test10 = getSession().getWorkspace().getNodeTypeManager().getNodeType("ocm:test10");
         assertNotNull(test10);
         // not check node type definition, assuming other tests have done that
 
@@ -313,9 +333,9 @@ public class NodeTypeManagerImplTest extends TestBase {
         collection1.setJcrType("String");
         classDescriptor.addCollectionDescriptor(collection1);
 
-        getJackrabbitNodeTypeManagerImpl().createSingleNodeType(session, classDescriptor);
+        nodeTypeManagerImpl.createSingleNodeType(getSession(), classDescriptor);
 
-        NodeType test13 = session.getWorkspace().getNodeTypeManager().getNodeType("ocm:test13");
+        NodeType test13 = getSession().getWorkspace().getNodeTypeManager().getNodeType("ocm:test13");
         assertNotNull(test13);
         // not check node type definition, assuming other tests have done that
 
@@ -338,9 +358,9 @@ public class NodeTypeManagerImplTest extends TestBase {
         bean1.setJcrType("String");
         classDescriptor.addBeanDescriptor(bean1);
 
-        getJackrabbitNodeTypeManagerImpl().createSingleNodeType(session, classDescriptor);
+        nodeTypeManagerImpl.createSingleNodeType(getSession(), classDescriptor);
 
-        NodeType test14 = session.getWorkspace().getNodeTypeManager().getNodeType("ocm:test14");
+        NodeType test14 = getSession().getWorkspace().getNodeTypeManager().getNodeType("ocm:test14");
         assertNotNull(test14);
         // not check node type definition, assuming other tests have done that
 
@@ -364,9 +384,9 @@ public class NodeTypeManagerImplTest extends TestBase {
         collection1.setJcrType("nt:unstructured");
         classDescriptor.addCollectionDescriptor(collection1);
 
-        getJackrabbitNodeTypeManagerImpl().createSingleNodeType(session, classDescriptor);
+        nodeTypeManagerImpl.createSingleNodeType(getSession(), classDescriptor);
 
-        NodeType test11 = session.getWorkspace().getNodeTypeManager().getNodeType("ocm:test11");
+        NodeType test11 = getSession().getWorkspace().getNodeTypeManager().getNodeType("ocm:test11");
         assertNotNull(test11);
         // not check node type definition, assuming other tests have done that
 
@@ -391,9 +411,9 @@ public class NodeTypeManagerImplTest extends TestBase {
         bean1.setJcrType("nt:unstructured");
         classDescriptor.addBeanDescriptor(bean1);
 
-        getJackrabbitNodeTypeManagerImpl().createSingleNodeType(session, classDescriptor);
+        nodeTypeManagerImpl.createSingleNodeType(getSession(), classDescriptor);
 
-        NodeType test12 = session.getWorkspace().getNodeTypeManager().getNodeType("ocm:test12");
+        NodeType test12 = getSession().getWorkspace().getNodeTypeManager().getNodeType("ocm:test12");
         assertNotNull(test12);
         // not check node type definition, assuming other tests have done that
 
@@ -445,12 +465,12 @@ public class NodeTypeManagerImplTest extends TestBase {
         classDescriptorArray[0] = classDescriptor;
         classDescriptorArray[1] = classDescriptor2;
 
-        getJackrabbitNodeTypeManagerImpl().createNodeTypes(session, classDescriptorArray);
+        nodeTypeManagerImpl.createNodeTypes(getSession(), classDescriptorArray);
 
-        NodeType test6 = session.getWorkspace().getNodeTypeManager().getNodeType("ocm:test6");
+        NodeType test6 = getSession().getWorkspace().getNodeTypeManager().getNodeType("ocm:test6");
         assertNotNull(test6);
 
-        NodeType test7 = session.getWorkspace().getNodeTypeManager().getNodeType("ocm:test7");
+        NodeType test7 = getSession().getWorkspace().getNodeTypeManager().getNodeType("ocm:test7");
         assertNotNull(test7);
     }
 
@@ -467,9 +487,9 @@ public class NodeTypeManagerImplTest extends TestBase {
         field1.setJcrType("String");
         classDescriptor.addFieldDescriptor(field1);
 
-        getJackrabbitNodeTypeManagerImpl().createSingleNodeType(session, classDescriptor);
+        nodeTypeManagerImpl.createSingleNodeType(getSession(), classDescriptor);
 
-        NodeType test8 = session.getWorkspace().getNodeTypeManager().getNodeType("ocm:test8");
+        NodeType test8 = getSession().getWorkspace().getNodeTypeManager().getNodeType("ocm:test8");
         assertNotNull(test8);
         // not implemented yet in jackrabbit
         // getJackrabbitNodeTypeManagerImpl().removeSingleNodeType(session, "ocm:test8");
@@ -572,7 +592,7 @@ public class NodeTypeManagerImplTest extends TestBase {
     /** Returns true if a given super type is found in an arry of super types.
      *
      * @param superType Name of super type to find
-     * @param propDefs Properties of a node type
+     * @param nodeTypes
      * @return true/false
      */
     protected boolean containsSuperType(String superType,
@@ -592,21 +612,28 @@ public class NodeTypeManagerImplTest extends TestBase {
         return found;
     }
 
-    /** Getter for property jackrabbitNodeTypeManagerImpl.
+    /** Returns true if a property was found in an array of property defintions.
      *
-     * @return jackrabbitNodeTypeManagerImpl
+     * @param definitions PropertyDefinition[]
+     * @param propertyName Name of property to find
+     * @return true/false
      */
-    public NodeTypeManagerImpl getJackrabbitNodeTypeManagerImpl()
+    public boolean containsPropertyDefintion(PropertyDefinition[] definitions,
+                                             String propertyName)
     {
-        return jackrabbitNodeTypeManagerImpl;
-    }
+        boolean found = false;
 
-    /** Setter for property jackrabbitNodeTypeManagerImpl.
-     *
-     * @param object jackrabbitNodeTypeManagerImpl
-     */
-    public void setJackrabbitNodeTypeManagerImpl(NodeTypeManagerImpl object)
-    {
-        this.jackrabbitNodeTypeManagerImpl = object;
+        if (definitions != null && definitions.length > 0)
+        {
+            for (int i = 0; i < definitions.length; i++)
+            {
+                if (definitions[i].getName().equals(propertyName))
+                {
+                    found = true;
+                }
+            }
+        }
+
+        return found;
     }
 }

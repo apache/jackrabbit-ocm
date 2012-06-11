@@ -20,12 +20,10 @@ import javax.jcr.RepositoryException;
 import junit.framework.Test;
 import junit.framework.TestSuite;
 
-import org.apache.jackrabbit.ocm.AnnotationTestBase;
+import org.apache.jackrabbit.ocm.AnnotationRepositoryTestBase;
 import org.apache.jackrabbit.ocm.manager.ObjectContentManager;
 import org.apache.jackrabbit.ocm.testmodel.collection.Main;
 import org.apache.jackrabbit.ocm.testmodel.uuid.A;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 
 /**
@@ -40,17 +38,8 @@ import org.slf4j.LoggerFactory;
  * @author <a href="mailto:vincent.giguere@gmail.com">Vincent Giguère</a>
  *
  */
-public class BeanReferenceMapConverterImplTest extends AnnotationTestBase {
-    private final static Logger log = LoggerFactory.getLogger(BeanReferenceMapConverterImplTest.class);
+public class BeanReferenceMapConverterImplTest extends AnnotationRepositoryTestBase {
 
-    /**
-     * <p>Defines the test case name for junit.</p>
-     *
-     * @param testName The test case name.
-     */
-    public BeanReferenceMapConverterImplTest(String testName) throws Exception {
-        super(testName);
-    }
 
     public static Test suite() {
         // All methods starting with "test" will be executed in the test suite.
@@ -61,9 +50,9 @@ public class BeanReferenceMapConverterImplTest extends AnnotationTestBase {
     public void test_map_of_referenced_nodes_is_persisted_and_reloaded_properly() throws RepositoryException {
         ObjectContentManager ocm = getObjectContentManager();
 
-        this.getSession().getRootNode().addNode("test");
-        this.getSession().getRootNode().addNode("references");
-        this.getSession().save();
+        ocm.getSession().getRootNode().addNode("test");
+        ocm.getSession().getRootNode().addNode("references");
+        ocm.getSession().save();
 
         A firstA = new A();
         A secondA = new A();
@@ -119,9 +108,9 @@ public class BeanReferenceMapConverterImplTest extends AnnotationTestBase {
     public void test_map_can_persist_and_restore_same_node_reference_under_multiple_keys() throws RepositoryException {
         ObjectContentManager ocm = getObjectContentManager();
 
-        this.getSession().getRootNode().addNode("test");
-        this.getSession().getRootNode().addNode("references");
-        this.getSession().save();
+        ocm.getSession().getRootNode().addNode("test");
+        ocm.getSession().getRootNode().addNode("references");
+        ocm.getSession().save();
 
         A firstA = new A();
 
@@ -170,9 +159,9 @@ public class BeanReferenceMapConverterImplTest extends AnnotationTestBase {
 
         ObjectContentManager ocm = getObjectContentManager();
 
-        this.getSession().getRootNode().addNode("test");
-        this.getSession().getRootNode().addNode("references");
-        this.getSession().save();
+        ocm.getSession().getRootNode().addNode("test");
+        ocm.getSession().getRootNode().addNode("references");
+        ocm.getSession().save();
 
         A firstA = new A();
         A secondA = new A();
@@ -247,9 +236,9 @@ public class BeanReferenceMapConverterImplTest extends AnnotationTestBase {
 
         ObjectContentManager ocm = getObjectContentManager();
 
-        this.getSession().getRootNode().addNode("test");
-        this.getSession().getRootNode().addNode("references");
-        this.getSession().save();
+        ocm.getSession().getRootNode().addNode("test");
+        ocm.getSession().getRootNode().addNode("references");
+        ocm.getSession().save();
 
         A firstA = new A();
         A secondA = new A();
@@ -315,9 +304,9 @@ public class BeanReferenceMapConverterImplTest extends AnnotationTestBase {
 
         ObjectContentManager ocm = getObjectContentManager();
 
-        this.getSession().getRootNode().addNode("test");
-        this.getSession().getRootNode().addNode("references");
-        this.getSession().save();
+        ocm.getSession().getRootNode().addNode("test");
+        ocm.getSession().getRootNode().addNode("references");
+        ocm.getSession().save();
 
         A firstA = new A();
         A secondA = new A();
@@ -375,11 +364,11 @@ public class BeanReferenceMapConverterImplTest extends AnnotationTestBase {
 
     public void test_converter_can_add_and_remove_nodes_simultaneously_when_updating() throws RepositoryException {
 
-          ObjectContentManager ocm = getObjectContentManager();
+        ObjectContentManager ocm = getObjectContentManager();
 
-        this.getSession().getRootNode().addNode("test");
-        this.getSession().getRootNode().addNode("references");
-        this.getSession().save();
+        ocm.getSession().getRootNode().addNode("test");
+        ocm.getSession().getRootNode().addNode("references");
+        ocm.getSession().save();
 
         A firstA = new A();
         A secondA = new A();

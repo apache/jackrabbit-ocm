@@ -19,23 +19,15 @@ package org.apache.jackrabbit.ocm.manager.enumeration;
 import junit.framework.Test;
 import junit.framework.TestSuite;
 
-import org.apache.jackrabbit.ocm.AnnotationTestBase;
+import org.apache.jackrabbit.ocm.AnnotationRepositoryTestBase;
 
 /**
  * Test Simple Enumeration mappings
  *
  * @author <a href="mailto:boni.g@bioimagene.com">Boni Gopalan</a>
  */
-public class AnnotationSimpleEnumerationTest extends AnnotationTestBase
+public class AnnotationSimpleEnumerationTest extends AnnotationRepositoryTestBase
 {
-    /**
-     * <p>Defines the test case name for junit.</p>
-     * @param testName The test case name.
-     */
-    public AnnotationSimpleEnumerationTest(String testName)  throws Exception
-    {
-        super(testName);
-    }
 
     public static Test suite()
     {

@@ -22,43 +22,30 @@ import java.util.Calendar;
 import java.util.Collection;
 import java.util.Date;
 
-import javax.jcr.Repository;
+import javax.jcr.RepositoryException;
+import javax.jcr.Session;
 import javax.jcr.UnsupportedRepositoryOperationException;
 import junit.framework.Test;
 import junit.framework.TestSuite;
 
-import org.apache.jackrabbit.ocm.DigesterTestBase;
+import org.apache.jackrabbit.ocm.DigesterRepositoryTestBase;
 import org.apache.jackrabbit.ocm.manager.ObjectContentManager;
 import org.apache.jackrabbit.ocm.manager.impl.ObjectContentManagerImpl;
 import org.apache.jackrabbit.ocm.query.Filter;
 import org.apache.jackrabbit.ocm.query.Query;
 import org.apache.jackrabbit.ocm.query.QueryManager;
-import org.apache.jackrabbit.ocm.repository.RepositoryUtil;
 import org.apache.jackrabbit.ocm.testmodel.Atomic;
 import org.apache.jackrabbit.ocm.testmodel.Page;
 import org.apache.jackrabbit.ocm.testmodel.Paragraph;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 /**
  * Test Query on atomic fields
  *
  * @author <a href="mailto:christophe.lombart@sword-technologies.com">Christophe Lombart</a>
  */
-public class DigesterSameNameSiblingTest extends DigesterTestBase
+public class DigesterSameNameSiblingTest extends DigesterRepositoryTestBase
 {
-	private final static Logger log = LoggerFactory.getLogger(DigesterSameNameSiblingTest.class);
 	private Date date = new Date();
-	
-	/**
-	 * <p>Defines the test case name for junit.</p>
-	 * @param testName The test case name.
-	 */
-	public DigesterSameNameSiblingTest(String testName) throws Exception
-	{
-		super(testName);
-		
-	}
 
 	public static Test suite()
 	{
@@ -72,10 +59,10 @@ public class DigesterSameNameSiblingTest extends DigesterTestBase
 		try
 		{
 			this.importData(date);
-			ObjectContentManager ocm = this.getObjectContentManager();
+			ObjectContentManager ocm = getObjectContentManager();
 				
 			// Query all objects
-			QueryManager queryManager = this.getQueryManager();
+			QueryManager queryManager = ocm.getQueryManager();
 			Filter filter = queryManager.createFilter(Atomic.class);	
 			filter.setScope("/");
 			Query query = queryManager.createQuery(filter);
@@ -95,7 +82,7 @@ public class DigesterSameNameSiblingTest extends DigesterTestBase
             ocm.save();
 
             // Query on the attribute "string"
-            queryManager = this.getQueryManager();
+            queryManager = ocm.getQueryManager();
 			filter = queryManager.createFilter(Atomic.class);	
 			filter.addLike("string", "Modified%");			
 			query = queryManager.createQuery(filter);
@@ -107,7 +94,7 @@ public class DigesterSameNameSiblingTest extends DigesterTestBase
 			assertTrue("Incorrect Object", atomic.getString().equals("Modified Test String 10"));
 			
             // Delete all objects
-            queryManager = this.getQueryManager();
+            queryManager = ocm.getQueryManager();
 			filter = queryManager.createFilter(Atomic.class);	
 			filter.setScope("/");
 			query = queryManager.createQuery(filter) ;
@@ -214,15 +201,14 @@ public class DigesterSameNameSiblingTest extends DigesterTestBase
 		}
 
 	}
-	
-	protected void initObjectContentManager() throws UnsupportedRepositoryOperationException, javax.jcr.RepositoryException
-	{
-		Repository repository = RepositoryUtil.getRepository("repositoryTest");
-		String[] files = { "./src/test/test-config/jcrmapping-sibling.xml" };
-		session = RepositoryUtil.login(repository, "superuser", "superuser");
 
-		
-		ocm = new ObjectContentManagerImpl(session, files);
+
+    @Override
+    protected ObjectContentManager createObjectContentManager(Session session) throws RepositoryException
+    {
+		String[] files = { "./src/test/test-config/jcrmapping-sibling.xml" };
+
+		return new ObjectContentManagerImpl(session, files);
 		
 	}
 

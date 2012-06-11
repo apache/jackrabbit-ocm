@@ -22,27 +22,15 @@ import java.util.List;
 import junit.framework.Test;
 import junit.framework.TestSuite;
 
-import org.apache.jackrabbit.ocm.AnnotationTestBase;
+import org.apache.jackrabbit.ocm.AnnotationRepositoryTestBase;
 import org.apache.jackrabbit.ocm.manager.ObjectContentManager;
 import org.apache.jackrabbit.ocm.testmodel.interfaces.EntityA;
 import org.apache.jackrabbit.ocm.testmodel.interfaces.EntityB;
 import org.apache.jackrabbit.ocm.testmodel.interfaces.MyInterface;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 
-public class ListOfInterfaceTest extends AnnotationTestBase
+public class ListOfInterfaceTest extends AnnotationRepositoryTestBase
 {
-	private final static Logger log = LoggerFactory.getLogger(ListOfInterfaceTest.class);
-
-	/**
-	 * <p>Defines the test case name for junit.</p>
-	 * @param testName The test case name.
-	 */
-	public ListOfInterfaceTest(String testName) throws Exception {
-		super(testName);
-
-	}
 
 	public static Test suite() {
 		// All methods starting with "test" will be executed in the test suite.
@@ -54,7 +42,7 @@ public class ListOfInterfaceTest extends AnnotationTestBase
 	public void testListOfInterface() {
 
 		try {
-			ObjectContentManager ocm = this.getObjectContentManager();
+			ObjectContentManager ocm = getObjectContentManager();
 
 			EntityA a = new EntityA();
 			a.setPath("/test");

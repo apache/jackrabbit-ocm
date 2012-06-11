@@ -22,31 +22,20 @@ import java.util.Collection;
 import junit.framework.Test;
 import junit.framework.TestSuite;
 
-import org.apache.jackrabbit.ocm.DigesterTestBase;
+import org.apache.jackrabbit.ocm.DigesterRepositoryTestBase;
 import org.apache.jackrabbit.ocm.manager.ObjectContentManager;
 import org.apache.jackrabbit.ocm.testmodel.proxy.Detail;
 import org.apache.jackrabbit.ocm.testmodel.proxy.Main;
 import org.apache.jackrabbit.ocm.testmodel.proxy.NTDetail;
 import org.apache.jackrabbit.ocm.testmodel.proxy.NTMain;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 /**
  * Test inheritance with node type per concrete class (without  discreminator field)
  *
  * @author <a href="mailto:christophe.lombart@gmail.com">Christophe Lombart</a>
  */
-public class DigesterProxyTest extends DigesterTestBase {
-	private final static Logger log = LoggerFactory.getLogger(DigesterProxyTest.class);
+public class DigesterProxyTest extends DigesterRepositoryTestBase {
 
-	/**
-	 * <p>Defines the test case name for junit.</p>
-	 * @param testName The test case name.
-	 */
-	public DigesterProxyTest(String testName) throws Exception {
-		super(testName);
-
-	}
 
 	public static Test suite() {
 		// All methods starting with "test" will be executed in the test suite.
@@ -56,7 +45,7 @@ public class DigesterProxyTest extends DigesterTestBase {
 	public void testBeanProxy() {
 
 		try {
-			ObjectContentManager ocm = this.getObjectContentManager();
+			ObjectContentManager ocm = getObjectContentManager();
 
 			Detail detail = new Detail();
 			detail.setField("FieldValue");			
@@ -135,7 +124,7 @@ public class DigesterProxyTest extends DigesterTestBase {
 	public void testDefaultCollectionConverterWithProxy() {
 
 		try {
-			ObjectContentManager ocm = this.getObjectContentManager();
+			ObjectContentManager ocm = getObjectContentManager();
 
 			ArrayList  details= new ArrayList();
 			for(int i=1; i<=100;i++)
@@ -200,7 +189,7 @@ public class DigesterProxyTest extends DigesterTestBase {
 
 		try {
 
-			ObjectContentManager ocm = this.getObjectContentManager();			
+			ObjectContentManager ocm = getObjectContentManager();
 			
 			NTMain main = new NTMain();
 			main.setPath("/test");							

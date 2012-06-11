@@ -20,28 +20,15 @@ import javax.jcr.Node;
 import junit.framework.Test;
 import junit.framework.TestSuite;
 
-import org.apache.jackrabbit.ocm.DigesterTestBase;
+import org.apache.jackrabbit.ocm.DigesterRepositoryTestBase;
 import org.apache.jackrabbit.ocm.manager.ObjectContentManager;
 import org.apache.jackrabbit.ocm.testmodel.Default;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 /**
  * Test Default value assignement
  */
-public class DigesterDefaultValueTest extends DigesterTestBase
+public class DigesterDefaultValueTest extends DigesterRepositoryTestBase
 {
-    private final static Logger log = LoggerFactory.getLogger(DigesterDefaultValueTest.class);
-
-    /**
-     * <p>Defines the test case name for junit.</p>
-     * @param testName The test case name.
-     */
-    public DigesterDefaultValueTest(String testName) throws Exception
-    {
-        super(testName);
-    }
-
     public static Test suite()
     {
         // All methods starting with "test" will be executed in the test suite.

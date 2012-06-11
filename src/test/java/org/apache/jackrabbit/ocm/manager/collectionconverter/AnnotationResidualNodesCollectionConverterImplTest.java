@@ -21,12 +21,10 @@ import java.util.HashMap;
 import junit.framework.Test;
 import junit.framework.TestSuite;
 
-import org.apache.jackrabbit.ocm.AnnotationTestBase;
+import org.apache.jackrabbit.ocm.AnnotationRepositoryTestBase;
 import org.apache.jackrabbit.ocm.manager.ObjectContentManager;
 import org.apache.jackrabbit.ocm.testmodel.Paragraph;
 import org.apache.jackrabbit.ocm.testmodel.Residual;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 /**
  * Test ResidualNodesCollectionConverterImpl
@@ -34,19 +32,8 @@ import org.slf4j.LoggerFactory;
  * @author <a href="mailto:fmeschbe[at]apache[dot]com">Felix Meschberger</a>
  *
  */
-public class AnnotationResidualNodesCollectionConverterImplTest extends AnnotationTestBase
+public class AnnotationResidualNodesCollectionConverterImplTest extends AnnotationRepositoryTestBase
 {
-    private final static Logger log = LoggerFactory.getLogger(AnnotationResidualNodesCollectionConverterImplTest.class);
-
-    /**
-     * <p>Defines the test case name for junit.</p>
-     * @param testName The test case name.
-     */
-    public AnnotationResidualNodesCollectionConverterImplTest(String testName)  throws Exception
-    {
-        super(testName);
-    }
-
     public static Test suite()
     {
         // All methods starting with "test" will be executed in the test suite.

@@ -25,17 +25,14 @@ import javax.jcr.Session;
 import junit.framework.Test;
 import junit.framework.TestSuite;
 
-import org.apache.jackrabbit.ocm.AnnotationTestBase;
+import org.apache.jackrabbit.ocm.AnnotationRepositoryTestBase;
 import org.apache.jackrabbit.ocm.exception.JcrMappingException;
 import org.apache.jackrabbit.ocm.manager.ObjectContentManager;
-import org.apache.jackrabbit.ocm.manager.impl.ObjectContentManagerImpl;
 import org.apache.jackrabbit.ocm.query.Filter;
 import org.apache.jackrabbit.ocm.query.Query;
 import org.apache.jackrabbit.ocm.query.QueryManager;
 import org.apache.jackrabbit.ocm.testmodel.Page;
 import org.apache.jackrabbit.ocm.testmodel.Paragraph;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 
 /**
@@ -43,18 +40,8 @@ import org.slf4j.LoggerFactory;
  *
  * @author <a href="mailto:christophe.lombart@sword-technologies.com">Christophe Lombart</a>
  */
-public class AnnotationScopeQueryTest extends AnnotationTestBase
+public class AnnotationScopeQueryTest extends AnnotationRepositoryTestBase
 {
-    private final static Logger log = LoggerFactory.getLogger(AnnotationScopeQueryTest.class);
-
-    /**
-     * <p>Defines the test case name for junit.</p>
-     * @param testName The test case name.
-     */
-    public AnnotationScopeQueryTest(String testName)  throws Exception
-    {
-        super(testName);
-    }
 
     public static Test suite()
     {
@@ -86,59 +73,48 @@ public class AnnotationScopeQueryTest extends AnnotationTestBase
     	{
     		
               	
-    	      ObjectContentManager ocm = this.getObjectContentManager();
+    	      ObjectContentManager ocm = getObjectContentManager();
     	      // Search on subtree (test/node1)
-    	      QueryManager queryManager = this.getQueryManager();
+    	      QueryManager queryManager = ocm.getQueryManager();
     	      Filter filter = queryManager.createFilter(Paragraph.class);
     	      filter.setScope("/test/node1//");
-    	      Query query = queryManager.createQuery(filter);    	
-    	      ocm = this.getObjectContentManager();
+    	      Query query = queryManager.createQuery(filter);
     	      Collection result = ocm.getObjects(query);
     	      assertTrue("Invalid number of objects - should be = 8", result.size() == 8);
     	
-    	
-    	      queryManager = this.getQueryManager();
+
     	      filter = queryManager.createFilter(Paragraph.class);
     	      filter.setScope("/test//");
-    	      query = queryManager.createQuery(filter);    	
-    	      ocm = this.getObjectContentManager();
+    	      query = queryManager.createQuery(filter);
     	      result = ocm.getObjects(query);
     	      assertTrue("Invalid number of objects - should be = 16", result.size() == 16);
     	
     	      // Test on children
-    	      queryManager = this.getQueryManager();
     	      filter = queryManager.createFilter(Paragraph.class);
     	      filter.setScope("/test/");
-    	      query = queryManager.createQuery(filter);    	
-    	      ocm = this.getObjectContentManager();
+    	      query = queryManager.createQuery(filter);
     	      result = ocm.getObjects(query);
     	      assertTrue("Invalid number of objects - should be = 0", result.size() == 0);
     	
               // Search on scope and properties
-    	      queryManager = this.getQueryManager();
     	      filter = queryManager.createFilter(Paragraph.class);
     	      filter.setScope("/test//");
     	      filter.addEqualTo("text", "Para 1");
-    	      query = queryManager.createQuery(filter);    	
-    	      ocm = this.getObjectContentManager();
+    	      query = queryManager.createQuery(filter);
     	      result = ocm.getObjects(query);
     	      assertTrue("Invalid number of objects - should be = 3", result.size() == 3);
 
-    	
-    	      queryManager = this.getQueryManager();
+
     	      filter = queryManager.createFilter(Paragraph.class);
     	      filter.setScope("/test//");
     	      filter.addContains("text", "another");
-    	      query = queryManager.createQuery(filter);    	
-    	      ocm = this.getObjectContentManager();
+    	      query = queryManager.createQuery(filter);
     	      result = ocm.getObjects(query);
     	      assertTrue("Invalid number of objects - should be = 4", result.size() == 4);
-    	
-    	      queryManager = this.getQueryManager();
+
     	      filter = queryManager.createFilter(Page.class);
     	      filter.setScope("/test/node1/");    	
-    	      query = queryManager.createQuery(filter);    	
-    	      ocm = this.getObjectContentManager();
+    	      query = queryManager.createQuery(filter);
     	      result = ocm.getObjects(query);
     	      assertTrue("Invalid number of objects - should be = 2", result.size() == 2);
     	      assertTrue ("Invalid object in the collection" , this.contains(result, "/test/node1/page1", Page.class));
@@ -160,10 +136,8 @@ public class AnnotationScopeQueryTest extends AnnotationTestBase
     	try
 		{
     		ObjectContentManager ocm = getObjectContentManager();
-        	
-			ObjectContentManagerImpl ocmImpl = (ObjectContentManagerImpl) ocm;
-			
-			Session session = ocmImpl.getSession();
+
+			Session session = ocm.getSession();
 			Node root = session.getRootNode();
 			root.addNode("test");
 			root.addNode("test/node1");

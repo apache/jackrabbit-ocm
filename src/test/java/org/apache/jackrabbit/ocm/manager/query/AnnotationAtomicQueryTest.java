@@ -25,7 +25,7 @@ import java.util.Date;
 import junit.framework.Test;
 import junit.framework.TestSuite;
 
-import org.apache.jackrabbit.ocm.AnnotationTestBase;
+import org.apache.jackrabbit.ocm.AnnotationRepositoryTestBase;
 import org.apache.jackrabbit.ocm.manager.ObjectContentManager;
 import org.apache.jackrabbit.ocm.query.Filter;
 import org.apache.jackrabbit.ocm.query.Query;
@@ -39,20 +39,11 @@ import org.slf4j.LoggerFactory;
  *
  * @author <a href="mailto:christophe.lombart@gmail.com">Christophe Lombart</a>
  */
-public class AnnotationAtomicQueryTest extends AnnotationTestBase
+public class AnnotationAtomicQueryTest extends AnnotationRepositoryTestBase
 {
 	private final static Logger log = LoggerFactory.getLogger(AnnotationAtomicQueryTest.class);
 	private Date date = new Date();
 
-	/**
-	 * <p>Defines the test case name for junit.</p>
-	 * @param testName The test case name.
-	 */
-	public AnnotationAtomicQueryTest(String testName) throws Exception
-	{
-		super(testName);
-
-	}
 
 	public static Test suite()
 	{
@@ -72,10 +63,10 @@ public class AnnotationAtomicQueryTest extends AnnotationTestBase
 		try
 		{
 
-			ObjectContentManager ocm = this.getObjectContentManager();
+			ObjectContentManager ocm = getObjectContentManager();
 
 			// Test Boolean value
-			QueryManager queryManager = this.getQueryManager();
+			QueryManager queryManager = ocm.getQueryManager();
 			Filter filter = queryManager.createFilter(Atomic.class);
 			filter.addEqualTo("booleanObject", new Boolean(true));
 			Query query = queryManager.createQuery(filter);
@@ -187,10 +178,10 @@ public class AnnotationAtomicQueryTest extends AnnotationTestBase
 
 	public void testQueryAtomicFieldsWithConverter()
 	{
-		ObjectContentManager ocm = this.getObjectContentManager();
+		ObjectContentManager ocm = getObjectContentManager();
 
 		// Test Boolean value
-		QueryManager queryManager = this.getQueryManager();
+		QueryManager queryManager = ocm.getQueryManager();
 		Filter filter = queryManager.createFilter(Atomic.class);
 		filter.addEqualTo("int2boolean", new Boolean(true));
 		Query query = queryManager.createQuery(filter);

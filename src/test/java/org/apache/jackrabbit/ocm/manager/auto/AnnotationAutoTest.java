@@ -19,17 +19,16 @@ package org.apache.jackrabbit.ocm.manager.auto;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.jcr.Repository;
-import javax.jcr.UnsupportedRepositoryOperationException;
+import javax.jcr.RepositoryException;
+import javax.jcr.Session;
 import junit.framework.Test;
 import junit.framework.TestSuite;
 
-import org.apache.jackrabbit.ocm.AnnotationTestBase;
+import org.apache.jackrabbit.ocm.AnnotationRepositoryTestBase;
 import org.apache.jackrabbit.ocm.manager.ObjectContentManager;
 import org.apache.jackrabbit.ocm.manager.impl.ObjectContentManagerImpl;
 import org.apache.jackrabbit.ocm.mapper.Mapper;
 import org.apache.jackrabbit.ocm.mapper.impl.annotation.AnnotationMapperImpl;
-import org.apache.jackrabbit.ocm.repository.RepositoryUtil;
 import org.apache.jackrabbit.ocm.testmodel.auto.CmsObject;
 import org.apache.jackrabbit.ocm.testmodel.auto.Content;
 import org.apache.jackrabbit.ocm.testmodel.auto.Document;
@@ -39,25 +38,13 @@ import org.apache.jackrabbit.ocm.testmodel.auto.impl.ContentImpl;
 import org.apache.jackrabbit.ocm.testmodel.auto.impl.DocumentImpl;
 import org.apache.jackrabbit.ocm.testmodel.auto.impl.DocumentStream;
 import org.apache.jackrabbit.ocm.testmodel.auto.impl.FolderImpl;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 /**
  * Test autoupdate setting
  *
  * @author <a href="mailto:christophe.lombart@gmail.com">Christophe Lombart</a>
  */
-public class AnnotationAutoTest extends AnnotationTestBase {
-	private final static Logger log = LoggerFactory.getLogger(AnnotationAutoTest.class);
-
-	/**
-	 * <p>Defines the test case name for junit.</p>
-	 * @param testName The test case name.
-	 */
-	public AnnotationAutoTest(String testName) throws Exception {
-		super(testName);
-
-	}
+public class AnnotationAutoTest extends AnnotationRepositoryTestBase {
 
 	public static Test suite() {
 		// All methods starting with "test" will be executed in the test suite.
@@ -143,11 +130,10 @@ public class AnnotationAutoTest extends AnnotationTestBase {
 		
 		
 	}
-	
-	protected void initObjectContentManager() throws UnsupportedRepositoryOperationException, javax.jcr.RepositoryException
+
+    @Override
+	protected ObjectContentManager createObjectContentManager(Session session) throws RepositoryException
 	{
-		Repository repository = RepositoryUtil.getRepository("repositoryTest");	
-		session = RepositoryUtil.login(repository, "superuser", "superuser");
 		List<Class> classes = new ArrayList<Class>();
 		
 		classes.add(CmsObject.class);
@@ -160,8 +146,7 @@ public class AnnotationAutoTest extends AnnotationTestBase {
 		classes.add(DocumentImpl.class);
 		
 		Mapper mapper = new AnnotationMapperImpl(classes);
-		ocm = new ObjectContentManagerImpl(session, mapper);
+		return new ObjectContentManagerImpl(session, mapper);
 
-		
 	}	
 }

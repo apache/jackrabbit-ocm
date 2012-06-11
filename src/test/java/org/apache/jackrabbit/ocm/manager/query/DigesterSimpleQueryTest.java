@@ -24,7 +24,7 @@ import javax.jcr.Node;
 import junit.framework.Test;
 import junit.framework.TestSuite;
 
-import org.apache.jackrabbit.ocm.DigesterTestBase;
+import org.apache.jackrabbit.ocm.DigesterRepositoryTestBase;
 import org.apache.jackrabbit.ocm.exception.JcrMappingException;
 import org.apache.jackrabbit.ocm.manager.ObjectContentManager;
 import org.apache.jackrabbit.ocm.query.Filter;
@@ -33,8 +33,6 @@ import org.apache.jackrabbit.ocm.query.QueryManager;
 import org.apache.jackrabbit.ocm.query.impl.QueryImpl;
 import org.apache.jackrabbit.ocm.testmodel.Page;
 import org.apache.jackrabbit.ocm.testmodel.Paragraph;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 /**
  * Test QueryManagerImpl Query methods
@@ -42,20 +40,8 @@ import org.slf4j.LoggerFactory;
  * @author <a href="mailto:christophe.lombart@sword-technologies.com">Christophe
  *         Lombart</a>
  */
-public class DigesterSimpleQueryTest extends DigesterTestBase {
-    private final static Logger log = LoggerFactory.getLogger(DigesterSimpleQueryTest.class);
+public class DigesterSimpleQueryTest extends DigesterRepositoryTestBase {
 
-    /**
-     * <p>
-     * Defines the test case name for junit.
-     * </p>
-     *
-     * @param testName
-     *            The test case name.
-     */
-    public DigesterSimpleQueryTest(String testName) throws Exception {
-        super(testName);
-    }
 
     public static Test suite() {
         // All methods starting with "test" will be executed in the test suite.
@@ -78,15 +64,13 @@ public class DigesterSimpleQueryTest extends DigesterTestBase {
 
         try {
 
+            ObjectContentManager ocm = this.getObjectContentManager();
             // Build the Query Object
-            QueryManager queryManager = this.getQueryManager();
+            QueryManager queryManager = ocm.getQueryManager();
             Filter filter = queryManager.createFilter(Paragraph.class);
             filter.addEqualTo("text", "Para 1");
 
             Query query = queryManager.createQuery(filter);
-            
-
-            ObjectContentManager ocm = this.getObjectContentManager();
             Paragraph paragraph = (Paragraph) ocm.getObject(query);
             assertNotNull("Object is null", paragraph);
             assertTrue("Invalid paragraph found", paragraph.getText().equals("Para 1"));
@@ -106,15 +90,15 @@ public class DigesterSimpleQueryTest extends DigesterTestBase {
 
         try {
 
+            ObjectContentManager ocm = this.getObjectContentManager();
             // Build the Query Object
-            QueryManager queryManager = this.getQueryManager();
+            QueryManager queryManager = ocm.getQueryManager();
             Filter filter = queryManager.createFilter(Paragraph.class);
             filter.addEqualTo("text", "Para 1");
             filter.setScope("/test/");
 
             Query query = queryManager.createQuery(filter);
 
-            ObjectContentManager ocm = this.getObjectContentManager();
             Collection result = ocm.getObjects(query);
             assertEquals("Invalid number of objects - should be = 1", 1, result.size());
             Paragraph paragraph = (Paragraph) result.iterator().next();
@@ -134,15 +118,15 @@ public class DigesterSimpleQueryTest extends DigesterTestBase {
 
         try {
 
+            ObjectContentManager ocm = this.getObjectContentManager();
             // Build the Query Object
-            QueryManager queryManager = this.getQueryManager();
+            QueryManager queryManager = ocm.getQueryManager();
             Filter filter = queryManager.createFilter(Paragraph.class);
             filter.addLike("text", "Para%");
             filter.setScope("/test/");
 
             Query query = queryManager.createQuery(filter);
 
-            ObjectContentManager ocm = this.getObjectContentManager();
             Collection result = ocm.getObjects(query);
             assertEquals("Invalid number of objects - should be = 3", 3, result.size());
 
@@ -166,8 +150,9 @@ public class DigesterSimpleQueryTest extends DigesterTestBase {
 
         try {
 
+            ObjectContentManager ocm = this.getObjectContentManager();
             // Build the Query Object
-            QueryManager queryManager = this.getQueryManager();
+            QueryManager queryManager = ocm.getQueryManager();
             Filter filter1 = queryManager.createFilter(Paragraph.class);
             filter1.addEqualTo("text", "Para 1");
             filter1.setScope("/test/");
@@ -179,7 +164,6 @@ public class DigesterSimpleQueryTest extends DigesterTestBase {
 
             Query query = queryManager.createQuery(filter1);
 
-            ObjectContentManager ocm = this.getObjectContentManager();
             Collection result = ocm.getObjects(query);
             assertEquals("Invalid number of objects - should be = 2", 2, result.size());
 
@@ -202,15 +186,15 @@ public class DigesterSimpleQueryTest extends DigesterTestBase {
 
         try {
 
+            ObjectContentManager ocm = this.getObjectContentManager();
             // Build the Query Object
-            QueryManager queryManager = this.getQueryManager();
+            QueryManager queryManager = ocm.getQueryManager();
             Filter filter1 = queryManager.createFilter(Paragraph.class);
             filter1.addOrFilter("text", new String[]{"Para 1","Para 2"});
             filter1.setScope("/test/");
 
             Query query = queryManager.createQuery(filter1);
 
-            ObjectContentManager ocm = this.getObjectContentManager();
             Collection result = ocm.getObjects(query);
             assertEquals("Invalid number of objects - should be = 2", 2, result.size());
 
@@ -233,15 +217,15 @@ public class DigesterSimpleQueryTest extends DigesterTestBase {
 
         try {
 
+            ObjectContentManager ocm = this.getObjectContentManager();
             // Build the Query Object
-            QueryManager queryManager = this.getQueryManager();
+            QueryManager queryManager = ocm.getQueryManager();
             Filter filter1 = queryManager.createFilter(Paragraph.class);
             filter1.addOrFilter("text", new String[]{"Para 1","Another Para "}).addLike("text", "Para%");
             filter1.setScope("/test/");
 
             Query query = queryManager.createQuery(filter1);
 
-            ObjectContentManager ocm = this.getObjectContentManager();
             Collection result = ocm.getObjects(query);
             assertEquals("Invalid number of objects - should be = 1", 1, result.size());
 
@@ -261,8 +245,9 @@ public class DigesterSimpleQueryTest extends DigesterTestBase {
 
         try {
 
+            ObjectContentManager ocm = this.getObjectContentManager();
             // Build the Query Object
-            QueryManager queryManager = this.getQueryManager();
+            QueryManager queryManager = ocm.getQueryManager();
             Filter filter = queryManager.createFilter(Paragraph.class);
             filter.addLike("text", "Para%");
             filter.setScope("/test/");
@@ -270,7 +255,6 @@ public class DigesterSimpleQueryTest extends DigesterTestBase {
             Query query = queryManager.createQuery(filter);
             query.addOrderByDescending("text");
 
-            ObjectContentManager ocm = this.getObjectContentManager();
             Collection result = ocm.getObjects(query);
             assertEquals("Invalid number of objects - should be = 3", 3, result.size());
 
@@ -292,8 +276,9 @@ public class DigesterSimpleQueryTest extends DigesterTestBase {
 
             try {
 
+                ObjectContentManager ocm = this.getObjectContentManager();
                 // Build the Query Object
-                QueryManager queryManager = this.getQueryManager();
+                QueryManager queryManager = ocm.getQueryManager();
                 Filter filter = queryManager.createFilter(Paragraph.class);
                 filter.addLike("text", "Para%");
                 filter.setScope("/test/");
@@ -302,8 +287,7 @@ public class DigesterSimpleQueryTest extends DigesterTestBase {
                 query.addOrderByDescending("text");
 
                 String strQueryBuilderStringWithDescending = ((QueryImpl)query).getOrderByExpression();
-                
-                ObjectContentManager ocm = this.getObjectContentManager();
+
                 Collection result = ocm.getObjects(query);
                 assertEquals("Invalid number of objects - should be = 3", 3, result.size());
 

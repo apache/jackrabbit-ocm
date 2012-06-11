@@ -1,3 +1,5 @@
+<?xml version="1.0"?>
+<!--
 /*
  * Licensed to the Apache Software Foundation (ASF) under one or more
  * contributor license agreements.  See the NOTICE file distributed with
@@ -14,32 +16,17 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.apache.jackrabbit.ocm.repository;
+ -->
+<nodeTypes
+  xmlns:nt="http://www.jcp.org/jcr/nt/1.0"
+  xmlns:ocm="http://jackrabbit.apache.org/ocm">
 
-import junit.framework.Test;
-import junit.framework.TestSuite;
+  <nodeType name="ocm:test1" isMixin="false" hasOrderableChildNodes="false" primaryItemName="test1">
+        <supertypes>
+            <supertype>nt:base</supertype>
+        </supertypes>
 
-
-/**
- * Package level tests.
- *
- * @author <a href='mailto:the_mindstorm[at]evolva[dot]ro'>Alexandru Popescu</a>
- */
-public class AllTests {
-
-    public static Test suite() {
-        return buildSuite();
-    }
-
-    public static Test buildSuite() {
-        TestSuite suite= new TestSuite("Test for org.apache.jackrabbit.ocm.repository");
-        //$JUnit-BEGIN$
-        suite.addTestSuite(RepositoryUtilTest.class);
-        suite.addTestSuite(NodeUtilTest.class);
-
-
-        //$JUnit-END$
-
-        return suite;
-    }
-}
+        <propertyDefinition name="ocm:ocmtestproperty" requiredType="String" autoCreated="false" mandatory="false"
+        onParentVersion="IGNORE" protected="false" multiple="false"/>
+  </nodeType>
+</nodeTypes>
