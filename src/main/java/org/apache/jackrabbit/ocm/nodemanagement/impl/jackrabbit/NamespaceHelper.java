@@ -18,7 +18,6 @@ package org.apache.jackrabbit.ocm.nodemanagement.impl.jackrabbit;
 
 import javax.jcr.NamespaceRegistry;
 
-import org.apache.jackrabbit.ocm.nodemanagement.impl.BaseNamespaceHelper;
 import org.apache.jackrabbit.spi.Name;
 import org.apache.jackrabbit.spi.commons.name.NameFactoryImpl;
 
@@ -27,8 +26,12 @@ import org.apache.jackrabbit.spi.commons.name.NameFactoryImpl;
  *
  * @author <a href="mailto:okiessler@apache.org">Oliver Kiessler</a>
  */
-public class NamespaceHelper extends BaseNamespaceHelper
+public class NamespaceHelper
 {
+
+    /** Default namespace URI if none is specified.
+     */
+    public static final String DEFAULT_NAMESPACE_URI = "";
 
     /** JCR namespace registry.
      */
@@ -41,7 +44,7 @@ public class NamespaceHelper extends BaseNamespaceHelper
 
     /** Returns a QName object from a given JCR item name.
      *
-     * @param nodeName JCR item name
+     * @param itemName JCR item name
      * @return qName
      */
     public Name getName(String itemName)
