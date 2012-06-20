@@ -517,9 +517,6 @@ public class NodeTypeManagerImpl implements NodeTypeManager
         getNodeTypeRegistry(session).registerNodeTypes(nodeTypes);
     }
 
-    /**
-     * @see org.apache.jackrabbit.ocm.nodemanagement.NodeTypeManager#removeNodeTypes
-     */
     public void removeNodeTypesFromConfiguration(Session session, InputStream jcrRepositoryConfigurationFile)
     throws NodeTypeRemovalException
     {
