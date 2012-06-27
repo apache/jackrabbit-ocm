@@ -185,7 +185,7 @@
       <groupId>org.apache.jackrabbit</groupId>
       <artifactId>jackrabbit-core</artifactId>
       <version>${apache.jackrabbit.version}</version>
-      <!--<scope>test</scope>-->
+      <scope>test</scope>
     </dependency>
 
     <dependency>
