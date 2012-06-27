@@ -363,11 +363,13 @@ public class ObjectContentManagerImpl implements ObjectContentManager {
 
     public void retrieveAllMappedAttributes(Object object) {
         objectConverter.retrieveAllMappedAttributes(session, object);
+        requestObjectCache.clear();
 
     }
 
     public void retrieveMappedAttribute(Object object, String attributeName) {
         objectConverter.retrieveMappedAttribute(session, object, attributeName);
+        requestObjectCache.clear();
 
     }
 
@@ -981,6 +983,8 @@ public class ObjectContentManagerImpl implements ObjectContentManager {
             throw new ObjectContentManagerException("Cannot persist current session changes. Violation of a lock detected", le);
         } catch (RepositoryException e) {
             throw new ObjectContentManagerException("Cannot persist current session changes.", e);
+        } finally {
+           requestObjectCache.clear();
         }
     }
 
