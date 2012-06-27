@@ -119,7 +119,7 @@ public abstract class AbstractRepositoryTestBase extends AbstractJCRTest {
             while (nodeIterator.hasNext())
             {
                 Node node = nodeIterator.nextNode();
-                if (! node.getName().startsWith("jcr:"))
+                if (! node.getName().startsWith("jcr:") && ! node.getName().startsWith("rep:"))
                 {
                     log.debug("tearDown - remove : " + node.getPath());
                     node.remove();
@@ -218,4 +218,24 @@ public abstract class AbstractRepositoryTestBase extends AbstractJCRTest {
         }
         return false;
     }
+
+
+    /**
+     * utility method to easily print an overview the repository contents
+     * @param node
+     * @param indent
+     * @throws RepositoryException
+     */
+    protected void traverse(final Node node, String indent) throws RepositoryException {
+        if (node.getPath().equals("/jcr:system")) {
+            return;
+        }
+        System.out.println(indent + node.getPath() +  " [ "+  node.getPrimaryNodeType().getName() + " ] ");
+        indent = indent + "\t";
+        NodeIterator it = node.getNodes();
+        while (it.hasNext()) {
+            traverse(it.nextNode(), indent);
+        }
+    }
+
 }
