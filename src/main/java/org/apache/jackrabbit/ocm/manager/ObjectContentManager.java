@@ -233,13 +233,13 @@ public interface ObjectContentManager {
             throws ObjectContentManagerException;
 
     /**
-     * Returns a list of objects of that particular class which are associated to a specific path.
+     * Returns a list of objects (not supertypes) of that particular class which are associated to a specific path.
      * This method is helpfull when same name sibling is used to create nodes.
      * This would not return the objects anywhere below the denoted path.
      *
      * @param objectClass
      * @param path Node path.
-     * @return a collection of object found
+     * @return a collection of object found and empty collection if there is no node for <code>path</code> or when <code></code>objectClass</code> is not mapped
      */
 
     public Collection getObjects(Class objectClass, String path)
