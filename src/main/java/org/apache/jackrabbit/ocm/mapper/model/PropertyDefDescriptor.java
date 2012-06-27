@@ -29,6 +29,8 @@ public interface PropertyDefDescriptor {
      */
     String getJcrName();
 
+    String getFieldName();
+
     /**
      * @return Returns the property type name.
      */
