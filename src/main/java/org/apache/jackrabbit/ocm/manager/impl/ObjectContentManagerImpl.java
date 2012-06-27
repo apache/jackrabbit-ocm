@@ -19,6 +19,7 @@ package org.apache.jackrabbit.ocm.manager.impl;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -40,6 +41,7 @@ import javax.jcr.query.QueryResult;
 import javax.jcr.version.VersionHistory;
 import javax.jcr.version.VersionManager;
 
+import org.apache.commons.lang.StringUtils;
 import org.apache.jackrabbit.ocm.exception.IllegalUnlockException;
 import org.apache.jackrabbit.ocm.exception.IncorrectPersistentClassException;
 import org.apache.jackrabbit.ocm.exception.JcrMappingException;
@@ -47,6 +49,7 @@ import org.apache.jackrabbit.ocm.exception.LockedException;
 import org.apache.jackrabbit.ocm.exception.ObjectContentManagerException;
 import org.apache.jackrabbit.ocm.exception.VersionException;
 import org.apache.jackrabbit.ocm.lock.Lock;
+import org.apache.jackrabbit.ocm.manager.ManagerConstant;
 import org.apache.jackrabbit.ocm.manager.ObjectContentManager;
 import org.apache.jackrabbit.ocm.manager.atomictypeconverter.impl.DefaultAtomicTypeConverterProvider;
 import org.apache.jackrabbit.ocm.manager.cache.ObjectCache;
@@ -504,42 +507,58 @@ public class ObjectContentManagerImpl implements ObjectContentManager {
         return getObjects(jcrExpression, javax.jcr.query.Query.XPATH);
     }
 
-    /**
-     * Returns a list of objects of that particular class which are directly
-     * under that path. This would not return the objects anywhere below the
-     * denoted path.
-     *
-     * @param objectClass
-     * @param path
-     * @return
-     */
     public Collection getObjects(Class objectClass, String path) throws ObjectContentManagerException {
+        final ClassDescriptor classDescriptorByClass = mapper.getClassDescriptorByClass(objectClass);
+        if (classDescriptorByClass == null) {
+            log.debug("Cannot get objects because no descriptor class exists for '{}'", objectClass.getClass().getName());
+            return Collections.emptyList();
+        }
         try {
             if (!session.nodeExists(path)) {
-                return null;
+                log.debug("Cannot get objects '{}' because no node exists at '{}'", objectClass.getClass().getName(), path);
+                return Collections.emptyList();
             }
+            Node parentNode = session.getNode(path).getParent();
+            String nodeName = NodeUtil.getNodeName(path);
+            if (StringUtils.isBlank(nodeName)) {
+                nodeName = null;
+            }
+            NodeIterator candidates = parentNode.getNodes();
+            List<Node> validated = new ArrayList<Node>();
+            while (candidates.hasNext()) {
+                Node child = candidates.nextNode();
+                if (nodeName != null && !child.getName().equals(nodeName)) {
+                    continue;
+                }
+                if (child.hasProperty(ManagerConstant.DISCRIMINATOR_CLASS_NAME_PROPERTY)) {
+                    if (child.getProperty(ManagerConstant.DISCRIMINATOR_CLASS_NAME_PROPERTY).getString().equals(classDescriptorByClass.getClassName())) {
+                        // the discriminator class name matches. This is an object we need
+                        validated.add(child);
+                    }
+                } else {
+                    if (child.getPrimaryNodeType().getName().equals(classDescriptorByClass.getJcrType())) {
+                        // nodetype matches
+                        validated.add(child);
+                    }
+                }
+            }
+            Collection result = new ArrayList();
+            for (Node n : validated) {
+                Object object = objectConverter.getObject(session, n.getPath());
+                if (object == null) {
+                    log.debug("Could not get object for '{}'", n.getPath());
+                    continue;
+                }
+                // double check whether object is the same or a subclass of objectClass
+                if (objectClass.isAssignableFrom(object.getClass())) {
+                    result.add(object);
+                }
+            }
+            return result;
         } catch (RepositoryException e) {
             throw new org.apache.jackrabbit.ocm.exception.RepositoryException("Impossible to get the objects at " + path, e);
         }
-
-
-        String parentPath = NodeUtil.getParentPath(path);
-        if (! parentPath.equals("/")) {
-        	parentPath = parentPath + "/";
-        }
-
-        String nodeName = NodeUtil.getNodeName(path);
-        // If nodeName is missing then include *.
-        if (nodeName == null || nodeName.length() == 0) {
-            nodeName = "*";
-        }
-        Filter filter = queryManager.createFilter(objectClass);
-        filter.setScope(parentPath);
-        filter.setNodeName(nodeName);
-        Query query = queryManager.createQuery(filter);
-        return getObjects(query);
-
-
+        
     }
 
     public Iterator getObjectIterator(Query query) {
