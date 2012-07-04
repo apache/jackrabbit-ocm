@@ -43,7 +43,7 @@
     also features like version support and object locking.
   </description>
   <url>http://http://jackrabbit.apache.org/object-content-mapping.html</url>
-  <inceptionYear>2007</inceptionYear>
+  <inceptionYear>2004</inceptionYear>
 
   <properties>
     <javax.jcr.version>2.0</javax.jcr.version>
@@ -118,38 +118,10 @@
   <build>
     <plugins>
       <plugin>
-        <artifactId>maven-antrun-plugin</artifactId>
-        <executions>
-          <execution>
-            <id>process-test-resources</id>
-            <phase>process-test-resources</phase>
-            <configuration>
-              <target>
-                <copy todir="${project.build.directory}/repository">
-                  <fileset dir="${basedir}/src/test/repository" />
-                </copy>
-              </target>
-            </configuration>
-            <goals>
-              <goal>run</goal>
-            </goals>
-          </execution>
-        </executions>
-        <dependencies>
-          <dependency>
-            <groupId>ant</groupId>
-            <artifactId>ant-optional</artifactId>
-            <version>1.5.3-1</version>
-          </dependency>
-        </dependencies>
-        <version>1.6</version>
-      </plugin>
-
-      <plugin>
         <artifactId>maven-compiler-plugin</artifactId>
         <configuration>
-          <target>1.6</target>
-          <source>1.6</source>
+          <target>1.5</target>
+          <source>1.5</source>
           <showDeprecation>true</showDeprecation>
         </configuration>
       </plugin>
@@ -182,15 +154,6 @@
       <plugin>
         <groupId>org.apache.rat</groupId>
         <artifactId>apache-rat-plugin</artifactId>
-        <configuration>
-          <excludes>
-            <exclude>release.properties</exclude>
-            <exclude>test/**/target/**</exclude>
-            <exclude>test/**/.*/**</exclude>
-            <exclude>test/**/*.log</exclude>
-            <exclude>.git/**</exclude>
-          </excludes>
-        </configuration>
       </plugin>
     </plugins>
   </build>
