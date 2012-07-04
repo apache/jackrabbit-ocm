@@ -24,9 +24,10 @@
   <modelVersion>4.0.0</modelVersion>
 
   <parent>
-    <groupId>org.apache.jackrabbit</groupId>
-    <artifactId>parent</artifactId>
-    <version>5</version>
+    <groupId>org.apache</groupId>
+    <artifactId>apache</artifactId>
+    <version>10</version>
+    <relativePath />
   </parent>
 
   <artifactId>jackrabbit-ocm</artifactId>
@@ -41,6 +42,8 @@
     Java-based Criteria, as well as in JCR query language. It offers
     also features like version support and object locking.
   </description>
+  <url>http://http://jackrabbit.apache.org/object-content-mapping.html</url>
+  <inceptionYear>2007</inceptionYear>
 
   <properties>
     <javax.jcr.version>2.0</javax.jcr.version>
@@ -54,11 +57,65 @@
     <xerces.version>2.9.1</xerces.version>
   </properties>
 
+
+  <scm>
+    <connection>scm:svn:http://svn.apache.org/repos/asf/jackrabbit/commons/ocm/trunk</connection>
+    <developerConnection>scm:svn:https://svn.apache.org/repos/asf/jackrabbit/commons/ocm/trunk</developerConnection>
+    <url>http://svn.apache.org/viewvc/asf/jackrabbit/commons/ocm/trunk</url>
+  </scm>
+
+  <mailingLists>
+
+    <mailingList>
+      <name>Jackrabbit Developer List</name>
+      <subscribe>dev-subscribe@jackrabbit.apache.org</subscribe>
+      <unsubscribe>dev-unsubscribe@jackrabbit.apache.org</unsubscribe>
+      <post>mailto:dev@jackrabbit.apache.org</post>
+      <archive>http://mail-archives.apache.org/mod_mbox/jackrabbit-dev/</archive>
+    </mailingList>
+
+    <mailingList>
+      <name>Jackrabbit User List</name>
+      <subscribe>users-subscribe@jackrabbit.apache.org</subscribe>
+      <unsubscribe>users-unsubscribe@jackrabbit.apache.org</unsubscribe>
+      <post>mailto:users@jackrabbit.apache.org</post>
+      <archive>http://mail-archives.apache.org/mod_mbox/jackrabbit-users/</archive>
+    </mailingList>
+
+  </mailingLists>
+
+  <issueManagement>
+    <url>https://issues.apache.org/jira/browse/OCM</url>
+  </issueManagement>
+
+
+  <profiles>
+    <profile>
+      <id>pedantic</id>
+      <build>
+        <plugins>
+          <plugin>
+            <groupId>org.apache.rat</groupId>
+            <artifactId>apache-rat-plugin</artifactId>
+            <executions>
+              <execution>
+                <phase>verify</phase>
+                <goals>
+                  <goal>check</goal>
+                </goals>
+              </execution>
+            </executions>
+          </plugin>
+        </plugins>
+      </build>
+    </profile>
+  </profiles>
+
+
   <!-- ====================================================================== -->
   <!-- B U I L D                                                              -->
   <!-- ====================================================================== -->
   <build>
-
     <plugins>
       <plugin>
         <artifactId>maven-antrun-plugin</artifactId>
@@ -121,8 +178,24 @@
           </systemProperties>
         </configuration>
       </plugin>
+
+      <plugin>
+        <groupId>org.apache.rat</groupId>
+        <artifactId>apache-rat-plugin</artifactId>
+        <configuration>
+          <excludes>
+            <exclude>release.properties</exclude>
+            <exclude>test/**/target/**</exclude>
+            <exclude>test/**/.*/**</exclude>
+            <exclude>test/**/*.log</exclude>
+            <exclude>.git/**</exclude>
+          </excludes>
+        </configuration>
+      </plugin>
     </plugins>
   </build>
+
+
 
   <!-- ====================================================================== -->
   <!-- D E P E N D E N C I E S                                                -->
@@ -215,17 +288,6 @@
     </dependency>
   </dependencies>
 
-  <scm>
-    <connection>
-      scm:svn:http://svn.apache.org/repos/asf/jackrabbit/commons/ocm/trunk
-    </connection>
-    <developerConnection>
-      scm:svn:https://svn.apache.org/repos/asf/jackrabbit/commons/ocm/trunk
-    </developerConnection>
-    <url>
-      http://svn.apache.org/viewvc/asf/jackrabbit/commons/ocm/trunk
-    </url>
-  </scm>
 
 
 </project>
