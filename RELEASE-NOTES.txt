@@ -1,0 +1,54 @@
+Release Notes -- Apache Jackrabbit OCM -- Version 2.0.0
+
+Introduction
+------------
+
+This is Apache Jackrabbit OCM 2.0, a subproject of Apache Jackrabbit
+
+Apache Jackrabbit OCM 2.0.0  is release that contains fixes and
+improvements over Jackrabbit OCM 1.5. Apart from the test classes, it
+does not depend on Apache Jackrabbit core, but only on the JCR 2.0 specification
+
+Changes since Jackrabbit 1.5
+------------------------------
+Improvements
+    [OCM-49]    ObjectContentManagerImpl should not use workspace move but rather do it through the jcr session
+    [OCM-51]    Replace itemExists and getItem logic in ObjectConverterImpl and ObjectContentManagerImpl to nodeExists and getNode
+    [OCM-43]    Reviving OCM framework with Jackrabbit 2.x
+    [OCM-52]    Replace inefficient ObjectContentManagerImpl#getObjects(Class objectClass, String path) path ....
+    [OCM-58]    Make OCM jackrabbit independent and rely on JCR 2.0 only
+    [OCM-54]    ObjectContentManagerImpl should not use workspace copy but rather do it through the jcr session
+    [OCM-55]    Replace commons logging LogFactory with slf4j LoggerFactory
+
+
+Bug fixes
+    [OCM-53]    Fixes needed to work with latest jr 2.4.1 tag
+    [OCM-50]    AnnotationDescriptorReader in case of a @Collection annotation incorrectly ....
+    [OCM-48]    DefaultCollectionConverterImpl should take nodetype into account for doInsertCollection ....
+    [OCM-42]    OCM Versioning is not working as expected
+    [OCM-33]    Running the tests without "mvn clean" provides errors
+    [OCM-45]    ReflectionUtils.implementsInterface() only checks one interface and returns
+    [OCM-40]    Doesn't compile with jackrabbit 2.0.0
+    [OCM-59]    Run all unit tests against an in memory repository and extend from AbstractJcrTestCase
+    [OCM-34]    referential integrity problem due to ObjectContentManagerImpl usage of ObjectCache
+    [OCM-44]    getObjectByUuid throws exception instead of returning null as described in javadoc
+
+New features
+
+Tasks
+    [OCM-56]    Remove UserTransactionImpl tests for transactions from OCM project
+    [OCM-1]     Move jackrabbit-ocm to JCR Commons
+    [OCM-57]    Cleanup exceptions that are outdated or not needed any more
+
+
+About The Apache Software Foundation
+------------------------------------
+
+Established in 1999, The Apache Software Foundation provides organizational,
+legal, and financial support for more than 100 freely-available,
+collaboratively-developed Open Source projects. The pragmatic Apache License
+enables individual and commercial users to easily deploy Apache software;
+the Foundation's intellectual property framework limits the legal exposure
+of its 2,500+ contributors.
+
+For more information, visit http://www.apache.org/
