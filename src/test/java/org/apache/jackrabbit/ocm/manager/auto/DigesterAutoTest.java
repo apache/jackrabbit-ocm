@@ -81,7 +81,7 @@ public class DigesterAutoTest extends DigesterRepositoryTestBase {
 		//---------------------------------------------------------------------------------------------------------	
 		Folder folder2 = (Folder) ocm.getObject( "/folder2");
 		assertNotNull("folder 2 is null", folder2);
-		assertEquals("Invalid number of cms object  found in folder2 children", folder2.getChildren().size() ,0); // autoInsert = false
+		assertEquals("Invalid number of cms object  found in folder2 children", folder2.getChildren().size() ,0); // autoRetrieve = false
 		
 		//---------------------------------------------------------------------------------------------------------	
 		// Insert nested objects
@@ -95,7 +95,7 @@ public class DigesterAutoTest extends DigesterRepositoryTestBase {
 		//---------------------------------------------------------------------------------------------------------	
 		 folder2 = (Folder) ocm.getObject( "/folder2");
 		assertNotNull("folder 2 is null", folder2);
-		assertEquals("Invalid number of cms object  found in folder2 children", folder2.getChildren().size() ,0); // autoInsert = false
+		assertEquals("Invalid number of cms object  found in folder2 children", folder2.getChildren().size() ,0); // autoRetrieve = false
 
 		//---------------------------------------------------------------------------------------------------------	
 		// Retrieve children attribute
@@ -110,7 +110,7 @@ public class DigesterAutoTest extends DigesterRepositoryTestBase {
 		// Update
 		//---------------------------------------------------------------------------------------------------------	
 		folder2.setChildren(null);
-		ocm.update(folder2); // autoupdate = true for the children attribute. So no update on the children collection
+        ocm.update(folder2); // autoupdate = false for the children attribute. So no update on the children collection
 		ocm.save();
 
 		//---------------------------------------------------------------------------------------------------------	
