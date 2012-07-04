@@ -508,14 +508,21 @@ public interface ObjectContentManager {
             throws ObjectContentManagerException;
 
     /**
-     * Copy an object
+     * Copy an object from <code>scrPath</code> to <code>destPath</code>. When there does not exist a node yet at
+     * <code>destPath</code> a new node will be created there if the parent {@link javax.jcr.Node} exists already. If 
+     * the parent does not exist,  an {@link ObjectContentManagerException} will be thrown
+     * 
+     * If there already exists a node at <code>destPath</code>, we
+     * try to add the {@link javax.jcr.Node} from <code>srcPath</code>. If not possible, an {@link ObjectContentManagerException}
+     * will be thrown.
      *
      * @param srcPath
      *            path of the object to copy
      * @param destPath
      *            destination path
      *
-     * @throws ObjectContentManagerException
+     * @throws ObjectContentManagerException when the copy did not succeed for example because there exists no {@link javax.jcr.Node} at
+     * <code>srcPath</code> the parent of <code>destPath</code> does not exist or there already exists an (incompatible) node at <code>destPath</code>
      */
     public void copy(String srcPath, String destPath)
             throws ObjectContentManagerException;

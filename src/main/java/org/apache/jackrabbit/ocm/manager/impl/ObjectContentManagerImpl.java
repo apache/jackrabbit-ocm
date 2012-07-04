@@ -29,13 +29,16 @@ import javax.jcr.Item;
 import javax.jcr.Node;
 import javax.jcr.NodeIterator;
 import javax.jcr.PathNotFoundException;
+import javax.jcr.Property;
+import javax.jcr.PropertyIterator;
 import javax.jcr.RepositoryException;
 import javax.jcr.Session;
 import javax.jcr.UnsupportedRepositoryOperationException;
-import javax.jcr.Workspace;
 import javax.jcr.lock.LockException;
 import javax.jcr.lock.LockManager;
 import javax.jcr.nodetype.NoSuchNodeTypeException;
+import javax.jcr.nodetype.NodeType;
+import javax.jcr.nodetype.PropertyDefinition;
 import javax.jcr.query.InvalidQueryException;
 import javax.jcr.query.QueryResult;
 import javax.jcr.version.VersionHistory;
@@ -60,7 +63,6 @@ import org.apache.jackrabbit.ocm.manager.objectconverter.impl.ProxyManagerImpl;
 import org.apache.jackrabbit.ocm.mapper.Mapper;
 import org.apache.jackrabbit.ocm.mapper.impl.digester.DigesterMapperImpl;
 import org.apache.jackrabbit.ocm.mapper.model.ClassDescriptor;
-import org.apache.jackrabbit.ocm.query.Filter;
 import org.apache.jackrabbit.ocm.query.Query;
 import org.apache.jackrabbit.ocm.query.QueryManager;
 import org.apache.jackrabbit.ocm.query.impl.QueryManagerImpl;
@@ -1028,10 +1030,33 @@ public class ObjectContentManagerImpl implements ObjectContentManager {
         }
     }
 
-    public void copy(String srcPath, String destPath) {
-        Workspace workspace = session.getWorkspace();
+    public void copy(String srcPath, String destPath) throws ObjectContentManagerException {
         try {
-            workspace.copy(srcPath, destPath);
+            if(StringUtils.isBlank(srcPath) || StringUtils.isBlank(destPath) || !srcPath.startsWith("/") || !destPath.startsWith("/")) {
+                throw new ObjectContentManagerException("scrPath " + srcPath + " or destPath " + destPath + " is not valid");
+            }
+            // no check for existence needed, as handled by exceptions
+            Node srcNode = session.getNode(srcPath);
+            Node destNode;
+            if (session.nodeExists(destPath)) {
+                destNode = session.getNode(destPath);
+            } else {
+                // if parentDestNode cannot be found, just a PathNotFoundException is thrown
+                while (destPath.endsWith("/")) {
+                    destPath = destPath.substring(0, destPath.length()-1);
+                }
+                int indexOfLastSlash = destPath.lastIndexOf("/");
+                String parentDestPath = destPath.substring(0, indexOfLastSlash);
+                String destNodeName = destPath.substring(indexOfLastSlash + 1);
+                Node parentDestNode;
+                if (StringUtils.isBlank(parentDestPath)) {
+                    parentDestNode = session.getRootNode();
+                } else {
+                    parentDestNode = session.getNode(parentDestPath);
+                }
+                destNode = parentDestNode.addNode(destNodeName, srcNode.getPrimaryNodeType().getName());
+            }
+            copy(srcNode, destNode);
         } catch (javax.jcr.nodetype.ConstraintViolationException cve) {
             throw new ObjectContentManagerException("Cannot copy the object from " + srcPath + " to " + destPath + "."
                     + "Violation of a nodetype or attempt to copy under property detected ", cve);
@@ -1044,7 +1069,7 @@ public class ObjectContentManagerImpl implements ObjectContentManager {
             throw new ObjectContentManagerException("Cannot copy the object from " + srcPath + " to " + destPath + "." + " Session does not have access permissions", ade);
 
         } catch (javax.jcr.PathNotFoundException pnf) {
-            throw new ObjectContentManagerException("Cannot copy the object from " + srcPath + " to " + destPath + "." + "Node at source or destination does not exist ", pnf);
+            throw new ObjectContentManagerException("Cannot copy the object from " + srcPath + " to " + destPath + "." + "Node at source or parent of destination does not exist ", pnf);
 
         } catch (javax.jcr.ItemExistsException ie) {
             throw new ObjectContentManagerException("Cannot copy the object from " + srcPath + " to " + destPath + "." + "It might already exist at destination path.", ie);
@@ -1065,4 +1090,43 @@ public class ObjectContentManagerImpl implements ObjectContentManager {
         return session.getWorkspace().getVersionManager();
     }
 
+    /**
+     * Helper for copying scrNode (including properties & descendants) to destNode
+     *
+     * @param srcNode
+     * @param destNode
+     * @throws RepositoryException
+     */
+    private void copy(Node srcNode, Node destNode) throws RepositoryException {
+
+        NodeType[] mixinNodeTypes = srcNode.getMixinNodeTypes();
+        for (int i = 0; i < mixinNodeTypes.length; i++) {
+            destNode.addMixin(mixinNodeTypes[i].getName());
+        }
+
+        for (PropertyIterator iter = srcNode.getProperties(); iter.hasNext(); ) {
+            Property property = iter.nextProperty();
+            PropertyDefinition definition = property.getDefinition();
+            if (!definition.isProtected()) {
+                if (definition.isMultiple()) {
+                    destNode.setProperty(property.getName(), property.getValues(), property.getType());
+                } else {
+                    destNode.setProperty(property.getName(), property.getValue());
+                }
+            }
+        }
+
+        for (NodeIterator iter = srcNode.getNodes(); iter.hasNext(); ) {
+            Node node = iter.nextNode();
+            Node child;
+            // check if the subnode is autocreated
+            if (!node.getDefinition().isAutoCreated() && destNode.hasNode(node.getName())) {
+                child = destNode.getNode(node.getName());
+            } else {
+                child = destNode.addNode(node.getName(), node.getPrimaryNodeType().getName());
+            }
+            copy(node, child);
+        }
+    }
+    
 }
