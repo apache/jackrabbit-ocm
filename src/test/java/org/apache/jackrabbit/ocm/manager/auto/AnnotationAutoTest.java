@@ -79,7 +79,7 @@ public class AnnotationAutoTest extends AnnotationRepositoryTestBase {
 	    	    	
 	    folder.addChild(document);
 	    folder.addChild(subFolder);
-	    ocm.insert(folder);               		
+	    ocm.insert(folder);
 		ocm.save();
 		
 		//---------------------------------------------------------------------------------------------------------	
@@ -87,7 +87,7 @@ public class AnnotationAutoTest extends AnnotationRepositoryTestBase {
 		//---------------------------------------------------------------------------------------------------------	
 		Folder folder2 = (Folder) ocm.getObject( "/folder2");
 		assertNotNull("folder 2 is null", folder2);
-		assertEquals("Invalid number of cms object  found in folder2 children", folder2.getChildren().size() ,0); // autoInsert = false
+		assertEquals("Invalid number of cms object  found in folder2 children", folder2.getChildren().size() ,0); // autoRetrieve = false
 		
 		//---------------------------------------------------------------------------------------------------------	
 		// Insert nested objects
@@ -118,7 +118,6 @@ public class AnnotationAutoTest extends AnnotationRepositoryTestBase {
 		folder2.setChildren(null);
 		ocm.update(folder2); // autoupdate = false for the children attribute. So no update on the children collection
 		ocm.save();
-
 		//---------------------------------------------------------------------------------------------------------	
 		// Retrieve children attribute
 		//---------------------------------------------------------------------------------------------------------			
