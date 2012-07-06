@@ -42,7 +42,7 @@
     Java-based Criteria, as well as in JCR query language. It offers
     also features like version support and object locking.
   </description>
-  <url>http://http://jackrabbit.apache.org/object-content-mapping.html</url>
+  <url>http://jackrabbit.apache.org/object-content-mapping.html</url>
   <inceptionYear>2004</inceptionYear>
 
   <properties>
