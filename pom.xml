@@ -17,7 +17,7 @@
    limitations under the License.
   -->
 
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0                              http://maven.apache.org/maven-v4_0_0.xsd ">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd ">
   <modelVersion>4.0.0</modelVersion>
 
   <parent>
@@ -28,7 +28,7 @@
   </parent>
 
   <artifactId>jackrabbit-ocm</artifactId>
-  <version>2.0.0</version>
+  <version>2.0.1-SNAPSHOT</version>
   <name>Jackrabbit Object Content Mapping 2.x</name>
   <description>
     This Jackrabbit subproject is an object/JCR persistence and
@@ -56,9 +56,9 @@
 
 
   <scm>
-    <connection>scm:svn:http://svn.apache.org/repos/asf/jackrabbit/commons/ocm/tags/jackrabbit-ocm-2.0.0</connection>
-    <developerConnection>scm:svn:https://svn.apache.org/repos/asf/jackrabbit/commons/ocm/tags/jackrabbit-ocm-2.0.0</developerConnection>
-    <url>http://svn.apache.org/viewvc/asf/jackrabbit/commons/ocm/tags/jackrabbit-ocm-2.0.0</url>
+    <connection>scm:svn:http://svn.apache.org/repos/asf/jackrabbit/commons/ocm/trunk</connection>
+    <developerConnection>scm:svn:https://svn.apache.org/repos/asf/jackrabbit/commons/ocm/trunk</developerConnection>
+    <url>http://svn.apache.org/viewvc/asf/jackrabbit/commons/ocm/trunk</url>
   </scm>
 
   <mailingLists>
