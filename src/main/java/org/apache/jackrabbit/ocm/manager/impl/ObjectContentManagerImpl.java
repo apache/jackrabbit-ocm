@@ -1120,7 +1120,9 @@ public class ObjectContentManagerImpl implements ObjectContentManager {
             Node node = iter.nextNode();
             Node child;
             // check if the subnode is autocreated
-            if (!node.getDefinition().isAutoCreated() && destNode.hasNode(node.getName())) {
+            if (!node.getDefinition().isAutoCreated() 
+                    && node.getIndex()==1
+                    && destNode.hasNode(node.getName())) {
                 child = destNode.getNode(node.getName());
             } else {
                 child = destNode.addNode(node.getName(), node.getPrimaryNodeType().getName());
