@@ -16,8 +16,6 @@
  */
 package org.apache.jackrabbit.ocm.manager.cache;
 
-
-
 /**
  *
  *
@@ -26,17 +24,52 @@ package org.apache.jackrabbit.ocm.manager.cache;
  * @author <a href="mailto:christophe.lombart@gmail.com">Lombart Christophe </a>
  *
  */
-public interface ObjectCache
-{
+public interface ObjectCache {
 
-	void cache(String path, Object object);
-	
-	void clear();
-	
-	boolean isCached(String path);
-	
-	Object getObject(String path);
-	
-        void evict(String path);
+    /**
+     * Put an object to current session's object cache
+     *
+     * @param path Path to object
+     * @param object Cached object
+     */
+    void cache(String path, Object object);
+
+    /**
+     * Clear current session's object cache
+     */
+    void clear();
+
+    /**
+     * Check for object presence in the current session's object cache If the object is not in the current session's
+     * object cache, it is copied to current session's object cache from the global object cache.
+     *
+     * @param path Path to object
+     * @return true if the object is present in the current session's object cache
+     */
+    boolean isCached(String path);
+
+    /**
+     * Get the object from the current session's object cache. If the object is not in the current session's object
+     * cache, it is copied to current session's object cache from the global object cache.
+     *
+     * @param path Path to object
+     * @return Object (perhaps partially loaded), or null otherwise
+     */
+    Object getObject(String path);
+
+    /**
+     * Remove an object from the current session's object cache. Also remove the object and all its subobjects from the
+     * global object cache.
+     *
+     * @param path Path to object
+     */
+    void evict(String path);
+
+    /**
+     * Mark object as fully loaded and transfer it to global object cache.
+     *
+     * @param path Path to object
+     */
+    void ready(String path);
 
 }
