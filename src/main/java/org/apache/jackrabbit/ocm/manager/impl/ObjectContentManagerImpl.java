@@ -431,7 +431,7 @@ public class ObjectContentManagerImpl implements ObjectContentManager {
     public void remove(Query query) {
         try {
             String jcrExpression = this.queryManager.buildJCRExpression(query);
-            log.debug("Remove Objects with expression : " + jcrExpression);
+            log.debug("Remove Objects with expression: {}", jcrExpression);
 
             // Since only nodes are sufficient for us to remove,
             // getObjects(query, language) method is not called here.
@@ -445,7 +445,7 @@ public class ObjectContentManagerImpl implements ObjectContentManager {
                     // node has been removed possibly by another thread during iterating through the results
                     continue;
                 }
-                log.debug("Remove node : " + node.getPath());
+                log.debug("Remove node: {}", node.getPath());
 
                 // it is not possible to remove nodes from an NodeIterator
                 // So, we add the node found in a collection to remove them
@@ -567,7 +567,7 @@ public class ObjectContentManagerImpl implements ObjectContentManager {
 
     public Iterator getObjectIterator(Query query) {
         String jcrExpression = this.queryManager.buildJCRExpression(query);
-        log.debug("Get Object with expression : " + jcrExpression);
+        log.debug("Get Object with expression: {}", jcrExpression);
         @SuppressWarnings("deprecation")
         NodeIterator nodeIterator = getNodeIterator(jcrExpression, javax.jcr.query.Query.XPATH);
 
@@ -576,7 +576,7 @@ public class ObjectContentManagerImpl implements ObjectContentManager {
     }
 
     public Iterator getObjectIterator(String query, String language) {
-        log.debug("Get Object with expression : " + query);
+        log.debug("Get Object with expression: {}", query);
         NodeIterator nodeIterator = getNodeIterator(query, language);
 
         return new ObjectIterator(nodeIterator, this.objectConverter, this.session);
@@ -584,14 +584,14 @@ public class ObjectContentManagerImpl implements ObjectContentManager {
 
     public Collection getObjects(String query, String language) {
         try {
-            log.debug("Get Objects with expression : " + query + " and language " + language);
+            log.debug("Get Objects with expression [{}] and language {}", query, language);
 
             NodeIterator nodeIterator = getNodeIterator(query, language);
 
             List result = new ArrayList();
             while (nodeIterator.hasNext()) {
                 Node node = nodeIterator.nextNode();
-                log.debug("Node found : " + node.getPath());
+                log.debug("Node found: {}", node.getPath());
                 result.add(objectConverter.getObject(session, node.getPath()));
             }
             requestObjectCache.clear();
@@ -604,9 +604,7 @@ public class ObjectContentManagerImpl implements ObjectContentManager {
     }
 
     private NodeIterator getNodeIterator(String query, String language) {
-        if (log.isDebugEnabled()) {
-            log.debug("Get Node Iterator with expression " + query + " and language " + language);
-        }
+        log.debug("Get Node Iterator with expression [{}] and language {}", query, language);
         javax.jcr.query.Query jcrQuery;
         try {
             jcrQuery = session.getWorkspace().getQueryManager().createQuery(query, language);
