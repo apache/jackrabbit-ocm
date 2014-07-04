@@ -37,4 +37,6 @@ public interface ObjectCache
 	
 	Object getObject(String path);
 	
+        void evict(String path);
+
 }

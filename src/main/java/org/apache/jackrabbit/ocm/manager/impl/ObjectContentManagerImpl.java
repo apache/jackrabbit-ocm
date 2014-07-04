@@ -186,11 +186,14 @@ public class ObjectContentManagerImpl implements ObjectContentManager {
      * @param converter
      *            the <code>ObjectConverter</code> to be used internally
      * @param queryManager
-     *            the query manager to used
+     *            the query manager to be used
+     * @param requestObjectCache
+     *            the request object cache to be used
      * @param session
      *            The JCR session
      */
-    public ObjectContentManagerImpl(Mapper mapper, ObjectConverter converter, QueryManager queryManager, ObjectCache requestObjectCache, Session session) {
+    public ObjectContentManagerImpl(Mapper mapper, ObjectConverter converter, QueryManager queryManager, 
+            ObjectCache requestObjectCache, Session session) {
         this.mapper = mapper;
         this.session = session;
         this.objectConverter = converter;
@@ -390,6 +393,7 @@ public class ObjectContentManagerImpl implements ObjectContentManager {
         }
 
         objectConverter.insert(session, object);
+        requestObjectCache.evict(path);
     }
 
     public void update(Object object) {
@@ -405,6 +409,7 @@ public class ObjectContentManagerImpl implements ObjectContentManager {
         }
 
         objectConverter.update(session, object);
+        requestObjectCache.evict(path);
     }
 
     public void remove(String path) {
@@ -417,6 +422,7 @@ public class ObjectContentManagerImpl implements ObjectContentManager {
 
             Item item = session.getItem(path);
             item.remove();
+            requestObjectCache.evict(path);
 
         } catch (RepositoryException e) {
             throw new org.apache.jackrabbit.ocm.exception.RepositoryException("Impossible to remove the object at " + path);
@@ -456,12 +462,14 @@ public class ObjectContentManagerImpl implements ObjectContentManager {
             // Remove all collection nodes
             for (int i = 0; i < nodes.size(); i++) {
                 Node node = (Node) nodes.get(i);
-                checkIfNodeLocked(node.getPath());
+                String path = node.getPath();
+                checkIfNodeLocked(path);
                 try {
                     node.remove();
                 } catch (javax.jcr.RepositoryException re) {
                     throw new ObjectContentManagerException("Cannot remove node at path " + node.getPath() + " returned from query " + jcrExpression, re);
                 }
+                requestObjectCache.evict(path);
             }
 
         } catch (InvalidQueryException iqe) {
