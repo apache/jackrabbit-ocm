@@ -66,10 +66,11 @@ public interface ObjectCache {
     void evict(String path);
 
     /**
-     * Mark object as fully loaded and transfer it to global object cache.
+     * Transfer a fully loaded object into the global object cache.
      *
      * @param path Path to object
+     * @param object A fully loaded object
      */
-    void ready(String path);
+    void ready(String path, Object object);
 
 }

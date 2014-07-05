@@ -393,7 +393,7 @@ public class ObjectContentManagerImpl implements ObjectContentManager {
         }
 
         objectConverter.insert(session, object);
-        requestObjectCache.evict(path);
+        requestObjectCache.ready(path, object);
     }
 
     public void update(Object object) {
@@ -409,7 +409,7 @@ public class ObjectContentManagerImpl implements ObjectContentManager {
         }
 
         objectConverter.update(session, object);
-        requestObjectCache.evict(path);
+        requestObjectCache.ready(path, object);
     }
 
     public void remove(String path) {

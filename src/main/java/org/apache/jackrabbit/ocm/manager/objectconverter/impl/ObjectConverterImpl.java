@@ -360,7 +360,7 @@ public class ObjectConverterImpl implements ObjectConverter {
 			retrieveBeanFields(session, classDescriptor, node, object, false);
 			retrieveCollectionFields(session, classDescriptor, node, object, false);
 
-            requestObjectCache.ready(path);
+            requestObjectCache.ready(path, object);
 
 			return object;
 
@@ -446,7 +446,7 @@ public class ObjectConverterImpl implements ObjectConverter {
 			retrieveBeanFields(session, classDescriptor, node, object, false);
 			retrieveCollectionFields(session, classDescriptor, node, object, false);
 
-            requestObjectCache.ready(path);
+            requestObjectCache.ready(path, object);
 
 			return object;
 		} catch (PathNotFoundException pnfe) {
@@ -714,7 +714,7 @@ public class ObjectConverterImpl implements ObjectConverter {
 			ReflectionUtils.setNestedProperty(object, beanName, bean);
 		}
 
-        requestObjectCache.ready(beanPath);
+        requestObjectCache.ready(beanPath, bean);
 	}
 
 	private void retrieveCollectionFields(Session session, ClassDescriptor classDescriptor, Node parentNode, Object object,

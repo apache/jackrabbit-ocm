@@ -53,7 +53,7 @@ public class RequestObjectCacheImpl implements ObjectCache {
         alreadyCachedObjects.remove(path);
     }
 
-    public void ready(String path) {
+    public void ready(String path, Object object) {
         /* noop - no global cache */
     }
 
