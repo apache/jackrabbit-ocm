@@ -409,7 +409,9 @@ public class ObjectContentManagerImpl implements ObjectContentManager {
         }
 
         objectConverter.update(session, object);
-        requestObjectCache.ready(path, object);
+        // We do not use requestObjectCache.ready() here,
+        // because our changes might be rolled back later.
+        requestObjectCache.evict(path);
     }
 
     public void remove(String path) {
