@@ -409,7 +409,9 @@ public class ObjectContentManagerImpl implements ObjectContentManager {
         }
 
         objectConverter.update(session, object);
-        requestObjectCache.ready(path, object);
+        // We do not use requestObjectCache.ready() here,
+        // because our changes might be rolled back later.
+        requestObjectCache.evict(path);
     }
 
     public void remove(String path) {
@@ -1126,9 +1128,7 @@ public class ObjectContentManagerImpl implements ObjectContentManager {
             Node node = iter.nextNode();
             Node child;
             // check if the subnode is autocreated
-            if (!node.getDefinition().isAutoCreated() 
-                    && node.getIndex()==1
-                    && destNode.hasNode(node.getName())) {
+            if (!node.getDefinition().isAutoCreated() && destNode.hasNode(node.getName())) {
                 child = destNode.getNode(node.getName());
             } else {
                 child = destNode.addNode(node.getName(), node.getPrimaryNodeType().getName());
