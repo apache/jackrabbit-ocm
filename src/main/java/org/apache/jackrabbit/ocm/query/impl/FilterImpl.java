@@ -227,14 +227,16 @@ public class FilterImpl implements Filter {
     public Filter addOrFilter(String fieldAttributeName, String[] valueList) {
         if (valueList==null || valueList.length==0)
             return this;
-        StringBuilder jcrExpression = new StringBuilder();
+        final StringBuilder je = new StringBuilder();
+        je.append("(");
         for (Object object : valueList) {
-            if (jcrExpression.length() > 0)
-                jcrExpression.append(" or ");
-            jcrExpression.append("@").append(this.getJcrFieldName(fieldAttributeName))
+            if (je.length() > 1)
+                je.append(" or ");
+            je.append("@").append(this.getJcrFieldName(fieldAttributeName))
                     .append(" = ").append(this.getStringValue(fieldAttributeName, object));
         }
-        addExpression(jcrExpression.toString());
+        je.append(")");
+        addExpression(je.toString());
         return this;
     }
     
