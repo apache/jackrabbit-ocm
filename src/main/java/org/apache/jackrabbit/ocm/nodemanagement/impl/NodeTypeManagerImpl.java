@@ -286,7 +286,7 @@ public class NodeTypeManagerImpl implements NodeTypeManager {
         if (superTypes != null && superTypes.length() > 0)
         {
             String[] superTypesArray = superTypes.split(",");
-            log.debug("JCR super types found: " + superTypesArray.length);
+            log.debug("JCR super types found: {}", superTypesArray.length);
             for (int i = 0; i < superTypesArray.length; i++)
             {
                 try

@@ -181,11 +181,15 @@ public class SimpleFieldsHelper
 		
 		    if (propDef != null && propDef.getDefaultValues() != null && propDef.getDefaultValues().length == 1)
 		    {
-                log.debug("retrieveSimpleField: Use default value from property definition for missing mapped property " + propertyName + " of class '" + classDescriptor.getClassName() + "'");
+                if (log.isDebugEnabled()) {
+                    log.debug("retrieveSimpleField: Use default value from property definition for missing mapped property " + propertyName + " of class '" + classDescriptor.getClassName() + "'");
+                }
 		        propValue = propDef.getDefaultValues()[0];
 		    } else
 		    {
-                log.debug("retrieveSimpleField: No default value available for missing mapped property " + propertyName + " of class '" + classDescriptor.getClassName() + "'");
+                if (log.isDebugEnabled()) {
+                    log.debug("retrieveSimpleField: No default value available for missing mapped property " + propertyName + " of class '" + classDescriptor.getClassName() + "'");
+                }
 		        propValue = null;
 		    }
 		}
