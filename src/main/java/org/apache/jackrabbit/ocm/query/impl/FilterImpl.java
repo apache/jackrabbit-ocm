@@ -296,8 +296,8 @@ public class FilterImpl implements Filter {
     private String getJcrFieldName(String fieldAttribute) {
         String jcrFieldName = classDescriptor.getJcrName(fieldAttribute);
         if (jcrFieldName == null) {
-            log.error("Impossible to find the jcrFieldName for the attribute: {}", fieldAttribute,
-                    new Exception("DIAGNOSTIC STACK TRACE"));
+            log.error("Impossible to find the jcrFieldName for the attribute [{}] of class [{}]",
+                    fieldAttribute, classDescriptor.getClassName(), new Exception("DIAGNOSTIC STACK TRACE"));
         }
 
         return jcrFieldName;
