@@ -21,8 +21,10 @@ import java.beans.Introspector;
 import java.beans.PropertyDescriptor;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
+import java.util.Arrays;
 import java.util.List;
 
+import org.apache.commons.lang.ArrayUtils;
 import org.apache.jackrabbit.ocm.exception.InitMapperException;
 import org.apache.jackrabbit.ocm.mapper.DescriptorReader;
 import org.apache.jackrabbit.ocm.mapper.model.BeanDescriptor;
@@ -159,7 +161,7 @@ public class AnnotationDescriptorReader implements DescriptorReader
 
 	private void addDescriptorsFromFields(MappingDescriptor mappingDescriptor, ClassDescriptor classDescriptor, Class clazz) {
 
-		java.lang.reflect.Field[] fields = clazz.getDeclaredFields();
+		java.lang.reflect.Field[] fields = getFields(clazz);
 
 	    for (int index = 0; index < fields.length; index++)
 	    {
@@ -180,10 +182,27 @@ public class AnnotationDescriptorReader implements DescriptorReader
 			if (collectionAnnotation != null) {
 				addCollectionDescriptor(mappingDescriptor, classDescriptor, fields[index], collectionAnnotation);
 			}
-
-
 		}
-
+	}
+	
+	private java.lang.reflect.Field[] getFields( Class<?> clazz) {
+		java.lang.reflect.Field[] currentClassFields = clazz.getDeclaredFields();		
+		Class<?> parentClass = clazz.getSuperclass();
+		if (parentClass != null ) {
+			java.lang.reflect.Field[] parentClassFields = getFields(parentClass);
+			java.lang.reflect.Field[] union = concat(currentClassFields, parentClassFields);
+			currentClassFields = union;
+		}
+		return currentClassFields;
+	}
+	
+	private java.lang.reflect.Field[] concat(java.lang.reflect.Field[] A,java.lang.reflect.Field[] B) {
+		int aLen = A.length;
+		int bLen = B.length;
+		java.lang.reflect.Field[] C= new java.lang.reflect.Field[aLen+bLen];
+		System.arraycopy(A, 0, C, 0, aLen);
+		System.arraycopy(B, 0, C, aLen, bLen);
+		return C;
 	}
 
 	private void addDescriptorsFromGetters(MappingDescriptor mappingDescriptor, ClassDescriptor classDescriptor, Class clazz) {

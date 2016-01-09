@@ -511,6 +511,12 @@ public class ObjectContentManagerImpl implements ObjectContentManager {
         return getObjects(jcrExpression, javax.jcr.query.Query.XPATH);
     }
 
+    public NodeIterator getNodes(Query query) {
+        String jcrExpression = this.queryManager.buildJCRExpression(query);
+        NodeIterator nodeIterator = getNodeIterator(jcrExpression, javax.jcr.query.Query.XPATH);        
+        return nodeIterator;
+    }
+    
     public Collection getObjects(Class objectClass, String path) throws ObjectContentManagerException {
         final ClassDescriptor classDescriptorByClass = mapper.getClassDescriptorByClass(objectClass);
         if (classDescriptorByClass == null) {
@@ -1128,5 +1134,46 @@ public class ObjectContentManagerImpl implements ObjectContentManager {
             copy(node, child);
         }
     }
+
+	public Collection getChildObjects(Class objectClass, String path)
+			throws ObjectContentManagerException {
+
+		final ClassDescriptor classDescriptorByClass = mapper.getClassDescriptorByClass(objectClass);
+        if (classDescriptorByClass == null) {
+            return Collections.emptyList();
+        }
+        try {
+            if (!session.nodeExists(path)) {
+                return Collections.emptyList();
+            }
+            
+            long t1 = System.currentTimeMillis();
+            
+            Node node = session.getNode(path);         
+            NodeIterator children = node.getNodes();
+            
+            long t2 = System.currentTimeMillis();
+            
+            Collection result = new ArrayList();
+            while (children.hasNext()) {
+                Node child = children.nextNode();
+                Object object = objectConverter.getObject(session, objectClass, child.getPath());
+                if (object == null) {
+                    continue;
+                }
+                // double check whether object is the same or a subclass of objectClass
+                if (objectClass.isAssignableFrom(object.getClass())) {
+                    result.add(object);
+                }
+            }
+            
+            long t3 = System.currentTimeMillis();
+            return result;
+               
+        } catch (RepositoryException e) {
+            throw new org.apache.jackrabbit.ocm.exception.RepositoryException("Impossible to get the objects at " + path, e);
+        }
+		
+	}
     
 }

@@ -17,6 +17,7 @@
 package org.apache.jackrabbit.ocm.mapper.impl.annotation;
 
 import java.lang.annotation.ElementType;
+import java.lang.annotation.Inherited;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
@@ -31,6 +32,7 @@ import org.apache.jackrabbit.ocm.manager.collectionconverter.impl.DefaultCollect
  */
 @Retention(RetentionPolicy.RUNTIME)
 @Target({ElementType.FIELD, ElementType.METHOD })
+@Inherited
 public @interface Collection {
 
 	String jcrName() default "";

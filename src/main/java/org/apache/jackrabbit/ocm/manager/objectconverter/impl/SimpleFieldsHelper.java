@@ -19,6 +19,7 @@ package org.apache.jackrabbit.ocm.manager.objectconverter.impl;
 import java.util.Iterator;
 
 import javax.jcr.Node;
+import javax.jcr.NodeIterator;
 import javax.jcr.PathNotFoundException;
 import javax.jcr.RepositoryException;
 import javax.jcr.Session;
@@ -168,12 +169,17 @@ public class SimpleFieldsHelper
 		if (node.hasProperty(propertyName))
 		{
 			propValue = node.getProperty(propertyName).getValue();
-			
 		}
 		else if (fieldDescriptor.getJcrDefaultValue() != null)
 		{
 		    ValueFactory vf = node.getSession().getValueFactory();
 		    propValue = vf.createValue(fieldDescriptor.getJcrDefaultValue());
+		}
+		else if (node.hasNode(propertyName)){
+			Node childNode = node.getNode(propertyName);
+			NodeIterator nodes = childNode.getNodes();
+			ValueFactory vf = node.getSession().getValueFactory();
+			propValue = vf.createValue(nodes.getSize());
 		}
 		else
 		{
