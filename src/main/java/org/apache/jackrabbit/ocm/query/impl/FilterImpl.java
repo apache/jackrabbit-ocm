@@ -225,13 +225,18 @@ public class FilterImpl implements Filter {
     }
 
     public Filter addOrFilter(String fieldAttributeName, String[] valueList) {
-        String jcrExpression = "";
-        for(Object object: valueList){
-        jcrExpression =	"@" + this.getJcrFieldName(fieldAttributeName) + " = "
-        + this.getStringValue(fieldAttributeName, object);
-        orExpression(jcrExpression);
+        if (valueList==null || valueList.length==0)
+            return this;
+        final StringBuilder je = new StringBuilder();
+        je.append("(");
+        for (Object object : valueList) {
+            if (je.length() > 1)
+                je.append(" or ");
+            je.append("@").append(this.getJcrFieldName(fieldAttributeName))
+                    .append(" = ").append(this.getStringValue(fieldAttributeName, object));
         }
-        addExpression(jcrExpression);
+        je.append(")");
+        addExpression(je.toString());
         return this;
     }
     
@@ -291,7 +296,8 @@ public class FilterImpl implements Filter {
     private String getJcrFieldName(String fieldAttribute) {
         String jcrFieldName = classDescriptor.getJcrName(fieldAttribute);
         if (jcrFieldName == null) {
-            log.error("Impossible to find the jcrFieldName for the attribute :" + fieldAttribute);
+            log.error("Impossible to find the jcrFieldName for the attribute [{}] of class [{}]",
+                    fieldAttribute, classDescriptor.getClassName(), new Exception("DIAGNOSTIC STACK TRACE"));
         }
 
         return jcrFieldName;

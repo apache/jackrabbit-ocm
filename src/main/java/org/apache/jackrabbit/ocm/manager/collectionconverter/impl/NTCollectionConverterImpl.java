@@ -221,7 +221,9 @@ public class NTCollectionConverterImpl extends AbstractCollectionConverterImpl {
 
         while (nodes.hasNext()) {
             Node itemNode = (Node) nodes.next();
-            log.debug("Collection node found : " + itemNode.getPath());
+            if (log.isDebugEnabled()) {
+              log.debug("Collection node found: {}", itemNode.getPath());
+            }
             Object item = objectConverter.getObject(session,  itemNode.getPath());
             mapper.getClassDescriptorByClass(item.getClass());
             if ( objects instanceof ManageableCollection)

@@ -44,12 +44,12 @@
 
   <properties>
     <javax.jcr.version>2.0</javax.jcr.version>
-    <apache.jackrabbit.version>2.4.1</apache.jackrabbit.version>
-    <commons.digester.version>1.7</commons.digester.version>
-    <commons.lang.version>2.1</commons.lang.version>
-    <commons.collection.version>3.1</commons.collection.version>
-    <commons.beanutils.version>1.7.0</commons.beanutils.version>
-    <org.slf4j.version>1.6.4</org.slf4j.version>
+    <apache.jackrabbit.version>2.8.0</apache.jackrabbit.version>
+    <commons.digester.version>2.1</commons.digester.version>
+    <commons.lang.version>2.6</commons.lang.version>
+    <commons.collection.version>3.2.1</commons.collection.version>
+    <commons.beanutils.version>1.9.2</commons.beanutils.version>
+    <org.slf4j.version>1.7.5</org.slf4j.version>
     <junit.version>4.7</junit.version>
     <xerces.version>2.9.1</xerces.version>
   </properties>
@@ -253,6 +253,19 @@
     </dependency>
   </dependencies>
 
+
+  <distributionManagement>
+    <repository>
+      <id>internal</id>
+      <name>Internal Release Repository</name>
+      <url>http://mvn:8080/archiva/repository/internal/</url>
+    </repository>
+    <snapshotRepository>
+      <id>snapshots</id>
+      <name>Internal Snapshot Repository</name>
+      <url>http://mvn:8080/archiva/repository/snapshots/</url>
+    </snapshotRepository>
+  </distributionManagement>
 
 
 </project>
