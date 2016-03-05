@@ -155,7 +155,7 @@ public class DigesterBasicVersionningTest extends DigesterRepositoryTestBase
             	 String[] versionLabels = ocm.getVersionLabels("/page", "1.1");
             	 assertTrue("Incorrect number of labels", versionLabels.length == 2);
             	 assertTrue("Incorrect label", versionLabels[0].equals("C") || versionLabels[0].equals("D"));
-            	 assertTrue("Incorrect label", versionLabels[1].equals("C") || versionLabels[0].equals("D"));
+            	 assertTrue("Incorrect label", versionLabels[1].equals("C") || versionLabels[1].equals("D"));
             	
 
              }
