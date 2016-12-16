@@ -23,6 +23,7 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.UUID;
 
 import javax.jcr.ItemExistsException;
 import javax.jcr.Node;
@@ -146,7 +147,7 @@ public class DefaultCollectionConverterImpl extends AbstractCollectionConverterI
             else {
                 elementJcrName = collectionDescriptor.getJcrElementName();
                 if (elementJcrName == null) { // use PathFormat.checkFormat() here?
-                    elementJcrName = COLLECTION_ELEMENT_NAME;
+                    elementJcrName = UUID.randomUUID().toString();
                 }
             }
 
