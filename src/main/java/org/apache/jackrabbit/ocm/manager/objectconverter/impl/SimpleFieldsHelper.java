@@ -179,7 +179,12 @@ public class SimpleFieldsHelper
 			Node childNode = node.getNode(propertyName);
 			NodeIterator nodes = childNode.getNodes();
 			ValueFactory vf = node.getSession().getValueFactory();
-			propValue = vf.createValue(nodes.getSize());
+			int s = 0;
+			while(nodes.hasNext() && s<=1000){
+				s++;
+				nodes.next();
+			}
+			propValue = vf.createValue(s);
 		}
 		else
 		{

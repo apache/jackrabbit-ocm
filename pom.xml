@@ -28,7 +28,7 @@
   </parent>
 
   <artifactId>jackrabbit-ocm</artifactId>
-  <version>3.0.0</version>
+  <version>3.0.1</version>
   <name>Jackrabbit Object Content Mapping 2.x</name>
   <description>
     This Jackrabbit subproject is an object/JCR persistence and
