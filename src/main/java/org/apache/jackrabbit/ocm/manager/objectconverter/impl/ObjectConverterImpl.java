@@ -612,6 +612,11 @@ public class ObjectConverterImpl implements ObjectConverter {
 		if (nodeType.getName().equals(descriptor.getJcrType())) {
 			return true;
 		}
+		
+		// Dirty horrible hack to get objects annotated with oak:Unstructured to access nt:unstructured nodes. 
+		if(descriptor.getJcrType().equals("oak:Unstructured") && nodeType.getName().equals("nt:unstructured")){
+			return true;
+		}
 
 		NodeType[] superTypes = nodeType.getSupertypes();
 		for (int i = 0; i < superTypes.length; i++) {
@@ -619,7 +624,7 @@ public class ObjectConverterImpl implements ObjectConverter {
 				return true;
 			}
 		}
-
+		
 		return false;
 	}
 
