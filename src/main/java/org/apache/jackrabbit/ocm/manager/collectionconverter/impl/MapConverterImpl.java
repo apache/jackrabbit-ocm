@@ -149,7 +149,7 @@ public class MapConverterImpl extends AbstractCollectionConverterImpl {
             
             Node collectionNode;
             if( !parentNode.hasNode(jcrName)){
-            	collectionNode = parentNode.addNode(jcrName);
+            	collectionNode = parentNode.addNode(jcrName, parentNode.getPrimaryNodeType().getName());
             } else{
             	collectionNode = parentNode.getNode(jcrName);
             }
