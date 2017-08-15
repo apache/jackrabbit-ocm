@@ -20,14 +20,17 @@ package org.apache.jackrabbit.ocm.manager.collectionconverter.impl;
 
 import java.text.DecimalFormat;
 import java.util.Calendar;
+import java.util.Collection;
 import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.TreeMap;
 
 import javax.jcr.Node;
 import javax.jcr.NodeIterator;
+import javax.jcr.PathNotFoundException;
 import javax.jcr.Property;
 import javax.jcr.PropertyIterator;
 import javax.jcr.PropertyType;
@@ -57,6 +60,8 @@ public class MapConverterImpl extends AbstractCollectionConverterImpl {
 	
 	
 	private static final DecimalFormat DF = new DecimalFormat("000000");
+	
+	private static final String GRAVITY_TYPE = "gravity_type";
 	
     /**
      * Constructor
@@ -88,7 +93,7 @@ public class MapConverterImpl extends AbstractCollectionConverterImpl {
             }
             
             if( !(objects.getObjects() instanceof Map)){
-                throw new ObjectContentManagerException("Input to StringCollectionConverter not Map");
+                throw new ObjectContentManagerException("Input to MapConverterImpl not Map");
             }
 
             String jcrName = getCollectionJcrName(collectionDescriptor);
@@ -127,6 +132,8 @@ public class MapConverterImpl extends AbstractCollectionConverterImpl {
             		collectionNode.setProperty(key, dateValue);
             	} else if( value instanceof Map){
             		persistMap( session , collectionNode, key, (Map<String,Object>) value);
+            	} else if( value instanceof List){
+            		persistList( session , collectionNode, key, (List<Object>) value);
             	} else {
             		collectionNode.setProperty(key, value.toString());
             	}
@@ -150,8 +157,17 @@ public class MapConverterImpl extends AbstractCollectionConverterImpl {
             Node collectionNode;
             if( !parentNode.hasNode(jcrName)){
             	collectionNode = parentNode.addNode(jcrName, parentNode.getPrimaryNodeType().getName());
+            	collectionNode.setProperty(GRAVITY_TYPE, "map");
             } else{
             	collectionNode = parentNode.getNode(jcrName);
+            	// remove nodes if they don't exist in supplied
+            	NodeIterator nodes = collectionNode.getNodes();
+            	while(nodes.hasNext()){
+            		Node next = nodes.nextNode();
+            		if( !valueMap.containsKey(next.getName())){
+            			next.remove();
+            		}
+            	}
             }
             
             for( String key : valueMap.keySet()){
@@ -175,6 +191,8 @@ public class MapConverterImpl extends AbstractCollectionConverterImpl {
             		collectionNode.setProperty(key, dateValue);
             	} else if( value instanceof Map){
             		persistMap( session , collectionNode, key, (Map<String,Object>) value);
+            	} else if( value instanceof List){
+            		persistList( session , collectionNode, key, (List<Object>) value);
             	} else {
             		collectionNode.setProperty(key, value.toString());
             	}
@@ -185,7 +203,6 @@ public class MapConverterImpl extends AbstractCollectionConverterImpl {
         }
     }
     
-    /*
     private void persistList( Session session, Node parentNode, String jcrName, List<Object> valueList ) throws RepositoryException {
     	
         try {
@@ -195,7 +212,8 @@ public class MapConverterImpl extends AbstractCollectionConverterImpl {
             
             Node collectionNode;
             if( !parentNode.hasNode(jcrName)){
-            	collectionNode = parentNode.addNode(jcrName);
+            	collectionNode = parentNode.addNode(jcrName, parentNode.getPrimaryNodeType().getName());
+            	collectionNode.setProperty(GRAVITY_TYPE, "list");
             } else{
             	collectionNode = parentNode.getNode(jcrName);
             }
@@ -224,6 +242,8 @@ public class MapConverterImpl extends AbstractCollectionConverterImpl {
             		collectionNode.setProperty(key, dateValue);
             	} else if( value instanceof Map){
             		persistMap( session , collectionNode, key, (Map<String,Object>) value);
+            	} else if( value instanceof List){
+            		persistList( session , collectionNode, key, (List<Object>) value);            		
             	} else {
             		collectionNode.setProperty(key, value.toString());
             	}
@@ -233,7 +253,6 @@ public class MapConverterImpl extends AbstractCollectionConverterImpl {
             throw new ObjectContentManagerException("Cannot insert collection", vfe);
         }
     }
-    */
 
     /**
      *
@@ -274,7 +293,7 @@ public class MapConverterImpl extends AbstractCollectionConverterImpl {
             PropertyIterator properties = collectionNode.getProperties();
             while( properties.hasNext()){
             	Property property = (Property) properties.next();
-            	if( !property.getName().startsWith("jcr:")){
+            	if( !property.getName().startsWith("jcr:") && !property.getName().equals(GRAVITY_TYPE)){
 
             		switch (property.getValue().getType()){
             		case PropertyType.BOOLEAN:
@@ -299,8 +318,15 @@ public class MapConverterImpl extends AbstractCollectionConverterImpl {
             NodeIterator ni = collectionNode.getNodes();
             while( ni.hasNext()){
             	Node subnode = ni.nextNode();
-            	Map<String,Object> map = getMap(session, subnode);
-            	returnObjects.addObject(subnode.getName(), map);
+            	String type = gravityNodeType(subnode);
+            	Object obj;
+            	if(type.equals("list")){
+            		obj = getList(session, subnode);
+            	} else {
+            		obj = getMap(session, subnode);	
+            	}
+            	
+            	returnObjects.addObject(subnode.getName(), obj);
             }
                         
             return returnObjects;
@@ -320,7 +346,7 @@ public class MapConverterImpl extends AbstractCollectionConverterImpl {
         PropertyIterator properties = node.getProperties();
         while( properties.hasNext()){
         	Property property = (Property) properties.next();
-        	if( !property.getName().startsWith("jcr:")){
+        	if( !property.getName().startsWith("jcr:") && !property.getName().equals(GRAVITY_TYPE) ){
 
         		switch (property.getValue().getType()){
         		case PropertyType.BOOLEAN:
@@ -345,13 +371,76 @@ public class MapConverterImpl extends AbstractCollectionConverterImpl {
         NodeIterator ni = node.getNodes();
         while( ni.hasNext()){
         	Node subnode = ni.nextNode();
-        	Map<String,Object> map = getMap(session, subnode);
-        	returnObjects.put(subnode.getName(), map);
+        	
+        	String type = gravityNodeType(subnode);
+        	Object obj;
+        	if(type.equals("list")){
+        		obj = getList(session, subnode);
+        	} else {
+        		obj = getMap(session, subnode);	
+        	}
+        	
+        	returnObjects.put(subnode.getName(), obj);
         }
                     
         return returnObjects;
     }
     
+    
+    private Collection<Object> getList( Session session, Node node) throws RepositoryException{
+    	
+    	Map<String,Object> returnObjects = new TreeMap<String,Object>();
+    	
+        PropertyIterator properties = node.getProperties();
+        while( properties.hasNext()){
+        	Property property = (Property) properties.next();
+        	if( !property.getName().startsWith("jcr:") && !property.getName().equals(GRAVITY_TYPE)){
+
+        		switch (property.getValue().getType()){
+        		case PropertyType.BOOLEAN:
+        			returnObjects.put(property.getName(),property.getBoolean());
+        			break;
+        		case PropertyType.DECIMAL:
+        			returnObjects.put(property.getName(),property.getDecimal());
+        			break;
+        		case PropertyType.LONG:
+        			returnObjects.put(property.getName(),property.getLong());
+        			break;            			
+        		case PropertyType.STRING:	
+        			returnObjects.put(property.getName(),property.getString());
+        			break;
+        		case PropertyType.DATE:	
+        			returnObjects.put(property.getName(),property.getDate().getTime());
+        			break;
+        		}
+        	}
+        }
+        
+        NodeIterator ni = node.getNodes();
+        while( ni.hasNext()){
+        	Node subnode = ni.nextNode();
+        	
+        	String type = gravityNodeType(subnode);
+        	Object obj;
+        	if(type.equals("list")){
+        		obj = getList(session, subnode);
+        	} else {
+        		obj = getMap(session, subnode);	
+        	}
+        	
+        	returnObjects.put(subnode.getName(), obj);
+        	
+        }
+                    
+        return returnObjects.values();
+    }
+    
+    private String gravityNodeType( Node node ) throws RepositoryException{
+    	if(node.hasProperty(GRAVITY_TYPE)){
+    		return node.getProperty(GRAVITY_TYPE).getString();
+    	}
+    	return "map"; 	
+    }
     
     /**
      * @see AbstractCollectionConverterImpl#doIsNull(Session, Node, CollectionDescriptor, Class)
