@@ -19,6 +19,7 @@ package org.apache.jackrabbit.ocm.manager;
 import java.util.Collection;
 import java.util.Iterator;
 
+import javax.jcr.NodeIterator;
 import javax.jcr.Session;
 import javax.jcr.version.VersionException;
 
@@ -153,6 +154,14 @@ public interface ObjectContentManager {
      */
     public Object getObject(Class objectClass, String path, String versionNumber)
             throws ObjectContentManagerException;
+    
+    /**
+     * 
+     * @param query
+     * 
+     * @return NodeIterator
+     */
+    public NodeIterator getNodes(Query query);
 
     /**
      * Retrieve the specified attribute for the given persistent object. this
@@ -223,7 +232,7 @@ public interface ObjectContentManager {
      * Retrieve some objects matching to a query
      *
      * @param query
-     *            The query used to seach the objects
+     *            The query used to search the objects
      * @return a collection of objects found
      * @throws ObjectContentManagerException
      *             when it is not possible to retrieve the objects
@@ -245,6 +254,19 @@ public interface ObjectContentManager {
     public Collection getObjects(Class objectClass, String path)
             throws ObjectContentManagerException;
 
+    /**
+     * Returns a list of objects (not supertypes) of that particular class which are child nodes of a specific path.
+     * This would not return the objects anywhere below the immediate children of the specified path.
+     *
+     * @param objectClass
+     * @param path Node path.
+     * @return a collection of object found and empty collection if there is no node for <code>path</code> or when <code></code>objectClass</code> is not mapped
+     */
+
+    public Collection getChildObjects(Class objectClass, String path)
+            throws ObjectContentManagerException;
+
+    
     /**
      * Return a list of object matching to a JCR query
      *

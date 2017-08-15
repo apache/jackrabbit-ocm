@@ -19,6 +19,7 @@ package org.apache.jackrabbit.ocm.manager.objectconverter.impl;
 import java.util.Iterator;
 
 import javax.jcr.Node;
+import javax.jcr.NodeIterator;
 import javax.jcr.PathNotFoundException;
 import javax.jcr.RepositoryException;
 import javax.jcr.Session;
@@ -168,12 +169,22 @@ public class SimpleFieldsHelper
 		if (node.hasProperty(propertyName))
 		{
 			propValue = node.getProperty(propertyName).getValue();
-			
 		}
 		else if (fieldDescriptor.getJcrDefaultValue() != null)
 		{
 		    ValueFactory vf = node.getSession().getValueFactory();
 		    propValue = vf.createValue(fieldDescriptor.getJcrDefaultValue());
+		}
+		else if (node.hasNode(propertyName)){
+			Node childNode = node.getNode(propertyName);
+			NodeIterator nodes = childNode.getNodes();
+			ValueFactory vf = node.getSession().getValueFactory();
+			int s = 0;
+			while(nodes.hasNext() && s<=1000){
+				s++;
+				nodes.next();
+			}
+			propValue = vf.createValue(s);
 		}
 		else
 		{
@@ -181,11 +192,15 @@ public class SimpleFieldsHelper
 		
 		    if (propDef != null && propDef.getDefaultValues() != null && propDef.getDefaultValues().length == 1)
 		    {
-                log.debug("retrieveSimpleField: Use default value from property definition for missing mapped property " + propertyName + " of class '" + classDescriptor.getClassName() + "'");
+                if (log.isDebugEnabled()) {
+                    log.debug("retrieveSimpleField: Use default value from property definition for missing mapped property " + propertyName + " of class '" + classDescriptor.getClassName() + "'");
+                }
 		        propValue = propDef.getDefaultValues()[0];
 		    } else
 		    {
-                log.debug("retrieveSimpleField: No default value available for missing mapped property " + propertyName + " of class '" + classDescriptor.getClassName() + "'");
+                if (log.isDebugEnabled()) {
+                    log.debug("retrieveSimpleField: No default value available for missing mapped property " + propertyName + " of class '" + classDescriptor.getClassName() + "'");
+                }
 		        propValue = null;
 		    }
 		}

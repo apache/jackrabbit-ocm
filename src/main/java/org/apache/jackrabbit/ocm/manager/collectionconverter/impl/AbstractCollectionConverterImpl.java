@@ -134,7 +134,7 @@ public abstract class AbstractCollectionConverterImpl implements CollectionConve
 			return doGetCollection(session, parentNode, collectionDescriptor, collectionFieldClass);
 		} catch (RepositoryException re) {
 			throw new org.apache.jackrabbit.ocm.exception.RepositoryException("Cannot get collection field : "
-					+ collectionDescriptor.getFieldName() + "for " + collectionDescriptor.getClassDescriptor().getClassName(), re);
+					+ collectionDescriptor.getFieldName() + " for " + collectionDescriptor.getClassDescriptor().getClassName(), re);
 		}
 	}
 

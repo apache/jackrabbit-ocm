@@ -360,6 +360,8 @@ public class ObjectConverterImpl implements ObjectConverter {
 			retrieveBeanFields(session, classDescriptor, node, object, false);
 			retrieveCollectionFields(session, classDescriptor, node, object, false);
 
+            requestObjectCache.ready(path, object);
+
 			return object;
 
 		} catch (PathNotFoundException pnfe) {
@@ -443,6 +445,8 @@ public class ObjectConverterImpl implements ObjectConverter {
             simpleFieldsHelp.retrieveSimpleFields(session, classDescriptor, node, object);
 			retrieveBeanFields(session, classDescriptor, node, object, false);
 			retrieveCollectionFields(session, classDescriptor, node, object, false);
+
+            requestObjectCache.ready(path, object);
 
 			return object;
 		} catch (PathNotFoundException pnfe) {
@@ -608,6 +612,11 @@ public class ObjectConverterImpl implements ObjectConverter {
 		if (nodeType.getName().equals(descriptor.getJcrType())) {
 			return true;
 		}
+		
+		// Dirty horrible hack to get objects annotated with oak:Unstructured to access nt:unstructured nodes. 
+		if(descriptor.getJcrType().equals("oak:Unstructured") && nodeType.getName().equals("nt:unstructured")){
+			return true;
+		}
 
 		NodeType[] superTypes = nodeType.getSupertypes();
 		for (int i = 0; i < superTypes.length; i++) {
@@ -615,7 +624,7 @@ public class ObjectConverterImpl implements ObjectConverter {
 				return true;
 			}
 		}
-
+		
 		return false;
 	}
 
@@ -709,6 +718,8 @@ public class ObjectConverterImpl implements ObjectConverter {
 			requestObjectCache.cache(beanPath, bean);
 			ReflectionUtils.setNestedProperty(object, beanName, bean);
 		}
+
+        requestObjectCache.ready(beanPath, bean);
 	}
 
 	private void retrieveCollectionFields(Session session, ClassDescriptor classDescriptor, Node parentNode, Object object,

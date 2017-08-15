@@ -186,11 +186,14 @@ public class ObjectContentManagerImpl implements ObjectContentManager {
      * @param converter
      *            the <code>ObjectConverter</code> to be used internally
      * @param queryManager
-     *            the query manager to used
+     *            the query manager to be used
+     * @param requestObjectCache
+     *            the request object cache to be used
      * @param session
      *            The JCR session
      */
-    public ObjectContentManagerImpl(Mapper mapper, ObjectConverter converter, QueryManager queryManager, ObjectCache requestObjectCache, Session session) {
+    public ObjectContentManagerImpl(Mapper mapper, ObjectConverter converter, QueryManager queryManager, 
+            ObjectCache requestObjectCache, Session session) {
         this.mapper = mapper;
         this.session = session;
         this.objectConverter = converter;
@@ -390,6 +393,7 @@ public class ObjectContentManagerImpl implements ObjectContentManager {
         }
 
         objectConverter.insert(session, object);
+        requestObjectCache.ready(path, object);
     }
 
     public void update(Object object) {
@@ -405,6 +409,9 @@ public class ObjectContentManagerImpl implements ObjectContentManager {
         }
 
         objectConverter.update(session, object);
+        // We do not use requestObjectCache.ready() here,
+        // because our changes might be rolled back later.
+        requestObjectCache.evict(path);
     }
 
     public void remove(String path) {
@@ -417,6 +424,7 @@ public class ObjectContentManagerImpl implements ObjectContentManager {
 
             Item item = session.getItem(path);
             item.remove();
+            requestObjectCache.evict(path);
 
         } catch (RepositoryException e) {
             throw new org.apache.jackrabbit.ocm.exception.RepositoryException("Impossible to remove the object at " + path);
@@ -431,7 +439,7 @@ public class ObjectContentManagerImpl implements ObjectContentManager {
     public void remove(Query query) {
         try {
             String jcrExpression = this.queryManager.buildJCRExpression(query);
-            log.debug("Remove Objects with expression : " + jcrExpression);
+            log.debug("Remove Objects with expression: {}", jcrExpression);
 
             // Since only nodes are sufficient for us to remove,
             // getObjects(query, language) method is not called here.
@@ -445,7 +453,7 @@ public class ObjectContentManagerImpl implements ObjectContentManager {
                     // node has been removed possibly by another thread during iterating through the results
                     continue;
                 }
-                log.debug("Remove node : " + node.getPath());
+                log.debug("Remove node: {}", node.getPath());
 
                 // it is not possible to remove nodes from an NodeIterator
                 // So, we add the node found in a collection to remove them
@@ -456,12 +464,14 @@ public class ObjectContentManagerImpl implements ObjectContentManager {
             // Remove all collection nodes
             for (int i = 0; i < nodes.size(); i++) {
                 Node node = (Node) nodes.get(i);
-                checkIfNodeLocked(node.getPath());
+                String path = node.getPath();
+                checkIfNodeLocked(path);
                 try {
                     node.remove();
                 } catch (javax.jcr.RepositoryException re) {
                     throw new ObjectContentManagerException("Cannot remove node at path " + node.getPath() + " returned from query " + jcrExpression, re);
                 }
+                requestObjectCache.evict(path);
             }
 
         } catch (InvalidQueryException iqe) {
@@ -511,6 +521,12 @@ public class ObjectContentManagerImpl implements ObjectContentManager {
         return getObjects(jcrExpression, javax.jcr.query.Query.XPATH);
     }
 
+    public NodeIterator getNodes(Query query) {
+        String jcrExpression = this.queryManager.buildJCRExpression(query);
+        NodeIterator nodeIterator = getNodeIterator(jcrExpression, javax.jcr.query.Query.XPATH);        
+        return nodeIterator;
+    }
+    
     public Collection getObjects(Class objectClass, String path) throws ObjectContentManagerException {
         final ClassDescriptor classDescriptorByClass = mapper.getClassDescriptorByClass(objectClass);
         if (classDescriptorByClass == null) {
@@ -567,7 +583,7 @@ public class ObjectContentManagerImpl implements ObjectContentManager {
 
     public Iterator getObjectIterator(Query query) {
         String jcrExpression = this.queryManager.buildJCRExpression(query);
-        log.debug("Get Object with expression : " + jcrExpression);
+        log.debug("Get Object with expression: {}", jcrExpression);
         @SuppressWarnings("deprecation")
         NodeIterator nodeIterator = getNodeIterator(jcrExpression, javax.jcr.query.Query.XPATH);
 
@@ -576,7 +592,7 @@ public class ObjectContentManagerImpl implements ObjectContentManager {
     }
 
     public Iterator getObjectIterator(String query, String language) {
-        log.debug("Get Object with expression : " + query);
+        log.debug("Get Object with expression: {}", query);
         NodeIterator nodeIterator = getNodeIterator(query, language);
 
         return new ObjectIterator(nodeIterator, this.objectConverter, this.session);
@@ -584,14 +600,14 @@ public class ObjectContentManagerImpl implements ObjectContentManager {
 
     public Collection getObjects(String query, String language) {
         try {
-            log.debug("Get Objects with expression : " + query + " and language " + language);
+            log.debug("Get Objects with expression [{}] and language {}", query, language);
 
             NodeIterator nodeIterator = getNodeIterator(query, language);
 
             List result = new ArrayList();
             while (nodeIterator.hasNext()) {
                 Node node = nodeIterator.nextNode();
-                log.debug("Node found : " + node.getPath());
+                log.debug("Node found: {}", node.getPath());
                 result.add(objectConverter.getObject(session, node.getPath()));
             }
             requestObjectCache.clear();
@@ -604,9 +620,7 @@ public class ObjectContentManagerImpl implements ObjectContentManager {
     }
 
     private NodeIterator getNodeIterator(String query, String language) {
-        if (log.isDebugEnabled()) {
-            log.debug("Get Node Iterator with expression " + query + " and language " + language);
-        }
+        log.debug("Get Node Iterator with expression [{}] and language {}", query, language);
         javax.jcr.query.Query jcrQuery;
         try {
             jcrQuery = session.getWorkspace().getQueryManager().createQuery(query, language);
@@ -1120,7 +1134,9 @@ public class ObjectContentManagerImpl implements ObjectContentManager {
             Node node = iter.nextNode();
             Node child;
             // check if the subnode is autocreated
-            if (!node.getDefinition().isAutoCreated() && destNode.hasNode(node.getName())) {
+            if (!node.getDefinition().isAutoCreated() 
+                    && node.getIndex()==1
+                    && destNode.hasNode(node.getName())) {
                 child = destNode.getNode(node.getName());
             } else {
                 child = destNode.addNode(node.getName(), node.getPrimaryNodeType().getName());
@@ -1128,5 +1144,46 @@ public class ObjectContentManagerImpl implements ObjectContentManager {
             copy(node, child);
         }
     }
+
+	public Collection getChildObjects(Class objectClass, String path)
+			throws ObjectContentManagerException {
+
+		final ClassDescriptor classDescriptorByClass = mapper.getClassDescriptorByClass(objectClass);
+        if (classDescriptorByClass == null) {
+            return Collections.emptyList();
+        }
+        try {
+            if (!session.nodeExists(path)) {
+                return Collections.emptyList();
+            }
+            
+            long t1 = System.currentTimeMillis();
+            
+            Node node = session.getNode(path);         
+            NodeIterator children = node.getNodes();
+            
+            long t2 = System.currentTimeMillis();
+            
+            Collection result = new ArrayList();
+            while (children.hasNext()) {
+                Node child = children.nextNode();
+                Object object = objectConverter.getObject(session, objectClass, child.getPath());
+                if (object == null) {
+                    continue;
+                }
+                // double check whether object is the same or a subclass of objectClass
+                if (objectClass.isAssignableFrom(object.getClass())) {
+                    result.add(object);
+                }
+            }
+            
+            long t3 = System.currentTimeMillis();
+            return result;
+               
+        } catch (RepositoryException e) {
+            throw new org.apache.jackrabbit.ocm.exception.RepositoryException("Impossible to get the objects at " + path, e);
+        }
+		
+	}
     
 }

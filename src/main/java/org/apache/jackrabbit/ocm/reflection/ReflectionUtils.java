@@ -157,9 +157,7 @@ abstract public class ReflectionUtils {
             PropertyUtils.setNestedProperty(object, fieldName, value);
         }
         catch(Exception ex) {
-            String className = (object == null) ? "<null>" : object.getClass().getName();
-            throw new JcrMappingException("Cannot set the field " + fieldName + " in the class : " + className,
-                    ex);
+        	// IGNORE to support loading old objects into new structures.
         }
     }
 

@@ -61,7 +61,7 @@ public class MappingDescriptor {
     	    log.warn("Duplicate classdescriptor for : " + classDescriptor.getClassName() + ". The mapping setting will be overriden");	
     	}
     	
-        log.debug("Adding the class descriptor for : " + classDescriptor.getClassName());	
+        log.debug("Adding the class descriptor for : {}", classDescriptor.getClassName());	
         if (null != this.packageName && !"".equals(this.packageName)) {
             classDescriptor.setClassName(this.packageName + "." + classDescriptor.getClassName());
 
