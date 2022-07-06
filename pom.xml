@@ -44,7 +44,7 @@
 
   <properties>
     <javax.jcr.version>2.0</javax.jcr.version>
-    <apache.jackrabbit.version>2.4.1</apache.jackrabbit.version>
+    <apache.jackrabbit.version>2.4.6</apache.jackrabbit.version>
     <commons.digester.version>1.7</commons.digester.version>
     <commons.lang.version>2.1</commons.lang.version>
     <commons.collection.version>3.1</commons.collection.version>
