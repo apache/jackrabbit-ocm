@@ -47,7 +47,7 @@
     <apache.jackrabbit.version>2.4.1</apache.jackrabbit.version>
     <commons.digester.version>1.7</commons.digester.version>
     <commons.lang.version>2.1</commons.lang.version>
-    <commons.collection.version>3.1</commons.collection.version>
+    <commons.collection.version>3.2.2</commons.collection.version>
     <commons.beanutils.version>1.7.0</commons.beanutils.version>
     <org.slf4j.version>1.6.4</org.slf4j.version>
     <junit.version>4.7</junit.version>
